@@ -182,10 +182,6 @@ object APIUtil {
         return false
     }
 
-    fun readFile(file: File): BufferedReader {
-        return BufferedReader(InputStreamReader(FileInputStream(file), StandardCharsets.UTF_8))
-    }
-
     fun toggleApiErrorMessages() {
         showApiErrors = !showApiErrors
         ChatUtils.chat("Hypixel API error messages " + if (showApiErrors) "§chidden" else "§ashown")

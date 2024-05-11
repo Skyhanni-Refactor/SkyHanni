@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
+import java.util.UUID
 
 typealias Player = EntityPlayer
 
@@ -13,6 +14,7 @@ object McPlayer {
     val hasPlayer: Boolean get() = Minecraft.getMinecraft().thePlayer != null
     val player: Player get() = Minecraft.getMinecraft().thePlayer
     val playerName: String get() = player.name
+    val uuid: UUID get() = player.uniqueID
 
     val isSneaking: Boolean get() = hasPlayer && player.isSneaking
     val onGround: Boolean get() = hasPlayer && player.onGround
