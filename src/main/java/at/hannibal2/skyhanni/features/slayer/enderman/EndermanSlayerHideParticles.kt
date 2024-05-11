@@ -5,10 +5,10 @@ import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.ReceiveParticleEvent
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.monster.EntityEnderman
 import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -21,7 +21,7 @@ class EndermanSlayerHideParticles {
     fun onTick(event: LorenzTickEvent) {
         if (!isEnabled()) return
 
-        endermanLocations = EntityUtils.getEntities<EntityEnderman>().map { it.getLorenzVec() }.toList()
+        endermanLocations = McWorld.getEntitiesOf<EntityEnderman>().map { it.getLorenzVec() }.toList()
     }
 
     @SubscribeEvent

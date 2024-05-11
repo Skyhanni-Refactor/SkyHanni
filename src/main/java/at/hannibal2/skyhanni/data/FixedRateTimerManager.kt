@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.mc.McClient
 import kotlin.concurrent.fixedRateTimer
 
 class FixedRateTimerManager {
@@ -10,8 +10,8 @@ class FixedRateTimerManager {
 
     init {
         fixedRateTimer(name = "skyhanni-fixed-rate-timer-manager", period = 1000L) {
-            Minecraft.getMinecraft().addScheduledTask {
-                if (!LorenzUtils.onHypixel) return@addScheduledTask
+            McClient.schedule {
+                if (!LorenzUtils.onHypixel) return@schedule
                 SecondPassedEvent(totalSeconds).postAndCatch()
                 totalSeconds++
             }

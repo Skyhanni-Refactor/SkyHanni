@@ -7,12 +7,12 @@ import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.PlaySoundEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.fromNow
 import at.hannibal2.skyhanni.utils.renderables.Renderable
+import at.hannibal2.skyhanni.utils.system.OS
 import com.mojang.realmsclient.gui.ChatFormatting
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.concurrent.ConcurrentLinkedDeque
@@ -77,7 +77,7 @@ object TrackSoundsCommand {
         if (cutOfTime.passedSince() <= 0.1.seconds) return
         val string = sounds.reversed().joinToString("\n") { "Time: ${it.first.inWholeMilliseconds}  ${it.second}" }
         val counter = sounds.size
-        OSUtils.copyToClipboard(string)
+        OS.copyToClipboard(string)
         ChatUtils.chat("$counter sounds copied into the clipboard!")
         sounds.clear()
         isRecording = false

@@ -9,11 +9,11 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getSkullOwner
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.StringUtils.removeWordsAtEnd
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import at.hannibal2.skyhanni.utils.system.OS
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import net.minecraft.item.ItemStack
@@ -105,7 +105,7 @@ object TestCopyBestiaryValues {
 
         val gson = GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create()
         val text = gson.toJson(obj)
-        OSUtils.copyToClipboard(text)
+        OS.copyToClipboard(text)
 
         SkyHanniDebugsAndTests.displayLine = "Bestiary for $titleName"
     }

@@ -1,6 +1,8 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.item.ItemStack
@@ -259,7 +261,7 @@ object CollectionUtils {
         val onClick = {
             if ((System.currentTimeMillis() - ChatUtils.lastButtonClicked) > 150) { // funny thing happen if I don't do that
                 onChange()
-                SoundUtils.playClickSound()
+                McSound.CLICK.play()
                 ChatUtils.lastButtonClicked = System.currentTimeMillis()
             }
         }

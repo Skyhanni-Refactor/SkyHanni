@@ -12,10 +12,10 @@ import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorMana
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.getAllNameTagsWith
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.monster.EntityBlaze
@@ -40,7 +40,7 @@ class AshfangBlazes {
         }
 
         if (nearAshfang) {
-            for (entity in EntityUtils.getEntities<EntityBlaze>()
+            for (entity in McWorld.getEntitiesOf<EntityBlaze>()
                 .filter { it !in blazeColor.keys }) {
                 val list = entity.getAllNameTagsWith(2, "Ashfang")
                 if (list.size == 1) {
@@ -80,7 +80,7 @@ class AshfangBlazes {
     }
 
     private fun checkNearAshfang() {
-        nearAshfang = EntityUtils.getEntities<EntityArmorStand>().any { it.name.contains("Ashfang") }
+        nearAshfang = McWorld.getEntitiesOf<EntityArmorStand>().any { it.name.contains("Ashfang") }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)

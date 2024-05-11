@@ -30,6 +30,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.drawColor
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
 import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
@@ -55,7 +56,7 @@ object VampireSlayerFeatures {
     private val taggedEntityList = mutableListOf<Int>()
     private var standList = mapOf<EntityArmorStand, EntityOtherPlayerMP>()
     // Nicked support
-    private val username get() = EntityUtils.getEntities<EntityPlayerSP>().firstOrNull()?.name ?: error("own player is null")
+    private val username get() = McWorld.getEntitiesOf<EntityPlayerSP>().firstOrNull()?.name ?: error("own player is null")
     private val bloodIchorTexture =
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzAzNDA5MjNhNmRlNDgyNWExNzY4MTNkMTMzNTAzZWZmMTg2ZGIwODk2ZTMyYjY3MDQ5MjhjMmEyYmY2ODQyMiJ9fX0="
     private val killerSpringTexture =
@@ -68,7 +69,7 @@ object VampireSlayerFeatures {
         if (!event.isMod(5)) return
         val start = LocationUtils.playerLocation()
         if (configOwnBoss.highlight || configOtherBoss.highlight || configCoopBoss.highlight) {
-            EntityUtils.getEntities<EntityOtherPlayerMP>().forEach {
+            McWorld.getEntitiesOf<EntityOtherPlayerMP>().forEach {
                 val vec = it.position.toLorenzVec()
                 val distance = start.distance(vec)
                 if (distance <= 15)
@@ -76,7 +77,7 @@ object VampireSlayerFeatures {
             }
         }
         if (configBloodIchor.highlight || configKillerSpring.highlight) {
-            EntityUtils.getEntities<EntityArmorStand>().forEach { stand ->
+            McWorld.getEntitiesOf<EntityArmorStand>().forEach { stand ->
                 val vec = stand.position.toLorenzVec()
                 val distance = start.distance(vec)
                 val isIchor = stand.hasSkullTexture(bloodIchorTexture)
@@ -334,13 +335,12 @@ object VampireSlayerFeatures {
     @SubscribeEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
-        val loc = event.location
-        EntityUtils.getEntitiesNearby<EntityOtherPlayerMP>(loc, 3.0).forEach {
-            if (it.isHighlighted() && event.type == EnumParticleTypes.ENCHANTMENT_TABLE) {
-                EntityUtils.getEntitiesNearby<EntityArmorStand>(event.location, 3.0).forEach { stand ->
-                    if (stand.hasSkullTexture(killerSpringTexture) || stand.hasSkullTexture(bloodIchorTexture)) {
-                        standList = standList.editCopy { this[stand] = it }
-                    }
+        if (event.type != EnumParticleTypes.ENCHANTMENT_TABLE) return
+        McWorld.getEntitiesNear<EntityOtherPlayerMP>(event.location, 3.0).forEach {
+            if (!it.isHighlighted()) return@forEach
+            McWorld.getEntitiesNear<EntityArmorStand>(event.location, 3.0).forEach { stand ->
+                if (stand.hasSkullTexture(killerSpringTexture) || stand.hasSkullTexture(bloodIchorTexture)) {
+                    standList = standList.editCopy { this[stand] = it }
                 }
             }
         }

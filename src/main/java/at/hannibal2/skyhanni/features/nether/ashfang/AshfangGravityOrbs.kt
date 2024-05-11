@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.SpecialColour
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
@@ -31,7 +32,7 @@ class AshfangGravityOrbs {
     fun onTick(event: LorenzTickEvent) {
         if (!isEnabled()) return
 
-        EntityUtils.getEntities<EntityArmorStand>()
+        McWorld.getEntitiesOf<EntityArmorStand>()
             .filter { it !in orbs && it.hasSkullTexture(texture) }
             .forEach { orbs.add(it) }
     }

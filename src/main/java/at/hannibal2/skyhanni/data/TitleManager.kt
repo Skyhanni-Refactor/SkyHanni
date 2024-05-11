@@ -1,54 +1,66 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.events.GuiRenderEvent
+import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
+import at.hannibal2.skyhanni.events.TitleReceivedEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import io.github.notenoughupdates.moulconfig.internal.TextRenderUtils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.network.play.server.S45PacketTitle
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-class TitleManager {
+object TitleManager {
 
-    companion object {
+    private var originalText = ""
+    private var display = ""
+    private var endTime = SimpleTimeMark.farPast()
+    private var heightModifier = 1.8
+    private var fontSizeModifier = 4f
 
-        private var originalText = ""
-        private var display = ""
-        private var endTime = SimpleTimeMark.farPast()
-        private var heightModifier = 1.8
-        private var fontSizeModifier = 4f
+    fun sendTitle(text: String, duration: Duration, height: Double, fontSize: Float) {
+        originalText = text
+        display = "§f$text"
+        endTime = SimpleTimeMark.now() + duration
+        heightModifier = height
+        fontSizeModifier = fontSize
+    }
 
-        fun sendTitle(text: String, duration: Duration, height: Double, fontSize: Float) {
-            originalText = text
-            display = "§f$text"
-            endTime = SimpleTimeMark.now() + duration
-            heightModifier = height
-            fontSizeModifier = fontSize
+    fun optionalResetTitle(condition: (String) -> Boolean) {
+        if (condition(originalText)) {
+            sendTitle("", 1.milliseconds, 1.8, 4f)
+        }
+    }
+
+    fun command(args: Array<String>) {
+        if (args.size < 4) {
+            ChatUtils.userError("Usage: /shsendtitle <duration> <height> <fontSize> <text ..>")
+            return
         }
 
-        fun optionalResetTitle(condition: (String) -> Boolean) {
-            if (condition(originalText)) {
-                sendTitle("", 1.milliseconds, 1.8, 4f)
-            }
-        }
+        val duration = args[0].toInt().seconds
+        val height = args[1].toDouble()
+        val fontSize = args[2].toFloat()
+        val title = "§6" + args.drop(3).joinToString(" ").replace("&", "§")
 
-        fun command(args: Array<String>) {
-            if (args.size < 4) {
-                ChatUtils.userError("Usage: /shsendtitle <duration> <height> <fontSize> <text ..>")
-                return
-            }
+        sendTitle(title, duration, height, fontSize)
+    }
 
-            val duration = args[0].toInt().seconds
-            val height = args[1].toDouble()
-            val fontSize = args[2].toFloat()
-            val title = "§6" + args.drop(3).joinToString(" ").replace("&", "§")
+    @SubscribeEvent
+    fun onTitleReceived(event: PacketEvent.ReceiveEvent) {
+        val packet = event.packet
 
-            sendTitle(title, duration, height, fontSize)
+        if (packet !is S45PacketTitle) return
+        val message = packet.message ?: return
+        val formattedText = message.formattedText
+        if (TitleReceivedEvent(formattedText).postAndCatch()) {
+            event.cancel()
         }
     }
 

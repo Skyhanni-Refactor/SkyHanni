@@ -4,10 +4,10 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeLimitedSet
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.Minecraft
 import kotlin.time.Duration.Companion.minutes
 
@@ -73,7 +73,7 @@ object ErrorManager {
         }
         val name = if (fullErrorMessage) "Full error" else "Error"
         ChatUtils.chat(errorMessage?.let {
-            OSUtils.copyToClipboard(it)
+            OS.copyToClipboard(it)
             "$name copied into the clipboard, please report it on the SkyHanni discord!"
         } ?: "Error id not found!")
     }

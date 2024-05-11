@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.events
 
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.Entity
 import net.minecraft.entity.item.EntityArmorStand
@@ -93,11 +94,10 @@ class RenderEntityOutlineEvent(theType: Type?, potentialEntities: HashSet<Entity
      * Used for on-the-fly generation of entities. Driven by event handlers in a decentralized fashion
      */
     private fun computeAndCacheEntitiesToChooseFrom() {
-        val entities: List<Entity> = Minecraft.getMinecraft().theWorld.getLoadedEntityList()
         // Only render outlines around non-null entities within the camera frustum
-        entitiesToChooseFrom = HashSet(entities.size)
+        entitiesToChooseFrom = HashSet(McWorld.entities.size)
         // Only consider entities that aren't invisible armorstands to increase FPS significantly
-        entities.forEach(Consumer<Entity> { e: Entity? ->
+        McWorld.entities.forEach(Consumer { e: Entity? ->
             if (e != null && !(e is EntityArmorStand && e.isInvisible()) && e !is EntityItemFrame) {
                 entitiesToChooseFrom!!.add(e)
             }

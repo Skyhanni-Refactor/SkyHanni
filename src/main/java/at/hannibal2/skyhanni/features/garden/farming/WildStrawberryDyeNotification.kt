@@ -9,7 +9,8 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
-import at.hannibal2.skyhanni.utils.SoundUtils
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
@@ -40,7 +41,7 @@ class WildStrawberryDyeNotification {
             val name = itemStack.name
             LorenzUtils.sendTitle(name, 5.seconds)
             ChatUtils.chat("You found a $name§e!")
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
             ItemBlink.setBlink(itemStack, 5_000)
         }
     }

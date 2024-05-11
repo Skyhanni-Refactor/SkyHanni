@@ -4,13 +4,13 @@ import at.hannibal2.skyhanni.data.hypixel.chat.event.PartyChatEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.StringUtils.removeResets
 import at.hannibal2.skyhanni.utils.StringUtils.trimWhiteSpace
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.random.Random
 
@@ -98,7 +98,7 @@ object PartyAPI {
         }
 
         if (Random.nextDouble() < 0.1) {
-            OSUtils.openBrowser("https://www.youtube.com/watch?v=iANP7ib7CPA")
+            OS.openUrl("https://www.youtube.com/watch?v=iANP7ib7CPA")
             ChatUtils.hoverableChat("§7Are You Ready To Party?", listOf("§b~Spongebob"), prefix = false)
         }
     }

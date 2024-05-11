@@ -54,6 +54,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeUtils.format
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.JsonArray
@@ -528,7 +529,7 @@ object GardenVisitorFeatures {
     }
 
     private fun findEntity(nameTag: EntityArmorStand, visitor: VisitorAPI.Visitor) {
-        for (entity in EntityUtils.getAllEntities()) {
+        for (entity in McWorld.entities) {
             if (entity is EntityArmorStand) continue
             if (entity.getLorenzVec().distanceIgnoreY(nameTag.getLorenzVec()) != 0.0) continue
 

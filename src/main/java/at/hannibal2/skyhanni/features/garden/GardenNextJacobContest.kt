@@ -26,12 +26,13 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 import at.hannibal2.skyhanni.utils.SkyBlockTime
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.Gson
 import com.google.gson.JsonPrimitive
@@ -427,7 +428,7 @@ object GardenNextJacobContest {
         val cropText = crops.joinToString("§7, ") { (if (it == boostedCrop) "§6" else "§a") + it.cropName }
         ChatUtils.chat("Next farming contest: $cropText")
         LorenzUtils.sendTitle("§eFarming Contest!", 5.seconds)
-        SoundUtils.playBeepSound()
+        McSound.BEEP.play()
 
         val cropTextNoColor = crops.joinToString(", ") {
             if (it == boostedCrop) "<b>${it.cropName}</b>" else it.cropName

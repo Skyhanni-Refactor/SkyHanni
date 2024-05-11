@@ -3,8 +3,8 @@ package at.hannibal2.skyhanni.test.command
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.IChatComponent
 
@@ -22,10 +22,7 @@ object TestChatCommand {
             val isClipboard = mutArgs.remove("-clipboard")
             val isHidden = mutArgs.remove("-s")
             val multiLines = mutArgs.remove("-lines")
-            val text = if (isClipboard) {
-                OSUtils.readFromClipboard()
-                    ?: return@launchCoroutine ChatUtils.userError("Clipboard does not contain a string!")
-            } else mutArgs.joinToString(" ")
+            val text = if (isClipboard) { OS.readFromClipboard() } else mutArgs.joinToString(" ")
             if (multiLines) {
                 for (line in text.split("\n")) {
                     extracted(isComplex, line, isHidden)

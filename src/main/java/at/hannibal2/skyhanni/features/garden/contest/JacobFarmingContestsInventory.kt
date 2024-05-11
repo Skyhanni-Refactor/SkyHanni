@@ -17,13 +17,13 @@ import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawSlotText
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.SkyBlockTime
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.inventory.ContainerChest
 import net.minecraft.inventory.Slot
@@ -108,24 +108,24 @@ class JacobFarmingContestsInventory {
 
     private fun openContest(year: String, month: String, day: String) {
         val date = "$year/${LorenzUtils.getSBMonthByName(month)}/$day"
-        OSUtils.openBrowser("https://elitebot.dev/contests/$date")
+        OS.openUrl("https://elitebot.dev/contests/$date")
         ChatUtils.chat("Opening contest in elitebot.dev")
     }
 
     private fun openFromJacobMenu(itemName: String) {
         when (itemName) {
             "§6Upcoming Contests" -> {
-                OSUtils.openBrowser("https://elitebot.dev/contests/upcoming")
+                OS.openUrl("https://elitebot.dev/contests/upcoming")
                 ChatUtils.chat("Opening upcoming contests in elitebot.dev")
             }
 
             "§bClaim your rewards!" -> {
-                OSUtils.openBrowser("https://elitebot.dev/@${LorenzUtils.getPlayerName()}/${HypixelData.profileName}/contests")
+                OS.openUrl("https://elitebot.dev/@${LorenzUtils.getPlayerName()}/${HypixelData.profileName}/contests")
                 ChatUtils.chat("Opening your contests in elitebot.dev")
             }
 
             "§aWhat is this?" -> {
-                OSUtils.openBrowser("https://elitebot.dev/contests")
+                OS.openUrl("https://elitebot.dev/contests")
                 ChatUtils.chat("Opening contest page in elitebot.dev")
             }
 
@@ -150,7 +150,7 @@ class JacobFarmingContestsInventory {
                 openContest(year, month, day)
             } else {
                 val timestamp = time / 1000
-                OSUtils.openBrowser("https://elitebot.dev/contests/upcoming#$timestamp")
+                OS.openUrl("https://elitebot.dev/contests/upcoming#$timestamp")
                 ChatUtils.chat("Opening upcoming contests in elitebot.dev")
             }
             event.isCanceled = true

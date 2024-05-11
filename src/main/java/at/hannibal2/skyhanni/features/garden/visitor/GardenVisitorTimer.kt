@@ -14,12 +14,13 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.TimeUtils
 import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration
@@ -126,7 +127,7 @@ class GardenVisitorTimer {
                     sixthVisitorReady = true
                     if (isSixthVisitorWarningEnabled()) {
                         LorenzUtils.sendTitle("§a6th Visitor Ready", 5.seconds)
-                        SoundUtils.playBeepSound()
+                        McSound.BEEP.play()
                     }
                 }
             }
@@ -160,7 +161,7 @@ class GardenVisitorTimer {
             "§7/§$formatColor" + duration.format()
         } else ""
         if (config.newVisitorPing && millis < 10.seconds) {
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
         }
 
         val formatDuration = millis.format()

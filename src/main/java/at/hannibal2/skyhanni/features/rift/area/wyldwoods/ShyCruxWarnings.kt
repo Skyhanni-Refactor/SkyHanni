@@ -3,13 +3,13 @@ package at.hannibal2.skyhanni.features.rift.area.wyldwoods
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 
-class ShyCruxWarnings {
+object ShyCruxWarnings {
 
     private val config get() = RiftAPI.config.area.wyldWoods
     private val shyNames = arrayOf("I'm ugly! :(", "Eek!", "Don't look at me!", "Look away!")
@@ -17,11 +17,7 @@ class ShyCruxWarnings {
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
         if (!RiftAPI.inRift() || !config.shyWarning) return
-        checkForShy()
-    }
-
-    private fun checkForShy() {
-        if (EntityUtils.getAllEntities().any { it.name in shyNames && it.distanceToPlayer() < 8 }) {
+        if (McWorld.entities.any { it.name in shyNames && it.distanceToPlayer() < 8 }) {
             LorenzUtils.sendTitle("§eLook away!", 150.milliseconds)
         }
     }

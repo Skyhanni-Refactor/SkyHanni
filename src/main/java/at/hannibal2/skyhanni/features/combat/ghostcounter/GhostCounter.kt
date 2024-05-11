@@ -48,12 +48,12 @@ import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.NumberUtil.roundToPrecision
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import at.hannibal2.skyhanni.utils.system.OS
 import io.github.moulberry.notenoughupdates.util.Utils
 import io.github.moulberry.notenoughupdates.util.XPInformation
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -286,7 +286,7 @@ object GhostCounter {
         val moneyMadeWithClickableTips = Renderable.clickAndHover(
             textFormatting.moneyMadeFormat.formatText(moneyMade.addSeparators()),
             moneyMadeTips,
-            onClick = { OSUtils.copyToClipboard(moneyMadeTips.joinToString("\n").removeColor()) }
+            onClick = { OS.copyToClipboard(moneyMadeTips.joinToString("\n").removeColor()) }
         )
         addAsSingletonList(textFormatting.moneyHourFormat.formatText(final))
         addAsSingletonList(moneyMadeWithClickableTips)

@@ -5,16 +5,22 @@ import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.events.BlockClickEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.utils.BlockUtils
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockAt
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawColor
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockEntityAt
 import net.minecraft.init.Blocks
+import net.minecraft.tileentity.TileEntitySkull
+import net.minecraftforge.common.util.Constants
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DungeonHighlightClickedBlocks {
+object DungeonHighlightClickedBlocks {
+
+    private const val WITHER_ESSENCE_TEXTURE = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQ" +
+        "ubmV0L3RleHR1cmUvYzRkYjRhZGZhOWJmNDhmZjVkNDE3M" +
+        "DdhZTM0ZWE3OGJkMjM3MTY1OWZjZDhjZDg5MzQ3NDlhZjRjY2U5YiJ9fX0="
 
     private val blocks = mutableListOf<ClickedBlock>()
     private var colorIndex = 0
@@ -55,11 +61,13 @@ class DungeonHighlightClickedBlocks {
         }
 
         if (type == ClickedBlockType.WITHER_ESSENCE) {
-            val text = BlockUtils.getTextureFromSkull(position.toBlockPos())
-            if (text != "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQ" +
-                "ubmV0L3RleHR1cmUvYzRkYjRhZGZhOWJmNDhmZjVkNDE3M" +
-                "DdhZTM0ZWE3OGJkMjM3MTY1OWZjZDhjZDg5MzQ3NDlhZjRjY2U5YiJ9fX0="
-            ) {
+            val entity = position.getBlockEntityAt() as TileEntitySkull
+            val text = entity.serializeNBT().getCompoundTag("Owner")
+                .getCompoundTag("Properties")
+                .getTagList("textures", Constants.NBT.TAG_COMPOUND)
+                .getCompoundTagAt(0)
+                .getString("Value")
+            if (text != WITHER_ESSENCE_TEXTURE) {
                 return
             }
         }

@@ -2,13 +2,13 @@ package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NumberUtil.isInt
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.Entity
@@ -230,7 +230,7 @@ object PacketTest {
             return packet.getEntity(world)
         }
         if (id != null) {
-            return EntityUtils.getEntityByID(id)
+            return McWorld.getEntity(id)
         }
 
         return null

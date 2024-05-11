@@ -10,8 +10,8 @@ import at.hannibal2.skyhanni.utils.KSerializable
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.KotlinTypeAdapterFactory
 import at.hannibal2.skyhanni.utils.NBTTypeAdapter
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.fromJson
+import at.hannibal2.skyhanni.utils.system.OS
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import net.minecraft.item.ItemStack
@@ -59,7 +59,7 @@ object TestExportTools {
             return
         }
         val json = toJson(Item, stack)
-        OSUtils.copyToClipboard(json)
+        OS.copyToClipboard(json)
         ChatUtils.chat("Compressed item info copied into the clipboard!")
     }
 

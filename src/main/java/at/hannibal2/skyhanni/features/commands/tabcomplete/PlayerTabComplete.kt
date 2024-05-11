@@ -6,7 +6,7 @@ import at.hannibal2.skyhanni.data.FriendAPI
 import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.VipVisitsJson
 import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object PlayerTabComplete {
@@ -60,7 +60,7 @@ object PlayerTabComplete {
             }
 
             if (config.islandPlayers && PlayerCategory.ISLAND_PLAYERS !in ignored) {
-                for (entity in EntityUtils.getPlayerEntities()) {
+                for (entity in McWorld.players) {
                     add(entity.name)
                 }
             }

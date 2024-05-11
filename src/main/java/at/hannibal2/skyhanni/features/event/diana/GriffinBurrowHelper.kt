@@ -17,7 +17,6 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.features.event.diana.DianaAPI.isDianaSpade
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockAt
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.DelayedRun
@@ -35,6 +34,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent

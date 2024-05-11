@@ -9,11 +9,11 @@ import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.features.event.diana.DianaAPI.isDianaSpade
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockAt
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.TimeLimitedSet
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.init.Blocks
 import net.minecraft.network.play.server.S2APacketParticles

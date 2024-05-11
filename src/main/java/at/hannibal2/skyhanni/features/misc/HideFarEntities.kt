@@ -4,9 +4,9 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 class HideFarEntities {
@@ -21,7 +21,7 @@ class HideFarEntities {
         val maxAmount = config.maxAmount.coerceAtLeast(1)
         val minDistance = config.minDistance.coerceAtLeast(3)
 
-        ignored = EntityUtils.getAllEntities()
+        ignored = McWorld.entities
             .map { it.entityId to it.distanceToPlayer() }
             .filter { it.second > minDistance }
             .sortedBy { it.second }.drop(maxAmount)

@@ -5,7 +5,6 @@ import at.hannibal2.skyhanni.api.SkillAPI
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.ConfigGuiManager
 import at.hannibal2.skyhanni.config.features.About.UpdateStream
-import at.hannibal2.skyhanni.utils.chat.ChatClickActionManager
 import at.hannibal2.skyhanni.data.ChatManager
 import at.hannibal2.skyhanni.data.GardenCropMilestonesCommunityFix
 import at.hannibal2.skyhanni.data.GuiEditManager
@@ -74,14 +73,15 @@ import at.hannibal2.skyhanni.test.command.CopyItemCommand
 import at.hannibal2.skyhanni.test.command.CopyNearbyEntitiesCommand
 import at.hannibal2.skyhanni.test.command.CopyNearbyParticlesCommand
 import at.hannibal2.skyhanni.test.command.CopyScoreboardCommand
+import at.hannibal2.skyhanni.test.command.SoundCommand
 import at.hannibal2.skyhanni.test.command.TestChatCommand
 import at.hannibal2.skyhanni.test.command.TrackSoundsCommand
 import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.splitLines
 import at.hannibal2.skyhanni.utils.TabListData
+import at.hannibal2.skyhanni.utils.chat.ChatClickActionManager
 import at.hannibal2.skyhanni.utils.chat.Text
 import at.hannibal2.skyhanni.utils.chat.Text.hover
 import at.hannibal2.skyhanni.utils.chat.Text.suggest
@@ -502,7 +502,7 @@ object Commands {
         registerCommand(
             "shplaysound",
             "Play the specified sound effect at the given pitch and volume."
-        ) { SoundUtils.command(it) }
+        ) { SoundCommand.onCommand(it) }
         registerCommand(
             "shsendtitle",
             "Display a title on the screen with the specified settings."

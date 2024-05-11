@@ -8,7 +8,8 @@ import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getFungiCutterMode
-import at.hannibal2.skyhanni.utils.SoundUtils
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
@@ -49,7 +50,7 @@ class WrongFungiCutterWarning {
         LorenzUtils.sendTitle("§cWrong Fungi Cutter Mode!", 2.seconds)
         if (System.currentTimeMillis() > lastPlaySoundTime + 3_00) {
             lastPlaySoundTime = System.currentTimeMillis()
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
         }
     }
 

@@ -27,11 +27,10 @@ import at.hannibal2.skyhanni.utils.Quad
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
-import at.hannibal2.skyhanni.utils.SoundUtils.playSound
 import at.hannibal2.skyhanni.utils.SpecialColour
 import at.hannibal2.skyhanni.utils.TimeUnit
 import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.renderables.Renderable.Companion.horizontalContainer
 import net.minecraftforge.fml.common.eventhandler.EventPriority
@@ -190,7 +189,7 @@ object SkillProgress {
         if (goalReached)
             chat("§lYou have reached your goal level of §b§l${skill.customGoalLevel} §e§lin the §b§l$skillName §e§lskill!")
 
-        SoundUtils.createSound("random.levelup", 1f, 1f).playSound()
+        McSound.play("random.levelup", 1f, 1f)
     }
 
     @SubscribeEvent

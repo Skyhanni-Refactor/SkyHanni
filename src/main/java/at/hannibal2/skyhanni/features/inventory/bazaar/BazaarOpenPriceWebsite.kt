@@ -5,8 +5,8 @@ import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.system.OS
 import io.github.moulberry.notenoughupdates.events.ReplaceItemEvent
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.entity.player.InventoryPlayer
@@ -50,7 +50,7 @@ class BazaarOpenPriceWebsite {
             event.isCanceled = true
             if (lastClick.passedSince() > 0.3.seconds) {
                 val name = getSkyBlockBzName(lastItem)
-                OSUtils.openBrowser("https://www.skyblock.bz/product/$name")
+                OS.openUrl("https://www.skyblock.bz/product/$name")
                 lastClick = SimpleTimeMark.now()
             }
         }

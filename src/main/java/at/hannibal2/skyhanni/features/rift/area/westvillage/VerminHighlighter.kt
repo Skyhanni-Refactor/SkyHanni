@@ -7,13 +7,13 @@ import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
 import at.hannibal2.skyhanni.utils.ConditionalUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.TimeLimitedSet
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.monster.EntitySilverfish
@@ -35,7 +35,7 @@ class VerminHighlighter {
     fun onTick(event: LorenzTickEvent) {
         if (!isEnabled()) return
 
-        for (entity in EntityUtils.getEntities<EntityLivingBase>()) {
+        for (entity in McWorld.getEntitiesOf<EntityLivingBase>()) {
             val id = entity.entityId
             if (id in checkedEntites) continue
             checkedEntites.add(id)

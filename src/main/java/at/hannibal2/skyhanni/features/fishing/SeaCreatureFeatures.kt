@@ -19,7 +19,8 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.LorenzUtils.ignoreDerpy
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.monster.EntityGuardian
@@ -61,7 +62,7 @@ class SeaCreatureFeatures {
                 val creature = SeaCreatureManager.allFishingMobs[creatureType.nametag]
                 val text = "${creature?.rarity?.chatColorCode ?: "§6"}RARE SEA CREATURE!"
                 LorenzUtils.sendTitle(text, 1.5.seconds, 3.6, 7f)
-                if (config.playSound) SoundUtils.playBeepSound()
+                if (config.playSound) McSound.BEEP.play()
             }
         }
     }
@@ -73,7 +74,7 @@ class SeaCreatureFeatures {
 
         if (event.seaCreature.rare) {
             LorenzUtils.sendTitle("${event.seaCreature.rarity.chatColorCode}RARE CATCH!", 3.seconds, 2.8, 7f)
-            if (config.playSound) SoundUtils.playBeepSound()
+            if (config.playSound) McSound.BEEP.play()
             lastRareCatch = SimpleTimeMark.now()
         }
     }

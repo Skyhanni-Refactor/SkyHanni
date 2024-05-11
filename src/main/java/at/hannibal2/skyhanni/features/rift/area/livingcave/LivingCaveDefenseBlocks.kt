@@ -11,13 +11,13 @@ import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.isAtFullHealth
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -74,7 +74,7 @@ class LivingCaveDefenseBlocks {
             if (entity == null) {
                 // read new entity data
                 val compareLocation = event.location.add(-0.5, -1.5, -0.5)
-                entity = EntityUtils.getEntitiesNearby<EntityOtherPlayerMP>(compareLocation, 2.0)
+                entity = McWorld.getEntitiesNear<EntityOtherPlayerMP>(compareLocation, 2.0)
                     .filter { isCorrectMob(it.name) }
                     .filter { !it.isAtFullHealth() }
                     .minByOrNull { it.distanceTo(compareLocation) }

@@ -9,17 +9,19 @@ import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.hasGroup
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
@@ -224,7 +226,7 @@ object InquisitorWaypointShare {
             return
         }
 
-        val inquisitor = EntityUtils.getEntityByID(inquisitor)
+        val inquisitor = McWorld.getEntity(inquisitor)
         if (inquisitor == null) {
             ChatUtils.chat("§cInquisitor out of range!")
             return
@@ -248,7 +250,7 @@ object InquisitorWaypointShare {
         if (packet !is S02PacketChat) return
         val messageComponent = packet.chatComponent
 
-        val message = LorenzUtils.stripVanillaMessage(messageComponent.formattedText)
+        val message = messageComponent.formattedText.stripHypixelMessage()
         if (packet.type.toInt() != 0) return
 
         partyInquisitorCheckerPattern.matchMatcher(message) {
@@ -289,7 +291,7 @@ object InquisitorWaypointShare {
             ChatUtils.chat("$displayName §l§efound an inquisitor at §l§c${x.toInt()} ${y.toInt()} ${z.toInt()}!")
             if (name != LorenzUtils.getPlayerName()) {
                 LorenzUtils.sendTitle("§dINQUISITOR §efrom §b$displayName", 5.seconds)
-                SoundUtils.playBeepSound()
+                McSound.BEEP.play()
             }
         }
         val inquis = SharedInquisitor(name, displayName, location, SimpleTimeMark.now())

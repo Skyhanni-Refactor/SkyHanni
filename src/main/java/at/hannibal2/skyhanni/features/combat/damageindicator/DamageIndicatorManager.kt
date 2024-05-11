@@ -22,7 +22,6 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.CollectionUtils.put
 import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.canBeSeen
 import at.hannibal2.skyhanni.utils.EntityUtils.getNameTagWith
 import at.hannibal2.skyhanni.utils.EntityUtils.hasNameTagWith
@@ -43,6 +42,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeUtils.format
 import at.hannibal2.skyhanni.utils.TimeUtils.ticks
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import com.google.gson.JsonArray
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
@@ -326,7 +326,7 @@ class DamageIndicatorManager {
     fun onTick(event: LorenzTickEvent) {
         if (!isEnabled()) return
         data = data.editCopy {
-            EntityUtils.getEntities<EntityLivingBase>().mapNotNull(::checkEntity).forEach { this put it }
+            McWorld.getEntitiesOf<EntityLivingBase>().mapNotNull(::checkEntity).forEach { this put it }
         }
     }
 

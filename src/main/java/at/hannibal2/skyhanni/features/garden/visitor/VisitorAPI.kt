@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.isInt
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemStack
 
@@ -139,8 +140,8 @@ object VisitorAPI {
         var blockedLore = listOf<String>()
         var blockReason: VisitorBlockReason? = null
 
-        fun getEntity() = EntityUtils.getEntityByID(entityId)
-        fun getNameTagEntity() = EntityUtils.getEntityByID(nameTagEntityId)
+        fun getEntity() = McWorld.getEntity(entityId)
+        fun getNameTagEntity() = McWorld.getEntity(nameTagEntityId)
 
         fun hasReward(): VisitorReward? {
             for (internalName in allRewards) {

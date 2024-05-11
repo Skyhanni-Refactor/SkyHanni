@@ -25,13 +25,13 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.TimeUtils
 import at.hannibal2.skyhanni.utils.fromJson
 import at.hannibal2.skyhanni.utils.renderables.Renderable
+import at.hannibal2.skyhanni.utils.system.OS
 import com.google.gson.JsonObject
 import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
@@ -557,7 +557,7 @@ class FarmingWeightDisplay {
             lastOpenWebsite = SimpleTimeMark.now()
             lastName = name
 
-            OSUtils.openBrowser("https://elitebot.dev/@$name/")
+            OS.openUrl("https://elitebot.dev/@$name/")
             ChatUtils.chat("Opening Farming Profile of player §b$name")
         }
 

@@ -4,10 +4,9 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiEditSign
-import at.hannibal2.skyhanni.utils.ClipboardUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.OSUtils
+import at.hannibal2.skyhanni.utils.system.OS
 import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
@@ -51,7 +50,7 @@ class BetterSignEditing {
         val copyClicked = KeyboardManager.isCopyingKeysDown()
         if (!copyLastClicked && copyClicked && gui is AccessorGuiEditSign) {
             SkyHanniMod.coroutineScope.launch {
-                ClipboardUtils.copyToClipboard(gui.tileSign.signText[gui.editLine].unformattedText)
+                OS.copyToClipboard(gui.tileSign.signText[gui.editLine].unformattedText)
             }
         }
         copyLastClicked = copyClicked
@@ -60,11 +59,7 @@ class BetterSignEditing {
     private fun checkPaste() {
         val pasteClicked = KeyboardManager.isPastingKeysDown()
         if (!pasteLastClicked && pasteClicked) {
-            SkyHanniMod.coroutineScope.launch {
-                OSUtils.readFromClipboard()?.let {
-                    LorenzUtils.addTextIntoSign(it)
-                }
-            }
+            LorenzUtils.addTextIntoSign(OS.readFromClipboard())
         }
         pasteLastClicked = pasteClicked
     }

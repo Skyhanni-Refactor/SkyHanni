@@ -10,12 +10,10 @@ import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.getSkinTexture
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import io.github.moulberry.notenoughupdates.util.SBInfo
 import net.minecraft.client.Minecraft
@@ -66,7 +64,7 @@ class HighlightVisitorsOutsideOfGarden {
     @SubscribeEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!config.highlightVisitors) return
-        EntityUtils.getEntities<EntityLivingBase>()
+        McWorld.getEntitiesOf<EntityLivingBase>()
             .filter { it !is EntityArmorStand && isVisitor(it) }
             .forEach {
                 RenderLivingEntityHelper.setEntityColor(
@@ -84,8 +82,8 @@ class HighlightVisitorsOutsideOfGarden {
             null -> false
         }
 
-    private fun isVisitorNearby(location: LorenzVec) =
-        EntityUtils.getEntitiesNearby<EntityLivingBase>(location, 2.0).any { isVisitor(it) }
+    private fun isVisitorNearby(entity: Entity) =
+        McWorld.getEntitiesNear<EntityLivingBase>(entity, 2.0).any(::isVisitor)
 
     @SubscribeEvent
     fun onClickEntity(event: PacketEvent.SendEvent) {
@@ -95,7 +93,7 @@ class HighlightVisitorsOutsideOfGarden {
         if (player.isSneaking) return
         val packet = event.packet as? C02PacketUseEntity ?: return
         val entity = packet.getEntityFromWorld(world) ?: return
-        if (isVisitor(entity) || (entity is EntityArmorStand && isVisitorNearby(entity.getLorenzVec()))) {
+        if (isVisitor(entity) || (entity is EntityArmorStand && isVisitorNearby(entity))) {
             event.isCanceled = true
             if (packet.action == C02PacketUseEntity.Action.INTERACT) {
                 ChatUtils.chatAndOpenConfig("Blocked you from interacting with a visitor. Sneak to bypass or click here to change settings.",

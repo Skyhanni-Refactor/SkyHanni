@@ -5,8 +5,9 @@ import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.TabListData
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 class TheGreatSpook {
@@ -29,7 +30,7 @@ class TheGreatSpook {
         if (isNotificationEnabled()) {
             if (displayTimer.endsWith("READY!!")) {
                 if (notificationSeconds > 0) {
-                    SoundUtils.playBeepSound()
+                    McSound.BEEP.play()
                     notificationSeconds--
                 }
             } else if (displayTimer.isNotEmpty()) {

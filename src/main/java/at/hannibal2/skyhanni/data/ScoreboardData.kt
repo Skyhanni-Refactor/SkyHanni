@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.ScoreboardChangeEvent
 import at.hannibal2.skyhanni.events.ScoreboardRawChangeEvent
 import at.hannibal2.skyhanni.utils.StringUtils.matches
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.Minecraft
 import net.minecraft.scoreboard.Score
 import net.minecraft.scoreboard.ScorePlayerTeam
@@ -89,7 +90,7 @@ class ScoreboardData {
     }
 
     private fun fetchScoreboardLines(): List<String> {
-        val scoreboard = Minecraft.getMinecraft().theWorld?.scoreboard ?: return emptyList()
+        val scoreboard = McWorld.getScoreboard() ?: return emptyList()
         val objective = scoreboard.getObjectiveInDisplaySlot(1) ?: return emptyList()
         objectiveTitle = objective.displayName
         var scores = scoreboard.getSortedScores(objective)

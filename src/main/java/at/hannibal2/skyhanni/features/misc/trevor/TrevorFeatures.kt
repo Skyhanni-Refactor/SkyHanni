@@ -18,7 +18,6 @@ import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
 import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
@@ -31,12 +30,14 @@ import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.findMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.EntityLivingBase
@@ -85,12 +86,13 @@ object TrevorFeatures {
         "Click an option: §r§a§l\\[YES]§r§7 - §r§c§l\\[NO]"
     )
 
+    private const val TRAPPER_ID: Int = 56
+    private const val BACKUP_TRAPPER_ID: Int = 17
+
     private var timeUntilNextReady = 0
     private var trapperReady: Boolean = true
     private var currentStatus = TrapperStatus.READY
     private var currentLabel = "§2Ready"
-    private var trapperID: Int = 56
-    private var backupTrapperID: Int = 17
     private var timeLastWarped = SimpleTimeMark.farPast()
     private var lastChatPrompt = ""
     private var lastChatPromptTime = SimpleTimeMark.farPast()
@@ -121,7 +123,7 @@ object TrevorFeatures {
             TrevorSolver.resetLocation()
             if (config.trapperMobDiedMessage) {
                 LorenzUtils.sendTitle("§2Mob Died ", 5.seconds)
-                SoundUtils.playBeepSound()
+                McSound.BEEP.play()
             }
             trapperReady = true
             TrevorSolver.mobLocation = TrapperMobArea.NONE
@@ -199,7 +201,7 @@ object TrevorFeatures {
         if (timeUntilNextReady <= 0 && trapperReady) {
             if (timeUntilNextReady == 0) {
                 LorenzUtils.sendTitle("§2Trapper Ready", 3.seconds)
-                SoundUtils.playBeepSound()
+                McSound.BEEP.play()
             }
             currentStatus = TrapperStatus.READY
             currentLabel = "§2Ready"
@@ -243,8 +245,8 @@ object TrevorFeatures {
     @SubscribeEvent
     fun onRenderWorld(event: LorenzRenderWorldEvent) {
         if (!onFarmingIsland()) return
-        var entityTrapper = EntityUtils.getEntityByID(trapperID)
-        if (entityTrapper !is EntityLivingBase) entityTrapper = EntityUtils.getEntityByID(backupTrapperID)
+        var entityTrapper = McWorld.getEntity(TRAPPER_ID)
+        if (entityTrapper !is EntityLivingBase) entityTrapper = McWorld.getEntity(BACKUP_TRAPPER_ID)
         if (entityTrapper is EntityLivingBase && config.trapperTalkCooldown) {
             RenderLivingEntityHelper.setEntityColorWithNoHurtTime(entityTrapper, currentStatus.color)
             { config.trapperTalkCooldown }

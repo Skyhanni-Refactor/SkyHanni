@@ -21,13 +21,13 @@ import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.between
 import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getAbilityScrolls
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemId
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemUuid
+import at.hannibal2.skyhanni.utils.StringUtils.findMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
@@ -47,6 +47,10 @@ class ItemAbilityCooldown {
     private val youBuffedYourselfPattern by patternGroup.pattern(
         "buffedyourself",
         "§aYou buffed yourself for §r§c\\+\\d+❁ Strength"
+    )
+    private val actionBarPattern by patternGroup.pattern(
+        "actionbar",
+        "-?[0-9,]+ Mana \\(§6(?<ability>.+)§b\\)"
     )
 
     private var lastAbility = ""
@@ -224,9 +228,8 @@ class ItemAbilityCooldown {
     }
 
     private fun handleOldAbilities(message: String) {
-        // TODO use regex
-        if (message.contains(" (§6") && message.contains("§b) ")) {
-            val name: String = message.between(" (§6", "§b) ")
+        actionBarPattern.findMatcher(message) {
+            val name = group("ability") ?: return
             if (name == lastAbility) return
             lastAbility = name
             for (ability in ItemAbility.entries) {

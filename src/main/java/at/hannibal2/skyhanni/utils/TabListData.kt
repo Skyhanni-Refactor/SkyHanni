@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.utils
 
-import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.TabListUpdateEvent
 import at.hannibal2.skyhanni.events.TablistFooterUpdateEvent
@@ -9,9 +8,10 @@ import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiPlayerTabOverlay
 import at.hannibal2.skyhanni.utils.ConditionalUtils.conditionalTransform
 import at.hannibal2.skyhanni.utils.ConditionalUtils.transformIf
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
+import at.hannibal2.skyhanni.utils.system.OS
 import com.google.common.collect.ComparisonChain
 import com.google.common.collect.Ordering
-import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.client.network.NetworkPlayerInfo
 import net.minecraft.world.WorldSettings
@@ -39,11 +39,8 @@ object TabListData {
             debugCache = null
             return
         }
-        SkyHanniMod.coroutineScope.launch {
-            val clipboard = OSUtils.readFromClipboard() ?: return@launch
-            debugCache = clipboard.lines()
-            ChatUtils.chat("Enabled tab list debug with your clipboard.")
-        }
+        debugCache = OS.readFromClipboard().lines()
+        ChatUtils.chat("Enabled tab list debug with your clipboard.")
     }
 
     fun copyCommand(args: Array<String>) {
@@ -69,7 +66,7 @@ object TabListData {
 
         val string = "Header:\n\n$tabHeader\n\nBody:\n\n${resultList.joinToString("\n")}\n\nFooter:\n\n$tabFooter"
 
-        OSUtils.copyToClipboard(string)
+        OS.copyToClipboard(string)
         ChatUtils.chat("Tab list copied into the clipboard!")
     }
 
@@ -100,7 +97,7 @@ object TabListData {
         tabListGuard = true
         for (info in players) {
             val name = Minecraft.getMinecraft().ingameGUI.tabList.getPlayerName(info)
-            result.add(LorenzUtils.stripVanillaMessage(name))
+            result.add(name.stripHypixelMessage())
         }
         tabListGuard = false
         return result.dropLast(1)

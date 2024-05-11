@@ -7,9 +7,10 @@ import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
@@ -105,7 +106,7 @@ object ChocolateFactoryBarnManager {
                 HypixelCommands.chocolateFactory()
             }
         )
-        SoundUtils.playBeepSound()
+        McSound.BEEP.play()
         lastBarnFullWarning = SimpleTimeMark.now()
     }
 

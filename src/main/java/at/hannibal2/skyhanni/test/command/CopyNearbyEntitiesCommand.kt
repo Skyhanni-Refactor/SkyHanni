@@ -5,8 +5,7 @@ import at.hannibal2.skyhanni.data.mob.MobData
 import at.hannibal2.skyhanni.data.mob.MobFilter.isDisplayNPC
 import at.hannibal2.skyhanni.data.mob.MobFilter.isRealPlayer
 import at.hannibal2.skyhanni.data.mob.MobFilter.isSkyBlockMob
-import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.utils.*
 import at.hannibal2.skyhanni.utils.EntityUtils.cleanName
 import at.hannibal2.skyhanni.utils.EntityUtils.getBlockInHand
 import at.hannibal2.skyhanni.utils.EntityUtils.getSkinTexture
@@ -15,11 +14,10 @@ import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
 import at.hannibal2.skyhanni.utils.ItemUtils.isEnchanted
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
-import at.hannibal2.skyhanni.utils.OSUtils
-import at.hannibal2.skyhanni.utils.toLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
@@ -45,7 +43,7 @@ object CopyNearbyEntitiesCommand {
         val resultList = mutableListOf<String>()
         var counter = 0
 
-        for (entity in EntityUtils.getAllEntities().sortedBy { it.entityId }) {
+        for (entity in McWorld.entities.sortedBy { it.entityId }) {
             val position = entity.position
             val vec = position.toLorenzVec()
             val distance = start.distance(vec)
@@ -180,7 +178,7 @@ object CopyNearbyEntitiesCommand {
 
         if (counter != 0) {
             val string = resultList.joinToString("\n")
-            OSUtils.copyToClipboard(string)
+            OS.copyToClipboard(string)
             ChatUtils.chat("$counter entities copied into the clipboard!")
         } else {
             ChatUtils.chat("No entities found in a search radius of $searchRadius!")

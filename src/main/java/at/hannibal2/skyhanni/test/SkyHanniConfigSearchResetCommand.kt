@@ -8,8 +8,8 @@ import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
+import at.hannibal2.skyhanni.utils.system.OS
 import com.google.gson.JsonElement
 import io.github.moulberry.notenoughupdates.util.Shimmy
 import kotlinx.coroutines.launch
@@ -82,13 +82,12 @@ object SkyHanniConfigSearchResetCommand {
         }
     }
 
-    private suspend fun setCommand(args: Array<String>): String {
+    private fun setCommand(args: Array<String>): String {
         if (args.size < 3) return "§c/shconfig set <config name> <json element>"
         val term = args[1]
         var rawJson = args.drop(2).joinToString(" ")
         if (rawJson == "clipboard") {
-            val readFromClipboard = OSUtils.readFromClipboard() ?: return "§cClipboard has no string!"
-            rawJson = readFromClipboard
+            rawJson = OS.readFromClipboard()
         }
 
         val root: Any = when {
@@ -180,7 +179,7 @@ object SkyHanniConfigSearchResetCommand {
             builder.append("\n")
         }
         builder.append("```")
-        OSUtils.copyToClipboard(builder.toString())
+        OS.copyToClipboard(builder.toString())
         return "§eCopied search result ($size) to clipboard."
     }
 

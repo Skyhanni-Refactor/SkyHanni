@@ -7,8 +7,7 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
-import at.hannibal2.skyhanni.utils.SoundUtils
-import at.hannibal2.skyhanni.utils.SoundUtils.createSound
+import at.hannibal2.skyhanni.utils.mc.McSound
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
@@ -27,7 +26,9 @@ object NoBitsWarning {
                 }
             )
             LorenzUtils.sendTitle("§bNo Bits Available", 5.seconds)
-            if (config.notificationSound) SoundUtils.repeatSound(100, 10, createSound("note.pling", 0.6f))
+            if (config.notificationSound) {
+                McSound.playOnRepeat("note.pling", 0.6f, 1f, 100, 10)
+            }
         }
 
         if (isChatMessageEnabled()) {

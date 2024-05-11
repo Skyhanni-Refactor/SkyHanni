@@ -11,9 +11,10 @@ import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.TimeUtils.format
 import at.hannibal2.skyhanni.utils.TimeUtils.minutes
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
@@ -131,7 +132,7 @@ object ChocolateFactoryCustomReminder {
         lastUpgradeWarning = SimpleTimeMark.now()
 
         if (configUpgradeWarnings.upgradeWarningSound) {
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
         }
         ChatUtils.chat("You can now purchase §f$targetName §ein Chocolate factory!")
     }

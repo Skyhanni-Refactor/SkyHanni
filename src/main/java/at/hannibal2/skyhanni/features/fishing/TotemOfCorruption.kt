@@ -10,7 +10,6 @@ import at.hannibal2.skyhanni.events.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.sendTitle
@@ -18,12 +17,14 @@ import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawSphereInWorld
 import at.hannibal2.skyhanni.utils.RenderUtils.drawSphereWireframeInWorld
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
-import at.hannibal2.skyhanni.utils.SoundUtils.playPlingSound
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.TimeUnit
 import at.hannibal2.skyhanni.utils.TimeUtils.format
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.util.EnumParticleTypes
@@ -117,7 +118,7 @@ class TotemOfCorruption {
     }
 
     private fun getTimeRemaining(totem: EntityArmorStand): Duration? =
-        EntityUtils.getEntitiesNearby<EntityArmorStand>(totem.getLorenzVec(), 2.0)
+        McWorld.getEntitiesNear<EntityArmorStand>(totem, 2.0)
             .firstNotNullOfOrNull { entity ->
                 timeRemainingPattern.matchMatcher(entity.name) {
                     val minutes = group("min")?.toIntOrNull() ?: 0
@@ -127,7 +128,7 @@ class TotemOfCorruption {
             }
 
     private fun getOwner(totem: EntityArmorStand): String? =
-        EntityUtils.getEntitiesNearby<EntityArmorStand>(totem.getLorenzVec(), 2.0)
+        McWorld.getEntitiesNear<EntityArmorStand>(totem, 2.0)
             .firstNotNullOfOrNull { entity ->
                 ownerPattern.matchMatcher(entity.name) {
                     group("owner")
@@ -145,15 +146,16 @@ class TotemOfCorruption {
         .filter { it.distance < config.distanceThreshold }
         .maxByOrNull { it.timeRemaining }
 
-    private fun getTotems(): List<Totem> = EntityUtils.getEntitiesNextToPlayer<EntityArmorStand>(100.0)
-        .filter { totemNamePattern.matches(it.name) }.toList()
+    private fun getTotems(): List<Totem> = McWorld.getEntitiesNearPlayer<EntityArmorStand>(100.0)
+        .filter { totemNamePattern.matches(it.name) }
+        .toList()
         .mapNotNull { totem ->
             val timeRemaining = getTimeRemaining(totem) ?: return@mapNotNull null
             val owner = getOwner(totem) ?: return@mapNotNull null
 
             val timeToWarn = config.warnWhenAboutToExpire.seconds
             if (timeToWarn > 0.seconds && timeRemaining == timeToWarn) {
-                playPlingSound()
+                McSound.PLING.play()
                 sendTitle("§c§lTotem of Corruption §eabout to expire!", 5.seconds)
             }
             Totem(totem.getLorenzVec(), timeRemaining, owner)

@@ -2,8 +2,8 @@ package at.hannibal2.skyhanni.test.command
 
 import at.hannibal2.skyhanni.data.ActionBarData
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.system.OS
 
 object CopyActionBarCommand {
     fun command(args: Array<String>) {
@@ -14,7 +14,7 @@ object CopyActionBarCommand {
         var actionBar = ActionBarData.getActionBar()
         if (noFormattingCodes) actionBar = actionBar.removeColor()
 
-        OSUtils.copyToClipboard(actionBar)
+        OS.copyToClipboard(actionBar)
         ChatUtils.chat("Action bar name copied to clipboard $status formatting codes!")
     }
 }

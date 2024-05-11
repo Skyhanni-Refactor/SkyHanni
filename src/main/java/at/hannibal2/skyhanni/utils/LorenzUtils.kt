@@ -8,7 +8,6 @@ import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
-import at.hannibal2.skyhanni.features.misc.visualwords.ModifyVisualWords
 import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiEditSign
 import at.hannibal2.skyhanni.test.TestBingo
@@ -17,8 +16,9 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.StringUtils.capAtMinecraftLength
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
 import at.hannibal2.skyhanni.utils.StringUtils.toDashlessUUID
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import com.google.gson.JsonPrimitive
 import net.minecraft.client.Minecraft
@@ -79,25 +79,12 @@ object LorenzUtils {
             val itsTime = LocalDate.now().let { it.month == Month.APRIL && it.dayOfMonth == 1 }
             val always = SkyHanniMod.feature.dev.debug.alwaysFunnyTime
             val never = SkyHanniMod.feature.dev.debug.neverFunnyTime
-            val result = (!never && (always || itsTime))
-            if (previousApril != result) {
-                ModifyVisualWords.textCache.clear()
-            }
-            previousApril = result
-            return result
+            return (!never && (always || itsTime))
         }
 
     val debug: Boolean = onHypixel && SkyHanniMod.feature.dev.debug.enabled
 
-    private var previousApril = false
-
     fun SimpleDateFormat.formatCurrentTime(): String = this.format(System.currentTimeMillis())
-
-    // TODO move to string utils
-    @Deprecated("outdated", ReplaceWith("originalMessage.stripHypixelMessage()"))
-    fun stripVanillaMessage(originalMessage: String): String {
-        return originalMessage.stripHypixelMessage()
-    }
 
     fun Double.round(decimals: Int): Double {
         var multiplier = 1.0
@@ -116,10 +103,6 @@ object LorenzUtils {
         val b = toString().length
         return if (a > b) this else result.toFloat()
     }
-
-    // TODO replace all calls with regex
-    @Deprecated("Do not use complicated string operations", ReplaceWith("Regex"))
-    fun String.between(start: String, end: String): String = this.split(start, end)[1]
 
     // TODO use derpy() on every use case
     val EntityLivingBase.baseMaxHealth: Int
@@ -261,7 +244,7 @@ object LorenzUtils {
         val onClick = {
             if ((System.currentTimeMillis() - lastButtonClicked) > 150) { // funny thing happen if I don't do that
                 onChange()
-                SoundUtils.playClickSound()
+                McSound.CLICK.play()
                 lastButtonClicked = System.currentTimeMillis()
             }
         }

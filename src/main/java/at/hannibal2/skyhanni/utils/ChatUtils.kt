@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.utils.chat.Text.hover
 import at.hannibal2.skyhanni.utils.chat.Text.onClick
 import at.hannibal2.skyhanni.utils.chat.Text.prefix
 import at.hannibal2.skyhanni.utils.chat.Text.url
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.IChatComponent
@@ -197,7 +198,7 @@ object ChatUtils {
             this.url = url
             this.hover = "$prefixColor$hover".asComponent()
         })
-        if (autoOpen) OSUtils.openBrowser(url)
+        if (autoOpen) OS.openUrl(url)
     }
 
     /**

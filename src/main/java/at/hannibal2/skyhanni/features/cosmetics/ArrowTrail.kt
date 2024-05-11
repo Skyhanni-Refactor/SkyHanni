@@ -13,6 +13,8 @@ import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.getPrevLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.projectile.EntityArrow
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -39,9 +41,9 @@ class ArrowTrail {
         listAllArrow.removeIf { it.deathTime.isInPast() }
         listYourArrow.removeIf { it.deathTime.isInPast() }
 
-        EntityUtils.getEntities<EntityArrow>().forEach {
+        McWorld.getEntitiesOf<EntityArrow>().forEach {
             val line = Line(it.getPrevLorenzVec(), it.getLorenzVec(), deathTime)
-            if (it.shootingEntity == Minecraft.getMinecraft().thePlayer) {
+            if (it.shootingEntity == McPlayer.player) {
                 listYourArrow.add(line)
             } else {
                 listAllArrow.add(line)

@@ -21,10 +21,8 @@ import at.hannibal2.skyhanni.events.MinionOpenEvent
 import at.hannibal2.skyhanni.events.MinionStorageOpenEvent
 import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockStateAt
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -47,6 +45,8 @@ import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.TimeUtils
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockStateAt
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.client.Minecraft
@@ -203,7 +203,7 @@ class MinionFeatures {
 
         val removedEntities = mutableListOf<LorenzVec>()
         for (location in minions.keys) {
-            val entitiesNearby = EntityUtils.getEntities<EntityArmorStand>().map { it.distanceTo(location) }
+            val entitiesNearby = McWorld.getEntitiesOf<EntityArmorStand>().map { it.distanceTo(location) }
             if (!entitiesNearby.any { it == 0.0 }) {
                 removedEntities.add(location)
             }

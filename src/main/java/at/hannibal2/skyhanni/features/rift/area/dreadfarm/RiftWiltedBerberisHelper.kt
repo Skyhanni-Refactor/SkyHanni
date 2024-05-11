@@ -4,7 +4,6 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.ReceiveParticleEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockAt
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -15,6 +14,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
 import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
 import net.minecraft.util.EnumParticleTypes

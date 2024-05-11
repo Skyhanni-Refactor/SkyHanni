@@ -9,7 +9,6 @@ import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.sorted
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
@@ -18,6 +17,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SkyBlockTime
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -32,6 +32,8 @@ class KingTalismanHelper {
         "mining.kingtalisman.king",
         "§6§lKing (?<name>.*)"
     )
+
+    private val KINGS_CHAIR_POS = LorenzVec(129.6, 196.0, 196.7)
 
     companion object {
 
@@ -91,7 +93,7 @@ class KingTalismanHelper {
     }
 
     private fun checkOffset() {
-        val king = EntityUtils.getEntitiesNearby<EntityArmorStand>(LorenzVec(129.6, 196.0, 196.7), 2.0)
+        val king = McWorld.getEntitiesNear<EntityArmorStand>(KINGS_CHAIR_POS, 2.0)
             .filter { it.name.startsWith("§6§lKing ") }.firstOrNull() ?: return
         val foundKing = kingPattern.matchMatcher(king.name) {
             group("name")

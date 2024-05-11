@@ -9,9 +9,10 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.between
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
+import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -19,15 +20,20 @@ class RngMeterInventory {
 
     private val config get() = SkyHanniMod.feature.inventory.rngMeter
 
+    private val meterPattern by RepoPattern.pattern(
+        "inventory.rngmeter",
+        "Catacombs (?<floor>\\w+)",
+    )
+
     @SubscribeEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
+        if (!config.floorName) return
         val chestName = InventoryUtils.openInventoryName()
-
+        if (chestName != "Catacombs RNG Meter") return
         val stack = event.stack
-        if (config.floorName && chestName == "Catacombs RNG Meter") {
-            if (stack.name.removeColor() == "RNG Meter") {
-                event.stackTip = stack.getLore()[0].between("(", ")")
-            }
+        if (stack.name.removeColor() != "RNG Meter") return
+        meterPattern.matchMatcher(stack.getLore()[0]) {
+            event.stackTip = group("floor")
         }
     }
 

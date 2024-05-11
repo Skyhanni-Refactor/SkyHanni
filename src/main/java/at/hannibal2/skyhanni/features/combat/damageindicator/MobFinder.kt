@@ -18,6 +18,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLiving
@@ -617,7 +618,7 @@ class MobFinder {
     private fun findGuardians() {
         guardians.clear()
 
-        for (entity in EntityUtils.getEntities<EntityGuardian>()) {
+        for (entity in McWorld.getEntitiesOf<EntityGuardian>()) {
             // F3
             if (entity.hasMaxHealth(1_000_000, true) || entity.hasMaxHealth(1_200_000, true)) {
                 guardians.add(entity)

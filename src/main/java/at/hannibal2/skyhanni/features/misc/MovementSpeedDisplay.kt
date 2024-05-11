@@ -3,12 +3,12 @@ package at.hannibal2.skyhanni.features.misc
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockAt
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent

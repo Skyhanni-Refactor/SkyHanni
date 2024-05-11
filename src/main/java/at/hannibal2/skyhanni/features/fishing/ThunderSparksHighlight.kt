@@ -7,16 +7,16 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockAt
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColorInt
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
-import at.hannibal2.skyhanni.utils.SpecialColour
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.init.Blocks
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -33,7 +33,7 @@ class ThunderSparksHighlight {
     fun onTick(event: LorenzTickEvent) {
         if (!isEnabled()) return
 
-        EntityUtils.getEntities<EntityArmorStand>().filter {
+        McWorld.getEntitiesOf<EntityArmorStand>().filter {
             it !in sparks && it.hasSkullTexture(texture)
         }.forEach { sparks.add(it) }
     }
@@ -43,7 +43,7 @@ class ThunderSparksHighlight {
         if (!isEnabled()) return
 
         val special = config.color
-        val color = Color(SpecialColour.specialToChromaRGB(special), true)
+        val color = Color(special.toChromaColorInt(), true)
 
         val playerLocation = LocationUtils.playerLocation()
         for (spark in sparks) {

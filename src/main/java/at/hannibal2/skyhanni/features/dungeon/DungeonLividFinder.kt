@@ -7,7 +7,6 @@ import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockStateAt
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceSqToPlayer
@@ -18,6 +17,8 @@ import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockStateAt
 import net.minecraft.block.BlockStainedGlass
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
@@ -55,7 +56,7 @@ object DungeonLividFinder {
         val color = color ?: return
         val chatColor = color.getChatColor()
 
-        lividArmorStand = EntityUtils.getEntities<EntityArmorStand>()
+        lividArmorStand = McWorld.getEntitiesOf<EntityArmorStand>()
             .firstOrNull { it.name.startsWith("${chatColor}﴾ ${chatColor}§lLivid") }
         val lividArmorStand = lividArmorStand ?: return
 

@@ -6,12 +6,12 @@ import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.misc.MarkedPlayerManager
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -60,7 +60,7 @@ class PlayerDeathMessages {
 
     private fun checkOtherPlayers() {
         val location = LocationUtils.playerLocation()
-        for (otherPlayer in EntityUtils.getEntities<EntityOtherPlayerMP>()
+        for (otherPlayer in McWorld.getEntitiesOf<EntityOtherPlayerMP>()
             .filter { it.getLorenzVec().distance(location) < 25 }) {
             lastTimePlayerSeen[otherPlayer.name] = System.currentTimeMillis()
         }

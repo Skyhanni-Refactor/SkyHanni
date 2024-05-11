@@ -7,7 +7,7 @@ import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.events.MessageSendToServerEvent
 import at.hannibal2.skyhanni.features.misc.limbo.LimboTimeTracker
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object PartyCommands {
@@ -94,7 +94,7 @@ object PartyCommands {
             } else {
                 emptyList<String>()
             }
-            val allOnLobby = EntityUtils.getPlayerEntities().map { it.name }
+            val allOnLobby = McWorld.players.map { it.name }
             return friends + getPartyCommands() + allOnLobby
         }
         return null

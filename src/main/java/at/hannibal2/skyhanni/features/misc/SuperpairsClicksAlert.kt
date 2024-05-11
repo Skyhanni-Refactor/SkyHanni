@@ -5,8 +5,9 @@ import at.hannibal2.skyhanni.events.InventoryOpenEvent
 import at.hannibal2.skyhanni.events.InventoryUpdatedEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 class SuperpairsClicksAlert {
@@ -54,7 +55,7 @@ class SuperpairsClicksAlert {
                 .filter { it.key < 45 }
                 .any { it.value.stackSize > roundsNeeded })
         ) {
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
             ChatUtils.chat("You have reached the maximum possible clicks!")
             roundsNeeded = -1
         }

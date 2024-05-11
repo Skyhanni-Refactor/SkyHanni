@@ -10,8 +10,8 @@ import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -52,7 +52,7 @@ class MarkedPlayerManager {
         }
 
         private fun findPlayers() {
-            for (entity in EntityUtils.getEntities<EntityOtherPlayerMP>()) {
+            for (entity in McWorld.getEntitiesOf<EntityOtherPlayerMP>()) {
                 if (entity in markedPlayers.values) continue
 
                 val name = entity.name.lowercase()

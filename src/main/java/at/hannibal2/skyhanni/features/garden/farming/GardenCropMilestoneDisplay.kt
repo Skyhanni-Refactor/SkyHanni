@@ -29,9 +29,10 @@ import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.TimeUnit
 import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -260,7 +261,7 @@ object GardenCropMilestoneDisplay {
 
         if (System.currentTimeMillis() > lastPlaySoundTime + 1_000) {
             lastPlaySoundTime = System.currentTimeMillis()
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
         }
         if (!needsInventory) {
             LorenzUtils.sendTitle(title, 1.5.seconds)

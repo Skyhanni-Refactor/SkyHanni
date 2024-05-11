@@ -15,11 +15,11 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.drainForEach
 import at.hannibal2.skyhanni.utils.CollectionUtils.drainTo
 import at.hannibal2.skyhanni.utils.CollectionUtils.put
 import at.hannibal2.skyhanni.utils.CollectionUtils.refreshReference
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.MobUtils
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
@@ -96,7 +96,7 @@ class MobDetection {
         MobData.previousEntityLiving.clear()
         MobData.previousEntityLiving.addAll(MobData.currentEntityLiving)
         MobData.currentEntityLiving.clear()
-        MobData.currentEntityLiving.addAll(EntityUtils.getEntities<EntityLivingBase>()
+        MobData.currentEntityLiving.addAll(McWorld.getEntitiesOf<EntityLivingBase>()
             .filter { it !is EntityArmorStand && it !is EntityPlayerSP })
 
         if (forceReset) {
@@ -179,14 +179,14 @@ class MobDetection {
     private fun handleMobsFromPacket() = entityFromPacket.drainForEach { (type, id) ->
         when (type) {
             EntityPacketType.SPIRIT_BAT -> {
-                val entity = EntityUtils.getEntityByID(id) as? EntityBat ?: return@drainForEach
+                val entity = McWorld.getEntity(id) as? EntityBat ?: return@drainForEach
                 if (MobData.entityToMob[entity] != null) return@drainForEach
                 removeRetry(entity)
                 MobEvent.Spawn.Projectile(MobFactories.projectile(entity, "Spirit Scepter Bat")).postAndCatch()
             }
 
             EntityPacketType.VILLAGER -> {
-                val entity = EntityUtils.getEntityByID(id) as? EntityVillager ?: return@drainForEach
+                val entity = McWorld.getEntity(id) as? EntityVillager ?: return@drainForEach
                 val mob = MobData.entityToMob[entity]
                 if (mob != null && mob.mobType == Mob.Type.DISPLAY_NPC) {
                     MobEvent.DeSpawn.DisplayNPC(mob)
@@ -202,7 +202,7 @@ class MobDetection {
             }
 
             EntityPacketType.CREEPER_VAIL -> {
-                val entity = EntityUtils.getEntityByID(id) as? EntityCreeper ?: return@drainForEach
+                val entity = McWorld.getEntity(id) as? EntityCreeper ?: return@drainForEach
                 if (MobData.entityToMob[entity] != null) return@drainForEach
                 if (!entity.powered) return@drainForEach
                 removeRetry(entity)
@@ -299,7 +299,7 @@ class MobDetection {
     }
 
     private fun handleEntityUpdate(entityID: Int): Boolean {
-        val entity = EntityUtils.getEntityByID(entityID) as? EntityLivingBase ?: return false
+        val entity = McWorld.getEntity(entityID) as? EntityLivingBase ?: return false
         getRetry(entity)?.apply { this.entity = entity }
         MobData.currentEntityLiving.refreshReference(entity)
         MobData.previousEntityLiving.refreshReference(entity)

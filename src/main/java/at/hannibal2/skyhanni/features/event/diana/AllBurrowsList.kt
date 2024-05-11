@@ -8,8 +8,8 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawColor
+import at.hannibal2.skyhanni.utils.system.OS
 import kotlinx.coroutines.launch
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -41,13 +41,13 @@ object AllBurrowsList {
     fun copyToClipboard() {
         val burrowLocations = burrowLocations ?: return
         val list = burrowLocations.map { it.printWithAccuracy(0, ":") }
-        OSUtils.copyToClipboard(list.joinToString(";"))
+        OS.copyToClipboard(list.joinToString(";"))
         ChatUtils.chat("Saved all ${list.size} burrow locations to clipboard.")
     }
 
     fun addFromClipboard() {
         SkyHanniMod.coroutineScope.launch {
-            val text = OSUtils.readFromClipboard() ?: return@launch
+            val text = OS.readFromClipboard()
             val burrowLocations = burrowLocations ?: return@launch
 
             var new = 0

@@ -4,14 +4,14 @@ import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
-import at.hannibal2.skyhanni.utils.BlockUtils
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockStateAt
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockStateAt
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 class RiftAgaricusCap {
@@ -31,7 +31,7 @@ class RiftAgaricusCap {
 
     private fun updateLocation(): LorenzVec? {
         if (InventoryUtils.getItemInHand()?.getInternalName() != RiftAPI.farmingTool) return null
-        val currentLocation = BlockUtils.getBlockLookingAt() ?: return null
+        val currentLocation = McPlayer.blockLookingAt ?: return null
 
         when (currentLocation.getBlockStateAt().toString()) {
             "minecraft:brown_mushroom" -> {

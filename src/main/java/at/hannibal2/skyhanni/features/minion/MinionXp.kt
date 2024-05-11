@@ -19,8 +19,8 @@ import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.PrimitiveItemStack
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.block.BlockChest
-import net.minecraft.client.Minecraft
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -133,11 +133,7 @@ class MinionXp {
             LorenzVec(-1, 0, 0), LorenzVec(0, 0, -1)
         )
 
-        return positionsToCheck.any { position ->
-            val pos = (minionPosition + position).toBlockPos()
-            val block = Minecraft.getMinecraft().theWorld.getBlockState(pos).block
-            block is BlockChest
-        }
+        return positionsToCheck.any { pos -> McWorld.getBlock(minionPosition + pos) is BlockChest }
     }
 
     @SubscribeEvent

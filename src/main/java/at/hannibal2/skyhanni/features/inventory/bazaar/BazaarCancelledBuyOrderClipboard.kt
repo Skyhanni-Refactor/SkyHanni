@@ -10,11 +10,11 @@ import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 class BazaarCancelledBuyOrderClipboard {
@@ -76,7 +76,7 @@ class BazaarCancelledBuyOrderClipboard {
         val latestAmount = latestAmount ?: return
         event.blockedReason = "bazaar cancelled buy order clipboard"
         ChatUtils.chat("Bazaar buy order cancelled. ${latestAmount.addSeparators()} saved to clipboard. ($coins coins)")
-        OSUtils.copyToClipboard(latestAmount.toString())
+        OS.copyToClipboard(latestAmount.toString())
         this.latestAmount = null
     }
 

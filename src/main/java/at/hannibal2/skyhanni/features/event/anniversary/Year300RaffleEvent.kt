@@ -9,9 +9,9 @@ import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.RenderUtils.renderSingleLineWithItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SkyBlockTime
-import at.hannibal2.skyhanni.utils.SoundUtils
-import at.hannibal2.skyhanni.utils.SoundUtils.playSound
 import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
@@ -61,7 +61,7 @@ object Year300RaffleEvent {
             20.minutes - p
         }
         if (p.isFinite() && timeLeft < 1.seconds && lastTimeAlerted.passedSince() > 5.minutes && config.enableActiveAlert) {
-            SoundUtils.centuryActiveTimerAlert.playSound()
+            McSound.CENTURY_ACTIVE_TIMER_ALERT.play()
             lastTimeAlerted = SimpleTimeMark.now()
         }
         overlay = listOf(

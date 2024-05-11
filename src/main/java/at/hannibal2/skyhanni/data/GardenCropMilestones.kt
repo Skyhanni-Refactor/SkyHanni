@@ -9,9 +9,8 @@ import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.ChatUtils.chat
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
-import at.hannibal2.skyhanni.utils.SoundUtils
-import at.hannibal2.skyhanni.utils.SoundUtils.playSound
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
+import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -86,7 +85,7 @@ object GardenCropMilestones {
         if (goalReached)
             chat("§e§lYou have reached your milestone goal of §b§l${customGoalLevel} §e§lin the §b§l${crop.cropName} §e§lcrop!", false)
 
-        SoundUtils.createSound("random.levelup", 1f, 1f).playSound()
+        McSound.play("random.levelup", 1f, 1f)
     }
 
     var cropMilestoneData: Map<CropType, List<Int>> = emptyMap()

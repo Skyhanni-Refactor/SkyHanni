@@ -9,12 +9,12 @@ import at.hannibal2.skyhanni.features.combat.damageindicator.BossType
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -30,7 +30,7 @@ class AshfangBlazingSouls {
     fun onTick(event: LorenzTickEvent) {
         if (!isEnabled()) return
 
-        EntityUtils.getEntities<EntityArmorStand>()
+        McWorld.getEntitiesOf<EntityArmorStand>()
             .filter { it !in souls && it.hasSkullTexture(texture) }
             .forEach { souls.add(it) }
     }

@@ -4,10 +4,10 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.ReflectionUtils.removeFinal
+import at.hannibal2.skyhanni.utils.mc.McClient
 import moe.nea.hotswapagentforge.forge.ClassDefinitionEvent
 import moe.nea.hotswapagentforge.forge.HotswapEvent
 import moe.nea.hotswapagentforge.forge.HotswapFinishedEvent
-import net.minecraft.client.Minecraft
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -22,7 +22,7 @@ class HotswapSupportImpl : HotswapSupportHandle {
     fun onHotswapClass(event: ClassDefinitionEvent.Redefinition) {
         val instance = SkyHanniMod.modules.find { it.javaClass.name == event.fullyQualifiedName } ?: return
         val primaryConstructor = runCatching { instance.javaClass.getDeclaredConstructor() }.getOrNull()
-        Minecraft.getMinecraft().addScheduledTask {
+        McClient.schedule {
             ChatUtils.chat("Refreshing event subscriptions for module $instance!")
             MinecraftForge.EVENT_BUS.unregister(instance)
             if (primaryConstructor == null) {

@@ -23,6 +23,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.TimeUtils
 import at.hannibal2.skyhanni.utils.TimeUtils.format
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -111,7 +112,7 @@ object RiftBloodEffigies {
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
 
-        for (entity in EntityUtils.getEntitiesNearby<EntityArmorStand>(LocationUtils.playerLocation(), 6.0)) {
+        for (entity in McWorld.getEntitiesNearPlayer<EntityArmorStand>(6.0)) {
             effigiesTimerPattern.matchMatcher(entity.name) {
                 val nearest = locations.minByOrNull { it.distanceSq(entity.getLorenzVec()) } ?: return
                 val index = locations.indexOf(nearest)

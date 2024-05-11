@@ -8,8 +8,7 @@ import at.hannibal2.skyhanni.features.combat.damageindicator.BossType
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
-import at.hannibal2.skyhanni.utils.SoundUtils.playSound
+import at.hannibal2.skyhanni.utils.mc.McSound
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
@@ -30,7 +29,7 @@ class BlazeSlayerFirePitsWarning {
         if (!event.isMod(10)) return
 
         if (lastFirePitsWarning.passedSince() < 2.seconds) {
-            SoundUtils.createSound("random.orb", 0.8f).playSound()
+            McSound.play("random.orb", 0.8f, 1f)
         }
     }
 

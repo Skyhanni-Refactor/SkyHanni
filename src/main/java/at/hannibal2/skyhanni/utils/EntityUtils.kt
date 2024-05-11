@@ -5,14 +5,10 @@ import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
 import at.hannibal2.skyhanni.utils.LocationUtils.canBeSeen
-import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
-import at.hannibal2.skyhanni.utils.LocationUtils.distanceToIgnoreY
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.LorenzUtils.derpy
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import net.minecraft.block.state.IBlockState
-import net.minecraft.client.Minecraft
-import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
@@ -22,7 +18,6 @@ import net.minecraft.item.ItemStack
 import net.minecraft.potion.Potion
 import net.minecraft.util.AxisAlignedBB
 import net.minecraftforge.client.event.RenderLivingEvent
-import net.minecraftforge.fml.common.eventhandler.Event
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object EntityUtils {
@@ -35,16 +30,6 @@ object EntityUtils {
         debugWrongEntity: Boolean = false,
     ): Boolean {
         return getNameTagWith(y, contains, debugRightEntity, inaccuracy, debugWrongEntity) != null
-    }
-
-    fun getPlayerEntities(): MutableList<EntityOtherPlayerMP> {
-        val list = mutableListOf<EntityOtherPlayerMP>()
-        for (entity in Minecraft.getMinecraft().theWorld.playerEntities) {
-            if (!entity.isNPC() && entity is EntityOtherPlayerMP) {
-                list.add(entity)
-            }
-        }
-        return list
     }
 
     fun EntityLivingBase.getAllNameTagsInRadiusWith(
@@ -128,15 +113,6 @@ object EntityUtils {
             ?.value
     }
 
-    inline fun <reified T : Entity> getEntitiesNextToPlayer(radius: Double): Sequence<T> =
-        getEntitiesNearby<T>(LocationUtils.playerLocation(), radius)
-
-    inline fun <reified T : Entity> getEntitiesNearby(location: LorenzVec, radius: Double): Sequence<T> =
-        getEntities<T>().filter { it.distanceTo(location) < radius }
-
-    inline fun <reified T : Entity> getEntitiesNearbyIgnoreY(location: LorenzVec, radius: Double): Sequence<T> =
-        getEntities<T>().filter { it.distanceToIgnoreY(location) < radius }
-
     fun EntityLivingBase.isAtFullHealth() = baseMaxHealth == health.toInt()
 
     fun EntityArmorStand.hasSkullTexture(skin: String): Boolean {
@@ -153,21 +129,13 @@ object EntityUtils {
 
     fun EntityEnderman.getBlockInHand(): IBlockState? = heldBlockState
 
-    inline fun <reified R : Entity> getEntities(): Sequence<R> = getAllEntities().filterIsInstance<R>()
-
-    fun getAllEntities(): Sequence<Entity> = Minecraft.getMinecraft()?.theWorld?.loadedEntityList?.let {
-        if (Minecraft.getMinecraft().isCallingFromMinecraftThread) it else it.toMutableList()
-    }?.asSequence()?.filterNotNull() ?: emptySequence()
-
     fun Entity.canBeSeen(radius: Double = 150.0) = getLorenzVec().add(y = 0.5).canBeSeen(radius)
-
-    fun getEntityByID(entityId: Int) = Minecraft.getMinecraft()?.thePlayer?.entityWorld?.getEntityByID(entityId)
 
     @SubscribeEvent
     fun onEntityRenderPre(event: RenderLivingEvent.Pre<*>) {
         val shEvent = SkyHanniRenderEntityEvent.Pre(event.entity, event.renderer, event.x, event.y, event.z)
         if (shEvent.postAndCatch()) {
-            event.cancel()
+            event.isCanceled = true
         }
     }
 
@@ -180,7 +148,7 @@ object EntityUtils {
     fun onEntityRenderSpecialsPre(event: RenderLivingEvent.Specials.Pre<*>) {
         val shEvent = SkyHanniRenderEntityEvent.Specials.Pre(event.entity, event.renderer, event.x, event.y, event.z)
         if (shEvent.postAndCatch()) {
-            event.cancel()
+            event.isCanceled = true
         }
     }
 
@@ -194,8 +162,4 @@ object EntityUtils {
     fun EntityLivingBase.isRunicAndCorrupt() = baseMaxHealth == health.toInt().derpy() * 3 * 4
 
     fun Entity.cleanName() = this.name.removeColor()
-}
-
-private fun Event.cancel() {
-    isCanceled = true
 }

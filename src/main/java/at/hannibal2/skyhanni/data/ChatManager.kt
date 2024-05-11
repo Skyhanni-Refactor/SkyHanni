@@ -8,11 +8,13 @@ import at.hannibal2.skyhanni.features.chat.ChatFilterGui
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.IdentityCharacteristics
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.ReflectionUtils.getClassInstance
 import at.hannibal2.skyhanni.utils.ReflectionUtils.getModContainer
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
+import at.hannibal2.skyhanni.utils.chat.Text.send
+import at.hannibal2.skyhanni.utils.mc.McFont
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ChatLine
 import net.minecraft.client.gui.GuiNewChat
@@ -115,7 +117,7 @@ object ChatManager {
         if (event.type.toInt() == 2) return
 
         val original = event.message
-        val message = LorenzUtils.stripVanillaMessage(original.formattedText)
+        val message = original.formattedText.stripHypixelMessage()
 
         if (message.startsWith("§f{\"server\":\"")) {
             HypixelData.checkForLocraw(message)
@@ -152,9 +154,7 @@ object ChatManager {
         // TODO: Handle this with ChatManager.retractMessage or some other way for logging and /shchathistory purposes?
         if (chatEvent.chatLineId != 0) {
             event.isCanceled = true
-            Minecraft.getMinecraft().ingameGUI.chatGUI.printChatMessageWithOptionalDeletion(
-                event.message, chatEvent.chatLineId
-            )
+            event.message.send(chatEvent.chatLineId)
         }
     }
 

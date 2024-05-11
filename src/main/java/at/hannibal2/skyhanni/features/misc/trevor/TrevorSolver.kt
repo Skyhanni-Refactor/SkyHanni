@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.misc.trevor
 
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.canBeSeen
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
@@ -8,6 +7,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.LorenzUtils.derpy
 import at.hannibal2.skyhanni.utils.LorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
@@ -49,7 +49,7 @@ object TrevorSolver {
     fun findMob() {
         var canSee = false
         Minecraft.getMinecraft().theWorld ?: return
-        for (entity in EntityUtils.getAllEntities()) {
+        for (entity in McWorld.entities) {
             if (entity is EntityOtherPlayerMP) continue
             val name = entity.name
             val entityHealth = if (entity is EntityLivingBase) entity.baseMaxHealth.derpy() else 0

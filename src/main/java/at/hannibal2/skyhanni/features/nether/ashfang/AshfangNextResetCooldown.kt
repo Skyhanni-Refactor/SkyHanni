@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.TimeUnit
 import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -24,7 +25,7 @@ class AshfangNextResetCooldown {
     fun onTick(event: LorenzTickEvent) {
         if (!isEnabled()) return
 
-        if (EntityUtils.getEntities<EntityArmorStand>().any {
+        if (McWorld.getEntitiesOf<EntityArmorStand>().any {
                 it.posY > 145 && (it.name.contains("§c§9Ashfang Acolyte§r") || it.name.contains("§c§cAshfang Underling§r"))
             }) {
             spawnTime = System.currentTimeMillis()

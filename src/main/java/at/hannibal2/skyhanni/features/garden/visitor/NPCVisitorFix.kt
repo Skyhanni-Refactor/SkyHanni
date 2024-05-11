@@ -6,13 +6,13 @@ import at.hannibal2.skyhanni.events.garden.visitor.VisitorOpenEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -92,7 +92,7 @@ object NPCVisitorFix {
 
     private fun findNametags(visitorName: String): MutableList<EntityArmorStand> {
         val foundVisitorNameTags = mutableListOf<EntityArmorStand>()
-        for (entity in EntityUtils.getEntities<EntityArmorStand>()) {
+        for (entity in McWorld.getEntitiesOf<EntityArmorStand>()) {
             if (entity.name.removeColor() == visitorName) {
                 foundVisitorNameTags.add(entity)
             }

@@ -7,12 +7,13 @@ import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI.isBait
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityItem
 import net.minecraft.entity.projectile.EntityFishHook
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -66,7 +67,7 @@ class FishingBaitWarnings {
     }
 
     private fun detectBait(bobber: EntityFishHook): String? {
-        for (entity in EntityUtils.getEntitiesNearby<EntityItem>(bobber.getLorenzVec(), 6.0)) {
+        for (entity in McWorld.getEntitiesNear<EntityItem>(bobber.getLorenzVec(), 6.0)) {
             val itemStack = entity.entityItem ?: continue
             if (!itemStack.isBait()) continue
             val ticksExisted = entity.ticksExisted
@@ -81,13 +82,13 @@ class FishingBaitWarnings {
     }
 
     private fun showBaitChangeWarning(before: String, after: String) {
-        SoundUtils.playClickSound()
+        McSound.CLICK.play()
         LorenzUtils.sendTitle("§eBait changed!", 2.seconds)
         ChatUtils.chat("Fishing Bait changed: $before §e-> $after")
     }
 
     private fun showNoBaitWarning() {
-        SoundUtils.playErrorSound()
+        McSound.ERROR.play()
         LorenzUtils.sendTitle("§cNo bait is used!", 2.seconds)
         ChatUtils.chat("You're not using any fishing baits!")
     }

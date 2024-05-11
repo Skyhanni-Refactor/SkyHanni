@@ -51,7 +51,6 @@ import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.data.ScreenData
 import at.hannibal2.skyhanni.data.SkillExperience
 import at.hannibal2.skyhanni.data.SlayerAPI
-import at.hannibal2.skyhanni.data.TitleData
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.TrackerManager
 import at.hannibal2.skyhanni.data.bazaar.HypixelBazaarFetcher
@@ -513,10 +512,10 @@ class SkyHanniMod {
         loadModule(ItemClickData())
 //        loadModule(Year300RaffleEvent)
         loadModule(MinecraftData)
-        loadModule(TitleManager())
+        loadModule(TitleManager)
         loadModule(ItemTipHelper())
         loadModule(RenderLivingEntityHelper())
-        loadModule(SkillExperience())
+        loadModule(SkillExperience)
         loadModule(OtherInventoryData)
         loadModule(TabListData)
         loadModule(RenderData())
@@ -538,7 +537,6 @@ class SkyHanniMod {
         loadModule(GardenCropSpeed)
         loadModule(GardenWarpCommands())
         loadModule(ProfileStorageData)
-        loadModule(TitleData())
         loadModule(BlockData())
         loadModule(DefaultConfigFeatures)
         loadModule(EntityOutlineRenderer)
@@ -612,7 +610,7 @@ class SkyHanniMod {
         loadModule(BetterWikiFromMenus())
         loadModule(DamageIndicatorManager())
         loadModule(ItemAbilityCooldown())
-        loadModule(DungeonHighlightClickedBlocks())
+        loadModule(DungeonHighlightClickedBlocks)
         loadModule(DungeonMilestonesDisplay)
         loadModule(DungeonDeathCounter())
         loadModule(DungeonCleanEnd())
@@ -832,7 +830,7 @@ class SkyHanniMod {
         loadModule(GhostCounter)
         loadModule(RiftTimer())
         loadModule(HighlightRiftGuide())
-        loadModule(ShyCruxWarnings())
+        loadModule(ShyCruxWarnings)
         loadModule(RiftLarva())
         loadModule(VoltHighlighter())
         loadModule(RiftOdonata())

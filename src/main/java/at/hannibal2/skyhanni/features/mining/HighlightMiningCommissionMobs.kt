@@ -8,11 +8,11 @@ import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.TabListUpdateEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.hasMaxHealth
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.monster.EntityEndermite
 import net.minecraft.entity.monster.EntityIronGolem
@@ -55,7 +55,7 @@ class HighlightMiningCommissionMobs {
         if (!isEnabled()) return
         if (!event.repeatSeconds(2)) return
 
-        val entities = EntityUtils.getEntities<EntityLivingBase>()
+        val entities = McWorld.getEntitiesOf<EntityLivingBase>()
         for ((type, entity) in active.flatMap { type -> entities.map { type to it } }) {
             if (type.isMob(entity)) {
                 RenderLivingEntityHelper.setEntityColorWithNoHurtTime(

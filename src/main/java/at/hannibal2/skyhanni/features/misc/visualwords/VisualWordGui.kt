@@ -8,10 +8,11 @@ import at.hannibal2.skyhanni.utils.ChatUtils.chat
 import at.hannibal2.skyhanni.utils.GuiRenderUtils
 import at.hannibal2.skyhanni.utils.ItemUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager
-import at.hannibal2.skyhanni.utils.OSUtils
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.convertToFormatted
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.system.OS
 import com.google.gson.JsonObject
 import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
@@ -155,23 +156,23 @@ open class VisualWordGui : GuiScreen() {
                     lastClickedHeight = 0
                     phrase.enabled = !phrase.enabled
                     saveChanges()
-                    SoundUtils.playClickSound()
+                    McSound.CLICK.play()
                 } else if (isPointInLastClicked(guiLeft + 295, top, 16, 16) && index != 0) {
                     lastClickedWidth = 0
                     lastClickedHeight = 0
-                    SoundUtils.playClickSound()
+                    McSound.CLICK.play()
                     changedIndex = index
                     changedAction = ActionType.UP
                 } else if (isPointInLastClicked(guiLeft + 315, top, 16, 16) && index != modifiedWords.size - 1) {
                     lastClickedWidth = 0
                     lastClickedHeight = 0
-                    SoundUtils.playClickSound()
+                    McSound.CLICK.play()
                     changedIndex = index
                     changedAction = ActionType.DOWN
                 } else if (isPointInLastClicked(guiLeft, adjustedY + 30 * index, sizeX, 30)) {
                     lastClickedWidth = 0
                     lastClickedHeight = 0
-                    SoundUtils.playClickSound()
+                    McSound.CLICK.play()
                     currentlyEditing = true
                     currentIndex = index
                 }
@@ -389,7 +390,7 @@ open class VisualWordGui : GuiScreen() {
         var y = guiTop + 140
         if (currentlyEditing) {
             if (isPointInMousePos(x - 30, y - 10, 60, 20)) {
-                SoundUtils.playClickSound()
+                McSound.CLICK.play()
                 currentlyEditing = false
                 modifiedWords.removeAt(currentIndex)
                 currentIndex = -1
@@ -400,26 +401,26 @@ open class VisualWordGui : GuiScreen() {
                 x -= 100
                 y += 30
                 if (isPointInMousePos(x - 30, y - 10, 60, 20)) {
-                    SoundUtils.playClickSound()
+                    McSound.CLICK.play()
                     modifiedWords[currentIndex].enabled = !modifiedWords[currentIndex].enabled
                     saveChanges()
                 }
                 x += 200
                 if (isPointInMousePos(x - 30, y - 10, 60, 20)) {
-                    SoundUtils.playClickSound()
+                    McSound.CLICK.play()
                     modifiedWords[currentIndex].setCaseSensitive(!modifiedWords[currentIndex].isCaseSensitive())
                     saveChanges()
                 } else if (isPointInMousePos(guiLeft, guiTop + 35, sizeX, 30)) {
-                    SoundUtils.playClickSound()
+                    McSound.CLICK.play()
                     currentTextBox = SelectedTextBox.PHRASE
                     currentText = modifiedWords[currentIndex].phrase
                 } else if (isPointInMousePos(guiLeft, guiTop + 90, sizeX, 30)) {
-                    SoundUtils.playClickSound()
+                    McSound.CLICK.play()
                     currentTextBox = SelectedTextBox.REPLACEMENT
                     currentText = modifiedWords[currentIndex].replacement
                 } else {
                     if (currentTextBox != SelectedTextBox.NONE) {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentTextBox = SelectedTextBox.NONE
                     }
                 }
@@ -428,7 +429,7 @@ open class VisualWordGui : GuiScreen() {
         y = guiTop + 170
         x = guiLeft + 180
         if (isPointInMousePos(x - 30, y - 10, 60, 20)) {
-            SoundUtils.playClickSound()
+            McSound.CLICK.play()
             if (currentlyEditing) {
                 val currentVisualWord = modifiedWords.elementAt(currentIndex)
 
@@ -454,7 +455,7 @@ open class VisualWordGui : GuiScreen() {
             val importX = guiLeft + sizeX - 45
             val importY = guiTop + sizeY - 10
             if (isPointInMousePos(importX - 45, importY - 10, 90, 20)) {
-                SoundUtils.playClickSound()
+                McSound.CLICK.play()
                 tryImportFromSBE()
             }
         }
@@ -508,8 +509,7 @@ open class VisualWordGui : GuiScreen() {
 
         if (KeyboardManager.isPastingKeysDown()) {
             SkyHanniMod.coroutineScope.launch {
-                val clipboard = OSUtils.readFromClipboard() ?: ""
-                for (char in clipboard) {
+                for (char in OS.readFromClipboard()) {
                     if (currentText.length < maxTextLength && !Character.isISOControl(char)) {
                         currentText += char
                     }
@@ -520,7 +520,7 @@ open class VisualWordGui : GuiScreen() {
         }
 
         if (KeyboardManager.isCopyingKeysDown()) {
-            OSUtils.copyToClipboard(currentText)
+            OS.copyToClipboard(currentText)
             return
         }
     }

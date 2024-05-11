@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.features.slayer
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -12,6 +11,7 @@ import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityItem
 import net.minecraft.init.Items
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -30,7 +30,7 @@ class SlayerItemsOnGround {
         if (!SlayerAPI.isInCorrectArea) return
         if (!SlayerAPI.hasActiveSlayerQuest()) return
 
-        for (entityItem in EntityUtils.getEntities<EntityItem>()) {
+        for (entityItem in McWorld.getEntitiesOf<EntityItem>()) {
             val location = event.exactLocation(entityItem).add(y = 0.8)
             if (location.distance(LocationUtils.playerLocation()) > 15) continue
 

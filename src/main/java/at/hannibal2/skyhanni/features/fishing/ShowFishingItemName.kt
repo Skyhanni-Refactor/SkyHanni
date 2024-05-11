@@ -14,6 +14,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityItem
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
@@ -45,7 +46,7 @@ class ShowFishingItemName {
     fun onRenderWorld(event: LorenzRenderWorldEvent) {
         if (!isEnabled()) return
         if (hasRodInHand) {
-            for (entityItem in EntityUtils.getEntities<EntityItem>()) {
+            for (entityItem in McWorld.getEntitiesOf<EntityItem>()) {
                 val location = event.exactLocation(entityItem).add(y = 0.8)
                 if (location.distance(LocationUtils.playerLocation()) > 15) continue
                 val itemStack = entityItem.entityItem

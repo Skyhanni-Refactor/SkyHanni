@@ -5,8 +5,8 @@ import at.hannibal2.skyhanni.events.EntityClickEvent
 import at.hannibal2.skyhanni.events.ItemClickEvent
 import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.utils.InventoryUtils
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
-import net.minecraft.client.Minecraft
 import net.minecraft.network.play.client.C02PacketUseEntity
 import net.minecraft.network.play.client.C07PacketPlayerDigging
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement
@@ -48,7 +48,7 @@ class ItemClickData {
                     C02PacketUseEntity.Action.INTERACT_AT -> ClickType.RIGHT_CLICK
                     else -> return
                 }
-                val clickedEntity = packet.getEntityFromWorld(Minecraft.getMinecraft().theWorld) ?: return
+                val clickedEntity = packet.getEntityFromWorld(McWorld.world) ?: return
                 EntityClickEvent(clickType, clickedEntity, InventoryUtils.getItemInHand()).postAndCatch()
             }
 

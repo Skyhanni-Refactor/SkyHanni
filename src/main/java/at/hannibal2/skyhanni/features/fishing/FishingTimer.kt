@@ -5,17 +5,18 @@ import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.TimeUnit
 import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -55,7 +56,7 @@ class FishingTimer {
         val duration = System.currentTimeMillis() - startTime
         val barnTimerAlertTime = config.alertTime * 1_000
         if (duration > barnTimerAlertTime && duration < barnTimerAlertTime + 3_000) {
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
         }
     }
 
@@ -72,13 +73,12 @@ class FishingTimer {
         }
 
         if (inHollows && newCount >= 60 && config.wormLimitAlert) {
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
             LorenzUtils.sendTitle("§cWORM CAP FULL!!!", 2.seconds)
         }
     }
 
-    private fun countMobs() =
-        EntityUtils.getEntities<EntityArmorStand>().map { entity -> FishingAPI.seaCreatureCount(entity) }.sum()
+    private fun countMobs() = McWorld.getEntitiesOf<EntityArmorStand>().map(FishingAPI::seaCreatureCount).sum()
 
     private fun isRightLocation(): Boolean {
         inHollows = false

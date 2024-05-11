@@ -3,8 +3,8 @@ package at.hannibal2.skyhanni.test.command
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils.transformIf
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.system.OS
 
 object CopyScoreboardCommand {
 
@@ -23,7 +23,7 @@ object CopyScoreboardCommand {
         }
 
         val string = resultList.joinToString("\n")
-        OSUtils.copyToClipboard(string)
+        OS.copyToClipboard(string)
         ChatUtils.chat("Scoreboard copied into your clipboard!")
     }
 }

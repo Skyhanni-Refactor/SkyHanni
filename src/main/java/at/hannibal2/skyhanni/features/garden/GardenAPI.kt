@@ -26,7 +26,6 @@ import at.hannibal2.skyhanni.features.garden.inventory.SkyMartCopperPrice
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateShopPrice
-import at.hannibal2.skyhanni.utils.BlockUtils.isBabyCrop
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addItemStack
 import at.hannibal2.skyhanni.utils.DelayedRun
@@ -42,7 +41,9 @@ import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.RenderUtils.addItemIcon
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getCultivatingCounter
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getHoeCounter
+import at.hannibal2.skyhanni.utils.mc.McWorld.checkProperty
 import at.hannibal2.skyhanni.utils.renderables.Renderable
+import net.minecraft.block.properties.PropertyInteger
 import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
 import net.minecraft.network.play.client.C09PacketHeldItemChange
@@ -216,7 +217,8 @@ object GardenAPI {
 
         val blockState = event.getBlockState
         val cropBroken = blockState.getCropType() ?: return
-        if (cropBroken.multiplier == 1 && blockState.isBabyCrop()) return
+        if (cropBroken.multiplier == 1) return
+        if (blockState.checkProperty<Int, PropertyInteger>("age") { it == 0 }) return
 
         val position = event.position
         if (lastLocation == position) {

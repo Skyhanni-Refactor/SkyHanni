@@ -19,6 +19,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.EntityLivingBase
@@ -91,7 +92,7 @@ class SummoningMobManager {
         }
 
         if (searchArmorStands) {
-            EntityUtils.getEntities<EntityArmorStand>().filter { it !in summoningMobNametags }
+            McWorld.getEntitiesOf<EntityArmorStand>().filter { it !in summoningMobNametags }
                 .forEach {
                     val name = it.displayName.unformattedText
                     healthPattern.matchMatcher(name) {
@@ -108,7 +109,7 @@ class SummoningMobManager {
 
         if (searchMobs) {
             val playerLocation = LocationUtils.playerLocation()
-            EntityUtils.getEntities<EntityLiving>().filter {
+            McWorld.getEntitiesOf<EntityLiving>().filter {
                 it !in summoningMobs.keys && it.getLorenzVec()
                     .distance(playerLocation) < 10 && it.ticksExisted < 2
             }.forEach {

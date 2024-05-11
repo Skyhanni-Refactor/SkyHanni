@@ -41,16 +41,17 @@ import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.NEUItems.getNpcPriceOrNull
 import at.hannibal2.skyhanni.utils.NEUItems.getPriceOrNull
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.renderables.Renderable.Companion.renderBounds
+import at.hannibal2.skyhanni.utils.system.OS
 import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
@@ -102,7 +103,7 @@ class SkyHanniDebugsAndTests {
         }
 
         fun waypoint(args: Array<String>) {
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
 
             if (args.isEmpty()) {
                 testLocation = null
@@ -117,7 +118,7 @@ class SkyHanniDebugsAndTests {
         }
 
         fun testCommand(args: Array<String>) {
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
 //            val a = Thread { OSUtils.copyToClipboard("123") }
 //            val b = Thread { OSUtils.copyToClipboard("456") }
 //            a.start()
@@ -337,17 +338,17 @@ class SkyHanniDebugsAndTests {
             val y = (location.y + 0.001).round(1)
             val z = (location.z + 0.001).round(1)
             if (args.size == 1 && args[0].equals("json", false)) {
-                OSUtils.copyToClipboard("\"$x:$y:$z\"")
+                OS.copyToClipboard("\"$x:$y:$z\"")
                 return
             }
 
-            OSUtils.copyToClipboard("LorenzVec($x, $y, $z)")
+            OS.copyToClipboard("LorenzVec($x, $y, $z)")
         }
 
         fun debugVersion() {
             val name = "SkyHanni ${SkyHanniMod.version}"
             ChatUtils.chat("§eYou are using $name")
-            OSUtils.copyToClipboard(name)
+            OS.copyToClipboard(name)
         }
 
         fun copyItemInternalName() {
@@ -364,7 +365,7 @@ class SkyHanniDebugsAndTests {
             }
 
             val rawInternalName = internalName.asString()
-            OSUtils.copyToClipboard(rawInternalName)
+            OS.copyToClipboard(rawInternalName)
             ChatUtils.chat("§eCopied internal name §7$rawInternalName §eto the clipboard!")
         }
 
@@ -420,7 +421,7 @@ class SkyHanniDebugsAndTests {
         val stack = focussedSlot.stack ?: return
         val internalName = stack.getInternalNameOrNull() ?: return
         val rawInternalName = internalName.asString()
-        OSUtils.copyToClipboard(rawInternalName)
+        OS.copyToClipboard(rawInternalName)
         ChatUtils.chat("§eCopied internal name §7$rawInternalName §eto the clipboard!")
     }
 

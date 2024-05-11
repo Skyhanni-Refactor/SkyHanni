@@ -5,11 +5,11 @@ import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils.getEntities
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -38,7 +38,7 @@ class RiftOdonata {
     }
 
     private fun findOdonatas() {
-        for (stand in getEntities<EntityArmorStand>()) {
+        for (stand in McWorld.getEntitiesOf<EntityArmorStand>()) {
             if (stand.hasSkullTexture(odonataSkullTexture)) {
                 RenderLivingEntityHelper.setEntityColor(
                     stand,

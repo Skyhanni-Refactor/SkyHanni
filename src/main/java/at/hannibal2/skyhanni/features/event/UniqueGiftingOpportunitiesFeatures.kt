@@ -10,7 +10,6 @@ import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.features.event.winter.UniqueGiftCounter
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.isNPC
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
@@ -18,6 +17,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.EntityLivingBase
@@ -60,7 +60,7 @@ object UniqueGiftingOpportunitiesFeatures {
         if (!config.useArmorStandDetection) return
         if (entity.name != hasGiftedNametag) return
 
-        val matchedPlayer = EntityUtils.getEntitiesNearby<EntityPlayer>(entity.getLorenzVec(), 2.0)
+        val matchedPlayer = McWorld.getEntitiesNear<EntityPlayer>(entity.getLorenzVec(), 2.0)
             .singleOrNull { !it.isNPC() } ?: return
         addGiftedPlayer(matchedPlayer.name)
     }

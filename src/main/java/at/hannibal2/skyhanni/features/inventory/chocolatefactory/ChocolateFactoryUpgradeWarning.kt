@@ -7,8 +7,9 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.TimeUtils.minutes
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object ChocolateFactoryUpgradeWarning {
@@ -39,7 +40,7 @@ object ChocolateFactoryUpgradeWarning {
         if (lastUpgradeWarning.passedSince() < config.timeBetweenWarnings.minutes) return
         lastUpgradeWarning = SimpleTimeMark.now()
         if (config.upgradeWarningSound) {
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
         }
         if (ChocolateFactoryAPI.inChocolateFactory) return
         ChatUtils.clickableChat(

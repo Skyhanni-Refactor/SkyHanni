@@ -4,20 +4,17 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.GuiKeyPressEvent
 import at.hannibal2.skyhanni.events.InventoryUpdatedEvent
-import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.InventoryUtils
+import at.hannibal2.skyhanni.utils.*
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getPrice
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 class AuctionHouseCopyUnderbidPrice {
@@ -47,11 +44,11 @@ class AuctionHouseCopyUnderbidPrice {
 
         val price = internalName.getPrice().toLong()
         if (price <= 0) {
-            OSUtils.copyToClipboard("")
+            OS.copyToClipboard("")
             return
         }
         val newPrice = price * item.stackSize - 1
-        OSUtils.copyToClipboard("$newPrice")
+        OS.copyToClipboard("$newPrice")
         ChatUtils.chat("Copied ${newPrice.addSeparators()} to clipboard. (Copy Underbid Price)")
     }
 
@@ -64,7 +61,7 @@ class AuctionHouseCopyUnderbidPrice {
 
         stack.getLore().matchFirst(auctionPricePattern) {
             val underbid = group("coins").formatLong() - 1
-            OSUtils.copyToClipboard("$underbid")
+            OS.copyToClipboard("$underbid")
             ChatUtils.chat("Copied ${underbid.addSeparators()} to clipboard.")
         }
     }

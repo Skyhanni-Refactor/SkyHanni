@@ -7,11 +7,11 @@ import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUItems
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.ParkourHelper
 import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
 import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
@@ -62,7 +62,7 @@ class ParkourWaypointSaver {
             val z = location.z.toString().replace(",", ".")
             resultList.add("\"$x:$y:$z\"")
         }
-        OSUtils.copyToClipboard(resultList.joinToString((",\n")))
+        OS.copyToClipboard(resultList.joinToString((",\n")))
     }
 
     @SubscribeEvent

@@ -10,7 +10,6 @@ import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyFishManager
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyFishManager.getFilletValue
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockAt
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
@@ -19,6 +18,7 @@ import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import net.minecraft.client.Minecraft
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.projectile.EntityFishHook
