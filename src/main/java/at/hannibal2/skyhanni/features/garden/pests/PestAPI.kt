@@ -6,7 +6,7 @@ import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.ScoreboardChangeEvent
+import at.hannibal2.skyhanni.events.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.TabListUpdateEvent
 import at.hannibal2.skyhanni.events.garden.pests.PestSpawnEvent
 import at.hannibal2.skyhanni.events.garden.pests.PestUpdateEvent
@@ -215,7 +215,7 @@ object PestAPI {
     }
 
     @SubscribeEvent
-    fun onScoreboardChange(event: ScoreboardChangeEvent) {
+    fun onScoreboardChange(event: ScoreboardUpdateEvent) {
         if (!GardenAPI.inGarden()) return
         if (!firstScoreboardCheck) return
         checkScoreboardLines(event.newList)

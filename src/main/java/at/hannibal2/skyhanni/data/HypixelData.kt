@@ -280,6 +280,7 @@ class HypixelData {
         }
     }
 
+
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
         if (!LorenzUtils.inSkyBlock) {

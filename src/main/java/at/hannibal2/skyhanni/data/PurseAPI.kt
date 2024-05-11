@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.data
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.PurseChangeCause
 import at.hannibal2.skyhanni.events.PurseChangeEvent
-import at.hannibal2.skyhanni.events.ScoreboardChangeEvent
+import at.hannibal2.skyhanni.events.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.million
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
@@ -32,7 +32,7 @@ object PurseAPI {
     }
 
     @SubscribeEvent
-    fun onScoreboardChange(event: ScoreboardChangeEvent) {
+    fun onScoreboardChange(event: ScoreboardUpdateEvent) {
         event.newList.matchFirst(coinsPattern) {
             val newPurse = group("coins").formatDouble()
             val diff = newPurse - currentPurse

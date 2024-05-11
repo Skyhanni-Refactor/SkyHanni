@@ -1,11 +1,10 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.ScoreboardChangeEvent
 import at.hannibal2.skyhanni.events.ScoreboardRawChangeEvent
+import at.hannibal2.skyhanni.events.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.mc.McWorld
-import net.minecraft.client.Minecraft
 import net.minecraft.scoreboard.Score
 import net.minecraft.scoreboard.ScorePlayerTeam
 import net.minecraftforge.fml.common.eventhandler.EventPriority
@@ -80,7 +79,7 @@ class ScoreboardData {
         sidebarLinesRaw = list
         val new = formatLines(list)
         if (new != sidebarLinesFormatted) {
-            ScoreboardChangeEvent(sidebarLinesFormatted, new).postAndCatch()
+            ScoreboardUpdateEvent(new).postAndCatch()
             sidebarLinesFormatted = new
         }
     }
