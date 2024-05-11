@@ -142,7 +142,7 @@ object BitsAPI {
     )
 
     @SubscribeEvent
-    fun onScoreboardChange(event: ScoreboardUpdateEvent) {
+    fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         if (!isEnabled()) return
         for (line in event.newList) {
             val message = line.trimWhiteSpace().removeResets()

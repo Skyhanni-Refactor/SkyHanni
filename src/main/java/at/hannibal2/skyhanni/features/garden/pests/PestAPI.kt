@@ -215,7 +215,7 @@ object PestAPI {
     }
 
     @SubscribeEvent
-    fun onScoreboardChange(event: ScoreboardUpdateEvent) {
+    fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         if (!GardenAPI.inGarden()) return
         if (!firstScoreboardCheck) return
         checkScoreboardLines(event.newList)

@@ -40,7 +40,7 @@ object MiningAPI {
     fun getCold() = cold
 
     @SubscribeEvent
-    fun onScoreboardChange(event: ScoreboardUpdateEvent) {
+    fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         val newCold = event.newList.matchFirst(ScoreboardPattern.coldPattern) {
             group("cold").toInt().absoluteValue
         } ?: return
