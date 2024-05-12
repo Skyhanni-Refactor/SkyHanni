@@ -3,8 +3,8 @@ package at.hannibal2.skyhanni.features.gui.customscoreboard
 import at.hannibal2.skyhanni.config.features.gui.customscoreboard.ArrowConfig.ArrowAmountDisplay
 import at.hannibal2.skyhanni.data.BitsAPI
 import at.hannibal2.skyhanni.data.HypixelData
-import at.hannibal2.skyhanni.data.HypixelData.Companion.getMaxPlayersForCurrentServer
-import at.hannibal2.skyhanni.data.HypixelData.Companion.getPlayersOnCurrentServer
+import at.hannibal2.skyhanni.data.HypixelData.getMaxPlayersForCurrentServer
+import at.hannibal2.skyhanni.data.HypixelData.getPlayersOnCurrentServer
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.MaxwellAPI
 import at.hannibal2.skyhanni.data.MayorAPI
