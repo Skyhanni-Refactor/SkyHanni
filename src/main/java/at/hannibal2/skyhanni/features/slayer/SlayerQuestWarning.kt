@@ -28,7 +28,7 @@ class SlayerQuestWarning {
     )
 
     private var needSlayerQuest = false
-    private var lastWarning = 0L
+    private var lastWarning = SimpleTimeMark.farPast()
     private var currentReason = ""
     private var dirtySidebar = false
     private var hasAutoSlayer = false
@@ -135,9 +135,9 @@ class SlayerQuestWarning {
 
     private fun warn(titleMessage: String, chatMessage: String) {
         if (!config.questWarning) return
-        if (lastWarning + 10_000 > System.currentTimeMillis()) return
+        if (lastWarning.passedSince() < 10.seconds) return
 
-        lastWarning = System.currentTimeMillis()
+        lastWarning = SimpleTimeMark.now()
         ChatUtils.chat(chatMessage)
 
         if (config.questWarningTitle) {

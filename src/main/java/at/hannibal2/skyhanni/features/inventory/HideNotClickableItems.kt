@@ -57,7 +57,6 @@ class HideNotClickableItems {
     private var showGreenLine = false
 
     private var lastClickTime = SimpleTimeMark.farPast()
-    private var bypassUntil = 0L
 
     private val hideNpcSellFilter = MultiFilter()
     private val hideInStorageFilter = MultiFilter()
@@ -97,7 +96,7 @@ class HideNotClickableItems {
     @SubscribeEvent
     fun onForegroundDrawn(event: GuiContainerEvent.ForegroundDrawnEvent) {
         if (!LorenzUtils.inSkyBlock) return
-        if (isDisabled()) return
+        if (!isEnabled()) return
         if (bypassActive()) return
         if (event.gui !is GuiChest) return
         val guiChest = event.gui
@@ -115,7 +114,7 @@ class HideNotClickableItems {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     fun onTooltip(event: ItemTooltipEvent) {
-        if (isDisabled()) return
+        if (!isEnabled()) return
         if (event.toolTip == null) return
         if (bypassActive()) return
 
@@ -145,7 +144,7 @@ class HideNotClickableItems {
 
     @SubscribeEvent
     fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
-        if (isDisabled()) return
+        if (!isEnabled()) return
         if (!config.itemsBlockClicks) return
         if (bypassActive()) return
         if (event.gui !is GuiChest) return
@@ -169,12 +168,6 @@ class HideNotClickableItems {
     }
 
     private fun bypassActive() = config.itemsBypass && KeyboardManager.isModifierKeyDown()
-
-    private fun isDisabled(): Boolean {
-        if (bypassUntil > System.currentTimeMillis()) return true
-
-        return !config.items
-    }
 
     private fun hide(chestName: String, stack: ItemStack): Boolean {
         hideReason = ""
@@ -603,6 +596,8 @@ class HideNotClickableItems {
         if (result) hideReason = "This item cannot be auctioned!"
         return result
     }
+
+    private fun isEnabled() = LorenzUtils.inSkyBlock && config.items
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
