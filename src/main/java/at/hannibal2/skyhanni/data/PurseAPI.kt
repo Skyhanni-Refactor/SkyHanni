@@ -33,7 +33,7 @@ object PurseAPI {
 
     @SubscribeEvent
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
-        event.newList.matchFirst(coinsPattern) {
+        event.scoreboard.matchFirst(coinsPattern) {
             val newPurse = group("coins").formatDouble()
             val diff = newPurse - currentPurse
             if (diff == 0.0) return

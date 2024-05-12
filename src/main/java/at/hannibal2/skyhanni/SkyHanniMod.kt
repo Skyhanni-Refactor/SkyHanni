@@ -498,7 +498,7 @@ class SkyHanniMod {
         loadModule(ChatManager)
         loadModule(PlayerChatManager())
         loadModule(PlayerNameFormatter())
-        loadModule(HypixelData())
+        loadModule(HypixelData)
         loadModule(LocationFixData)
         loadModule(DungeonAPI)
         loadModule(ScoreboardData())
