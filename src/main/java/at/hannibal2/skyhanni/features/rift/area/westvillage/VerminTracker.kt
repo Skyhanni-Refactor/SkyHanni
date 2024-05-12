@@ -5,7 +5,7 @@ import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
@@ -39,13 +39,9 @@ object VerminTracker {
         "fly",
         ".*§eYou vacuumed a §.*Fly.*"
     )
-    private val verminBinPattern by patternGroup.pattern(
-        "binline",
-        "§fVermin Bin: §\\w(?<count>\\d+) (?<vermin>\\w+)"
-    )
-    private val verminBagPattern by patternGroup.pattern(
-        "bagline",
-        "§fVacuum Bag: §\\w(?<count>\\d+) (?<vermin>\\w+)"
+    private val verminPattern by patternGroup.pattern(
+        "vermin",
+        "§f(?:Vermin Bin|Vacuum Bag): §\\w(?<count>\\d+) (?<vermin>\\w+)"
     )
 
     private var hasVacuum = false
@@ -73,11 +69,9 @@ object VerminTracker {
     }
 
     @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    fun onSecondPassed(event: SecondPassedEvent) {
         if (!RiftAPI.inRift()) return
-        if (event.repeatSeconds(1)) {
-            checkVacuum()
-        }
+        checkVacuum()
     }
 
     private fun checkVacuum() {
@@ -107,25 +101,25 @@ object VerminTracker {
             .firstOrNull { it.getInternalName() == TURBOMAX_VACUUM }
             ?.getLore() ?: emptyList()
 
-        val binCounts = countVermin(bin, verminBinPattern)
+        val binCounts = countVermin(bin)
         VerminType.entries.forEach { setVermin(it, binCounts[it] ?: 0) }
 
         if (bag.isEmpty()) return
 
-        val bagCounts = countVermin(bag, verminBagPattern)
+        val bagCounts = countVermin(bag)
         VerminType.entries.forEach { addVermin(it, bagCounts[it] ?: 0) }
     }
 
-    private fun countVermin(lore: List<String>, pattern: Pattern): Map<VerminType, Int> {
+    private fun countVermin(lore: List<String>): Map<VerminType, Int> {
         val verminCounts = mutableMapOf(
             VerminType.SILVERFISH to 0,
             VerminType.SPIDER to 0,
             VerminType.FLY to 0
         )
         for (line in lore) {
-            pattern.matchMatcher(line) {
-                val vermin = group("vermin")?.lowercase() ?: continue
-                val verminCount = group("count")?.toInt() ?: continue
+            verminPattern.matchMatcher(line) {
+                val vermin = group("vermin").lowercase()
+                val verminCount = group("count").toInt()
                 val verminType = getVerminType(vermin)
                 verminCounts[verminType] = verminCount
             }
