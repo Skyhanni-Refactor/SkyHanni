@@ -255,7 +255,7 @@ object QuiverAPI {
     private fun shouldHideAmount() = wearingSkeletonMasterChestplate
 
     private fun checkBowInventory() {
-        hasBow = InventoryUtils.getItemsInOwnInventory().any {
+        hasBow = McPlayer.inventory.any {
             it.item is ItemBow && !fakeBowsPattern.matches(it.getInternalName().asString())
         }
     }
