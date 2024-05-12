@@ -33,6 +33,7 @@ import at.hannibal2.skyhanni.utils.MultiFilter
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.RenderUtils.drawBorder
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.isMuseumDonated
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.isRiftExportable
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.isRiftTransferable
@@ -46,6 +47,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.event.entity.player.ItemTooltipEvent
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import kotlin.time.Duration.Companion.seconds
 
 class HideNotClickableItems {
 
@@ -54,7 +56,7 @@ class HideNotClickableItems {
     private var hideReason = ""
     private var showGreenLine = false
 
-    private var lastClickTime = 0L
+    private var lastClickTime = SimpleTimeMark.farPast()
     private var bypassUntil = 0L
 
     private val hideNpcSellFilter = MultiFilter()
@@ -96,7 +98,7 @@ class HideNotClickableItems {
     fun onForegroundDrawn(event: GuiContainerEvent.ForegroundDrawnEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (isDisabled()) return
-        if (bypasssActive()) return
+        if (bypassActive()) return
         if (event.gui !is GuiChest) return
         val guiChest = event.gui
         val chest = guiChest.inventorySlots as ContainerChest
@@ -115,7 +117,7 @@ class HideNotClickableItems {
     fun onTooltip(event: ItemTooltipEvent) {
         if (isDisabled()) return
         if (event.toolTip == null) return
-        if (bypasssActive()) return
+        if (bypassActive()) return
 
         val guiChest = Minecraft.getMinecraft().currentScreen
         if (guiChest !is GuiChest) return
@@ -145,7 +147,7 @@ class HideNotClickableItems {
     fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
         if (isDisabled()) return
         if (!config.itemsBlockClicks) return
-        if (bypasssActive()) return
+        if (bypassActive()) return
         if (event.gui !is GuiChest) return
         val chestName = InventoryUtils.openInventoryName()
 
@@ -159,14 +161,14 @@ class HideNotClickableItems {
         if (hide(chestName, stack)) {
             event.isCanceled = true
 
-            if (System.currentTimeMillis() > lastClickTime + 5_000) {
-                lastClickTime = System.currentTimeMillis()
+            if (lastClickTime.passedSince() > 5.seconds) {
+                lastClickTime = SimpleTimeMark.now()
             }
             return
         }
     }
 
-    private fun bypasssActive() = config.itemsBypass && KeyboardManager.isModifierKeyDown()
+    private fun bypassActive() = config.itemsBypass && KeyboardManager.isModifierKeyDown()
 
     private fun isDisabled(): Boolean {
         if (bypassUntil > System.currentTimeMillis()) return true
