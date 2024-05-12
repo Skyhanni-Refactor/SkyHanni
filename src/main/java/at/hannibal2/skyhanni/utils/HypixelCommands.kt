@@ -129,8 +129,9 @@ object HypixelCommands {
     }
 
     private fun send(command: String) {
-        @Suppress("DEPRECATION")
-        // TODO rename function
-        ChatUtils.sendCommandToServer(command)
+        if (command.startsWith("/")) {
+            ChatUtils.debug("Sending wrong command to server? ($command)")
+        }
+        ChatUtils.sendMessageToServer("/$command")
     }
 }
