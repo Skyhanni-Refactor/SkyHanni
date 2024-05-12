@@ -30,6 +30,7 @@ object HypixelCommands {
         send("is")
     }
 
+    @JvmStatic
     fun gardenDesk() {
         send("desk")
     }

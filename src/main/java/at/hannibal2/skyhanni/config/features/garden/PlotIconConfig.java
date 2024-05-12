@@ -19,6 +19,6 @@ public class PlotIconConfig {
     @ConfigEditorButton(buttonText = "Reset")
     public Runnable hardReset = () -> {
         GardenPlotIcon.INSTANCE.setHardReset(true);
-        HypixelCommands.INSTANCE.gardenDesk();
+        HypixelCommands.gardenDesk();
     };
 }
