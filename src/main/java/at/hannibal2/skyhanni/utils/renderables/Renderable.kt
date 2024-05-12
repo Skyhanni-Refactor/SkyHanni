@@ -66,7 +66,7 @@ interface Renderable {
             }
         }
 
-        fun fromAny(any: Any?, itemScale: Double = NEUItems.itemFontSize): Renderable? = when (any) {
+        fun fromAny(any: Any?, itemScale: Double = NEUItems.ITEM_FONT_SIZE): Renderable? = when (any) {
             null -> placeholder(12)
             is Renderable -> any
             is String -> string(any)
@@ -306,7 +306,7 @@ interface Renderable {
 
         fun itemStack(
             item: ItemStack,
-            scale: Double = NEUItems.itemFontSize,
+            scale: Double = NEUItems.ITEM_FONT_SIZE,
             xSpacing: Int = 2,
             horizontalAlign: HorizontalAlignment = HorizontalAlignment.LEFT,
             verticalAlign: VerticalAlignment = VerticalAlignment.CENTER,

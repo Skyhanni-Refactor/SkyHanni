@@ -48,8 +48,6 @@ class ComposterDisplay {
         }
     }
 
-    private val BUCKET by lazy { "BUCKET".asInternalName().getItemStack() }
-
     @SubscribeEvent
     fun onTabListUpdate(event: TabListUpdateEvent) {
         if (!(config.displayEnabled && GardenAPI.inGarden())) return

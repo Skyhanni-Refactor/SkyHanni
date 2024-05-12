@@ -79,7 +79,7 @@ class BingoCardTips {
         for (line in bingoTip.guide) {
             toolTip.add(index++, " $line")
         }
-        bingoTip.found?.let {
+        bingoTip.found.let {
             toolTip.add(index++, "§7Found by: §e$it")
         }
     }

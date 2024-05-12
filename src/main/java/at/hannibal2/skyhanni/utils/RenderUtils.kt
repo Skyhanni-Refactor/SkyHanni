@@ -73,7 +73,7 @@ object RenderUtils {
 
     private val beaconBeam = ResourceLocation("textures/entity/beacon_beam.png")
 
-    private val matrixBuffer: FloatBuffer = GLAllocation.createDirectFloatBuffer(16);
+    private val matrixBuffer: FloatBuffer = GLAllocation.createDirectFloatBuffer(16)
     private val colourBuffer: FloatBuffer = GLAllocation.createDirectFloatBuffer(16)
     private val bezier2Buffer: FloatBuffer = GLAllocation.createDirectFloatBuffer(9)
 
@@ -582,7 +582,7 @@ object RenderUtils {
     fun Position.renderStringsAndItems(
         list: List<List<Any?>>,
         extraSpace: Int = 0,
-        itemScale: Double = NEUItems.itemFontSize,
+        itemScale: Double = NEUItems.ITEM_FONT_SIZE,
         posLabel: String,
     ) {
         if (list.isEmpty()) return
@@ -624,7 +624,7 @@ object RenderUtils {
         // TODO Future write that better
     }
 
-    private fun Position.renderLine(line: List<Any?>, offsetY: Int, itemScale: Double = NEUItems.itemFontSize): Int {
+    private fun Position.renderLine(line: List<Any?>, offsetY: Int, itemScale: Double = NEUItems.ITEM_FONT_SIZE): Int {
         GlStateManager.pushMatrix()
         val (x, y) = transform()
         GlStateManager.translate(0f, offsetY.toFloat(), 0F)
@@ -646,7 +646,7 @@ object RenderUtils {
     fun MutableList<Any>.addItemIcon(
         item: ItemStack,
         highlight: Boolean = false,
-        scale: Double = NEUItems.itemFontSize,
+        scale: Double = NEUItems.ITEM_FONT_SIZE,
     ) {
         try {
             if (highlight) {

@@ -113,12 +113,6 @@ object GhostUtil {
         )
     }
 
-    fun String.formatText(value: Double, session: Double) = Utils.chromaStringByColourCode(
-        this.replace("%value%", value.roundToPrecision(2).addSeparators())
-            .replace("%session%", session.roundToPrecision(2).addSeparators())
-            .replace("&", "§")
-    )
-
     fun String.formatBestiary(currentKill: Int, killNeeded: Int): String {
         val bestiaryNextLevel = GhostCounter.storage?.bestiaryNextLevel
         val currentLevel =
