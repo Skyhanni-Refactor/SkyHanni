@@ -23,12 +23,12 @@ import java.awt.Color
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class VoltHighlighter {
+object VoltHighlighter {
 
     private val config get() = RiftAPI.config.area.dreadfarm.voltCrux
 
-    private val LIGHTNING_DISTANCE = 7F
-    private val ARMOR_SLOT_HEAD = 3
+    private const val LIGHTNING_DISTANCE = 7F
+    private const val ARMOR_SLOT_HEAD = 3
     private val CHARGE_TIME = 12.seconds
     private var chargingSince = mapOf<Entity, SimpleTimeMark>()
 
