@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
@@ -20,6 +21,7 @@ import net.minecraft.init.Blocks
 import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
+import kotlin.time.Duration.Companion.milliseconds
 
 class RiftWiltedBerberisHelper {
 
@@ -28,12 +30,12 @@ class RiftWiltedBerberisHelper {
     private var hasFarmingToolInHand = false
     private var list = listOf<WiltedBerberis>()
 
-    class WiltedBerberis(var currentParticles: LorenzVec) {
+    data class WiltedBerberis(var currentParticles: LorenzVec) {
 
         var previous: LorenzVec? = null
         var moving = true
         var y = 0.0
-        var lastTime = System.currentTimeMillis()
+        var lastTime = SimpleTimeMark.now()
     }
 
     @SubscribeEvent
@@ -41,7 +43,7 @@ class RiftWiltedBerberisHelper {
         if (!isEnabled()) return
         if (!event.isMod(5)) return
 
-        list = list.editCopy { removeIf { System.currentTimeMillis() > it.lastTime + 500 } }
+        list = list.editCopy { removeIf { it.lastTime.passedSince() > 500.milliseconds } }
 
         hasFarmingToolInHand = McPlayer.heldItem?.getInternalName() == RiftAPI.farmingTool
 
@@ -98,7 +100,7 @@ class RiftWiltedBerberisHelper {
 
             moving = isMoving
             currentParticles = location
-            lastTime = System.currentTimeMillis()
+            lastTime = SimpleTimeMark.now()
         }
     }
 

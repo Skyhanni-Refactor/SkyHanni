@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.concurrent.fixedRateTimer
@@ -26,7 +27,7 @@ object GardenCropSpeed {
     private val latestBlocksPerSecond: MutableMap<CropType, Double>? get() = GardenAPI.storage?.latestBlocksPerSecond
 
     var lastBrokenCrop: CropType? = null
-    var lastBrokenTime = 0L
+    var lastBrokenTime = SimpleTimeMark.now()
 
     var averageBlocksPerSecond = 0.0
 
@@ -76,7 +77,7 @@ object GardenCropSpeed {
         if (event.clickType != ClickType.LEFT_CLICK) return
 
         lastBrokenCrop = event.crop
-        lastBrokenTime = System.currentTimeMillis()
+        lastBrokenTime = SimpleTimeMark.now()
         blocksBroken++
     }
 
