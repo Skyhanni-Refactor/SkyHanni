@@ -124,7 +124,7 @@ class BingoCardDisplay {
         add(Renderable.string(" "))
     }
 
-    private fun percentageFormat(it: BingoGoal) = it.communtyGoalPercentage?.let {
+    private fun percentageFormat(it: BingoGoal) = it.communityGoalPercentage?.let {
         " " + BingoAPI.getCommunityPercentageColor(it)
     } ?: ""
 

@@ -638,7 +638,7 @@ object EstimatedItemValueCalculator {
         val unlockedSlots =
             stack.getExtraAttributes()?.getCompoundTag("gems")?.getTag("unlocked_slots")?.toString() ?: return 0.0
 
-        // TODO detection for old items which doesnt have gems.unlocked_slots NBT array
+        // TODO detection for old items which doesn't have gems.unlocked_slots NBT array
 //        if (unlockedSlots == "null") return 0.0
 
         val priceMap = mutableMapOf<String, Double>()

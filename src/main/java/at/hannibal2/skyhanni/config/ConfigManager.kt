@@ -292,7 +292,7 @@ class ConfigManager {
                             run()
                         } catch (e: Throwable) {
                             e.printStackTrace()
-                            LorenzUtils.shutdownMinecraft("Config is corrupt inside developement enviroment.")
+                            LorenzUtils.shutdownMinecraft("Config is corrupt inside development environment.")
                         }
                     } else {
                         run()

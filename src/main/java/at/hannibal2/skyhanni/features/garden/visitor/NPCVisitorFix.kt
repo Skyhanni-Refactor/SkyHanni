@@ -48,7 +48,7 @@ object NPCVisitorFix {
 
         val location = entity.getLorenzVec()
         storage.npcVisitorLocations[name]?.let {
-            // alrady stored
+            // already stored
             if (it.distance(location) < 1) return
         }
 
