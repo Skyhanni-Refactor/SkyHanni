@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.combat.ghostcounter
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.data.ProfileStorageData
+import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
@@ -84,8 +85,9 @@ object GhostUtil {
             GhostData.Option.TOTALDROPS.add(json["TotalDrops"].asDouble)
             c.ctDataImported = true
             ChatUtils.chat("§aImported data successfully!")
-        } else
-            ChatUtils.error("GhostCounterV3 ChatTriggers module not found!")
+        } else {
+            ErrorManager.skyHanniError("GhostCounterV3 ChatTriggers module not found!")
+        }
     }
 
     fun String.formatText(option: GhostData.Option) = formatText(option.getInt(), option.getInt(true))
