@@ -74,9 +74,6 @@ object GetFromSackAPI {
 
     private var lastItemStack: PrimitiveItemStack? = null
 
-    @Deprecated("", ReplaceWith("SackAPI.sackListInternalNames"))
-    val sackListInternalNames get() = SackAPI.sackListInternalNames
-
     @Deprecated("", ReplaceWith("SackAPI.sackListNames"))
     val sackListNames get() = SackAPI.sackListNames
 

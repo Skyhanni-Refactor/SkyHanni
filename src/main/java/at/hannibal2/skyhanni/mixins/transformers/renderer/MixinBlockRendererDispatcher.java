@@ -16,6 +16,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class MixinBlockRendererDispatcher implements IResourceManagerReloadListener {
     @Inject(method = "getModelFromBlockState", at = @At("RETURN"), cancellable = true)
     private void modifyGetModelFromBlockState(IBlockState state, IBlockAccess worldIn, BlockPos pos, CallbackInfoReturnable<IBakedModel> cir) {
-        BlockRendererDispatcherHookKt.modifyGetModelFromBlockState((BlockRendererDispatcher) (Object) this, state, worldIn, pos, cir);
+        BlockRendererDispatcherHookKt.modifyGetModelFromBlockState((BlockRendererDispatcher) (Object) this, state, pos, cir);
     }
 }

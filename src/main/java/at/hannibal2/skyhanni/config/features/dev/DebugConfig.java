@@ -17,11 +17,6 @@ public class DebugConfig {
     public boolean enabled = false;
 
     @Expose
-    @ConfigOption(name = "Command Logging", desc = "Logs stack trace information into the console when a command gets sent to Hypixel. (by any mod or the player)")
-    @ConfigEditorBoolean
-    public boolean commandLogs = false;
-
-    @Expose
     @ConfigOption(
         name = "Mod Menu Log",
         desc = "Enables debug messages when the currently opened GUI changes, with the path to the gui class. " +
