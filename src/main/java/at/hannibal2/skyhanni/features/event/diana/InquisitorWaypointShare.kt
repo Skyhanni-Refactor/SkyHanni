@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.HypixelCommands
@@ -223,8 +224,7 @@ object InquisitorWaypointShare {
         lastShareTime = System.currentTimeMillis()
 
         if (inquisitor == -1) {
-            ChatUtils.error("No Inquisitor Found!")
-            return
+            ErrorManager.skyHanniError("No Inquisitor Found!")
         }
 
         val inquisitor = McWorld.getEntity(inquisitor)

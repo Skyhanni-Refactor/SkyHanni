@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.ScoreboardRawChangeEvent
+import at.hannibal2.skyhanni.events.RawScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.mc.McWorld
@@ -72,7 +72,7 @@ class ScoreboardData {
         val list = fetchScoreboardLines().reversed()
         val semiFormatted = list.map { cleanSB(it) }
         if (semiFormatted != sidebarLines) {
-            ScoreboardRawChangeEvent(sidebarLines, semiFormatted).postAndCatch()
+            RawScoreboardUpdateEvent(semiFormatted).postAndCatch()
             sidebarLines = semiFormatted
         }
 

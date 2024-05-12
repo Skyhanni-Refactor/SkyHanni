@@ -39,15 +39,11 @@ class BetterWikiFromMenus {
             (itemClickedStack.getLore().let { it.any { line -> line == "§7§eClick to view on the SkyBlock Wiki!" } })
 
         if (inBiblioInventory) {
-            if (isWiki) {
-                WikiManager.sendWikiMessage(useFandom = true)
-                return
+            when {
+                isWiki -> WikiManager.sendWikiMessage(useFandom = false)
+                else -> WikiManager.otherWikiCommands(arrayOf(""), true, false)
             }
-
-            if (isWikithis) {
-                WikiManager.otherWikiCommands(arrayOf(""), true, true)
-                return
-            }
+            return
         }
 
         if (inSBGuideInventory && config.sbGuide) {

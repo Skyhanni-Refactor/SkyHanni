@@ -30,25 +30,29 @@ object FixGhostEntities {
     fun onReceiveCurrentShield(event: PacketEvent.ReceiveEvent) {
         if (!isEnabled()) return
 
-        val packet = event.packet
+        when (val packet = event.packet) {
+            is S0CPacketSpawnPlayer -> {
+                if (packet.entityID in recentlyRemovedEntities) {
+                    event.cancel()
+                }
+                recentlySpawnedEntities.addLast(packet.entityID)
+            }
 
-        if (packet is S0CPacketSpawnPlayer) {
-            if (packet.entityID in recentlyRemovedEntities) {
-                event.cancel()
+            is S0FPacketSpawnMob -> {
+                if (packet.entityID in recentlyRemovedEntities) {
+                    event.cancel()
+                }
+                recentlySpawnedEntities.addLast(packet.entityID)
             }
-            recentlySpawnedEntities.addLast(packet.entityID)
-        } else if (packet is S0FPacketSpawnMob) {
-            if (packet.entityID in recentlyRemovedEntities) {
-                event.cancel()
-            }
-            recentlySpawnedEntities.addLast(packet.entityID)
-        } else if (packet is S13PacketDestroyEntities) {
-            for (entityID in packet.entityIDs) {
-                // ingore entities that got properly spawned and then removed
-                if (entityID !in recentlySpawnedEntities) {
-                    recentlyRemovedEntities.addLast(entityID)
-                    if (recentlyRemovedEntities.size == 10) {
-                        recentlyRemovedEntities.removeFirst()
+
+            is S13PacketDestroyEntities -> {
+                for (entityID in packet.entityIDs) {
+                    // ignore entities that got properly spawned and then removed
+                    if (entityID !in recentlySpawnedEntities) {
+                        recentlyRemovedEntities.addLast(entityID)
+                        if (recentlyRemovedEntities.size == 10) {
+                            recentlyRemovedEntities.removeFirst()
+                        }
                     }
                 }
             }

@@ -60,11 +60,9 @@ object ItemUtils {
 
     fun getItemsInInventory(withCursorItem: Boolean = false): List<ItemStack> {
         val list: LinkedList<ItemStack> = LinkedList()
+
         val player = Minecraft.getMinecraft().thePlayer
-        if (player == null) {
-            ChatUtils.error("getItemsInInventoryWithSlots: player is null!")
-            return list
-        }
+            ?: ErrorManager.skyHanniError("getItemsInInventoryWithSlots: player is null!")
         for (slot in player.openContainer.inventorySlots) {
             if (slot.hasStack) {
                 list.add(slot.stack)

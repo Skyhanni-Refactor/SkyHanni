@@ -12,7 +12,7 @@ import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi
 import at.hannibal2.skyhanni.features.mining.fossilexcavator.FossilExcavatorAPI
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.features.rift.RiftAPI.motesNpcPrice
-import at.hannibal2.skyhanni.utils.ChatUtils
+import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.equalsOneOf
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils.getInventoryName
@@ -131,8 +131,7 @@ class HideNotClickableItems {
             event.toolTip.add("§7" + first.removeColor())
             event.toolTip.add("")
             if (hideReason == "") {
-                event.toolTip.add("§4No hide reason!")
-                ChatUtils.error("No hide reason for not clickable item!")
+                ErrorManager.skyHanniError("No hide reason for not clickable item!")
             } else {
                 event.toolTip.add("§c$hideReason")
                 if (config.itemsBypass) {
