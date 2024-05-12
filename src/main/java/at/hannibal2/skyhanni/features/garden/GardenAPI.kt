@@ -74,6 +74,8 @@ object GardenAPI {
             }
         }
 
+    private const val GARDEN_OVERFLOW_XP = 10000
+
     private val barnArea = BoundingBox(35.5, 70.0, -4.5, -32.5, 100.0, -46.5)
 
     // TODO USE SH-REPO
@@ -173,7 +175,7 @@ object GardenAPI {
     @Deprecated("use renderable list instead", ReplaceWith(""))
     fun MutableList<Any>.addCropIcon(
         crop: CropType,
-        scale: Double = NEUItems.itemFontSize,
+        scale: Double = NEUItems.ITEM_FONT_SIZE,
         highlight: Boolean = false,
     ) =
         addItemIcon(crop.icon.copy(), highlight, scale = scale)
@@ -181,7 +183,7 @@ object GardenAPI {
     // TODO rename to addCropIcon
     fun MutableList<Renderable>.addCropIconRenderable(
         crop: CropType,
-        scale: Double = NEUItems.itemFontSize,
+        scale: Double = NEUItems.ITEM_FONT_SIZE,
         highlight: Boolean = false,
     ) {
         addItemStack(crop.icon.copy(), highlight = highlight, scale = scale)
@@ -241,7 +243,7 @@ object GardenAPI {
         }
 
         while (tier < requestedLevel) {
-            totalExp += gardenOverflowExp
+            totalExp += GARDEN_OVERFLOW_XP
             tier++
             if (tier == requestedLevel) {
                 return totalExp
@@ -262,11 +264,11 @@ object GardenAPI {
             tier++
         }
         if (overflow) {
-            totalExp += gardenOverflowExp
+            totalExp += GARDEN_OVERFLOW_XP
 
             while (totalExp < gardenExp) {
                 tier++
-                totalExp += gardenOverflowExp
+                totalExp += GARDEN_OVERFLOW_XP
             }
         }
         return tier
@@ -280,5 +282,4 @@ object GardenAPI {
     }
 
     private var gardenExperience = listOf<Int>()
-    private const val gardenOverflowExp = 10000
 }

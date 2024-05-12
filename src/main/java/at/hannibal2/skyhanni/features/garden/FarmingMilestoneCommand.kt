@@ -18,10 +18,7 @@ object FarmingMilestoneCommand {
             return
         }
 
-        val enteredCrop = CropType.getByName(crop) ?: run {
-            ChatUtils.userError("Invalid crop type entered")
-            return
-        }
+        val enteredCrop = CropType.getByName(crop)
 
         val currentMilestone = current?.toIntOrNull()
         val targetMilestone = target?.toIntOrNull()
@@ -63,10 +60,7 @@ object FarmingMilestoneCommand {
             return
         }
 
-        val enteredCrop = CropType.getByName(crop) ?: run {
-            ChatUtils.userError("Invalid crop type entered.")
-            return
-        }
+        val enteredCrop = CropType.getByName(crop)
 
         val targetLevel = target?.formatIntOrUserError()
         if (targetLevel == null) {

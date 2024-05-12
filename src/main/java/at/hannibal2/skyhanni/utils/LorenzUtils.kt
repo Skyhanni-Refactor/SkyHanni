@@ -6,7 +6,6 @@ import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
 import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiEditSign
@@ -52,9 +51,6 @@ object LorenzUtils {
     val inHypixelLobby get() = onHypixel && HypixelData.inLobby
 
     val inLimbo get() = onHypixel && HypixelData.inLimbo
-
-    @Deprecated("Use DungeonAPI.inDungeon() instead", ReplaceWith("DungeonAPI.inDungeon()"))
-    val inDungeons get() = DungeonAPI.inDungeon()
 
     /**
      * Consider using [IslandType.isInIsland] instead
@@ -153,7 +149,7 @@ object LorenzUtils {
     fun fillTable(
         data: List<DisplayTableEntry>,
         padding: Int = 1,
-        itemScale: Double = NEUItems.itemFontSize,
+        itemScale: Double = NEUItems.ITEM_FONT_SIZE,
     ): Renderable {
         val sorted = data.sortedByDescending { it.sort }
 

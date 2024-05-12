@@ -173,12 +173,12 @@ object HolographicEntities {
         GlStateManager.enableRescaleNormal()
         GlStateManager.scale(-1f, -1f, 1f)
         GlStateManager.translate(0F, -1.5078125f, 0f)
-        val limbSwing: Float = 0F
-        val limbSwingAmount: Float = 0F
-        val ageInTicks: Float = 1_000_000.toFloat()
-        val netHeadYaw: Float = holographicEntity.interpolatedYaw(partialTicks)
-        val headPitch: Float = 0F
-        val scaleFactor: Float = 0.0625f
+        val limbSwing = 0F
+        val limbSwingAmount = 0F
+        val ageInTicks = 1_000_000.toFloat()
+        val netHeadYaw = holographicEntity.interpolatedYaw(partialTicks)
+        val headPitch = 0F
+        val scaleFactor = 0.0625f
         renderer.setBrightness_skyhanni(holographicEntity.entity, 0f, true)
         GlStateManager.color(1.0f, 1.0f, 1.0f, holographicness)
         GlStateManager.depthMask(false)

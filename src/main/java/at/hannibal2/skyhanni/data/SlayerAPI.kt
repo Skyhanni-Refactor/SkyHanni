@@ -34,10 +34,6 @@ object SlayerAPI {
 
     fun hasActiveSlayerQuest() = latestSlayerCategory != ""
 
-    fun getLatestProgressChangeTime() = if (latestSlayerProgress == "§eSlay the boss!") {
-        System.currentTimeMillis()
-    } else latestProgressChangeTime
-
     fun getItemNameAndPrice(internalName: NEUInternalName, amount: Int): Pair<String, Double> {
         val key = internalName to amount
         nameCache.getOrNull(key)?.let {

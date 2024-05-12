@@ -206,8 +206,6 @@ object GardenPlotAPI {
 
     fun Plot.isPlayerInside() = box.contains(McPlayer.pos)
 
-    fun closestCenterPlot(location: LorenzVec) = plots.find { it.box.contains(location) }?.middle
-
     fun Plot.sendTeleportTo() {
         if (isBarn()) HypixelCommands.teleportToPlot("barn")
         else HypixelCommands.teleportToPlot(name)

@@ -52,7 +52,7 @@ object BitsAPI {
             profileStorage?.boosterCookieExpiryTime = value?.toMillis()
         }
 
-    private const val defaultcookiebits = 4800
+    private const val DEFAULT_COOKIE_BITS = 4800
 
     private val bitsDataGroup = RepoPattern.group("data.bits")
 
@@ -193,7 +193,7 @@ object BitsAPI {
         }
 
         boosterCookieAte.matchMatcher(message) {
-            bitsAvailable += (defaultcookiebits * (currentFameRank?.bitsMultiplier ?: return)).toInt()
+            bitsAvailable += (DEFAULT_COOKIE_BITS * (currentFameRank?.bitsMultiplier ?: return)).toInt()
             val cookieTime = cookieBuffTime
             cookieBuffTime = if (cookieTime == null) SimpleTimeMark.now() + 4.days else cookieTime + 4.days
             sendBitsAvailableGainedEvent()

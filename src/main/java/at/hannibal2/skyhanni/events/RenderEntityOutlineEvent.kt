@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.events
 
 import at.hannibal2.skyhanni.utils.mc.McWorld
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.Entity
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.item.EntityItemFrame

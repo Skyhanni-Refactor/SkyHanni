@@ -180,7 +180,7 @@ enum class ScoreboardEvents(
     fun getLines(): List<String> = displayLine.get()
 
     companion object {
-        fun getEvent() = buildList<ScoreboardEvents?> {
+        fun getEvent() = buildList {
             if (eventsConfig.showAllActiveEvents) {
                 for (event in eventsConfig.eventEntries) {
                     if (event.showWhen()) {

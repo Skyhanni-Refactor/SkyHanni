@@ -76,7 +76,7 @@ object RepoPatternManager {
      */
     fun checkExclusivity(owner: RepoPatternKeyOwner, key: String) {
         synchronized(exclusivity) {
-            val previousOwner = exclusivity.get(key)
+            val previousOwner = exclusivity[key]
             if (previousOwner != owner && previousOwner != null) {
                 if (!config.tolerateDuplicateUsage)
                     crash("Non unique access to regex at \"$key\". First obtained by ${previousOwner.ownerClass} / ${previousOwner.property}, tried to use at ${owner.ownerClass} / ${owner.property}")
