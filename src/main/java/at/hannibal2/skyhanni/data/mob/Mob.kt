@@ -11,13 +11,13 @@ import at.hannibal2.skyhanni.utils.EntityUtils.cleanName
 import at.hannibal2.skyhanni.utils.EntityUtils.isCorrupted
 import at.hannibal2.skyhanni.utils.EntityUtils.isRunic
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
-import at.hannibal2.skyhanni.utils.LocationUtils.union
 import at.hannibal2.skyhanni.utils.MobUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.math.toBox
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.monster.EntityZombie
-import net.minecraft.util.AxisAlignedBB
 import java.awt.Color
 
 /**
@@ -78,7 +78,7 @@ class Mob(
     val hologram2 by hologram2Delegate
 
     private val extraEntitiesList = additionalEntities?.toMutableList() ?: mutableListOf()
-    private var relativeBoundingBox: AxisAlignedBB?
+    private var relativeBoundingBox: BoundingBox?
 
     val extraEntities: List<EntityLivingBase> = extraEntitiesList
 
@@ -126,9 +126,9 @@ class Mob(
         RenderLivingEntityHelper.removeCustomRender(baseEntity)
     }
 
-    val boundingBox: AxisAlignedBB
-        get() = relativeBoundingBox?.offset(baseEntity.posX, baseEntity.posY, baseEntity.posZ)
-            ?: baseEntity.entityBoundingBox
+    val boundingBox: BoundingBox
+        get() = relativeBoundingBox?.move(baseEntity.posX, baseEntity.posY, baseEntity.posZ)
+            ?: baseEntity.entityBoundingBox.toBox()
 
     init {
         removeExtraEntitiesFromChecking()
@@ -150,8 +150,9 @@ class Mob(
     }
 
     private fun makeRelativeBoundingBox() =
-        (baseEntity.entityBoundingBox.union(extraEntities.filter { it !is EntityArmorStand }
-            .mapNotNull { it.entityBoundingBox }))?.offset(-baseEntity.posX, -baseEntity.posY, -baseEntity.posZ)
+        baseEntity.entityBoundingBox.toBox()
+            .union(extraEntities.filter { it !is EntityArmorStand }.map { it.entityBoundingBox.toBox() })
+            .move(-baseEntity.posX, -baseEntity.posY, -baseEntity.posZ)
 
     fun fullEntityList() =
         baseEntity.toSingletonListOrEmpty() +

@@ -9,10 +9,9 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.RenderUtils
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemId
+import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.system.OS
-import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
@@ -22,7 +21,7 @@ object WorldEdit {
     private var leftPos = null as BlockPos?
     private var rightPos = null as BlockPos?
 
-    private fun funAABB(left: BlockPos, right: BlockPos) = AxisAlignedBB(
+    private fun funAABB(left: BlockPos, right: BlockPos) = BoundingBox(
         minOf(left.x, left.x + 1, right.x, right.x + 1).toDouble(),
         minOf(left.y, left.y + 1, right.y, right.y + 1).toDouble(),
         minOf(left.z, left.z + 1, right.z, right.z + 1).toDouble(),
@@ -74,21 +73,21 @@ object WorldEdit {
 
         leftPos?.let { l ->
             RenderUtils.drawWireframeBoundingBox_nea(
-                funAABB(l, l).expandBlock(),
+                funAABB(l, l).expandToEdge(),
                 Color.RED,
                 event.partialTicks
             )
         }
         rightPos?.let { r ->
             RenderUtils.drawWireframeBoundingBox_nea(
-                funAABB(r, r).expandBlock(),
+                funAABB(r, r).expandToEdge(),
                 Color.BLUE,
                 event.partialTicks
             )
         }
         aabb?.let {
             RenderUtils.drawFilledBoundingBox_nea(
-                it.expandBlock(),
+                it.expandToEdge(),
                 Color(Color.CYAN.withAlpha(60), true),
                 partialTicks = event.partialTicks,
                 renderRelativeToCamera = false

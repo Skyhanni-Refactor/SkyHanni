@@ -10,8 +10,8 @@ import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine_nea
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
 import at.hannibal2.skyhanni.utils.RenderUtils.outlineTopFace
+import at.hannibal2.skyhanni.utils.math.BoundingBox
 import net.minecraft.client.Minecraft
 import java.awt.Color
 import kotlin.time.Duration.Companion.seconds
@@ -113,7 +113,7 @@ class ParkourHelper(
                 val isMovingPlatform = location !in locations
                 if (isMovingPlatform && showEverything) continue
                 if (isMovingPlatform) {
-                    val aabb = axisAlignedBB(location).expandBlock()
+                    val aabb = axisAlignedBB(location)
                     event.drawFilledBoundingBox_nea(aabb, colorForIndex(index), .6f)
                 } else {
                     val aabb = axisAlignedBB(location)
@@ -148,7 +148,10 @@ class ParkourHelper(
         )
     }
 
-    private fun axisAlignedBB(loc: LorenzVec) = loc.boundingToOffset(platformSize, 1.0, platformSize).expandBlock()
+    private fun axisAlignedBB(loc: LorenzVec) = BoundingBox(
+        loc.x, loc.y, loc.z,
+        loc.x + platformSize, loc.y + 1.0, loc.z + platformSize
+    ).expandToEdge()
 
     private fun colorForIndex(index: Int) = if (rainbowColor) {
         RenderUtils.chromaColor(4.seconds, offset = -index / 12f, brightness = 0.7f)

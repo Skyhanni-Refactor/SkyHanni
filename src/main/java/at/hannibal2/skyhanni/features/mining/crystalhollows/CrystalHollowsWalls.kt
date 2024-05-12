@@ -4,14 +4,11 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils.getCorners
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
-import at.hannibal2.skyhanni.utils.RenderUtils.inflateBlock
+import at.hannibal2.skyhanni.utils.math.BoundingBox
 import net.minecraft.client.Minecraft
-import net.minecraft.util.AxisAlignedBB
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 
@@ -47,15 +44,15 @@ class CrystalHollowsWalls {
     private val yViewOffset get() = -Minecraft.getMinecraft().thePlayer.getEyeHeight().toDouble()
 
     // Yes Hypixel has misaligned the nucleus
-    private val nucleusBB = AxisAlignedBB(
+    private val nucleusBB = BoundingBox(
         463.0, heatHeight, 460.0,
         560.0, maxHeight, 563.0
     )
 
-    private val nucleusBBInflate = nucleusBB.inflateBlock(expandTimes)
-    private val nucleusBBExpand = nucleusBB.expandBlock(expandTimes)
+    private val nucleusBBInflate = nucleusBB.expand(LorenzVec.expandVector * -expandTimes)
+    private val nucleusBBExpand = nucleusBB.expand(LorenzVec.expandVector * expandTimes)
 
-    private val nucleusBBOffsetY get() = nucleusBB.offset(0.0, yViewOffset, 0.0)
+    private val nucleusBBOffsetY get() = nucleusBB.move(0.0, yViewOffset, 0.0)
 
     private fun Double.shiftPX() = this + LorenzVec.expandVector.x * expandTimes
     private fun Double.shiftNX() = this - LorenzVec.expandVector.x * expandTimes
@@ -72,7 +69,7 @@ class CrystalHollowsWalls {
         val position = RenderUtils.getViewerPos(event.partialTicks)
         if (position.y < heatHeight + yViewOffset) {
             drawHeat(event)
-        } else if (nucleusBBOffsetY.isVecInside(position.toVec3())) {
+        } else if (nucleusBBOffsetY.contains(position)) {
             if (!config.nucleus) return
             drawNucleus(event)
         } else if (position.x > middleX) {
@@ -122,63 +119,61 @@ class CrystalHollowsWalls {
     }
 
     private fun drawNucleus(event: LorenzRenderWorldEvent) {
-        val (southEastCorner, southWestCorner, northEastCorner, northWestCorner) = nucleusBBInflate
-            .getCorners(nucleusBBInflate.minY)
-        val (southWestTopCorner, southEastTopCorner, northEastTopCorner, northWestTopCorner) = nucleusBBInflate
-            .getCorners(nucleusBBInflate.maxY)
+        val (southEastB, southWestB, northEastB, northWestB) = nucleusBBInflate.getBottomCorners()
+        val (southWestT, southEastT, northEastT, northWestT) = nucleusBBInflate.getTopCorners()
 
         RenderUtils.QuadDrawer.draw3D(event.partialTicks) {
             draw(
-                southEastCorner,
-                southWestCorner,
-                northEastCorner,
+                southEastB,
+                southWestB,
+                northEastB,
                 Areas.HEAT.color
             )
             draw(
-                southEastCorner,
-                southEastTopCorner,
+                southEastB,
+                southEastT,
                 LorenzVec(nucleusBBInflate.minX, nucleusBBInflate.minY, middleZ),
                 Areas.JUNGLE.color
             )
             draw(
-                southEastCorner,
-                southEastTopCorner,
+                southEastB,
+                southEastT,
                 LorenzVec(middleX, nucleusBBInflate.minY, nucleusBBInflate.minZ),
                 Areas.JUNGLE.color
             )
             draw(
-                northWestCorner,
-                northWestTopCorner,
+                northWestB,
+                northWestT,
                 LorenzVec(nucleusBBInflate.maxX, nucleusBBInflate.minY, middleZ),
                 Areas.PRECURSOR.color
             )
             draw(
-                northWestCorner,
-                northWestTopCorner,
+                northWestB,
+                northWestT,
                 LorenzVec(middleX, nucleusBBInflate.minY, nucleusBBInflate.maxZ),
                 Areas.PRECURSOR.color
             )
             draw(
-                southWestCorner,
-                southWestTopCorner,
+                southWestB,
+                southWestT,
                 LorenzVec(nucleusBBInflate.minX, nucleusBBInflate.minY, middleZ),
                 Areas.GOBLIN.color,
             )
             draw(
-                southWestCorner,
-                southWestTopCorner,
+                southWestB,
+                southWestT,
                 LorenzVec(middleX, nucleusBBInflate.minY, nucleusBBInflate.maxZ),
                 Areas.GOBLIN.color
             )
             draw(
-                northEastCorner,
-                northEastTopCorner,
+                northEastB,
+                northEastT,
                 LorenzVec(nucleusBBInflate.maxX, nucleusBBInflate.minY, middleZ),
                 Areas.MITHRIL.color
             )
             draw(
-                northEastCorner,
-                northEastTopCorner,
+                northEastB,
+                northEastT,
                 LorenzVec(middleX, nucleusBBInflate.minY, nucleusBBInflate.minZ),
                 Areas.MITHRIL.color
             )

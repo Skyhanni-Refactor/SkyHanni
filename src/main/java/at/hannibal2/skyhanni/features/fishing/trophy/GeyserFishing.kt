@@ -13,7 +13,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
 import at.hannibal2.skyhanni.utils.SpecialColour
-import net.minecraft.util.AxisAlignedBB
+import at.hannibal2.skyhanni.utils.math.BoundingBox
 import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -25,7 +25,7 @@ class GeyserFishing {
     private val geyserOffset = LorenzVec(0.1f, 0.6f, 0.1f)
 
     private var geyser: LorenzVec? = null
-    private var geyserBox: AxisAlignedBB? = null
+    private var geyserBox: BoundingBox? = null
 
     @SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)
     fun onReceiveParticle(event: ReceiveParticleEvent) {
@@ -36,7 +36,7 @@ class GeyserFishing {
         geyser = event.location
         val potentialGeyser = geyser ?: return
 
-        geyserBox = AxisAlignedBB(
+        geyserBox = BoundingBox(
             potentialGeyser.x - 2, 118.0 - 0.1, potentialGeyser.z - 2,
             potentialGeyser.x + 2, 118.0 - 0.09, potentialGeyser.z + 2
         )

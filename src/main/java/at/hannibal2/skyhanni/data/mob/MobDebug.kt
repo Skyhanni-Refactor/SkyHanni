@@ -5,13 +5,11 @@ import at.hannibal2.skyhanni.config.features.dev.DebugMobConfig.HowToShow
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.MobEvent
 import at.hannibal2.skyhanni.test.command.CopyNearbyEntitiesCommand.getMobInfo
-import at.hannibal2.skyhanni.utils.LocationUtils.getTopCenter
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzDebug
 import at.hannibal2.skyhanni.utils.MobUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -32,11 +30,11 @@ class MobDebug {
 
     private fun MobData.MobSet.highlight(event: LorenzRenderWorldEvent, color: (Mob) -> (LorenzColor)) =
         this.filter { it.isNotInvisible() }.forEach {
-            event.drawFilledBoundingBox_nea(it.boundingBox.expandBlock(), color.invoke(it).toColor(), 0.3f)
+            event.drawFilledBoundingBox_nea(it.boundingBox.expandToEdge(), color.invoke(it).toColor(), 0.3f)
         }
 
     private fun MobData.MobSet.showName(event: LorenzRenderWorldEvent) =
-        this.filter { it.canBeSeen() && it.isNotInvisible() }.map { it.boundingBox.getTopCenter() to it.name }.forEach {
+        this.filter { it.canBeSeen() && it.isNotInvisible() }.map { it.boundingBox.topCenter() to it.name }.forEach {
             event.drawString(
                 it.first.add(y = 0.5), "§5" + it.second, seeThroughBlocks = true
             )
@@ -78,7 +76,7 @@ class MobDebug {
         }
         if (config.showRayHit) {
             lastRayHit?.let {
-                event.drawFilledBoundingBox_nea(it.boundingBox.expandBlock(), LorenzColor.GOLD.toColor(), 0.5f)
+                event.drawFilledBoundingBox_nea(it.boundingBox.expandToEdge(), LorenzColor.GOLD.toColor(), 0.5f)
             }
         }
     }

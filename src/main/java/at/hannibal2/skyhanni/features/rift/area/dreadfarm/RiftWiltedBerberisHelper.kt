@@ -13,7 +13,7 @@ import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
+import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
@@ -129,7 +129,13 @@ class RiftWiltedBerberisHelper {
         }
     }
 
-    private fun axisAlignedBB(loc: LorenzVec) = loc.add(0.1, -0.1, 0.1).boundingToOffset(0.8, 1.0, 0.8).expandBlock()
+    private fun axisAlignedBB(loc: LorenzVec): BoundingBox {
+        val pos = loc.add(0.1, -0.1, 0.1)
+        return BoundingBox(
+            pos.x, loc.y, pos.z,
+            pos.x + 0.8, loc.y + 1.0, pos.z + 0.8
+        ).expandToEdge()
+    }
 
     private fun LorenzVec.fixLocation(wiltedBerberis: WiltedBerberis): LorenzVec {
         val x = x - 0.5

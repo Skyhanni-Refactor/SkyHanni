@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.utils.mc
 
 import at.hannibal2.skyhanni.data.mob.MobFilter.isRealPlayer
-import at.hannibal2.skyhanni.utils.EntityUtils.isNPC
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
 import at.hannibal2.skyhanni.utils.LorenzVec
+import at.hannibal2.skyhanni.utils.math.BoundingBox
 import net.minecraft.block.Block
 import net.minecraft.block.properties.IProperty
 import net.minecraft.block.state.IBlockState
@@ -52,17 +52,20 @@ object McWorld {
 
     fun getEntity(id: Int): Entity? = world?.getEntityByID(id)
 
-    inline fun <reified R : Entity> getEntitiesOf(): Sequence<R> =
-        entities.asSequence().filterIsInstance<R>()
+    inline fun <reified R : Entity> getEntitiesOf(): List<R> =
+        entities.filterIsInstance<R>()
 
-    inline fun <reified T : Entity> getEntitiesNear(entity: Entity, radius: Double): Sequence<T> =
+    inline fun <reified T : Entity> getEntitiesNear(entity: Entity, radius: Double): List<T> =
         getEntitiesOf<T>().filter { it.distanceTo(entity) < radius }
 
-    inline fun <reified T : Entity> getEntitiesNear(pos: LorenzVec, radius: Double): Sequence<T> =
+    inline fun <reified T : Entity> getEntitiesNear(pos: LorenzVec, radius: Double): List<T> =
         getEntitiesOf<T>().filter { it.distanceTo(pos) < radius }
 
-    inline fun <reified T : Entity> getEntitiesNearPlayer(radius: Double): Sequence<T> =
+    inline fun <reified T : Entity> getEntitiesNearPlayer(radius: Double): List<T> =
         getEntitiesOf<T>().filter { it.distanceTo(McPlayer.pos) < radius }
+
+    inline fun <reified T : Entity> getEntitiesInBox(box: BoundingBox): List<T> =
+        world?.getEntitiesWithinAABB(T::class.java, box.toAABB()) ?: emptyList()
 
     // Scoreboard Related Functions
 

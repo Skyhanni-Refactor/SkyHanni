@@ -9,8 +9,8 @@ import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.ParkourHelper
 import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -72,9 +72,12 @@ class ParkourWaypointSaver {
         if (locations.size > 1) {
             parkourHelper?.render(event)
         } else {
-            for (location in locations) {
-                val aabb = location.boundingToOffset(1.0, 1.0, 1.0).expandBlock()
-                event.drawFilledBoundingBox_nea(aabb, LorenzColor.GREEN.toColor(), 1f)
+            for (loc in locations) {
+                val box = BoundingBox(
+                    loc.x, loc.y, loc.z,
+                    loc.x + 1, loc.y + 1, loc.z + 1
+                ).expandToEdge()
+                event.drawFilledBoundingBox_nea(box, LorenzColor.GREEN.toColor(), 1f)
             }
         }
     }

@@ -8,7 +8,6 @@ import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceSqToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzColor.Companion.toLorenzColor
@@ -17,6 +16,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockStateAt
 import net.minecraft.block.BlockStainedGlass
@@ -25,7 +25,6 @@ import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.potion.Potion
-import net.minecraft.util.AxisAlignedBB
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object DungeonLividFinder {
@@ -51,7 +50,7 @@ object DungeonLividFinder {
         if (!config.enabled) return
 
         val dyeColor = blockLocation.getBlockStateAt().getValue(BlockStainedGlass.COLOR)
-        color = dyeColor.toLorenzColor() ?: error("No color found for dye color `$dyeColor`")
+        color = dyeColor.toLorenzColor()
 
         val color = color ?: return
         val chatColor = color.getChatColor()
@@ -60,8 +59,8 @@ object DungeonLividFinder {
             .firstOrNull { it.name.startsWith("${chatColor}﴾ ${chatColor}§lLivid") }
         val lividArmorStand = lividArmorStand ?: return
 
-        val aabb = with(lividArmorStand) {
-            AxisAlignedBB(
+        val box = with(lividArmorStand) {
+            BoundingBox(
                 posX - 0.5,
                 posY - 2,
                 posZ - 0.5,
@@ -70,8 +69,8 @@ object DungeonLividFinder {
                 posZ + 0.5
             )
         }
-        val world = Minecraft.getMinecraft().theWorld
-        val newLivid = world.getEntitiesWithinAABB(EntityOtherPlayerMP::class.java, aabb)
+
+        val newLivid = McWorld.getEntitiesInBox<EntityOtherPlayerMP>(box)
             .takeIf { it.size == 1 }?.firstOrNull() ?: return
         if (!newLivid.name.contains("Livid")) return
 

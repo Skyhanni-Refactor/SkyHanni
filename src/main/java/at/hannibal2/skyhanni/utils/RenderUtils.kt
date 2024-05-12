@@ -18,7 +18,7 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.zipWithNext3
 import at.hannibal2.skyhanni.utils.ColorUtils.getFirstColorCode
 import at.hannibal2.skyhanni.utils.LorenzColor.Companion.toLorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils.getCorners
+import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.renderXAligned
 import at.hannibal2.skyhanni.utils.shader.ShaderManager
@@ -37,7 +37,6 @@ import net.minecraft.enchantment.Enchantment
 import net.minecraft.entity.Entity
 import net.minecraft.inventory.Slot
 import net.minecraft.item.ItemStack
-import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.MathHelper
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
@@ -164,7 +163,7 @@ object RenderUtils {
         GlStateManager.disableDepth()
         GlStateManager.disableCull()
         drawFilledBoundingBox(
-            AxisAlignedBB(x, y, z, x + 1, y + 1, z + 1).expandBlock(),
+            BoundingBox(x, y, z, x + 1, y + 1, z + 1).expandToEdge(),
             color,
             realAlpha
         )
@@ -194,9 +193,6 @@ object RenderUtils {
         }
 
     fun getViewerPos(partialTicks: Float) = exactLocation(Minecraft.getMinecraft().renderViewEntity, partialTicks)
-
-    fun AxisAlignedBB.expandBlock(n: Int = 1) = expand(LorenzVec.expandVector * n)
-    fun AxisAlignedBB.inflateBlock(n: Int = 1) = expand(LorenzVec.expandVector * -n)
 
     /**
      * Taken from NotEnoughUpdates under Creative Commons Attribution-NonCommercial 3.0
@@ -1045,7 +1041,7 @@ object RenderUtils {
         return LorenzVec(x, y, z)
     }
 
-    fun drawFilledBoundingBox(aabb: AxisAlignedBB, c: Color, alphaMultiplier: Float = 1f) {
+    fun drawFilledBoundingBox(aabb: BoundingBox, c: Color, alphaMultiplier: Float = 1f) {
         GlStateManager.enableBlend()
         GlStateManager.disableLighting()
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
@@ -1112,7 +1108,7 @@ object RenderUtils {
 
     // TODO nea please merge with 'drawFilledBoundingBox'
     fun LorenzRenderWorldEvent.drawFilledBoundingBox_nea(
-        aabb: AxisAlignedBB,
+        aabb: BoundingBox,
         c: Color,
         alphaMultiplier: Float = 1f,
         /**
@@ -1126,7 +1122,7 @@ object RenderUtils {
     }
 
     fun drawWireframeBoundingBox_nea(
-        aabb: AxisAlignedBB,
+        aabb: BoundingBox,
         color: Color,
         partialTicks: Float,
     ) {
@@ -1136,7 +1132,7 @@ object RenderUtils {
         GlStateManager.disableTexture2D()
         GlStateManager.disableCull()
         val vp = getViewerPos(partialTicks)
-        val effectiveAABB = AxisAlignedBB(
+        val effectiveAABB = BoundingBox(
             aabb.minX - vp.x, aabb.minY - vp.y, aabb.minZ - vp.z,
             aabb.maxX - vp.x, aabb.maxY - vp.y, aabb.maxZ - vp.z,
         )
@@ -1407,7 +1403,7 @@ object RenderUtils {
     }
 
     fun drawFilledBoundingBox_nea(
-        aabb: AxisAlignedBB,
+        aabb: BoundingBox,
         c: Color,
         alphaMultiplier: Float = 1f,
         /**
@@ -1426,7 +1422,7 @@ object RenderUtils {
         GlStateManager.disableCull()
         val effectiveAABB = if (!renderRelativeToCamera) {
             val vp = getViewerPos(partialTicks)
-            AxisAlignedBB(
+            BoundingBox(
                 aabb.minX - vp.x, aabb.minY - vp.y, aabb.minZ - vp.z,
                 aabb.maxX - vp.x, aabb.maxY - vp.y, aabb.maxZ - vp.z,
             )
@@ -1503,12 +1499,12 @@ object RenderUtils {
     }
 
     fun LorenzRenderWorldEvent.outlineTopFace(
-        boundingBox: AxisAlignedBB,
+        boundingBox: BoundingBox,
         lineWidth: Int,
         colour: Color,
         depth: Boolean,
     ) {
-         val (cornerOne, cornerTwo, cornerThree, cornerFour, ) = boundingBox.getCorners(boundingBox.maxY)
+         val (cornerOne, cornerTwo, cornerThree, cornerFour, ) = boundingBox.getTopCorners()
         this.draw3DLine(cornerOne, cornerTwo, colour, lineWidth, depth)
         this.draw3DLine(cornerTwo, cornerThree, colour, lineWidth, depth)
         this.draw3DLine(cornerThree, cornerFour, colour, lineWidth, depth)

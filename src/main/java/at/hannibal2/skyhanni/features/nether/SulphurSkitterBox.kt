@@ -8,16 +8,15 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI
+import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColorInt
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RenderUtils
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
-import at.hannibal2.skyhanni.utils.SpecialColour
+import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.init.Blocks
-import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
@@ -62,10 +61,11 @@ class SulphurSkitterBox {
     fun onRenderWorld(event: LorenzRenderWorldEvent) {
         if (!isEnabled()) return
         closestBlock?.let {
-            if (it.toLorenzVec().distanceToPlayer() >= 50) return
-            val pos1 = it.add(-radius, -radius, -radius)
-            val pos2 = it.add(radius, radius, radius)
-            val axis = AxisAlignedBB(pos1, pos2).expandBlock()
+            val vec = it.toLorenzVec()
+            if (vec.distanceToPlayer() >= 50) return
+            val pos1 = vec.add(-radius, -radius, -radius)
+            val pos2 = vec.add(radius, radius, radius)
+            val axis = BoundingBox(pos1, pos2).expandToEdge()
 
             drawBox(axis, event.partialTicks)
         }
@@ -75,8 +75,8 @@ class SulphurSkitterBox {
         return spongeBlocks.minByOrNull { it.toLorenzVec().distanceToPlayer() }
     }
 
-    private fun drawBox(axis: AxisAlignedBB, partialTicks: Float) {
-        val color = Color(SpecialColour.specialToChromaRGB(config.boxColor), true)
+    private fun drawBox(axis: BoundingBox, partialTicks: Float) {
+        val color = Color(config.boxColor.toChromaColorInt(), true)
         when (config.boxType) {
             SulphurSkitterBoxConfig.BoxType.FULL -> {
                 RenderUtils.drawFilledBoundingBox_nea(

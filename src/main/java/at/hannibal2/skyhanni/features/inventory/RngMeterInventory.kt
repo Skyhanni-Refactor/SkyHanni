@@ -22,7 +22,7 @@ class RngMeterInventory {
 
     private val meterPattern by RepoPattern.pattern(
         "inventory.rngmeter",
-        "Catacombs (?<floor>\\w+)",
+        "§8Catacombs (?<floor>\\w+)",
     )
 
     @SubscribeEvent

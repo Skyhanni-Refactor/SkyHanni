@@ -3,9 +3,8 @@ package at.hannibal2.skyhanni.test
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
+import at.hannibal2.skyhanni.utils.math.BoundingBox
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.util.AxisAlignedBB
 import java.awt.Color
 
 object GriffinUtils {
@@ -30,10 +29,10 @@ object GriffinUtils {
             GlStateManager.disableCull()
         }
         RenderUtils.drawFilledBoundingBox(
-            AxisAlignedBB(
+            BoundingBox(
                 x - extraSize, y - extraSizeBottomY, z - extraSize,
                 x + 1 + extraSize, y + 1 + extraSizeTopY, z + 1 + extraSize
-            ).expandBlock(),
+            ).expandToEdge(),
             color,
             (0.1f + 0.005f * distSq.toFloat()).coerceAtLeast(0.2f)
         )

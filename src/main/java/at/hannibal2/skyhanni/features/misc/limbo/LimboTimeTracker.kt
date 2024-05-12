@@ -12,14 +12,14 @@ import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.MessageSendToServerEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LocationUtils.isPlayerInside
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.client.Minecraft
-import net.minecraft.util.AxisAlignedBB
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -39,7 +39,7 @@ object LimboTimeTracker {
     private const val FIRE_MULTIPLIER = 1.01F
     private var onFire = false
 
-    private val bedwarsLobbyLimbo = AxisAlignedBB(-662.0, 43.0, -76.0, -619.0, 86.0, -27.0)
+    private val bedwarsLobbyLimbo = BoundingBox(-662.0, 43.0, -76.0, -619.0, 86.0, -27.0)
 
     private var doMigrate = false
     private var unmigratedPB = 0
@@ -72,7 +72,7 @@ object LimboTimeTracker {
         }
         val lobbyName: String? = HypixelData.locrawData?.get("lobbyname")?.asString
         if (lobbyName.toString().startsWith("bedwarslobby")) {
-            if (bedwarsLobbyLimbo.isPlayerInside()) {
+            if (bedwarsLobbyLimbo.contains(McPlayer.pos)) {
                 if (inFakeLimbo) return
                 limboJoinTime = SimpleTimeMark.now()
                 inLimbo = true

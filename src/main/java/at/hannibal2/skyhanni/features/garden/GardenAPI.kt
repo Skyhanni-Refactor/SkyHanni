@@ -32,7 +32,6 @@ import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
-import at.hannibal2.skyhanni.utils.LocationUtils.isPlayerInside
 import at.hannibal2.skyhanni.utils.LorenzRarity
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -41,13 +40,14 @@ import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.RenderUtils.addItemIcon
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getCultivatingCounter
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getHoeCounter
+import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld.checkProperty
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.block.properties.PropertyInteger
 import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
 import net.minecraft.network.play.client.C09PacketHeldItemChange
-import net.minecraft.util.AxisAlignedBB
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -74,7 +74,7 @@ object GardenAPI {
             }
         }
 
-    private val barnArea = AxisAlignedBB(35.5, 70.0, -4.5, -32.5, 100.0, -46.5)
+    private val barnArea = BoundingBox(35.5, 70.0, -4.5, -32.5, 100.0, -46.5)
 
     // TODO USE SH-REPO
     private val otherToolsList = listOf(
@@ -109,7 +109,7 @@ object GardenAPI {
     fun onTick(event: LorenzTickEvent) {
         if (!inGarden()) return
         if (event.isMod(10, 1)) {
-            inBarn = barnArea.isPlayerInside()
+            inBarn = barnArea.contains(McPlayer.pos)
 
             // We ignore random hypixel moments
             Minecraft.getMinecraft().currentScreen ?: return

@@ -8,8 +8,9 @@ import at.hannibal2.skyhanni.utils.LocationUtils.canBeSeen
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.LorenzUtils.derpy
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.block.state.IBlockState
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
@@ -17,7 +18,6 @@ import net.minecraft.entity.monster.EntityEnderman
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.potion.Potion
-import net.minecraft.util.AxisAlignedBB
 import net.minecraftforge.client.event.RenderLivingEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -77,12 +77,9 @@ object EntityUtils {
     }
 
     private fun getArmorStandsInRadius(center: LorenzVec, radius: Double): List<EntityArmorStand> {
-        val a = center.add(-radius, -radius - 3, -radius).toBlockPos()
-        val b = center.add(radius, radius + 3, radius).toBlockPos()
-        val alignedBB = AxisAlignedBB(a, b)
-        val clazz = EntityArmorStand::class.java
-        val worldObj = Minecraft.getMinecraft()?.theWorld ?: return emptyList()
-        return worldObj.getEntitiesWithinAABB(clazz, alignedBB)
+        val a = center.add(-radius, -radius - 3, -radius)
+        val b = center.add(radius, radius + 3, radius)
+        return McWorld.getEntitiesInBox<EntityArmorStand>(BoundingBox(a, b))
     }
 
     fun EntityLivingBase.hasBossHealth(health: Int): Boolean = this.hasMaxHealth(health, true)

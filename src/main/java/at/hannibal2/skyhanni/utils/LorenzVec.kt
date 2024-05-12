@@ -4,7 +4,6 @@ import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.Entity
 import net.minecraft.network.play.server.S2APacketParticles
-import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
 import net.minecraft.util.Rotations
 import net.minecraft.util.Vec3
@@ -168,16 +167,11 @@ data class LorenzVec(
         return LorenzVec(x, y, z)
     }
 
-    fun boundingToOffset(offX: Double, offY: Double, offZ: Double) =
-        AxisAlignedBB(x, y, z, x + offX, y + offY, z + offZ)
-
     fun scale(scalar: Double): LorenzVec = LorenzVec(scalar * x, scalar * y, scalar * z)
 
     fun applyTranslationToGL() {
         GlStateManager.translate(x, y, z)
     }
-
-    fun axisAlignedTo(other: LorenzVec) = AxisAlignedBB(x, y, z, other.x, other.y, other.z)
 
     fun up(offset: Double): LorenzVec = copy(y = y + offset)
 
@@ -256,7 +250,3 @@ fun Array<Double>.toLorenzVec(): LorenzVec {
 }
 
 fun RenderUtils.translate(vec: LorenzVec) = GlStateManager.translate(vec.x, vec.y, vec.z)
-
-fun AxisAlignedBB.expand(vec: LorenzVec): AxisAlignedBB = this.expand(vec.x, vec.y, vec.z)
-
-fun AxisAlignedBB.expand(amount: Double): AxisAlignedBB = this.expand(amount, amount, amount)

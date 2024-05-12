@@ -8,15 +8,14 @@ import at.hannibal2.skyhanni.features.misc.LockMouseLook
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LocationUtils.isInside
-import at.hannibal2.skyhanni.utils.LocationUtils.isPlayerInside
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.annotations.Expose
-import net.minecraft.util.AxisAlignedBB
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 import kotlin.math.floor
@@ -81,7 +80,7 @@ object GardenPlotAPI {
         return plots.firstOrNull { it.isPlayerInside() }
     }
 
-    class Plot(val id: Int, var inventorySlot: Int, val box: AxisAlignedBB, val middle: LorenzVec)
+    class Plot(val id: Int, var inventorySlot: Int, val box: BoundingBox, val middle: LorenzVec)
 
     class PlotData(
         @Expose
@@ -205,9 +204,9 @@ object GardenPlotAPI {
 
     fun Plot.isBarn() = id == 0
 
-    fun Plot.isPlayerInside() = box.isPlayerInside()
+    fun Plot.isPlayerInside() = box.contains(McPlayer.pos)
 
-    fun closestCenterPlot(location: LorenzVec) = plots.find { it.box.isInside(location) }?.middle
+    fun closestCenterPlot(location: LorenzVec) = plots.find { it.box.contains(location) }?.middle
 
     fun Plot.sendTeleportTo() {
         if (isBarn()) HypixelCommands.teleportToPlot("barn")
@@ -234,7 +233,7 @@ object GardenPlotAPI {
                 val a = LorenzVec(minX, 0.0, minY)
                 val b = LorenzVec(maxX, 256.0, maxY)
                 val middle = a.interpolate(b, 0.5).copy(y = 10.0)
-                val box = a.axisAlignedTo(b).expand(0.0001, 0.0, 0.0001)
+                val box = BoundingBox(a, b).expand(0.0001, 0.0, 0.0001)
                 list.add(Plot(id, slot, box, middle))
                 slot++
             }
