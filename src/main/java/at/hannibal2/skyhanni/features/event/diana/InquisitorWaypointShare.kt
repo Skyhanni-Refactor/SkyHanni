@@ -9,6 +9,8 @@ import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
+import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -213,7 +215,7 @@ object InquisitorWaypointShare {
             return
         }
         inquisitor = -1
-        ChatUtils.sendCommandToServer("pc Inquisitor dead!")
+        HypixelCommands.partyChat("pc Inquisitor dead!")
     }
 
     fun sendInquisitor() {
@@ -240,7 +242,7 @@ object InquisitorWaypointShare {
         val x = location.x.toInt()
         val y = location.y.toInt()
         val z = location.z.toInt()
-        ChatUtils.sendCommandToServer("pc x: $x, y: $y, z: $z ")
+        HypixelCommands.partyChat("x: $x, y: $y, z: $z ")
     }
 
     @SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)

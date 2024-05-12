@@ -6,9 +6,9 @@ import at.hannibal2.skyhanni.data.FriendAPI
 import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.events.MessageSendToServerEvent
 import at.hannibal2.skyhanni.features.misc.limbo.LimboTimeTracker
-import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.mc.McWorld
+import at.hannibal2.skyhanni.utils.HypixelCommands
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object PartyCommands {
@@ -18,29 +18,31 @@ object PartyCommands {
     fun kickOffline() {
         if (!config.shortCommands) return
         if (PartyAPI.partyMembers.isEmpty()) return
-        ChatUtils.sendCommandToServer("party kickoffline")
+        HypixelCommands.partyKickOffline()
     }
 
     fun disband() {
         if (!config.shortCommands) return
         if (PartyAPI.partyMembers.isEmpty()) return
-        ChatUtils.sendCommandToServer("party disband")
+        HypixelCommands.partyDisband()
     }
 
     fun warp() {
         if (!config.shortCommands) return
         if (PartyAPI.partyMembers.isEmpty()) return
-        ChatUtils.sendCommandToServer("party warp")
+        HypixelCommands.partyWarp()
     }
 
     fun kick(args: Array<String>) {
         if (!config.shortCommands) return
         if (PartyAPI.partyMembers.isEmpty()) return
         if (args.isEmpty()) return
-        if (args.size > 1 && config.partyKickReason) {
-            ChatUtils.sendCommandToServer("pc Kicking ${args[0]}: ${args.drop(1).joinToString(" ").trim()}")
+        val kickedPlayer = args[0]
+        val kickedReason = args.drop(1).joinToString(" ").trim()
+        if (kickedReason.isNotEmpty() && config.partyKickReason) {
+            HypixelCommands.partyChat("Kicking $kickedPlayer: $kickedReason")
         }
-        ChatUtils.sendCommandToServer("party kick ${args[0]}")
+        HypixelCommands.partyKick(kickedPlayer)
     }
 
     fun transfer(args: Array<String>) {
@@ -49,19 +51,19 @@ object PartyCommands {
                 LimboTimeTracker.printStats(true)
                 return
             }
-            ChatUtils.sendCommandToServer("pt")
+            HypixelCommands.playtime()
             return
         }
         if (!config.shortCommands) return
         if (PartyAPI.partyMembers.isEmpty()) return
-        ChatUtils.sendCommandToServer("party transfer ${args[0]}")
+        HypixelCommands.partyTransfer(args[0])
     }
 
     fun promote(args: Array<String>) {
         if (!config.shortCommands) return
         if (PartyAPI.partyMembers.isEmpty()) return
         if (args.isEmpty()) return
-        ChatUtils.sendCommandToServer("party promote ${args[0]}")
+        HypixelCommands.partyPromote(args[0])
     }
 
     @SubscribeEvent
@@ -74,14 +76,14 @@ object PartyCommands {
         ) {
             return
         }
-        val args = event.message.split(" ")
-        if (args.size < 3) return
-        val kickedPlayer = args[2]
-        val kickReason = args.drop(3).joinToString(" ").trim()
+        val args = event.message.substringAfter("kick").trim().split(" ")
+        if (args.isEmpty()) return
+        val kickedPlayer = args[0]
+        val kickReason = args.drop(1).joinToString(" ").trim()
         if (kickReason.isEmpty()) return
         event.cancel()
-        ChatUtils.sendCommandToServer("pc Kicking $kickedPlayer: $kickReason")
-        ChatUtils.sendCommandToServer("p kick $kickedPlayer")
+        HypixelCommands.partyChat("Kicking $kickedPlayer: $kickReason")
+        HypixelCommands.partyKick(kickedPlayer)
     }
 
     fun customTabComplete(command: String): List<String>? {
