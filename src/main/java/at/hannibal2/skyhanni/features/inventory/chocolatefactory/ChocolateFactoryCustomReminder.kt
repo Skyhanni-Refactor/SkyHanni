@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.utils.ChatUtils
+import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -134,7 +135,11 @@ object ChocolateFactoryCustomReminder {
         if (configUpgradeWarnings.upgradeWarningSound) {
             McSound.BEEP.play()
         }
-        ChatUtils.chat("You can now purchase §f$targetName §ein Chocolate factory!")
+        ChatUtils.clickableChat(
+            "You can now purchase §f$targetName §ein Chocolate factory!", onClick = {
+                HypixelCommands.chocolateFactory()
+            }
+        )
     }
 
     private fun reset() {
