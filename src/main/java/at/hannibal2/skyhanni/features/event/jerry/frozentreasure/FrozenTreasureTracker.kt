@@ -150,7 +150,7 @@ object FrozenTreasureTracker {
         addAsSingletonList("")
     }
 
-    fun formatNumber(amount: Number): String {
+    private fun formatNumber(amount: Number): String {
         if (amount is Int) return amount.addSeparators()
         if (amount is Long) return NumberUtil.format(amount)
         return "$amount"

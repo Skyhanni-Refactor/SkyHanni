@@ -33,8 +33,8 @@ object EnigmaSoulWaypoints {
     private val config get() = RiftAPI.config.enigmaSoulWaypoints
     private var inInventory = false
     private var soulLocations = mapOf<String, LorenzVec>()
-    private val trackedSouls = mutableListOf<String>()
-    private val inventoryUnfound = mutableListOf<String>()
+    private val trackedSouls = mutableSetOf<String>()
+    private val inventoryUnfound = mutableSetOf<String>()
     private var adding = true
 
     private val item by lazy {

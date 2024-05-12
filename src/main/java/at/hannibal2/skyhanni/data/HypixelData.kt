@@ -51,10 +51,6 @@ object HypixelData {
         "serverid.tablist",
         " Server: §r§8(?<serverid>\\S+)"
     )
-    private val lobbyTypePattern by patternGroup.pattern(
-        "lobbytype",
-        "(?<lobbyType>.*lobby)\\d+"
-    )
     private val playerAmountPattern by patternGroup.pattern(
         "playeramount",
         "^\\s*(?:§.)+Players (?:§.)+\\((?<amount>\\d+)\\)\\s*$"

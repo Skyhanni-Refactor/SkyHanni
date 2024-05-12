@@ -249,11 +249,11 @@ object IslandExceptions {
         } ?: MobData.MobResult.somethingWentWrong
     }
 
-    private const val ratSearchStart = 1
-    private const val ratSearchUpTo = 11
+    private const val RAT_SEARCH_START = 1
+    private const val RAT_SEARCH_UP_TO = 11
 
     private fun ratHandler(baseEntity: EntityZombie, nextEntity: EntityLivingBase?): MobData.MobResult? =
-        generateSequence(ratSearchStart) { it + 1 }.take(ratSearchUpTo - ratSearchStart + 1).map { i ->
+        generateSequence(RAT_SEARCH_START) { it + 1 }.take(RAT_SEARCH_UP_TO - RAT_SEARCH_START + 1).map { i ->
             MobUtils.getArmorStand(
                 baseEntity, i
             )

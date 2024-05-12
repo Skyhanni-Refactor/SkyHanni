@@ -213,9 +213,9 @@ object NEUItems {
     fun isVanillaItem(item: ItemStack): Boolean =
         manager.auctionManager.isVanillaItem(item.getInternalName().asString())
 
-    const val itemFontSize = 2.0 / 3.0
+    const val ITEM_FONT_SIZE = 2.0 / 3.0
 
-    fun ItemStack.renderOnScreen(x: Float, y: Float, scaleMultiplier: Double = itemFontSize) {
+    fun ItemStack.renderOnScreen(x: Float, y: Float, scaleMultiplier: Double = ITEM_FONT_SIZE) {
         val item = checkBlinkItem()
         val isSkull = item.item === Items.skull
 
@@ -251,14 +251,14 @@ object NEUItems {
 
     private object AdjustStandardItemLighting {
 
-        private const val lightScaling = 2.47f // Adjust as needed
-        private const val g = 0.6f // Original Value taken from RenderHelper
-        private const val lightIntensity = lightScaling * g
+        private const val LIGHT_SCALING = 2.47f // Adjust as needed
+        private const val GREY_INTENSITY = 0.6f // Original Value taken from RenderHelper
+        private const val LIGHT_INTENSITY = LIGHT_SCALING * GREY_INTENSITY
         private val itemLightBuffer = GLAllocation.createDirectFloatBuffer(16)
 
         init {
             itemLightBuffer.clear()
-            itemLightBuffer.put(lightIntensity).put(lightIntensity).put(lightIntensity).put(1.0f)
+            itemLightBuffer.put(LIGHT_INTENSITY).put(LIGHT_INTENSITY).put(LIGHT_INTENSITY).put(1.0f)
             itemLightBuffer.flip()
         }
 

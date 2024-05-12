@@ -33,6 +33,7 @@ public class RiftAreasConfig {
     @Expose
     public MirrorVerseConfig mirrorverse = new MirrorVerseConfig();
 
+//        These are here in case we add features for these later
 //        @Expose
 //        @ConfigOption(name = "Village Plaza", desc = "")
 //        @Accordion
@@ -53,6 +54,7 @@ public class RiftAreasConfig {
     @Accordion
     public StillgoreChateauConfig stillgoreChateau = new StillgoreChateauConfig();
 
+//        These are here in case we add features for these later
 //        @Expose
 //        @ConfigOption(name = "Mountaintop", desc = "")
 //        @Accordion

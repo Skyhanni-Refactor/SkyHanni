@@ -53,7 +53,7 @@ object FishingAPI {
         lastCastTime = SimpleTimeMark.now()
         bobber = entity
         bobberHasTouchedWater = false
-        FishingBobberCastEvent(entity).postAndCatch()
+        FishingBobberCastEvent().postAndCatch()
     }
 
     private fun resetBobber() {

@@ -7,7 +7,6 @@ import at.hannibal2.skyhanni.features.misc.MarkedPlayerManager
 import at.hannibal2.skyhanni.utils.StringUtils.applyIfPossible
 import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
-import net.minecraft.util.ChatComponentText
 import net.minecraft.util.IChatComponent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 

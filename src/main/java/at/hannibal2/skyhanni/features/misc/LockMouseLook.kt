@@ -16,13 +16,13 @@ object LockMouseLook {
     private val config get() = SkyHanniMod.feature.misc
     private val storage get() = SkyHanniMod.feature.storage
     var lockedMouse = false
-    private const val lockedPosition = -1F / 3F
+    private const val LOCKED_POSITION = -1F / 3F
 
     @SubscribeEvent
     fun onWorldChange(event: LorenzWorldChangeEvent) {
         if (lockedMouse) toggleLock()
         val gameSettings = Minecraft.getMinecraft().gameSettings
-        if (gameSettings.mouseSensitivity == lockedPosition) {
+        if (gameSettings.mouseSensitivity == LOCKED_POSITION) {
             gameSettings.mouseSensitivity = storage.savedMouselockedSensitivity
             ChatUtils.chat("§bMouse rotation is now unlocked because you left it locked.")
         }
@@ -43,7 +43,7 @@ object LockMouseLook {
 
         if (lockedMouse) {
             storage.savedMouselockedSensitivity = mouseSensitivity
-            gameSettings.mouseSensitivity = lockedPosition
+            gameSettings.mouseSensitivity = LOCKED_POSITION
             if (config.lockMouseLookChatMessage) {
                 ChatUtils.chat("§bMouse rotation is now locked. Type /shmouselock to unlock your rotation")
             }

@@ -218,7 +218,7 @@ object InquisitorWaypointShare {
         HypixelCommands.partyChat("pc Inquisitor dead!")
     }
 
-    fun sendInquisitor() {
+    private fun sendInquisitor() {
         if (!isEnabled()) return
         if (lastShareTime + 5000 > System.currentTimeMillis()) return
         lastShareTime = System.currentTimeMillis()

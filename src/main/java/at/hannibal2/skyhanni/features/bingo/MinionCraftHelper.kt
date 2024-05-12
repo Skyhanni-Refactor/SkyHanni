@@ -120,7 +120,7 @@ class MinionCraftHelper {
                 if (!allIngredients.contains(rawId)) continue
                 if (!isAllowed(allMinions, rawId)) continue
 
-                val (itemId, multiplier) = NEUItems.getMultiplier(rawId)
+                val (itemId, multiplier) = NEUItems.getPrimitiveMultiplier(rawId)
                 val old = otherItems.getOrDefault(itemId, 0)
                 otherItems[itemId] = old + item.stackSize * multiplier
             }
@@ -207,7 +207,7 @@ class MinionCraftHelper {
             }
             var allDone = true
             for ((rawId, need) in map) {
-                val (itemId, multiplier) = NEUItems.getMultiplier(rawId)
+                val (itemId, multiplier) = NEUItems.getPrimitiveMultiplier(rawId)
                 val needAmount = need * multiplier
                 val have = otherItems.getOrDefault(itemId, 0)
                 val percentage = have.toDouble() / needAmount
