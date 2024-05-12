@@ -41,5 +41,5 @@ public class ItemAbilityConfig {
         desc = "Highlights used Bonzo's Masks and Spirit Masks with a background.")
     @ConfigEditorBoolean
     @FeatureToggle
-    public boolean depletedBonzosMasks = false;
+    public boolean depletedBonzoMasks = false;
 }

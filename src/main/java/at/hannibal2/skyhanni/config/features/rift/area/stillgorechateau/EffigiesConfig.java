@@ -27,7 +27,7 @@ public class EffigiesConfig {
         maxValue = 15,
         minStep = 1
     )
-    public int respwningSoonTime = 3;
+    public int respawningSoonTime = 3;
 
     @Expose
     @ConfigOption(name = "Unknown Times", desc = "Show effigies without known time.")

@@ -29,7 +29,7 @@ import kotlin.time.Duration.Companion.seconds
 object FarmingLaneFeatures {
     val config get() = FarmingLaneAPI.config
 
-    private var currentPositon: Double? = null
+    private var currentPosition: Double? = null
     private var currentDistance = 0.0
 
     private var display = listOf<String>()
@@ -116,14 +116,14 @@ object FarmingLaneFeatures {
         return true
     }
 
-    private fun calculateDirection(newPositon: Double): Int? {
-        val position = currentPositon ?: run {
-            currentPositon = newPositon
+    private fun calculateDirection(newPosition: Double): Int? {
+        val position = currentPosition ?: run {
+            currentPosition = newPosition
             return null
         }
-        currentPositon = newPositon
+        currentPosition = newPosition
 
-        val diff = position - newPositon
+        val diff = position - newPosition
         return if (diff > 0) {
             1
         } else if (diff < 0) {

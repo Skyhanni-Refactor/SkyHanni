@@ -21,7 +21,7 @@ object UniqueGiftCounter {
     private val storage get() = ProfileStorageData.playerSpecific?.winter
 
     private val giftedAmountPattern by RepoPattern.pattern(
-        "event.winter.uniqugifts.counter.amount",
+        "event.winter.uniquegifts.counter.amount",
         "§7Unique Players Gifted: §a(?<amount>.*)"
     )
 

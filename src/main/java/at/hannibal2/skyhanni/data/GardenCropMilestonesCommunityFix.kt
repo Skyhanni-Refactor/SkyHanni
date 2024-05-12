@@ -107,7 +107,7 @@ object GardenCropMilestonesCommunityFix {
         } ?: return
 //         println("totalMax real: ${totalMax.addSeparators()}")
         val totalOffBy = guessTotalMax - totalMax
-//         debug("$crop total offf by: ${totalOffBy.addSeparators()}")
+//         debug("$crop total off by: ${totalOffBy.addSeparators()}")
     }
 
 //     fun debug(message: String) {

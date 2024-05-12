@@ -91,7 +91,6 @@ class LivingCaveDefenseBlocks {
 
     private fun isCorrectMob(name: String) = when (name) {
         "Autonull ",
-
         "Autocap ",
         "Autochest ",
         "Autopants ",

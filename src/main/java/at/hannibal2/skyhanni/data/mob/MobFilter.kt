@@ -56,7 +56,7 @@ object MobFilter {
     val slayerNameFilter by repoGroup.pattern("filter.slayer", "^. (?<name>.*) (?<tier>[IV]+) \\d+.*")
 
     /** REGEX-TEST: ﴾ Storm ﴿
-     *  REGEX-TEST: ﴾ [Lv200] aMage Outlawa 70M/70M❤ ﴿
+     *  REGEX-TEST: ﴾ [Lv200] aMage Outlaw 70M/70M❤ ﴿
      *  REGEX-TEST: ﴾ [Lv500] Magma Boss █████████████████████████ ﴿
      *  REGEX-TEST: ﴾ [Lv200] Bladesoul 50M/50M❤ ﴿
      *  REGEX-TEST: ﴾ [Lv300] Arachne 20,000/20,000❤ ﴿

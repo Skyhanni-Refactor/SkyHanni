@@ -17,7 +17,7 @@ import net.minecraft.util.ChatStyle
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-// TODO split into two classes: TranslatorCommand and GoogleTransaltor. only communicates via getTranslationFromEnglish and getTranslationToEnglish
+// TODO split into two classes: TranslatorCommand and GoogleTranslator. only communicates via getTranslationFromEnglish and getTranslationToEnglish
 class Translator {
 
     private val messageContentRegex = Regex(".*: (.*)")

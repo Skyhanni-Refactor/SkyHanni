@@ -124,7 +124,7 @@ class SkyHanniDebugsAndTests {
 //            a.start()
 //            b.start()
 
-//            for ((i, s) in ScoreboardData.siedebarLinesFormatted().withIndex()) {
+//            for ((i, s) in ScoreboardData.sidebarLinesFormatted().withIndex()) {
 //                println("$i: '$s'")
 //            }
 
