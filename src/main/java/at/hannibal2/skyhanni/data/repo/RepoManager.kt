@@ -217,7 +217,7 @@ class RepoManager(private val configLocation: File) {
     fun displayRepoStatus(joinEvent: Boolean) {
         if (joinEvent) {
             if (unsuccessfulConstants.isNotEmpty()) {
-                ChatUtils.error(
+                ChatUtils.userError(
                     "§7Repo Issue! Some features may not work. Please report this error on the Discord!\n"
                         + "§7Repo Auto Update Value: §c${SkyHanniMod.feature.dev.repoAutoUpdate}\n"
                         + "§7If you have Repo Auto Update turned off, please try turning that on.\n"
