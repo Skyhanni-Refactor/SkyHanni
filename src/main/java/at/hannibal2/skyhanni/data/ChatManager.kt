@@ -11,10 +11,11 @@ import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.ReflectionUtils.getClassInstance
 import at.hannibal2.skyhanni.utils.ReflectionUtils.getModContainer
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
+import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
 import at.hannibal2.skyhanni.utils.chat.Text.send
-import at.hannibal2.skyhanni.utils.mc.McFont
+import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ChatLine
 import net.minecraft.client.gui.GuiNewChat
@@ -28,6 +29,10 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper
 import java.lang.invoke.MethodHandles
 
 object ChatManager {
+    private val locrawPattern by RepoPattern.pattern(
+        "chatmanager.locraw",
+        "\\{\"server\":.*}"
+    )
 
     private val loggerAll = LorenzLogger("chat/all")
     private val loggerFiltered = LorenzLogger("chat/blocked")
@@ -119,8 +124,8 @@ object ChatManager {
         val original = event.message
         val message = original.formattedText.stripHypixelMessage()
 
-        if (message.startsWith("§f{\"server\":\"")) {
-            HypixelData.checkForLocraw(message)
+        locrawPattern.matchMatcher(message.removeColor()) {
+            HypixelData.checkForLocraw(group())
             return
         }
         val key = IdentityCharacteristics(original)

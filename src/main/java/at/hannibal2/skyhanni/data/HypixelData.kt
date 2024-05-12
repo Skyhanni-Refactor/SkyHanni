@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigManager.Companion.gson
+import at.hannibal2.skyhanni.data.jsonobjects.other.LocrawJson
 import at.hannibal2.skyhanni.events.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
@@ -18,13 +19,12 @@ import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
-import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.UtilsPatterns
+import at.hannibal2.skyhanni.utils.fromJson
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import com.google.gson.JsonObject
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -114,23 +114,7 @@ object HypixelData {
     var skyBlockArea: String? = null
     var skyBlockAreaWithSymbol: String? = null
 
-    // Data from locraw
-    var locrawData: JsonObject? = null
-    private var locraw: MutableMap<String, String> = mutableMapOf(
-        "server" to "",
-        "gametype" to "",
-        "lobbyname" to "",
-        "lobbytype" to "",
-        "mode" to "",
-        "map" to ""
-    )
-
-    val server get() = locraw["server"] ?: ""
-    val gameType get() = locraw["gametype"] ?: ""
-    val lobbyName get() = locraw["lobbyname"] ?: ""
-    val lobbyType get() = locraw["lobbytype"] ?: ""
-    val mode get() = locraw["mode"] ?: ""
-    val map get() = locraw["map"] ?: ""
+    var locrawData = LocrawJson()
 
     private fun checkCurrentServerId(scoreboard: List<String>) {
         if (!LorenzUtils.inSkyBlock) return
@@ -165,12 +149,9 @@ object HypixelData {
             playerAmountGuestingPattern
         )
 
-        out@ for (pattern in playerPatternList) {
-            for (line in TabListData.getTabList()) {
-                pattern.matchMatcher(line) {
-                    amount += group("amount").toInt()
-                    continue@out
-                }
+        for (pattern in playerPatternList) {
+            TabListData.getTabList().matchFirst(pattern) {
+                amount += group("amount").toInt()
             }
         }
         amount += TabListData.getTabList().count { soloProfileAmountPattern.matches(it) }
@@ -190,33 +171,11 @@ object HypixelData {
         }
     }
 
-    // This code is modified from NEU, and depends on NEU (or another mod) sending /locraw.
-    private val jsonBracketPattern = "^\\{.+}".toPattern()
-
-    //todo convert to proper json object
     fun checkForLocraw(message: String) {
-        jsonBracketPattern.matchMatcher(message.removeColor()) {
-            try {
-                val obj: JsonObject = gson.fromJson(group(), JsonObject::class.java)
-                if (obj.has("server")) {
-                    locrawData = obj
-                    locraw.keys.forEach { key ->
-                        locraw[key] = obj[key]?.asString ?: ""
-                    }
-                    inLimbo = locraw["server"] == "limbo"
-                    inLobby = locraw["lobbyname"] != ""
-
-                    if (inLobby) {
-                        locraw["lobbyname"]?.let {
-                            lobbyTypePattern.matchMatcher(it) {
-                                locraw["lobbytype"] = group("lobbyType")
-                            }
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                ErrorManager.logErrorWithData(e, "Failed to parse locraw data")
-            }
+        try {
+            locrawData = gson.fromJson<LocrawJson>(message)
+        } catch (e: Exception) {
+            ErrorManager.logErrorWithData(e, "Failed to parse locraw data")
         }
     }
 
@@ -224,11 +183,10 @@ object HypixelData {
 
     @SubscribeEvent
     fun onWorldChange(event: LorenzWorldChangeEvent) {
-        locrawData = null
+        locrawData = LocrawJson()
         skyBlock = false
         inLimbo = false
         inLobby = false
-        locraw.forEach { locraw[it.key] = "" }
         joinedWorld = SimpleTimeMark.now()
         serverId = null
         skyBlockArea = null
@@ -241,8 +199,7 @@ object HypixelData {
         hypixelAlpha = false
         skyBlock = false
         inLobby = false
-        locraw.forEach { locraw[it.key] = "" }
-        locrawData = null
+        locrawData = LocrawJson()
         skyBlockArea = null
         skyBlockAreaWithSymbol = null
     }
@@ -288,10 +245,7 @@ object HypixelData {
             // So, as requested by Hannibal, use locraw from
             // NEU and have NEU send it.
             // Remove this when NEU dependency is removed
-            if (LorenzUtils.onHypixel &&
-                locrawData == null &&
-                lastLocRaw.passedSince() > 15.seconds
-            ) {
+            if (LorenzUtils.onHypixel && locrawData == LocrawJson() && lastLocRaw.passedSince() > 15.seconds) {
                 lastLocRaw = SimpleTimeMark.now()
                 SkyHanniMod.coroutineScope.launch {
                     delay(1000)

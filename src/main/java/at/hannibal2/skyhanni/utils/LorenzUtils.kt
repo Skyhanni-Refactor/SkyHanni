@@ -51,6 +51,8 @@ object LorenzUtils {
 
     val inHypixelLobby get() = onHypixel && HypixelData.inLobby
 
+    val inLimbo get() = onHypixel && HypixelData.inLimbo
+
     @Deprecated("Use DungeonAPI.inDungeon() instead", ReplaceWith("DungeonAPI.inDungeon()"))
     val inDungeons get() = DungeonAPI.inDungeon()
 

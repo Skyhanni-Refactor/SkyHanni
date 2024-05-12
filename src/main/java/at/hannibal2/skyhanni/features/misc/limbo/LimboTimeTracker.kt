@@ -30,7 +30,6 @@ object LimboTimeTracker {
     private val config get() = SkyHanniMod.feature.misc
 
     private var limboJoinTime = SimpleTimeMark.farPast()
-    var inLimbo = false
     private var inFakeLimbo = false
     private var shownPB = false
     private var oldPB: Duration = 0.seconds
@@ -48,14 +47,14 @@ object LimboTimeTracker {
     fun onChat(event: LorenzChatEvent) {
         if (event.message == "§cYou are AFK. Move around to return from AFK." || event.message == "§cYou were spawned in Limbo.") {
             limboJoinTime = SimpleTimeMark.now()
-            inLimbo = true
+            HypixelData.inLimbo = true
             onFire = Minecraft.getMinecraft().thePlayer.isBurning
         }
     }
 
     @SubscribeEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
-        if (event.message.startsWith("/playtime") && inLimbo) {
+        if (event.message.startsWith("/playtime") && LorenzUtils.inLimbo) {
             event.isCanceled
             printStats(true)
         }
@@ -64,21 +63,21 @@ object LimboTimeTracker {
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
         val personalBest = storage?.personalBest ?: 0
-        if (inLimbo && !shownPB && limboJoinTime.passedSince() >= personalBest.seconds && personalBest != 0) {
+        if (LorenzUtils.inLimbo && !shownPB && limboJoinTime.passedSince() >= personalBest.seconds && personalBest != 0) {
             shownPB = true
             oldPB = personalBest.seconds
             ChatUtils.chat("§d§lPERSONAL BEST§f! You've surpassed your previous record of §e$oldPB§f!")
             ChatUtils.chat("§fKeep it up!")
         }
-        val lobbyName: String? = HypixelData.locrawData?.get("lobbyname")?.asString
+        val lobbyName: String? = HypixelData.locrawData.lobbyName
         if (lobbyName.toString().startsWith("bedwarslobby")) {
             if (bedwarsLobbyLimbo.contains(McPlayer.pos)) {
                 if (inFakeLimbo) return
                 limboJoinTime = SimpleTimeMark.now()
-                inLimbo = true
+                HypixelData.inLimbo = true
                 inFakeLimbo = true
             } else {
-                if (inLimbo) {
+                if (LorenzUtils.inLimbo) {
                     leaveLimbo()
                     inFakeLimbo = false
                 }
@@ -88,14 +87,14 @@ object LimboTimeTracker {
 
     @SubscribeEvent
     fun onWorldChange(event: LorenzWorldChangeEvent) {
-        if (!inLimbo) return
+        if (!LorenzUtils.inLimbo) return
         leaveLimbo()
     }
 
     @SubscribeEvent
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
         if (!isEnabled()) return
-        if (!inLimbo) return
+        if (!LorenzUtils.inLimbo) return
         if (LorenzUtils.inSkyBlock) {
             leaveLimbo()
             return
@@ -105,7 +104,7 @@ object LimboTimeTracker {
     }
 
     private fun leaveLimbo() {
-        inLimbo = false
+        HypixelData.inLimbo = false
         if (!isEnabled()) return
         val passedSince = limboJoinTime.passedSince()
         val duration = passedSince.format()
@@ -141,8 +140,8 @@ object LimboTimeTracker {
     }
 
     fun printStats(onlyPlaytime: Boolean = false) {
-        val timeInLimbo: Int = if (inLimbo) limboJoinTime.passedSince().inWholeSeconds.toInt() else 0
-        val playtime: Int = if (inLimbo) (storage?.playtime
+        val timeInLimbo: Int = if (LorenzUtils.inLimbo) limboJoinTime.passedSince().inWholeSeconds.toInt() else 0
+        val playtime: Int = if (LorenzUtils.inLimbo) (storage?.playtime
             ?: 0) + limboJoinTime.passedSince().inWholeSeconds.toInt() else storage?.playtime ?: 0
         if (onlyPlaytime) {
             ChatUtils.chat("§aYou have ${playtime / 3600} hours and ${playtime % 3600 / 60} minutes playtime!", false)
@@ -166,13 +165,13 @@ object LimboTimeTracker {
     @SubscribeEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Limbo")
-        if (!inLimbo) {
+        if (!LorenzUtils.inLimbo) {
             event.addIrrelevant("not in limbo")
             return
         }
 
         event.addData {
-            add("inLimbo: $inLimbo")
+            add("inLimbo: true")
             add("isLimboFake: $inFakeLimbo")
             add("since: ${limboJoinTime.passedSince()}")
         }
