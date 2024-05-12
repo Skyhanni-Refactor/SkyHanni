@@ -112,7 +112,7 @@ object UniqueGiftingOpportunitiesFeatures {
         if (!config.enabled) return
         if (!WinterAPI.isDecember()) return
 
-        holdingGift = !config.highlightWithGiftOnly || giftNamePattern.matches(InventoryUtils.itemInHandId.asString())
+        holdingGift = !config.highlighWithGiftOnly || giftNamePattern.matches(InventoryUtils.itemInHandId.asString())
     }
 
     @SubscribeEvent

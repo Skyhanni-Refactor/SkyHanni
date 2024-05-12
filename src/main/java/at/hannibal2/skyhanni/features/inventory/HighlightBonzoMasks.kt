@@ -41,7 +41,7 @@ class HighlightBonzoMasks {
 
     @SubscribeEvent
     fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
-        if (!config.depletedBonzoMasks) return
+        if (!config.depletedBonzosMasks) return
         for (slot in event.gui.inventorySlots.inventorySlots) {
             val item = slot.stack ?: continue
             val maskType = maskType(item) ?: continue

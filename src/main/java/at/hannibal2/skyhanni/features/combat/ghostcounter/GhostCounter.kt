@@ -69,7 +69,6 @@ object GhostCounter {
     val storage get() = ProfileStorageData.profileSpecific?.ghostCounter
     private var display = emptyList<List<Any>>()
     var ghostCounterV3File =
-        //TODO rename persistentData.json
         File("." + File.separator + "config" + File.separator + "ChatTriggers" + File.separator + "modules" + File.separator + "GhostCounterV3" + File.separator + ".persistantData.json")
 
     private val patternGroup = RepoPattern.group("combat.ghostcounter")

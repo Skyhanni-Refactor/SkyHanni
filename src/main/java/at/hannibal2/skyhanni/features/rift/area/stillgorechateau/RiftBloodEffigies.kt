@@ -144,7 +144,7 @@ object RiftBloodEffigies {
                 }
 
                 val timeUntil = duration.timeUntil()
-                if (config.respawningSoon && timeUntil <= config.respawningSoonTime.minutes) {
+                if (config.respawningSoon && timeUntil <= config.respwningSoonTime.minutes) {
                     event.drawWaypointFilled(location, LorenzColor.YELLOW.toColor(), seeThroughBlocks = true)
                     val time = timeUntil.format()
                     event.drawDynamicText(location, "§e$name is respawning §b$time", 1.5)

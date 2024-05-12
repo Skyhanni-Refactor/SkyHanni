@@ -82,7 +82,7 @@ class ShaderHelper {
             ) else GL20.glGetProgramInfoLog(program, maxLength)
         }
 
-        fun glGetProgram(program: Int, pname: Int): Int {
+        fun glGetProgrami(program: Int, pname: Int): Int {
             return if (USING_ARB_SHADERS) ARBShaderObjects.glGetObjectParameteriARB(
                 program,
                 pname
@@ -115,7 +115,7 @@ class ShaderHelper {
             if (USING_ARB_SHADERS) ARBShaderObjects.glCompileShaderARB(shader) else GL20.glCompileShader(shader)
         }
 
-        fun glGetShader(shader: Int, pname: Int): Int {
+        fun glGetShaderi(shader: Int, pname: Int): Int {
             return if (USING_ARB_SHADERS) ARBShaderObjects.glGetObjectParameteriARB(
                 shader,
                 pname
