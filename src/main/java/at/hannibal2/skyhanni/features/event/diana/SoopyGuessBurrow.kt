@@ -120,7 +120,7 @@ class SoopyGuessBurrow {
         val lineDist = lastParticlePoint2?.distance(particlePoint!!)!!
 
         distance = distance2!!
-        val changesHelp = particlePoint?.let { it - lastParticlePoint2!! }!!
+        val changesHelp = particlePoint?.subtract(lastParticlePoint2!!)!!
         var changes = listOf(changesHelp.x, changesHelp.y, changesHelp.z)
         changes = changes.map { o -> o / lineDist }
 
@@ -263,7 +263,7 @@ class SoopyGuessBurrow {
 
             distance = distance2!!
 
-            val changesHelp = particlePoint?.let { it - lastParticlePoint2!! }!!
+            val changesHelp = particlePoint?.subtract(lastParticlePoint2!!)!!
 
             var changes = listOf(changesHelp.x, changesHelp.y, changesHelp.z)
             changes = changes.map { o -> o / lineDist }
