@@ -20,6 +20,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.regex.Matcher
@@ -221,7 +222,7 @@ object AdvancedPlayerList {
     }
 
     private fun getSocialIcon(name: String) = when {
-        LorenzUtils.getPlayerName() == name -> SocialIcon.ME
+        McPlayer.name == name -> SocialIcon.ME
         MarkedPlayerManager.isMarkedPlayer(name) -> SocialIcon.MARKED
         PartyAPI.partyMembers.contains(name) -> SocialIcon.PARTY
         FriendAPI.getAllFriends().any { it.name.contains(name) } -> SocialIcon.FRIEND

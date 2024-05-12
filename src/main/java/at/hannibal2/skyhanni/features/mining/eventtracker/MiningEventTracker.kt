@@ -18,8 +18,10 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.StringUtils.toDashlessUUID
 import at.hannibal2.skyhanni.utils.TimeUtils
 import at.hannibal2.skyhanni.utils.fromJson
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.JsonPrimitive
 import kotlinx.coroutines.launch
@@ -143,7 +145,7 @@ class MiningEventTracker {
             serverId,
             eventType,
             timeRemaining.inWholeMilliseconds,
-            LorenzUtils.getPlayerUuid()
+            McPlayer.uuid.toDashlessUUID()
         )
         val miningEventJson = ConfigManager.gson.toJson(miningEventData)
 

@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.system.OS
 import com.google.gson.JsonElement
@@ -110,9 +111,9 @@ object ChocolateFactoryStats {
                 val list = text.toMutableList()
                 val titleHeader = list.indexOf("§6§lChocolate Factory Stats")
                 if (titleHeader != -1) {
-                    list[titleHeader] = "${LorenzUtils.getPlayerName()}'s Chocolate Factory Stats"
+                    list[titleHeader] = "${McPlayer.name}'s Chocolate Factory Stats"
                 } else {
-                    list.add(0, "${LorenzUtils.getPlayerName()}'s Chocolate Factory Stats")
+                    list.add(0, "${McPlayer.name}'s Chocolate Factory Stats")
                 }
                 OS.copyToClipboard(list.joinToString("\n") { it.removeColor() })
             }

@@ -22,6 +22,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.SkyBlockTime
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.gui.inventory.GuiChest
@@ -120,7 +121,7 @@ class JacobFarmingContestsInventory {
             }
 
             "§bClaim your rewards!" -> {
-                OS.openUrl("https://elitebot.dev/@${LorenzUtils.getPlayerName()}/${HypixelData.profileName}/contests")
+                OS.openUrl("https://elitebot.dev/@${McPlayer.name}/${HypixelData.profileName}/contests")
                 ChatUtils.chat("Opening your contests in elitebot.dev")
             }
 

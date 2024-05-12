@@ -7,9 +7,9 @@ import at.hannibal2.skyhanni.data.jsonobjects.local.FriendsJson.PlayerFriends.Fr
 import at.hannibal2.skyhanni.events.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.util.ChatStyle
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -49,7 +49,7 @@ object FriendAPI {
 
     private val tempFriends = mutableListOf<Friend>()
 
-    private fun getFriends() = SkyHanniMod.friendsData.players.getOrPut(LorenzUtils.getRawPlayerUuid()) {
+    private fun getFriends() = SkyHanniMod.friendsData.players.getOrPut(McPlayer.uuid) {
         FriendsJson.PlayerFriends().also { it.friends = mutableMapOf() }
     }.friends
 

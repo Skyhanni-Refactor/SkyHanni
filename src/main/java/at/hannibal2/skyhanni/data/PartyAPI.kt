@@ -3,12 +3,12 @@ package at.hannibal2.skyhanni.data
 import at.hannibal2.skyhanni.data.hypixel.chat.event.PartyChatEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.StringUtils.removeResets
 import at.hannibal2.skyhanni.utils.StringUtils.trimWhiteSpace
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -93,7 +93,7 @@ object PartyAPI {
             ChatUtils.chat(" §a- §7$member" + if (partyLeader == member) " §a(Leader)" else "", false)
         }
 
-        if (partyLeader == LorenzUtils.getPlayerName()) {
+        if (partyLeader == McPlayer.name) {
             ChatUtils.chat("§aYou are leader")
         }
 
@@ -122,7 +122,7 @@ object PartyAPI {
         othersJoinedPartyPattern.matchMatcher(message) {
             val name = group("name").cleanPlayerName()
             if (partyMembers.isEmpty()) {
-                partyLeader = LorenzUtils.getPlayerName()
+                partyLeader = McPlayer.name
             }
             addPlayer(name)
         }
@@ -200,7 +200,7 @@ object PartyAPI {
 
     private fun addPlayer(playerName: String) {
         if (partyMembers.contains(playerName)) return
-        if (playerName == LorenzUtils.getPlayerName()) return
+        if (playerName == McPlayer.name) return
         partyMembers.add(playerName)
     }
 

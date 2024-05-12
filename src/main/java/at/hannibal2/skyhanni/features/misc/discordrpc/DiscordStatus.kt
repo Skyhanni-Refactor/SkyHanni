@@ -27,6 +27,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.TimeUtils.format
 import at.hannibal2.skyhanni.utils.TimeUtils.formatted
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import io.github.moulberry.notenoughupdates.miscfeatures.PetInfoOverlay.getCurrentPet
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -172,7 +173,7 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
     }),
 
     PROFILE({
-        val sbLevel = AdvancedPlayerList.tabPlayerData[LorenzUtils.getPlayerName()]?.sbLevel?.toString() ?: "?"
+        val sbLevel = AdvancedPlayerList.tabPlayerData[McPlayer.name]?.sbLevel?.toString() ?: "?"
         var profile = "SkyBlock Level: [$sbLevel] on "
 
         profile += when {

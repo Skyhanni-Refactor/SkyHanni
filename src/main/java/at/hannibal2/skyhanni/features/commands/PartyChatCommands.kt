@@ -8,8 +8,8 @@ import at.hannibal2.skyhanni.data.hypixel.chat.event.PartyChatEvent
 import at.hannibal2.skyhanni.events.TabCompletionEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
@@ -88,9 +88,9 @@ object PartyChatCommands {
         val command = indexedPartyChatCommands[commandLabel.lowercase()] ?: return
         val name = event.cleanedAuthor
 
-        if (name == LorenzUtils.getPlayerName()) return
+        if (name == McPlayer.name) return
         if (!command.isEnabled()) return
-        if (command.requiresPartyLead && PartyAPI.partyLeader != LorenzUtils.getPlayerName()) return
+        if (command.requiresPartyLead && PartyAPI.partyLeader != McPlayer.name) return
         if (isBlockedUser(name)) {
             if (config.showIgnoredReminder) ChatUtils.clickableChat(
                 "§cIgnoring chat command from ${event.author}. " +

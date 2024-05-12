@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
 import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
@@ -34,7 +35,7 @@ class MarkedPlayerManager {
             val name = displayName.lowercase()
 
 
-            if (name == LorenzUtils.getPlayerName().lowercase()) {
+            if (name == McPlayer.name.lowercase()) {
                 ChatUtils.userError("You can't add or remove yourself this way! Go to the settings and toggle 'Mark your own name'.")
                 return
             }
@@ -96,7 +97,7 @@ class MarkedPlayerManager {
     @SubscribeEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         config.markOwnName.whenChanged { _, new ->
-            val name = LorenzUtils.getPlayerName()
+            val name = McPlayer.name
             if (new) {
                 if (!playerNamesToMark.contains(name)) {
                     playerNamesToMark.add(name)
@@ -122,11 +123,8 @@ class MarkedPlayerManager {
         if (Minecraft.getMinecraft().thePlayer == null) return
 
         markedPlayers.clear()
-        if (config.markOwnName.get()) {
-            val name = LorenzUtils.getPlayerName()
-            if (!playerNamesToMark.contains(name)) {
-                playerNamesToMark.add(name)
-            }
+        if (config.markOwnName.get() && !playerNamesToMark.contains(McPlayer.name)) {
+            playerNamesToMark.add(McPlayer.name)
         }
     }
 

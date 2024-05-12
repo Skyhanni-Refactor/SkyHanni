@@ -28,8 +28,10 @@ import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils
+import at.hannibal2.skyhanni.utils.StringUtils.toDashlessUUID
 import at.hannibal2.skyhanni.utils.TimeUtils
 import at.hannibal2.skyhanni.utils.fromJson
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.system.OS
 import com.google.gson.JsonObject
@@ -207,7 +209,7 @@ class FarmingWeightDisplay {
                 Renderable.clickAndHover(
                     "§6Farming Weight§7: $weight$leaderboard",
                     listOf("§eClick to open your Farming Profile."),
-                    onClick = { openWebsite(LorenzUtils.getPlayerName()) }
+                    onClick = { openWebsite(McPlayer.name) }
                 )
             )
 
@@ -361,7 +363,7 @@ class FarmingWeightDisplay {
                     "§eClick to open your Farming Weight",
                     "§eprofile on §celitebot.dev",
                 ),
-                "shfarmingprofile ${LorenzUtils.getPlayerName()}"
+                "shfarmingprofile ${McPlayer.name}"
             )
         }
 
@@ -436,7 +438,7 @@ class FarmingWeightDisplay {
         }
 
         private fun loadLeaderboardPosition(): Int {
-            val uuid = LorenzUtils.getPlayerUuid()
+            val uuid = McPlayer.uuid.toDashlessUUID()
 
             val includeUpcoming = if (isEtaEnabled()) "?includeUpcoming=true" else ""
             val goalRank = getRankGoal() + 1 // API returns upcoming players as if you were at this rank already
@@ -471,8 +473,7 @@ class FarmingWeightDisplay {
         }
 
         private fun loadWeight(localProfile: String) {
-            val uuid = LorenzUtils.getPlayerUuid()
-            val url = "https://api.elitebot.dev/weight/$uuid"
+            val url = "https://api.elitebot.dev/weight/${McPlayer.uuid.toDashlessUUID()}"
             val apiResponse = APIUtil.getJSONResponse(url)
 
             var error: Throwable? = null
@@ -546,7 +547,7 @@ class FarmingWeightDisplay {
         }
 
         fun lookUpCommand(it: Array<String>) {
-            val name = if (it.size == 1) it[0] else LorenzUtils.getPlayerName()
+            val name = if (it.size == 1) it[0] else McPlayer.name
             openWebsite(name, ignoreCooldown = true)
         }
 

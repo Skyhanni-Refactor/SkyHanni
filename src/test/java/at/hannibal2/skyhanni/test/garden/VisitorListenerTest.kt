@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorListener
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -22,7 +23,7 @@ class VisitorListenerTest {
         every { GardenAPI.inGarden() } returns true
 
         mockkObject(LorenzUtils)
-        every { LorenzUtils.getPlayerName() } returns "ThePlayerName"
+        every { McPlayer.name } returns "ThePlayerName"
 
         mockkObject(VisitorAPI)
         every { VisitorAPI.addVisitor(any()) } returns true

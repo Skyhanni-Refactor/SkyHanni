@@ -17,6 +17,7 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.UtilsPatterns
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
@@ -98,9 +99,8 @@ object ProfileStorageData {
 
     @SubscribeEvent
     fun onHypixelJoin(event: HypixelJoinEvent) {
-        val playerUuid = LorenzUtils.getRawPlayerUuid()
-        playerSpecific = SkyHanniMod.feature.storage.players.getOrPut(playerUuid) { PlayerSpecificStorage() }
-        sackPlayers = SkyHanniMod.sackData.players.getOrPut(playerUuid) { SackData.PlayerSpecific() }
+        playerSpecific = SkyHanniMod.feature.storage.players.getOrPut(McPlayer.uuid) { PlayerSpecificStorage() }
+        sackPlayers = SkyHanniMod.sackData.players.getOrPut(McPlayer.uuid) { SackData.PlayerSpecific() }
         ConfigLoadEvent().postAndCatch()
     }
 }

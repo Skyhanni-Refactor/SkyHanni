@@ -4,7 +4,7 @@ import at.hannibal2.skyhanni.data.mob.MobFilter.isRealPlayer
 import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.events.render.EntityRenderLayersEvent
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
@@ -19,7 +19,7 @@ object HoppityEggDisplayManager {
     private fun canChangeOpacity(entity: EntityLivingBase): Boolean {
         if (!HoppityEggLocator.isEnabled()) return false
         if (entity !is EntityPlayer) return false
-        if (entity == LorenzUtils.getPlayer()) return false
+        if (entity == McPlayer.player) return false
         if (!entity.isRealPlayer()) return false
         return config.playerOpacity < 100
     }

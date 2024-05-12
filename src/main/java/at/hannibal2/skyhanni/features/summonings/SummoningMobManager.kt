@@ -10,7 +10,6 @@ import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -19,6 +18,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.EntityLiving
@@ -96,8 +96,7 @@ class SummoningMobManager {
                 .forEach {
                     val name = it.displayName.unformattedText
                     healthPattern.matchMatcher(name) {
-                        val playerName = LorenzUtils.getPlayerName()
-                        if (name.contains(playerName)) {
+                        if (name.contains(McPlayer.name)) {
                             summoningMobNametags.add(it)
                             if (summoningMobNametags.size == summoningsSpawned) {
                                 searchArmorStands = false

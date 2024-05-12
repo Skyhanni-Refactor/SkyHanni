@@ -21,6 +21,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.mc.McWorld
@@ -290,7 +291,7 @@ object InquisitorWaypointShare {
         val displayName = rawName.cleanPlayerName(displayName = true)
         if (!waypoints.containsKey(name)) {
             ChatUtils.chat("$displayName §l§efound an inquisitor at §l§c${x.toInt()} ${y.toInt()} ${z.toInt()}!")
-            if (name != LorenzUtils.getPlayerName()) {
+            if (name != McPlayer.name) {
                 LorenzUtils.sendTitle("§dINQUISITOR §efrom §b$displayName", 5.seconds)
                 McSound.BEEP.play()
             }

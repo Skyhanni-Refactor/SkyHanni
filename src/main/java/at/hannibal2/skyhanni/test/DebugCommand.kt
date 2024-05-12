@@ -7,6 +7,8 @@ import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils.equalsIgnoreColor
+import at.hannibal2.skyhanni.utils.StringUtils.toDashlessUUID
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.system.OS
 
 object DebugCommand {
@@ -137,8 +139,8 @@ object DebugCommand {
     private fun player(event: DebugDataCollectEvent) {
         event.title("Player")
         event.addIrrelevant {
-            add("name: '${LorenzUtils.getPlayerName()}'")
-            add("uuid: '${LorenzUtils.getPlayerUuid()}'")
+            add("name: '${McPlayer.name}'")
+            add("uuid: '${McPlayer.uuid.toDashlessUUID()}'")
         }
     }
 }

@@ -8,6 +8,7 @@ import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.entity.Entity
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -40,7 +41,7 @@ class ChumBucketHider {
 
         // First text line
         if (name.endsWith("'s Chum Bucket") || name.endsWith("'s Chumcap Bucket")) {
-            if (name.contains(LorenzUtils.getPlayerName()) && !config.hideOwn.get()) return
+            if (name.contains(McPlayer.name) && !config.hideOwn.get()) return
             titleEntity.add(entity)
             hiddenEntities.add(entity)
             event.isCanceled = true

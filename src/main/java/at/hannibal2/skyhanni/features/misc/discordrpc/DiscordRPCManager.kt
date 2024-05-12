@@ -24,6 +24,7 @@ import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import com.google.gson.JsonObject
 import com.jagrosh.discordipc.IPCClient
 import com.jagrosh.discordipc.IPCListener
@@ -127,7 +128,7 @@ object DiscordRPCManager : IPCListener {
             if (config.showSkyCryptButton.get()) {
                 addButton(
                     RichPresenceButton(
-                        "https://sky.shiiyu.moe/stats/${LorenzUtils.getPlayerName()}/${HypixelData.profileName}",
+                        "https://sky.shiiyu.moe/stats/${McPlayer.name}/${HypixelData.profileName}",
                         "Open SkyCrypt"
                     )
                 )

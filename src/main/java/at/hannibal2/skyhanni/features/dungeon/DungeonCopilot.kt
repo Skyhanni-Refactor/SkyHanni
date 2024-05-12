@@ -9,9 +9,9 @@ import at.hannibal2.skyhanni.events.DungeonStartEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -56,7 +56,7 @@ class DungeonCopilot {
             changeNextStep("Ready up")
         }
 
-        if (message.endsWith("§a is now ready!") && message.contains(LorenzUtils.getPlayerName())) {
+        if (message.endsWith("§a is now ready!") && message.contains(McPlayer.name)) {
             changeNextStep("Wait for the dungeon to start!")
         }
 

@@ -27,6 +27,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -165,7 +166,7 @@ object DungeonAPI {
         if (dungeonFloor != null && playerClass == null) {
             val playerTeam =
                 TabListData.getTabList().firstOrNull {
-                    it.contains(LorenzUtils.getPlayerName())
+                    it.contains(McPlayer.name)
                 }?.removeColor() ?: ""
 
             DungeonClass.entries.forEach {

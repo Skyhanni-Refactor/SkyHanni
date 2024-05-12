@@ -13,7 +13,7 @@ object McPlayer {
 
     val hasPlayer: Boolean get() = Minecraft.getMinecraft().thePlayer != null
     val player: Player get() = Minecraft.getMinecraft().thePlayer
-    val playerName: String get() = player.name
+    val name: String get() = player.name
     val uuid: UUID get() = player.uniqueID
 
     val isSneaking: Boolean get() = hasPlayer && player.isSneaking
