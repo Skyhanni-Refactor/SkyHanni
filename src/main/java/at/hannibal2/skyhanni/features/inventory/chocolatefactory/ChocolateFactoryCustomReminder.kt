@@ -138,8 +138,7 @@ object ChocolateFactoryCustomReminder {
         ChatUtils.clickableChat(
             "You can now purchase §f$targetName §ein Chocolate factory!", onClick = {
                 HypixelCommands.chocolateFactory()
-            },
-            prefixColor = "§e"
+            }
         )
     }
 
