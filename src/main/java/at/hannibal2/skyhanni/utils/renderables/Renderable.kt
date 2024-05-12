@@ -148,7 +148,7 @@ interface Renderable {
 
             override fun render(posX: Int, posY: Int) {
                 if (isHovered(posX, posY) && condition() &&
-                    shouldAllowLink(true, bypassChecks) && (button - 100).isKeyClicked()
+                    shouldAllowLink(bypassChecks) && (button - 100).isKeyClicked()
                 ) {
                     onClick()
                 }
@@ -169,7 +169,7 @@ interface Renderable {
 
             override fun render(posX: Int, posY: Int) {
                 if (isHovered(posX, posY) && condition() &&
-                    shouldAllowLink(true, bypassChecks)
+                    shouldAllowLink(bypassChecks)
                 ) for ((button, onClick) in click) {
                     if ((button - 100).isKeyClicked())
                         onClick()
@@ -203,7 +203,7 @@ interface Renderable {
                     render.render(posX, posY)
                     val pair = Pair(posX, posY)
                     if (isHovered(posX, posY)) {
-                        if (condition() && shouldAllowLink(true, bypassChecks)) {
+                        if (condition() && shouldAllowLink(bypassChecks)) {
                             onHover.invoke()
                             HighlightOnHoverSlot.currentSlots[pair] = highlightsOnHoverSlots
                             GlStateManager.pushMatrix()
@@ -224,7 +224,7 @@ interface Renderable {
             }
         }
 
-        private fun shouldAllowLink(debug: Boolean = false, bypassChecks: Boolean): Boolean {
+        private fun shouldAllowLink(bypassChecks: Boolean, debug: Boolean = true): Boolean {
             val isGuiScreen = Minecraft.getMinecraft().currentScreen != null
             if (bypassChecks) {
                 return isGuiScreen
@@ -292,7 +292,7 @@ interface Renderable {
 
             override fun render(posX: Int, posY: Int) {
                 val pair = Pair(posX, posY)
-                isHovered = if (isHovered(posX, posY) && condition() && shouldAllowLink(true, bypassChecks)) {
+                isHovered = if (isHovered(posX, posY) && condition() && shouldAllowLink(bypassChecks)) {
                     hovered.render(posX, posY)
                     HighlightOnHoverSlot.currentSlots[pair] = highlightsOnHoverSlots
                     true
