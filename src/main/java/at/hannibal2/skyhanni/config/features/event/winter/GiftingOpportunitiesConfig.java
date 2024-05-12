@@ -17,8 +17,6 @@ public class GiftingOpportunitiesConfig {
     @ConfigEditorBoolean
 // TODO change variable name
     public boolean highlighWithGiftOnly = true;
-
-
     @Expose
     @ConfigOption(name = "Use Armor Stands", desc = "Make use of armor stands to stop highlighting players. " +
         "This is a bit inaccurate, but it can help with people you gifted before this feature was used.")
