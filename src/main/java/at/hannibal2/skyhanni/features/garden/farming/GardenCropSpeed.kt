@@ -14,9 +14,9 @@ import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.concurrent.fixedRateTimer
 
@@ -109,8 +109,7 @@ object GardenCropSpeed {
                 blocksSpeedList.drop(1).average()
             } else 0.0
             GardenAPI.getCurrentlyFarmedCrop()?.let {
-                val heldTool = InventoryUtils.getItemInHand()
-                val toolName = heldTool?.getInternalName()?.asString()
+                val toolName = McPlayer.heldItem?.getInternalName()?.asString()
                 if (toolName?.contains("DICER") == true) {
                     val lastCrop = lastBrokenCrop?.cropName?.lowercase() ?: "NONE"
                     if (toolName.lowercase().contains(lastCrop)) {

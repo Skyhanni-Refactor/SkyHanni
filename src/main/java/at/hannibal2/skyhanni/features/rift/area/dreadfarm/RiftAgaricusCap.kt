@@ -4,7 +4,6 @@ import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -31,7 +30,7 @@ class RiftAgaricusCap {
     }
 
     private fun updateLocation(): LorenzVec? {
-        if (InventoryUtils.getItemInHand()?.getInternalName() != RiftAPI.farmingTool) return null
+        if (McPlayer.heldItem?.getInternalName() != RiftAPI.farmingTool) return null
         val currentLocation = McPlayer.blockLookingAt ?: return null
 
         when (currentLocation.getBlockStateAt().toString()) {

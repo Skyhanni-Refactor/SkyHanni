@@ -477,7 +477,7 @@ object Commands {
         registerCommand(
             "shcopyitem",
             "Copies information about the item in hand to the clipboard"
-        ) { CopyItemCommand.command() }
+        ) { CopyItemCommand.onCommand() }
         registerCommand(
             "shcopyparticles",
             "Copied information about the particles that spawn in the next 50ms to the clipboard"

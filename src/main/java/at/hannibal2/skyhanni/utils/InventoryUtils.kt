@@ -53,15 +53,6 @@ object InventoryUtils {
             || it.contains("Ender Chest") || it.contains("Backpack")
     }
 
-    fun getItemInHand(): ItemStack? = Minecraft.getMinecraft().thePlayer.heldItem
-
-    fun getArmor(): Array<ItemStack?> = Minecraft.getMinecraft().thePlayer.inventory.armorInventory
-
-    fun getHelmet(): ItemStack? = getArmor()[3]
-    fun getChestplate(): ItemStack? = getArmor()[2]
-    fun getLeggings(): ItemStack? = getArmor()[1]
-    fun getBoots(): ItemStack? = getArmor()[0]
-
     val isNeuStorageEnabled = RecalculatingValue(10.seconds) {
         try {
             val config = NotEnoughUpdates.INSTANCE.config

@@ -10,7 +10,6 @@ import at.hannibal2.skyhanni.features.garden.FarmingFortuneDisplay
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.GardenAPI.getCropType
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -22,6 +21,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -82,7 +82,7 @@ object CaptureFarmingGear {
 
     fun captureFarmingGear() {
         val farmingItems = farmingItems ?: return
-        val itemStack = InventoryUtils.getItemInHand() ?: return
+        val itemStack = McPlayer.heldItem ?: return
 
         val currentCrop = itemStack.getCropType()
 
@@ -96,7 +96,7 @@ object CaptureFarmingGear {
                 }
             }
         }
-        for (armor in InventoryUtils.getArmor()) {
+        for (armor in McPlayer.armor) {
             if (armor == null) continue
             val split = armor.getInternalName().asString().split("_")
             if (split.first() in farmingSets) {
