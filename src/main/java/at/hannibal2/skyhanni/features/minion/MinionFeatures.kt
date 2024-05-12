@@ -45,6 +45,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.TimeUtils
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockStateAt
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -94,7 +95,7 @@ class MinionFeatures {
         if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return
 
         val lookingAt = event.pos.offset(event.face).toLorenzVec()
-        val equipped = InventoryUtils.getItemInHand() ?: return
+        val equipped = McPlayer.heldItem ?: return
 
         if (equipped.displayName.contains(" Minion ") && lookingAt.getBlockStateAt().block == Blocks.air) {
             newMinion = lookingAt.add(0.5, 0.0, 0.5)

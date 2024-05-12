@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.network.NetHandlerPlayClient
 import net.minecraft.client.settings.GameSettings
 import net.minecraft.util.Timer
+import java.util.UUID
 
 object McClient {
 
@@ -18,6 +19,9 @@ object McClient {
     val timer: Timer get() = (minecraft as AccessorMinecraft).timer
 
     val network: NetHandlerPlayClient get() = minecraft.netHandler
+
+    val profileName: String get() = minecraft.session.username
+    val profileUUID: UUID get() = minecraft.session.profile.id
 
     fun schedule(task: () -> Unit): ListenableFuture<Any> = minecraft.addScheduledTask(task)
 }

@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.client.Minecraft
 import net.minecraft.network.play.server.S29PacketSoundEffect
 import net.minecraft.network.play.server.S2APacketParticles
@@ -80,7 +81,7 @@ object MinecraftData {
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
         if (!LorenzUtils.inSkyBlock) return
-        val hand = InventoryUtils.getItemInHand()
+        val hand = McPlayer.heldItem
         val newItem = hand?.getInternalName() ?: NEUInternalName.NONE
         val oldItem = InventoryUtils.itemInHandId
         if (newItem != oldItem) {

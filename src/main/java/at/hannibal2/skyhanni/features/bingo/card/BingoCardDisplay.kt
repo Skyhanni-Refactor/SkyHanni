@@ -20,6 +20,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiChat
@@ -223,7 +224,7 @@ class BingoCardDisplay {
             update()
         }
 
-        if (config.quickToggle && ItemUtils.isSkyBlockMenuItem(InventoryUtils.getItemInHand())) {
+        if (config.quickToggle && ItemUtils.isSkyBlockMenuItem(McPlayer.heldItem)) {
             val sneaking = Minecraft.getMinecraft().thePlayer.isSneaking
             if (lastSneak != sneaking) {
                 lastSneak = sneaking

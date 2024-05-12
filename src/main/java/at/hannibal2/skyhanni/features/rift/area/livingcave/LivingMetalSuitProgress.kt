@@ -4,11 +4,11 @@ import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.roundToPrecision
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getLivingMetalProgress
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -60,7 +60,7 @@ class LivingMetalSuitProgress {
         if (!isEnabled()) return
         val old = progressMap
         progressMap = buildMap {
-            for (armor in InventoryUtils.getArmor().filterNotNull()) {
+            for (armor in McPlayer.armor.filterNotNull()) {
                 put(armor, armor.getLivingMetalProgress()?.toDouble()?.let {
                     it.coerceAtMost(100.0) / 100
                 })

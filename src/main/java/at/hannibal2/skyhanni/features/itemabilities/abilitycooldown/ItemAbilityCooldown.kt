@@ -29,6 +29,7 @@ import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemId
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemUuid
 import at.hannibal2.skyhanni.utils.StringUtils.findMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
@@ -65,7 +66,7 @@ class ItemAbilityCooldown {
         when {
             // Hyperion
             event.soundName == "mob.zombie.remedy" && event.pitch == 0.6984127f && event.volume == 1f -> {
-                val abilityScrolls = InventoryUtils.getItemInHand()?.getAbilityScrolls() ?: return
+                val abilityScrolls = McPlayer.heldItem?.getAbilityScrolls() ?: return
                 if (abilityScrolls.size != 3) return
 
                 ItemAbility.HYPERION.sound()
@@ -86,7 +87,7 @@ class ItemAbilityCooldown {
                 }
                 // Shadow Fury
                 if (event.pitch == 1f && event.volume == 1f) {
-                    val internalName = InventoryUtils.getItemInHand()?.getInternalName() ?: return
+                    val internalName = McPlayer.heldItem?.getInternalName() ?: return
                     if (!internalName.equalsOneOf(
                             "SHADOW_FURY".asInternalName(),
                             "STARRED_SHADOW_FURY".asInternalName()

@@ -26,6 +26,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.removeResets
 import at.hannibal2.skyhanni.utils.StringUtils.trimWhiteSpace
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemBow
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -236,7 +237,7 @@ object QuiverAPI {
     fun hasBowInInventory() = hasBow
 
     fun isHoldingBow(): Boolean {
-        InventoryUtils.getItemInHand()?.let {
+        McPlayer.heldItem?.let {
             return it.item is ItemBow && !fakeBowsPattern.matches(it.getInternalName().asString())
         } ?: return false
     }
@@ -262,7 +263,7 @@ object QuiverAPI {
     private fun checkChestplate() {
         val wasWearing = wearingSkeletonMasterChestplate
         wearingSkeletonMasterChestplate =
-            InventoryUtils.getChestplate()?.getInternalName() == SKELETON_MASTER_CHESTPLATE
+            McPlayer.chestplate?.getInternalName() == SKELETON_MASTER_CHESTPLATE
         if (wasWearing != wearingSkeletonMasterChestplate) {
             QuiverUpdateEvent(currentArrow, currentAmount, shouldHideAmount()).postAndCatch()
         }
