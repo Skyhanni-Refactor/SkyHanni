@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.FishingBobberInWaterEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI.isBait
@@ -23,10 +22,6 @@ import kotlin.time.Duration.Companion.seconds
 class FishingBaitWarnings {
 
     private val config get() = SkyHanniMod.feature.fishing.fishingBaitWarnings
-
-    @SubscribeEvent
-    fun onBobberThrow(event: FishingBobberCastEvent) {
-    }
 
     private var lastBait: String? = null
     private var wasUsingBait = true

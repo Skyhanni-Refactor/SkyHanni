@@ -55,7 +55,6 @@ interface Renderable {
 
         val logger = LorenzLogger("debug/renderable")
         var currentRenderPassMousePosition: Pair<Int, Int>? = null
-            set
 
         fun <T> withMousePosition(posX: Int, posY: Int, block: () -> T): T {
             val last = currentRenderPassMousePosition

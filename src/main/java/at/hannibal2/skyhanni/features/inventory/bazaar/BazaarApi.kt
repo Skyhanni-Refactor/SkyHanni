@@ -11,12 +11,16 @@ import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.*
+import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.InventoryUtils.getAllItems
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
+import at.hannibal2.skyhanni.utils.LorenzColor
+import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.NEUInternalName
+import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.StringUtils.equalsIgnoreColor
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
@@ -69,7 +73,7 @@ class BazaarApi {
         if (inBazaarInventory) {
             val openedProduct = getOpenedProduct(event.inventoryItems) ?: return
             currentlyOpenedProduct = openedProduct
-            BazaarOpenedProductEvent(openedProduct, event).postAndCatch()
+            BazaarOpenedProductEvent(openedProduct).postAndCatch()
         }
     }
 
