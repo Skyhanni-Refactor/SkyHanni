@@ -28,6 +28,7 @@ import com.google.gson.JsonObject
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.network.FMLNetworkEvent
 import kotlin.time.Duration.Companion.seconds
@@ -300,7 +301,7 @@ object HypixelData {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         if (event.scoreboard.isEmpty()) return
         if (!LorenzUtils.onHypixel) {
