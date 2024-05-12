@@ -86,9 +86,9 @@ object EnderNodeTracker {
             item = it.groups[2]?.value
         }
 
-        when {
-            item == null -> return
-            item == "§cEndermite Nest" -> {
+        when (item) {
+            null -> return
+            "§cEndermite Nest" -> {
                 tracker.modify { storage ->
                     storage.totalEndermiteNests++
                 }

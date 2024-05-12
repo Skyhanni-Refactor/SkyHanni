@@ -42,7 +42,7 @@ class ChatFilterGui(private val history: List<ChatManager.MessageFilteringResult
         GlStateManager.translate(l + 0.0, t + 0.0, 0.0)
         RenderUtils.drawFloatingRectDark(0, 0, w, h)
         GlStateManager.translate(5.0, 5.0 - scroll, 0.0)
-        var mouseX = originalMouseX - l
+        val mouseX = originalMouseX - l
         val isMouseButtonDown = mouseX in 0..w && originalMouseY in t..(t + h) && Mouse.isButtonDown(0)
         var mouseY = originalMouseY - (t - scroll).toInt()
         val sr = ScaledResolution(mc)

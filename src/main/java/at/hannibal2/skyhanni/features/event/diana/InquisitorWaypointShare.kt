@@ -9,7 +9,6 @@ import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzLogger
@@ -218,7 +217,7 @@ object InquisitorWaypointShare {
         HypixelCommands.partyChat("pc Inquisitor dead!")
     }
 
-    fun sendInquisitor() {
+    private fun sendInquisitor() {
         if (!isEnabled()) return
         if (lastShareTime + 5000 > System.currentTimeMillis()) return
         lastShareTime = System.currentTimeMillis()

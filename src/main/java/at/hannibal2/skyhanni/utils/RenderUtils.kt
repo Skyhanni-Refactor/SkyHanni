@@ -1504,7 +1504,7 @@ object RenderUtils {
         colour: Color,
         depth: Boolean,
     ) {
-         val (cornerOne, cornerTwo, cornerThree, cornerFour, ) = boundingBox.getTopCorners()
+        val (cornerOne, cornerTwo, cornerThree, cornerFour) = boundingBox.getTopCorners()
         this.draw3DLine(cornerOne, cornerTwo, colour, lineWidth, depth)
         this.draw3DLine(cornerTwo, cornerThree, colour, lineWidth, depth)
         this.draw3DLine(cornerThree, cornerFour, colour, lineWidth, depth)
