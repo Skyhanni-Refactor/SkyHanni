@@ -41,5 +41,6 @@ public class ItemAbilityConfig {
         desc = "Highlights used Bonzo's Masks and Spirit Masks with a background.")
     @ConfigEditorBoolean
     @FeatureToggle
+// TODO change config name
     public boolean depletedBonzosMasks = false;
 }

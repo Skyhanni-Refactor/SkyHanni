@@ -207,7 +207,7 @@ object DiscordRPCManager : IPCListener {
         } catch (e: Exception) {
             ErrorManager.logErrorWithData(
                 e,
-                "Unable to start Discord Rich Presence! Please report this on Discord and ping @netheriteminer."
+                "Unable to start Discord Rich Presence! Please report this on the Skyhanni Discord."
             )
         }
     }

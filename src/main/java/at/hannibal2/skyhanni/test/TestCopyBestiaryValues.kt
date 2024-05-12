@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object TestCopyBestiaryValues {
 
-    class BestiarityObject {
+    class BestiaryObject {
 
         @Expose
         var name: String = ""
@@ -70,7 +70,7 @@ object TestCopyBestiaryValues {
     private fun copy(titleItem: ItemStack, inventoryItems: Map<Int, ItemStack>) {
         val titleName = titleItem.name.removeWordsAtEnd(1)
 
-        val obj = BestiarityObject()
+        val obj = BestiaryObject()
         obj.name = titleName
         obj.texture = titleItem.getSkullTexture() ?: "no texture found"
         obj.skullOwner = titleItem.getSkullOwner() ?: "no skullOwner found"

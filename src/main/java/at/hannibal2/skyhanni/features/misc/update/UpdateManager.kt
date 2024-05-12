@@ -149,7 +149,7 @@ object UpdateManager {
             }
 
             override fun toString(): String {
-                return "ForceOutdateDelegate($normalDelegate)"
+                return "ForceOutdatedDelegate($normalDelegate)"
             }
         },
         SkyHanniMod.MODID,
