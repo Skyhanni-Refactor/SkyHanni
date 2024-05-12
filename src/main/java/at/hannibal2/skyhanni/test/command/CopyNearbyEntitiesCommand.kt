@@ -16,6 +16,7 @@ import at.hannibal2.skyhanni.utils.ItemUtils.isEnchanted
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
+import at.hannibal2.skyhanni.utils.math.toBox
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.entity.EntityOtherPlayerMP
@@ -252,7 +253,7 @@ object CopyNearbyEntitiesCommand {
             add("Is Starred: ${mob.hasStar}")
             add("Attribute: ${mob.attribute ?: "NONE"}")
         }
-        if (mob.boundingBox != mob.baseEntity.entityBoundingBox) {
+        if (mob.boundingBox != mob.baseEntity.entityBoundingBox.toBox()) {
             add("Bounding Box: ${mob.boundingBox}")
         }
     }
