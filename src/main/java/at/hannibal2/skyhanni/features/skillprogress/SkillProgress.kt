@@ -23,7 +23,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.interpolate
 import at.hannibal2.skyhanni.utils.NumberUtil.roundToPrecision
-import at.hannibal2.skyhanni.utils.Quad
+import at.hannibal2.skyhanni.utils.types.Quad
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
