@@ -583,11 +583,11 @@ class FarmingWeightDisplay {
                 CropType.CACTUS to 177_254.45,
             )
         }
+    }
 
-        @SubscribeEvent
-        fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-            event.move(14, "garden.eliteFarmingWeight.offScreenDropMessage", "garden.eliteFarmingWeights.showLbChange")
-            event.move(34, "garden.eliteFarmingWeights.ETAGoalRank", "garden.eliteFarmingWeights.etaGoalRank")
-        }
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.move(14, "garden.eliteFarmingWeight.offScreenDropMessage", "garden.eliteFarmingWeights.showLbChange")
+        event.move(34, "garden.eliteFarmingWeights.ETAGoalRank", "garden.eliteFarmingWeights.etaGoalRank")
     }
 }
