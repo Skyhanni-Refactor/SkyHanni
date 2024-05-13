@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.features.rift
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.features.rift.RiftConfig
 import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
@@ -19,8 +18,6 @@ object RiftAPI {
 
     // internal name -> motes
     var motesPrice = emptyMap<NEUInternalName, Double>()
-
-    val farmingTool = SkyhanniItems.FARMING_WAND()
 
     fun ItemStack.motesNpcPrice(): Double? {
         val baseMotes = motesPrice[getInternalName()] ?: return null
