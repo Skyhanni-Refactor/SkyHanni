@@ -935,12 +935,10 @@ class SkyHanniMod {
         init()
 
         // test stuff
-        PreInitFinishedEvent().postAndCatch()
         loadModule(ButtonOnPause())
         loadModule(CopyNearbyParticlesCommand)
         loadModule(FixGhostEntities)
         loadModule(HighlightMissingRepoItems())
-        loadModule(MobDebug())
         loadModule(PacketTest)
         loadModule(ParkourWaypointSaver())
         loadModule(SkyHanniDebugsAndTests())
@@ -951,6 +949,9 @@ class SkyHanniMod {
         loadModule(TestShowSlotNumber())
         loadModule(TrackSoundsCommand)
         loadModule(WorldEdit)
+        PreInitFinishedEvent().postAndCatch()
+
+        loadModule(MobDebug())
     }
 
     @Mod.EventHandler
