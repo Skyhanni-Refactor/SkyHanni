@@ -445,8 +445,8 @@ import at.hannibal2.skyhanni.test.TestCopyRngMeterValues
 import at.hannibal2.skyhanni.test.TestExportTools
 import at.hannibal2.skyhanni.test.TestShowSlotNumber
 import at.hannibal2.skyhanni.test.WorldEdit
-import at.hannibal2.skyhanni.test.command.CopyNearbyParticlesCommand
 import at.hannibal2.skyhanni.test.command.ErrorManager
+import at.hannibal2.skyhanni.test.command.TrackParticlesCommand
 import at.hannibal2.skyhanni.test.command.TrackSoundsCommand
 import at.hannibal2.skyhanni.test.hotswap.HotswapSupport
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -932,11 +932,8 @@ class SkyHanniMod {
         loadModule(WildStrawberryDyeNotification())
         loadModule(WrongFungiCutterWarning())
 
-        init()
-
         // test stuff
         loadModule(ButtonOnPause())
-        loadModule(CopyNearbyParticlesCommand)
         loadModule(FixGhostEntities)
         loadModule(HighlightMissingRepoItems())
         loadModule(PacketTest)
@@ -947,11 +944,13 @@ class SkyHanniMod {
         loadModule(TestCopyBestiaryValues)
         loadModule(TestCopyRngMeterValues)
         loadModule(TestShowSlotNumber())
+        loadModule(TrackParticlesCommand)
         loadModule(TrackSoundsCommand)
         loadModule(WorldEdit)
-        PreInitFinishedEvent().postAndCatch()
 
         loadModule(MobDebug())
+        init()
+        PreInitFinishedEvent().postAndCatch()
     }
 
     @Mod.EventHandler
