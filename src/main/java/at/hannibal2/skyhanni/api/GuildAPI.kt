@@ -1,10 +1,14 @@
-package at.hannibal2.skyhanni.data
+package at.hannibal2.skyhanni.api
 
+import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object GuildAPI {
+
+    private val storage: MutableList<String>?
+        get() = ProfileStorageData.playerSpecific?.guildMembers
 
     private var inGuildMessage = false
     private val list = mutableListOf<String>()
@@ -15,19 +19,12 @@ object GuildAPI {
         if (message.startsWith("§6Guild Name: ")) {
             inGuildMessage = true
             list.clear()
-            return
-        }
-        if (message.startsWith("§eTotal Members: ")) {
+        } else if (message.startsWith("§eTotal Members: ")) {
             inGuildMessage = false
-            ProfileStorageData.playerSpecific?.guildMembers?.let {
-                it.clear()
-                it.addAll(list)
-            }
+            storage?.clear()
+            storage?.addAll(list)
             list.clear()
-            return
-        }
-
-        if (inGuildMessage) {
+        } else if (inGuildMessage) {
             if (message.contains("●")) {
                 for (word in message.split("●")) {
                     list.add(word.cleanPlayerName())
@@ -36,7 +33,5 @@ object GuildAPI {
         }
     }
 
-    fun isInGuild(name: String) = ProfileStorageData.playerSpecific?.guildMembers?.let {
-        name in it
-    } ?: false
+    fun isInGuild(name: String) = storage?.contains(name) ?: false
 }

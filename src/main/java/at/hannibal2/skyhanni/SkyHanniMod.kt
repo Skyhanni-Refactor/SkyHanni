@@ -12,9 +12,9 @@ import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.Features
 import at.hannibal2.skyhanni.config.SackData
 import at.hannibal2.skyhanni.config.commands.Commands.init
-import at.hannibal2.skyhanni.data.ActionBarData
+import at.hannibal2.skyhanni.api.ActionBarAPI
 import at.hannibal2.skyhanni.data.ActionBarStatsData
-import at.hannibal2.skyhanni.data.BossbarData
+import at.hannibal2.skyhanni.api.BossbarAPI
 import at.hannibal2.skyhanni.data.ChatManager
 import at.hannibal2.skyhanni.data.CropAccessoryData
 import at.hannibal2.skyhanni.data.EntityMovementData
@@ -27,7 +27,7 @@ import at.hannibal2.skyhanni.data.GardenCropMilestonesCommunityFix
 import at.hannibal2.skyhanni.data.GardenCropUpgrades
 import at.hannibal2.skyhanni.data.GuiData
 import at.hannibal2.skyhanni.data.GuiEditManager
-import at.hannibal2.skyhanni.data.GuildAPI
+import at.hannibal2.skyhanni.api.GuildAPI
 import at.hannibal2.skyhanni.data.HighlightOnHoverSlot
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.ItemAddManager
@@ -547,12 +547,12 @@ class SkyHanniMod {
         loadModule(DeepCavernsGuide())
         loadModule(DungeonsRaceGuide())
         loadModule(GardenBestCropTime())
-        loadModule(ActionBarData)
+        loadModule(ActionBarAPI)
         loadModule(TrackerManager)
         loadModule(ScoreboardPattern)
         loadModule(UtilsPatterns)
         loadModule(GuiData)
-        loadModule(BossbarData)
+        loadModule(BossbarAPI)
         loadModule(EntityUtils)
         loadModule(ChatUtils)
         loadModule(FixedRateTimerManager())

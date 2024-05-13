@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.features.mining.powdertracker
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.mining.PowderTrackerConfig.PowderDisplayEntry
-import at.hannibal2.skyhanni.data.BossbarData
+import at.hannibal2.skyhanni.api.BossbarAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
@@ -85,8 +85,8 @@ object PowderTracker {
         calculateResourceHour(goldEssenceInfo)
         calculateResourceHour(chestInfo)
 
-        doublePowder = powderBossBarPattern.matcher(BossbarData.getBossbar()).find()
-        powderBossBarPattern.matchMatcher(BossbarData.getBossbar()) {
+        doublePowder = powderBossBarPattern.matcher(BossbarAPI.getBossbar()).find()
+        powderBossBarPattern.matchMatcher(BossbarAPI.getBossbar()) {
             powderTimer = group("time")
             doublePowder = powderTimer != "00:00"
 

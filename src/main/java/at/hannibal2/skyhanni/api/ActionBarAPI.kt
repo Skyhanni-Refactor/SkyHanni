@@ -1,4 +1,4 @@
-package at.hannibal2.skyhanni.data
+package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.events.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
@@ -6,10 +6,12 @@ import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-object ActionBarData {
-    private var actionBar = ""
+object ActionBarAPI {
 
-    fun getActionBar() = actionBar
+    private const val ACTION_BAR_TYPE = 2
+
+    var actionBar = ""
+        private set
 
     @SubscribeEvent
     fun onWorldChange(event: LorenzWorldChangeEvent) {
@@ -18,13 +20,13 @@ object ActionBarData {
 
     @SubscribeEvent(receiveCanceled = true)
     fun onChatReceive(event: ClientChatReceivedEvent) {
-        if (event.type.toInt() != 2) return
+        if (event.type.toInt() != ACTION_BAR_TYPE) return
 
-        val original = event.message
-        val message = original.formattedText.stripHypixelMessage()
-        actionBar = message
+        actionBar = event.message.formattedText.stripHypixelMessage()
+
         val actionBarEvent = ActionBarUpdateEvent(actionBar, event.message)
         actionBarEvent.postAndCatch()
+
         if (event.message.formattedText != actionBarEvent.chatComponent.formattedText) {
             event.message = actionBarEvent.chatComponent
         }

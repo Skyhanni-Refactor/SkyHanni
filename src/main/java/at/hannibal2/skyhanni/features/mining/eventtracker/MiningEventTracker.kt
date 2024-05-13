@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.features.mining.eventtracker
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.data.BossbarData
+import at.hannibal2.skyhanni.api.BossbarAPI
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.BossbarUpdateEvent
@@ -119,7 +119,7 @@ class MiningEventTracker {
             ErrorManager.logErrorWithData(
                 Exception("UnknownMiningEvent"), "Unknown mining event detected from string $eventName",
                 "eventName" to eventName,
-                "bossbar" to BossbarData.getBossbar(),
+                "bossbar" to BossbarAPI.getBossbar(),
                 "serverType" to LorenzUtils.skyBlockIsland,
                 "fromChat" to (time == null)
             )
