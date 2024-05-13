@@ -15,8 +15,9 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.sorted
 import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.TimeUnit
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.TimeUtils.format
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import kotlin.time.Duration.Companion.milliseconds
 
 class GardenBestCropTime {
 
@@ -79,7 +80,6 @@ class GardenBestCropTime {
             timeTillNextCrop.sorted()
         }
 
-
         if (!config.next.bestHideTitle) {
             val title = if (gardenExp) "§2Garden Experience" else "§bSkyBlock Level"
             if (config.next.bestCompact) {
@@ -102,10 +102,11 @@ class GardenBestCropTime {
         var number = 0
         for (crop in sorted.keys) {
             if (crop.isMaxed(useOverflow)) continue
-            val millis = timeTillNextCrop[crop]!!
+            val millis = timeTillNextCrop[crop]?.milliseconds ?: continue
             // TODO, change functionality to use enum rather than ordinals
             val biggestUnit = TimeUnit.entries[config.highestTimeFormat.get().ordinal]
-            val duration = TimeUtils.formatDuration(millis, biggestUnit, maxUnits = 2)
+
+            val duration = millis.format(biggestUnit, maxUnits = 2)
             val isCurrent = crop == currentCrop
             number++
             if (number > config.next.showOnlyBest && (!config.next.showCurrent || !isCurrent)) continue

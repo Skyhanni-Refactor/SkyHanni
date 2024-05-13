@@ -859,7 +859,7 @@ class SkyHanniMod {
         loadModule(RiftHorsezookaHider())
         loadModule(GriffinPetWarning())
         loadModule(BestiaryData)
-        loadModule(KingTalismanHelper())
+        loadModule(KingTalismanHelper)
         loadModule(HarpFeatures)
         loadModule(EnderNodeTracker)
         loadModule(CompactBestiaryChatMessage())

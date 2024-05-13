@@ -31,7 +31,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.TimeUnit
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.TimeUtils.format
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
@@ -199,12 +199,12 @@ object GardenCropMilestoneDisplay {
             crop.setSpeed(farmingFortuneSpeed)
             if (!crop.isMaxed(overflowDisplay) || overflowDisplay) {
                 val missing = need - have
-                val missingTimeSeconds = missing / farmingFortuneSpeed
-                val millis = missingTimeSeconds * 1000
+                val missingTime = (missing / farmingFortuneSpeed).seconds
+                val millis = missingTime.inWholeMilliseconds
                 GardenBestCropTime.timeTillNextCrop[crop] = millis
                 // TODO, change functionality to use enum rather than ordinals
                 val biggestUnit = TimeUnit.entries[config.highestTimeFormat.get().ordinal]
-                val duration = TimeUtils.formatDuration(millis, biggestUnit)
+                val duration = missingTime.format(biggestUnit)
                 tryWarn(millis, "§b${crop.cropName} $nextTier in $duration")
 
                 val speedText = "§7In §b$duration"
@@ -321,11 +321,10 @@ object GardenCropMilestoneDisplay {
         if (speed != 0.0) {
             val blocksPerSecond = speed * (GardenAPI.getCurrentlyFarmedCrop()?.multiplier ?: 1)
 
-            val missingTimeSeconds = missing / blocksPerSecond
-            val millis = missingTimeSeconds * 1000
+            val missingTime = (missing / blocksPerSecond).seconds
             // TODO, change functionality to use enum rather than ordinals
             val biggestUnit = TimeUnit.entries[config.highestTimeFormat.get().ordinal]
-            val duration = TimeUtils.formatDuration(millis.toLong(), biggestUnit)
+            val duration = missingTime.format(biggestUnit)
             lineMap[MushroomTextEntry.TIME] = Renderable.string("§7In §b$duration")
         }
 
