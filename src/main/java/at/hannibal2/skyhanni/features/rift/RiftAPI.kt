@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack
 
 object RiftAPI {
 
+    // TODO doesnt work in rift tower with new changes
     fun inRift() = IslandType.THE_RIFT.isInIsland()
 
     val config: RiftConfig get() = SkyHanniMod.feature.rift

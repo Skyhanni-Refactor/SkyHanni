@@ -8,6 +8,8 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
+import at.hannibal2.skyhanni.utils.StringUtils.matches
+import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -16,18 +18,17 @@ class HighlightRiftGuide {
     private var inInventory = false
     private var highlightedItems = emptyList<Int>()
 
+    private val riftGuideInventoryPattern by RepoPattern.pattern(
+        "rift.guide.inventory",
+        "Rift Guide ➜.*"
+    )
+
     @SubscribeEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         inInventory = false
-
         if (!isEnabled()) return
-
-        val inGuide = event.inventoryItems[40]?.getLore()?.let {
-            if (it.size == 1) {
-                it[0].startsWith("§7To Rift Guide")
-            } else false
-        } ?: false
-        if (!inGuide) return
+        if (!riftGuideInventoryPattern.matches(event.inventoryName)) return
+        inInventory = true
 
         val highlightedItems = mutableListOf<Int>()
         for ((slot, stack) in event.inventoryItems) {
@@ -36,7 +37,6 @@ class HighlightRiftGuide {
                 highlightedItems.add(slot)
             }
         }
-        inInventory = true
         this.highlightedItems = highlightedItems
     }
 
