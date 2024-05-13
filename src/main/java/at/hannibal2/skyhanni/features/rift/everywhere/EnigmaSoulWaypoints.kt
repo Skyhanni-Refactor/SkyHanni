@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.rift.everywhere
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.EnigmaSoulsJson
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
@@ -15,7 +16,6 @@ import at.hannibal2.skyhanni.utils.InventoryUtils.getAllItems
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
@@ -38,7 +38,7 @@ object EnigmaSoulWaypoints {
     private var adding = true
 
     private val item by lazy {
-        val neuItem = "SKYBLOCK_ENIGMA_SOUL".asInternalName().getItemStack()
+        val neuItem = SkyhanniItems.SKYBLOCK_ENIGMA_SOUL().getItemStack()
         Utils.createItemStack(
             neuItem.item,
             "§5Toggle Missing",

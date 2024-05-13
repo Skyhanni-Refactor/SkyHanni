@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.event.hoppity
 
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.ItemClickEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
@@ -16,7 +17,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RecalculatingValue
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
@@ -32,8 +32,6 @@ import kotlin.time.Duration.Companion.seconds
 
 object HoppityEggLocator {
     private val config get() = HoppityEggsManager.config
-
-    private val locatorItem = "EGGLOCATOR".asInternalName()
 
     private var lastParticlePosition: LorenzVec? = null
     private var lastParticlePositionForever: LorenzVec? = null
@@ -251,10 +249,10 @@ object HoppityEggLocator {
     fun isEnabled() = LorenzUtils.inSkyBlock && config.waypoints && !GardenAPI.inGarden()
         && !ReminderUtils.isBusy(true) && ChocolateFactoryAPI.isHoppityEvent()
 
-    private val ItemStack.isLocatorItem get() = getInternalName() == locatorItem
+    private val ItemStack.isLocatorItem get() = getInternalName() == SkyhanniItems.EGGLOCATOR()
 
-    fun hasLocatorInHotbar() = RecalculatingValue(1.seconds) {
-        LorenzUtils.inSkyBlock && McPlayer.has(locatorItem, onlyHotBar = true)
+    private fun hasLocatorInHotbar() = RecalculatingValue(1.seconds) {
+        LorenzUtils.inSkyBlock && McPlayer.has(SkyhanniItems.EGGLOCATOR(), onlyHotBar = true)
     }.getValue()
 
     private fun LorenzVec.getEggLocationWeight(firstPoint: LorenzVec, secondPoint: LorenzVec): Double {

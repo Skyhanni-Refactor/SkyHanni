@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.data.PetAPI
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
@@ -106,8 +107,9 @@ object ItemUtils {
     }
 
     private fun ItemStack.grabInternalNameOrNull(): NEUInternalName? {
+        // TODO neu item repo now has potions, do we still need this?
         if (name == "§fWisp's Ice-Flavored Water I Splash Potion") {
-            return NEUInternalName.WISP_POTION
+            return SkyhanniItems.WISP_POTION()
         }
         return NEUItems.getInternalName(this)?.asInternalName()
     }
@@ -354,7 +356,7 @@ object ItemUtils {
     val NEUInternalName.itemNameWithoutColor: String get() = itemName.removeColor()
 
     private fun NEUInternalName.grabItemName(): String {
-        if (this == NEUInternalName.WISP_POTION) {
+        if (this == SkyhanniItems.WISP_POTION()) {
             return "§fWisp's Ice-Flavored Water"
         }
         if (this == NEUInternalName.SKYBLOCK_COIN) {

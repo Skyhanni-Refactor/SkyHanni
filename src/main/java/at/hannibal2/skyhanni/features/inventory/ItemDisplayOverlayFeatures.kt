@@ -22,6 +22,7 @@ import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumbe
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry.SKILL_LEVEL
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry.VACUUM_GARDEN
 import at.hannibal2.skyhanni.data.PetAPI
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.RenderItemTipEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.pests.PestAPI
@@ -36,7 +37,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
@@ -94,11 +94,11 @@ object ItemDisplayOverlayFeatures {
 
         if (MASTER_STAR_TIER.isSelected()) {
             when (internalName) {
-                "FIRST_MASTER_STAR".asInternalName() -> return "1"
-                "SECOND_MASTER_STAR".asInternalName() -> return "2"
-                "THIRD_MASTER_STAR".asInternalName() -> return "3"
-                "FOURTH_MASTER_STAR".asInternalName() -> return "4"
-                "FIFTH_MASTER_STAR".asInternalName() -> return "5"
+                SkyhanniItems.FIRST_MASTER_STAR() -> return "1"
+                SkyhanniItems.SECOND_MASTER_STAR() -> return "2"
+                SkyhanniItems.THIRD_MASTER_STAR() -> return "3"
+                SkyhanniItems.FOURTH_MASTER_STAR() -> return "4"
+                SkyhanniItems.FIFTH_MASTER_STAR() -> return "5"
             }
         }
 
@@ -120,7 +120,7 @@ object ItemDisplayOverlayFeatures {
             }
         }
 
-        if (NEW_YEAR_CAKE.isSelected() && internalName == "NEW_YEAR_CAKE".asInternalName()) {
+        if (NEW_YEAR_CAKE.isSelected() && internalName == SkyhanniItems.NEW_YEAR_CAKE()) {
             val year = item.getNewYearCake()?.toString() ?: ""
             return "§b$year"
         }
@@ -149,11 +149,11 @@ object ItemDisplayOverlayFeatures {
 
         if (KUUDRA_KEY.isSelected() && itemName.contains("Kuudra Key")) {
             return when (internalName) {
-                "KUUDRA_TIER_KEY".asInternalName() -> "§a1"
-                "KUUDRA_HOT_TIER_KEY".asInternalName() -> "§22"
-                "KUUDRA_BURNING_TIER_KEY".asInternalName() -> "§e3"
-                "KUUDRA_FIERY_TIER_KEY".asInternalName() -> "§64"
-                "KUUDRA_INFERNAL_TIER_KEY".asInternalName() -> "§c5"
+                SkyhanniItems.KUUDRA_TIER_KEY() -> "§a1"
+                SkyhanniItems.KUUDRA_HOT_TIER_KEY() -> "§22"
+                SkyhanniItems.KUUDRA_BURNING_TIER_KEY() -> "§e3"
+                SkyhanniItems.KUUDRA_FIERY_TIER_KEY() -> "§64"
+                SkyhanniItems.KUUDRA_INFERNAL_TIER_KEY() -> "§c5"
                 else -> "§4?"
             }
         }
@@ -187,13 +187,13 @@ object ItemDisplayOverlayFeatures {
             }
         }
 
-        if (RANCHERS_BOOTS_SPEED.isSelected() && internalName == "RANCHERS_BOOTS".asInternalName()) {
+        if (RANCHERS_BOOTS_SPEED.isSelected() && internalName == SkyhanniItems.RANCHERS_BOOTS()) {
             item.getRanchersSpeed()?.let {
                 val isUsingBlackCat = PetAPI.isCurrentPet("Black Cat")
                 val helmet = McPlayer.helmet?.getInternalName()
                 val hand = McPlayer.heldItem?.getInternalName()
-                val racingHelmet = "RACING_HELMET".asInternalName()
-                val cactusKnife = "CACTUS_KNIFE".asInternalName()
+                val racingHelmet = SkyhanniItems.RACING_HELMET()
+                val cactusKnife = SkyhanniItems.CACTUS_KNIFE()
                 val is500 = isUsingBlackCat || helmet == racingHelmet || (GardenAPI.inGarden() && hand == cactusKnife)
                 val effectiveSpeedCap = if (is500) 500 else 400
                 val text = if (it > 999) "1k" else "$it"
@@ -201,7 +201,7 @@ object ItemDisplayOverlayFeatures {
             }
         }
 
-        if (LARVA_HOOK.isSelected() && internalName == "LARVA_HOOK".asInternalName()) {
+        if (LARVA_HOOK.isSelected() && internalName == SkyhanniItems.LARVA_HOOK()) {
             lore.matchFirst(harvestPattern) {
                 val amount = group("amount").toInt()
                 return when {
@@ -239,7 +239,7 @@ object ItemDisplayOverlayFeatures {
             }
         }
 
-        if (BOTTLE_OF_JYRRE.isSelected() && internalName == "NEW_BOTTLE_OF_JYRRE".asInternalName()) {
+        if (BOTTLE_OF_JYRRE.isSelected() && internalName == SkyhanniItems.NEW_BOTTLE_OF_JYRRE()) {
             val seconds = item.getBottleOfJyrreSeconds() ?: 0
             return "§a${(seconds / 3600)}"
         }

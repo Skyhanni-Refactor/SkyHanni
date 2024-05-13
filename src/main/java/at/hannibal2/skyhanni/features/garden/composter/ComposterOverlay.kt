@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.config.features.garden.composter.ComposterConfig
 import at.hannibal2.skyhanni.config.features.garden.composter.ComposterConfig.OverlayPriceTypeEntry
 import at.hannibal2.skyhanni.config.features.garden.composter.ComposterConfig.RetrieveFromEntry
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacksOrNull
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenJson
 import at.hannibal2.skyhanni.data.model.ComposterUpgrade
 import at.hannibal2.skyhanni.events.GuiRenderEvent
@@ -103,8 +104,6 @@ object ComposterOverlay {
         testOffset = args[0].toInt()
         ChatUtils.chat("Composter test offset set to $testOffset.")
     }
-
-    private val COMPOST by lazy { "COMPOST".asInternalName() }
 
     @SubscribeEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
@@ -373,7 +372,7 @@ object ComposterOverlay {
             " §7Material costs per $timeText: §6${NumberUtil.format(totalCost)}$materialCostFormatPreview"
         newList.addAsSingletonList(materialCostFormat)
 
-        val priceCompost = COMPOST.getPrice()
+        val priceCompost = SkyhanniItems.COMPOST().getPrice()
         val profit = ((priceCompost * multiDropFactor) - (fuelPricePer + organicMatterPricePer)) * timeMultiplier
         val profitPreview =
             ((priceCompost * multiDropFactorPreview) - (fuelPricePerPreview + organicMatterPricePerPreview)) * timeMultiplierPreview

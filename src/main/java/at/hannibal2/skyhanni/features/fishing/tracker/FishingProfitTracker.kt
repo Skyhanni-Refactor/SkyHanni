@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.fishing.tracker
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.FishingProfitItemsJson
 import at.hannibal2.skyhanni.events.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
@@ -16,7 +17,6 @@ import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.addButton
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
@@ -80,7 +80,7 @@ object FishingProfitTracker {
             val neuInternalNames = itemCategories["Trophy Fish"]!!
 
             return if (internalName in neuInternalNames) {
-                SkyHanniTracker.getPricePer(MAGMA_FISH) * FishingAPI.getFilletPerTrophy(internalName)
+                SkyHanniTracker.getPricePer(SkyhanniItems.MAGMA_FISH()) * FishingAPI.getFilletPerTrophy(internalName)
             } else super.getCustomPricePer(internalName)
         }
 
@@ -89,8 +89,6 @@ object FishingProfitTracker {
     }
 
     private val ItemTrackerData.TrackedItem.timesCaught get() = timesGained
-
-    private val MAGMA_FISH by lazy { "MAGMA_FISH".asInternalName() }
 
     private val nameAll: CategoryName = "All"
     private var currentCategory: CategoryName = nameAll

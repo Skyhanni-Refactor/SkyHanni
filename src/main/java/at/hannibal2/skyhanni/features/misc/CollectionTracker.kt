@@ -2,10 +2,10 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.CollectionAPI
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -165,7 +165,7 @@ object CollectionTracker {
     }
 
     private fun countCurrentlyInInventory(): Int {
-        val cactus = "CACTUS".asInternalName()
+        val cactus = SkyhanniItems.CACTUS()
         val cactusGreen = "INK_SACK-2".asInternalName()
         return McPlayer.countItems {
             if (internalName == cactus && it.getInternalName() == cactusGreen) {

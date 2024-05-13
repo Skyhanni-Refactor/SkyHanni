@@ -89,5 +89,6 @@ object InventoryUtils {
         return getItemsInOpenChest().find { it.slotIndex == slotIndex }?.stack
     }
 
+    // TODO add a method that also can include the amounts in your sacks
     fun NEUInternalName.getAmountInInventory(): Int = McPlayer.countItems { it.getInternalNameOrNull() == this }
 }

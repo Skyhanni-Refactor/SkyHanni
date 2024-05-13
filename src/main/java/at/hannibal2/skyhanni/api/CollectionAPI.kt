@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.api
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.CollectionUpdateEvent
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.ItemAddEvent
@@ -9,7 +10,6 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
@@ -38,7 +38,7 @@ object CollectionAPI {
 
     // TODO repo
     private val incorrectCollectionNames = mapOf(
-        "Mushroom" to "RED_MUSHROOM".asInternalName()
+        "Mushroom" to SkyhanniItems.RED_MUSHROOM()
     )
 
     @SubscribeEvent

@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.data
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ArrowTypeJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ItemsJson
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
@@ -56,7 +57,6 @@ object QuiverAPI {
     private var hasBow = false
 
     const val MAX_ARROW_AMOUNT = 2880
-    private val SKELETON_MASTER_CHESTPLATE = "SKELETON_MASTER_CHESTPLATE".asInternalName()
 
     var NONE_ARROW_TYPE: ArrowType? = null
     private var FLINT_ARROW_TYPE: ArrowType? = null
@@ -262,7 +262,7 @@ object QuiverAPI {
     private fun checkChestplate() {
         val wasWearing = wearingSkeletonMasterChestplate
         wearingSkeletonMasterChestplate =
-            McPlayer.chestplate?.getInternalName() == SKELETON_MASTER_CHESTPLATE
+            McPlayer.chestplate?.getInternalName() == SkyhanniItems.SKELETON_MASTER_CHESTPLATE()
         if (wasWearing != wearingSkeletonMasterChestplate) {
             QuiverUpdateEvent(currentArrow, currentAmount, shouldHideAmount()).postAndCatch()
         }
@@ -286,8 +286,8 @@ object QuiverAPI {
         val arrowData = event.getConstant<ArrowTypeJson>("ArrowTypes")
         arrows = arrowData.arrows.map { ArrowType(it.value.arrow, it.key.asInternalName()) }
 
-        NONE_ARROW_TYPE = getArrowByNameOrNull("NONE".asInternalName())
-        FLINT_ARROW_TYPE = getArrowByNameOrNull("ARROW".asInternalName())
+        NONE_ARROW_TYPE = getArrowByNameOrNull(NEUInternalName.NONE)
+        FLINT_ARROW_TYPE = getArrowByNameOrNull(SkyhanniItems.ARROW())
     }
 
     class UnknownArrowType(message: String) : Exception(message)

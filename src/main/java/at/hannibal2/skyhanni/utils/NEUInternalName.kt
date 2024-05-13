@@ -10,8 +10,6 @@ class NEUInternalName private constructor(private val internalName: String) {
 
         val NONE = "NONE".asInternalName()
         val MISSING_ITEM = "MISSING_ITEM".asInternalName()
-
-        val WISP_POTION = "WISP_POTION".asInternalName()
         val SKYBLOCK_COIN = "SKYBLOCK_COIN".asInternalName()
 
         fun String.asInternalName(): NEUInternalName {
