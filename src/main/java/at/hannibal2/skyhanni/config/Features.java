@@ -18,7 +18,7 @@ import at.hannibal2.skyhanni.config.features.rift.RiftConfig;
 import at.hannibal2.skyhanni.config.features.skillprogress.SkillProgressConfig;
 import at.hannibal2.skyhanni.config.features.slayer.SlayerConfig;
 import at.hannibal2.skyhanni.config.storage.Storage;
-import at.hannibal2.skyhanni.utils.LorenzUtils;
+import at.hannibal2.skyhanni.utils.datetime.DateUtils;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.Config;
 import io.github.notenoughupdates.moulconfig.Social;
@@ -43,7 +43,7 @@ public class Features extends Config {
 
     @Override
     public HorizontalAlign alignCategory(ProcessedCategory category, boolean isSelected) {
-        if (LorenzUtils.INSTANCE.isAprilFoolsDay())
+        if (DateUtils.isAprilFools())
             return HorizontalAlign.RIGHT;
         return super.alignCategory(category, isSelected);
     }
@@ -65,7 +65,7 @@ public class Features extends Config {
     @Override
     public String getTitle() {
         String modName = "SkyHanni";
-        if (LorenzUtils.INSTANCE.isAprilFoolsDay())
+        if (DateUtils.isAprilFools())
             modName = new StringBuilder().append("اسکای هانی").reverse().toString(); // Minecraft does not render RTL strings very nicely, so we reverse the string here. Not authentic, but close enough.
 
         return modName + " " + SkyHanniMod.getVersion() + " by §channibal2§r, config by §5Moulberry §rand §5nea89";

@@ -276,16 +276,6 @@ object ItemDisplayOverlayFeatures {
         return text
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(11, "inventory.itemNumberAsStackSize") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, ItemNumberEntry::class.java)
-        }
-        event.transform(29, "inventory.itemNumberAsStackSize") { element ->
-            fixRemovedConfigElement(element)
-        }
-    }
-
     private fun fixRemovedConfigElement(data: JsonElement): JsonElement {
         if (!data.isJsonArray) return data
         val newList = JsonArray()
@@ -297,4 +287,14 @@ object ItemDisplayOverlayFeatures {
     }
 
     fun ItemNumberEntry.isSelected() = config.itemNumberAsStackSize.contains(this)
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.transform(11, "inventory.itemNumberAsStackSize") { element ->
+            ConfigUtils.migrateIntArrayListToEnumArrayList(element, ItemNumberEntry::class.java)
+        }
+        event.transform(29, "inventory.itemNumberAsStackSize") { element ->
+            fixRemovedConfigElement(element)
+        }
+    }
 }

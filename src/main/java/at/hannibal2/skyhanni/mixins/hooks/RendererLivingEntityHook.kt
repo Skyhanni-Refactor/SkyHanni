@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.features.misc.ContributorManager
 import at.hannibal2.skyhanni.utils.EntityOutlineRenderer
 import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.datetime.DateUtils
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
@@ -31,7 +32,7 @@ object RendererLivingEntityHook {
     @JvmStatic
     fun shouldBeUpsideDown(userName: String?): Boolean {
         if (!LorenzUtils.inSkyBlock) return false
-        if (!config.flipContributors && !LorenzUtils.isAprilFoolsDay) return false
+        if (!config.flipContributors && !DateUtils.isAprilFools()) return false
         val name = userName ?: return false
         return ContributorManager.shouldBeUpsideDown(name)
     }
@@ -42,7 +43,7 @@ object RendererLivingEntityHook {
     @JvmStatic
     fun rotatePlayer(player: EntityPlayer) {
         if (!LorenzUtils.inSkyBlock) return
-        if (!config.rotateContributors && !LorenzUtils.isAprilFoolsDay) return
+        if (!config.rotateContributors && !DateUtils.isAprilFools()) return
         val name = player.name ?: return
         if (!ContributorManager.shouldSpin(name)) return
         val rotation = ((player.ticksExisted % 90) * 4).toFloat()

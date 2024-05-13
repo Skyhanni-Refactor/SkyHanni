@@ -111,6 +111,41 @@ object ChocolateFactoryAPI {
         ChocolateFactoryUpgrade.updateIgnoredSlots()
     }
 
+    fun getChocolateBuyCost(lore: List<String>): Long? {
+        val nextLine = lore.nextAfter({ UtilsPatterns.costLinePattern.matches(it) }) ?: return null
+        return chocolateAmountPattern.matchMatcher(nextLine.removeColor()) {
+            group("amount").formatLong()
+        }
+    }
+
+    fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
+
+    fun isHoppityEvent() = SkyblockSeason.getCurrentSeason() == SkyblockSeason.SPRING
+
+    fun timeUntilNeed(goal: Long): Duration {
+        var needed = goal
+        val profileStorage = profileStorage ?: return Duration.ZERO
+
+        val baseMultiplier = profileStorage.rawChocolateMultiplier
+        val rawChocolatePerSecond = profileStorage.rawChocPerSecond
+        val timeTowerMultiplier = baseMultiplier + profileStorage.timeTowerLevel * 0.1
+
+        if (rawChocolatePerSecond == 0) return Duration.INFINITE
+
+        val secondsUntilTowerExpires = ChocolateFactoryTimeTowerManager.timeTowerActiveDuration().inWholeSeconds
+
+        val timeTowerChocPerSecond = rawChocolatePerSecond * timeTowerMultiplier
+
+        val secondsAtRate = needed / timeTowerChocPerSecond
+        if (secondsAtRate < secondsUntilTowerExpires) {
+            return secondsAtRate.seconds
+        }
+
+        needed -= (secondsUntilTowerExpires * timeTowerChocPerSecond).toLong()
+        val basePerSecond = rawChocolatePerSecond * baseMultiplier
+        return (needed / basePerSecond + secondsUntilTowerExpires).seconds
+    }
+
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
         val old = "event.chocolateFactory"
@@ -133,42 +168,5 @@ object ChocolateFactoryAPI {
         event.move(44, "$old.hoppityMenuShortcut", "$new.hoppityMenuShortcut")
         event.move(44, "$old.hoppityCollectionStats", "$new.hoppityCollectionStats")
         event.move(44, "$old.hoppityStatsPosition", "$new.hoppityStatsPosition")
-    }
-
-    fun getChocolateBuyCost(lore: List<String>): Long? {
-        val nextLine = lore.nextAfter({ UtilsPatterns.costLinePattern.matches(it) }) ?: return null
-        return chocolateAmountPattern.matchMatcher(nextLine.removeColor()) {
-            group("amount").formatLong()
-        }
-    }
-
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
-
-    fun isHoppityEvent() = SkyblockSeason.getCurrentSeason() == SkyblockSeason.SPRING
-
-    fun timeUntilNeed(goal: Long): Duration {
-        var needed = goal
-        val profileStorage = profileStorage ?: return Duration.ZERO
-
-        val updatedAgo = SimpleTimeMark(profileStorage.lastDataSave).passedSince().inWholeSeconds
-
-        val baseMultiplier = profileStorage.rawChocolateMultiplier
-        val rawChocolatePerSecond = profileStorage.rawChocPerSecond
-        val timeTowerMultiplier = baseMultiplier + profileStorage.timeTowerLevel * 0.1
-
-        if (rawChocolatePerSecond == 0) return Duration.INFINITE
-
-        val secondsUntilTowerExpires = ChocolateFactoryTimeTowerManager.timeTowerActiveDuration().inWholeSeconds
-
-        val timeTowerChocPerSecond = rawChocolatePerSecond * timeTowerMultiplier
-
-        val secondsAtRate = needed / timeTowerChocPerSecond
-        if (secondsAtRate < secondsUntilTowerExpires) {
-            return secondsAtRate.seconds - updatedAgo.seconds
-        }
-
-        needed -= (secondsUntilTowerExpires * timeTowerChocPerSecond).toLong()
-        val basePerSecond = rawChocolatePerSecond * baseMultiplier
-        return (needed / basePerSecond + secondsUntilTowerExpires).seconds
     }
 }

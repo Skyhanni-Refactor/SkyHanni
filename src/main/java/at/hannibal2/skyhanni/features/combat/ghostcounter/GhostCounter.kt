@@ -511,12 +511,12 @@ object GhostCounter {
         }
     }
 
+    fun isEnabled() = IslandType.DWARVEN_MINES.isInIsland() && config.enabled
+
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
         event.transform(11, "combat.ghostCounter.ghostDisplayText") { element ->
             ConfigUtils.migrateIntArrayListToEnumArrayList(element, GhostDisplayEntry::class.java)
         }
     }
-
-    fun isEnabled() = IslandType.DWARVEN_MINES.isInIsland() && config.enabled
 }

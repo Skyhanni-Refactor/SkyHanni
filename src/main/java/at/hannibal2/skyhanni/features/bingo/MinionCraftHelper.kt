@@ -275,16 +275,6 @@ class MinionCraftHelper {
         }
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(26, "#player.bingoSessions") { element ->
-            for ((_, data) in element.asJsonObject.entrySet()) {
-                fixTierOneMinions(data.asJsonObject)
-            }
-            element
-        }
-    }
-
     private fun fixTierOneMinions(data: JsonObject) {
         val uniqueEntries = mutableSetOf<String>()
         val newList = JsonArray()
@@ -301,5 +291,15 @@ class MinionCraftHelper {
             println("Removed $counter wrong entries in fixTierOneMinions.")
         }
         data.add("tierOneMinionsDone", newList)
+    }
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.transform(26, "#player.bingoSessions") { element ->
+            for ((_, data) in element.asJsonObject.entrySet()) {
+                fixTierOneMinions(data.asJsonObject)
+            }
+            element
+        }
     }
 }

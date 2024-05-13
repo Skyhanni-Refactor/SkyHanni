@@ -182,7 +182,6 @@ object FrozenTreasureTracker {
         tracker.resetCommand()
     }
 
-
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
         event.move(

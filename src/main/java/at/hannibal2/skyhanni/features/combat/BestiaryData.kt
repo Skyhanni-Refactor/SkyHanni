@@ -108,16 +108,6 @@ object BestiaryData {
         inInventory = false
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(15, "combat.bestiary.numberFormat") { element ->
-            ConfigUtils.migrateIntToEnum(element, NumberFormatEntry::class.java)
-        }
-        event.transform(15, "combat.bestiary.displayType") { element ->
-            ConfigUtils.migrateIntToEnum(element, DisplayTypeEntry::class.java)
-        }
-    }
-
     private fun update() {
         display = drawDisplay()
     }
@@ -491,4 +481,14 @@ object BestiaryData {
     }
 
     private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.transform(15, "combat.bestiary.numberFormat") { element ->
+            ConfigUtils.migrateIntToEnum(element, NumberFormatEntry::class.java)
+        }
+        event.transform(15, "combat.bestiary.displayType") { element ->
+            ConfigUtils.migrateIntToEnum(element, DisplayTypeEntry::class.java)
+        }
+    }
 }

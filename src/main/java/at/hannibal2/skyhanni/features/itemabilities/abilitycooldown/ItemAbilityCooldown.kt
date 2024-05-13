@@ -375,11 +375,6 @@ class ItemAbilityCooldown {
         }
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(31, "itemAbilities", "inventory.itemAbilities")
-    }
-
     private fun hasAbility(stack: ItemStack): MutableList<ItemAbility> {
         val itemName: String = stack.cleanName()
         val internalName = stack.getInternalName()
@@ -414,4 +409,9 @@ class ItemAbilityCooldown {
         val onCooldown: Boolean,
         val alternativePosition: Boolean,
     )
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.move(31, "itemAbilities", "inventory.itemAbilities")
+    }
 }

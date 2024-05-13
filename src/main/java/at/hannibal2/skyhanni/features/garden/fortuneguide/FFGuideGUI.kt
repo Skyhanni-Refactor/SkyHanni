@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.features.garden.fortuneguide.pages.UpgradePage
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.GuiRenderUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.datetime.DateUtils
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.system.OS
@@ -28,7 +28,7 @@ open class FFGuideGUI : GuiScreen() {
         private var firefoxTrials = 0
 
         fun open() {
-            if (LorenzUtils.isAprilFoolsDay) {
+            if (DateUtils.isAprilFools()) {
                 when (firefoxTrials) {
                     0 -> {
                         ChatUtils.chat("Are you looking for the FF browser?", prefix = false)

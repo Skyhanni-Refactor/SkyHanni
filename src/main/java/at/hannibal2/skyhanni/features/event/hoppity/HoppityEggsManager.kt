@@ -14,12 +14,16 @@ import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.fromNow
+import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.now
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.regex.Matcher
 import kotlin.time.Duration.Companion.seconds
@@ -56,6 +60,10 @@ object HoppityEggsManager {
 
     private var lastMeal: HoppityEggType? = null
     private var lastNote: String? = null
+
+    // has claimed all eggs at least once
+    private var warningActive = false
+    private var lastWarnTime = SimpleTimeMark.farPast()
 
     @SubscribeEvent
     fun onWorldChange(event: LorenzWorldChangeEvent) {
@@ -145,7 +153,7 @@ object HoppityEggsManager {
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.showClaimedEggs) return
-        if (ReminderUtils.isBusy(config.showDuringContest)) return
+        if (isBuzy()) return
         if (!ChocolateFactoryAPI.isHoppityEvent()) return
 
         val displayList = HoppityEggType.entries
@@ -160,7 +168,34 @@ object HoppityEggsManager {
     @SubscribeEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         HoppityEggType.checkClaimed()
+        checkWarn()
     }
+
+    private fun checkWarn() {
+        if (!warningActive) {
+            warningActive = HoppityEggType.entries.all { it.isClaimed() }
+        }
+
+        if (warningActive) {
+            if (HoppityEggType.entries.all { !it.isClaimed() }) {
+                warn()
+            }
+        }
+    }
+
+    private fun warn() {
+        if (!config.warnUnclaimedEggs) return
+        if (isBuzy()) return
+        if (lastWarnTime.passedSince() < 30.seconds) return
+
+        lastWarnTime = now()
+        val amount = HoppityEggType.entries.size
+        ChatUtils.chat("All $amount Hoppity Eggs are ready to be found.!")
+        LorenzUtils.sendTitle("§e$amount Hoppity Eggs!", 5.seconds)
+        McSound.PLING.play()
+    }
+
+    private fun isBuzy() = ReminderUtils.isBusy(config.showDuringContest)
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
