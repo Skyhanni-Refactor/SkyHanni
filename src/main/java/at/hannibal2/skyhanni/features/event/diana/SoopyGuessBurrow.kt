@@ -21,6 +21,7 @@ import kotlin.math.sin
 /**
  * Taken and ported from Soopyboo32's javascript module SoopyV2
  */
+// TODO fix whatever is going on in this file
 class SoopyGuessBurrow {
 
     private var dingIndex = 0
@@ -120,7 +121,7 @@ class SoopyGuessBurrow {
         val lineDist = lastParticlePoint2?.distance(particlePoint!!)!!
 
         distance = distance2!!
-        val changesHelp = particlePoint?.subtract(lastParticlePoint2!!)!!
+        val changesHelp = particlePoint!! - lastParticlePoint2!!
         var changes = listOf(changesHelp.x, changesHelp.y, changesHelp.z)
         changes = changes.map { o -> o / lineDist }
 
@@ -263,7 +264,7 @@ class SoopyGuessBurrow {
 
             distance = distance2!!
 
-            val changesHelp = particlePoint?.subtract(lastParticlePoint2!!)!!
+            val changesHelp = particlePoint!! - lastParticlePoint2!!
 
             var changes = listOf(changesHelp.x, changesHelp.y, changesHelp.z)
             changes = changes.map { o -> o / lineDist }
