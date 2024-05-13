@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.config.ConfigGuiManager
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.core.config.Position
 import at.hannibal2.skyhanni.data.HypixelData
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GuiKeyPressEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
@@ -428,7 +429,7 @@ class SkyHanniDebugsAndTests {
         if (!debugConfig.showInternalName) return
         val itemStack = event.itemStack
         val internalName = itemStack.getInternalName()
-        if ((internalName == NEUInternalName.NONE) && !debugConfig.showEmptyNames) return
+        if ((internalName == SkyhanniItems.NONE()) && !debugConfig.showEmptyNames) return
         event.toolTip.add("Internal Name: '${internalName.asString()}'")
     }
 
@@ -482,7 +483,7 @@ class SkyHanniDebugsAndTests {
         if (!debugConfig.showItemName) return
         val itemStack = event.itemStack
         val internalName = itemStack.getInternalName()
-        if (internalName == NEUInternalName.NONE) {
+        if (internalName == SkyhanniItems.NONE()) {
             event.toolTip.add("Item name: no item.")
             return
         }

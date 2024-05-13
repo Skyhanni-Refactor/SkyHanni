@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
@@ -9,7 +10,6 @@ import at.hannibal2.skyhanni.utils.DisplayTableEntry
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
@@ -212,13 +212,13 @@ object HoppityCollectionStats {
         val chocolateMultiplier: Double,
         val item: NEUInternalName,
     ) {
-        COMMON("§fCommon", 1, 0.002, "STAINED_GLASS".asInternalName()),
-        UNCOMMON("§aUncommon", 2, 0.003, "STAINED_GLASS-5".asInternalName()),
-        RARE("§9Rare", 4, 0.004, "STAINED_GLASS-11".asInternalName()),
-        EPIC("§5Epic", 10, 0.005, "STAINED_GLASS-10".asInternalName()),
-        LEGENDARY("§6Legendary", 0, 0.02, "STAINED_GLASS-1".asInternalName()),
-        MYTHIC("§dMythic", 0, 0.0, "STAINED_GLASS-6".asInternalName()),
-        TOTAL("§cTotal", 0, 0.0, "STAINED_GLASS-14".asInternalName()),
+        COMMON("§fCommon", 1, 0.002, SkyhanniItems.WHITE_STAINED_GLASS()),
+        UNCOMMON("§aUncommon", 2, 0.003, SkyhanniItems.LIME_STAINED_GLASS()),
+        RARE("§9Rare", 4, 0.004, SkyhanniItems.BLUE_STAINED_GLASS()),
+        EPIC("§5Epic", 10, 0.005, SkyhanniItems.PURPLE_STAINED_GLASS()),
+        LEGENDARY("§6Legendary", 0, 0.02, SkyhanniItems.ORANGE_STAINED_GLASS()),
+        MYTHIC("§dMythic", 0, 0.0, SkyhanniItems.PINK_STAINED_GLASS()),
+        TOTAL("§cTotal", 0, 0.0, SkyhanniItems.RED_STAINED_GLASS()),
         ;
 
         companion object {

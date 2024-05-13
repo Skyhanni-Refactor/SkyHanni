@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.pests
 
 import at.hannibal2.skyhanni.data.ScoreboardData
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
@@ -24,7 +25,6 @@ import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceSqToPlayer
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
@@ -50,11 +50,11 @@ object PestAPI {
     var lastPestKillTime = SimpleTimeMark.farPast()
 
     val vacuumVariants = listOf(
-        "SKYMART_VACUUM".asInternalName(),
-        "SKYMART_TURBO_VACUUM".asInternalName(),
-        "SKYMART_HYPER_VACUUM".asInternalName(),
-        "INFINI_VACUUM".asInternalName(),
-        "INFINI_VACUUM_HOOVERIUS".asInternalName(),
+        SkyhanniItems.SKYMART_VACUUM(),
+        SkyhanniItems.SKYMART_TURBO_VACUUM(),
+        SkyhanniItems.SKYMART_HYPER_VACUUM(),
+        SkyhanniItems.INFINI_VACUUM(),
+        SkyhanniItems.INFINI_VACUUM_HOOVERIUS(),
     )
 
     fun hasVacuumInHand() = InventoryUtils.itemInHandId in vacuumVariants

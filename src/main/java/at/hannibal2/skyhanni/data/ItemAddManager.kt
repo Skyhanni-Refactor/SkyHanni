@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.data
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.InventoryOpenEvent
 import at.hannibal2.skyhanni.events.ItemAddEvent
@@ -9,7 +10,6 @@ import at.hannibal2.skyhanni.events.entity.ItemAddInInventoryEvent
 import at.hannibal2.skyhanni.features.inventory.SuperCraftFeatures.craftedPattern
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
@@ -25,9 +25,6 @@ class ItemAddManager {
         SACKS,
         ;
     }
-
-    private val ARCHFIEND_DICE = "ARCHFIEND_DICE".asInternalName()
-    private val HIGH_CLASS_ARCHFIEND_DICE = "HIGH_CLASS_ARCHFIEND_DICE".asInternalName()
 
     private val diceRollChatPattern by RepoPattern.pattern(
         "data.itemmanager.diceroll",
@@ -73,7 +70,7 @@ class ItemAddManager {
         if (!LorenzUtils.inSkyBlock) return
 
         val internalName = event.internalName
-        if (internalName == ARCHFIEND_DICE || internalName == HIGH_CLASS_ARCHFIEND_DICE) {
+        if (internalName == SkyhanniItems.ARCHFIEND_DICE() || internalName == SkyhanniItems.HIGH_CLASS_ARCHFIEND_DICE()) {
             if (lastDiceRoll.passedSince() < 500.milliseconds) {
                 return
             }

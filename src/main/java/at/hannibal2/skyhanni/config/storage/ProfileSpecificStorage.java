@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.config.storage;
 
 import at.hannibal2.skyhanni.api.SkillAPI;
 import at.hannibal2.skyhanni.data.MaxwellAPI;
+import at.hannibal2.skyhanni.data.item.SkyhanniItems;
 import at.hannibal2.skyhanni.data.model.ComposterUpgrade;
 import at.hannibal2.skyhanni.features.combat.endernodetracker.EnderNodeTracker;
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostData;
@@ -251,10 +252,10 @@ public class ProfileSpecificStorage {
         public Map<CropType, Boolean> toolWithBountiful = new HashMap<>();
 
         @Expose
-        public NEUInternalName composterCurrentOrganicMatterItem = NEUInternalName.Companion.getNONE();
+        public NEUInternalName composterCurrentOrganicMatterItem = SkyhanniItems.NONE.invoke();
 
         @Expose
-        public NEUInternalName composterCurrentFuelItem = NEUInternalName.Companion.getNONE();
+        public NEUInternalName composterCurrentFuelItem = SkyhanniItems.NONE.invoke();
 
         @Expose
         public int uniqueVisitors = 0;

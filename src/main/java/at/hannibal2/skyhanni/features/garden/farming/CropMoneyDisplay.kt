@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.garden.farming
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.garden.MoneyPerHourConfig.CustomFormatEntry
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
@@ -58,7 +59,7 @@ object CropMoneyDisplay {
     private val cropNames = mutableMapOf<NEUInternalName, CropType>()
     private val toolHasBountiful get() = GardenAPI.storage?.toolWithBountiful
 
-    private val BOX_OF_SEEDS by lazy { "BOX_OF_SEEDS".asInternalName().getItemStack() }
+    private val BOX_OF_SEEDS by lazy { SkyhanniItems.BOX_OF_SEEDS().getItemStack() }
 
     @SubscribeEvent
     fun onProfileJoin(event: ProfileJoinEvent) {
@@ -127,8 +128,8 @@ object CropMoneyDisplay {
             toolHasBountiful?.put(it, reforgeName == "bountiful")
 
             if (GardenAPI.mushroomCowPet && it != CropType.MUSHROOM && config.mooshroom) {
-                val redMushroom = "ENCHANTED_RED_MUSHROOM".asInternalName()
-                val brownMushroom = "ENCHANTED_BROWN_MUSHROOM".asInternalName()
+                val redMushroom = SkyhanniItems.ENCHANTED_RED_MUSHROOM()
+                val brownMushroom = SkyhanniItems.ENCHANTED_BROWN_MUSHROOM()
                 val (redPrice, brownPrice) = if (LorenzUtils.noTradeMode) {
                     val redPrice = (redMushroom.getNpcPriceOrNull() ?: 160.0) / 160
                     val brownPrice = (brownMushroom.getNpcPriceOrNull() ?: 160.0) / 160
@@ -147,8 +148,8 @@ object CropMoneyDisplay {
             val itemInHand = McPlayer.heldItem?.getInternalName()
             if (itemInHand?.contains("DICER") == true && config.dicer) {
                 val (dicerDrops, internalName) = when (it) {
-                    CropType.MELON -> GardenCropSpeed.latestMelonDicer to "ENCHANTED_MELON".asInternalName()
-                    CropType.PUMPKIN -> GardenCropSpeed.latestPumpkinDicer to "ENCHANTED_PUMPKIN".asInternalName()
+                    CropType.MELON -> GardenCropSpeed.latestMelonDicer to SkyhanniItems.ENCHANTED_MELON()
+                    CropType.PUMPKIN -> GardenCropSpeed.latestPumpkinDicer to SkyhanniItems.ENCHANTED_PUMPKIN()
 
                     else -> ErrorManager.skyHanniError(
                         "Unknown dicer detected.",
@@ -360,7 +361,7 @@ object CropMoneyDisplay {
                             debugList.addAsSingletonList(" added seedsPerHour: $seedsPerHour")
                         }
                         val factor = NEUItems.getPrimitiveMultiplier(internalName).amount
-                        npcPrice += "SEEDS".asInternalName().getNpcPrice() * seedsPerHour / factor
+                        npcPrice += SkyhanniItems.SEEDS().getNpcPrice() * seedsPerHour / factor
                         sellOffer += it.sellOfferPrice * seedsPerHour
                         instantSell += it.instantBuyPrice * seedsPerHour
                     }

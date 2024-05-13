@@ -2,11 +2,11 @@ package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacks
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -26,8 +26,6 @@ class DungeonArchitectFeatures {
         "§4\\[STATUE] Oruo the Omniscient§r§f: (?:§.)*(?<name>\\S*) (?:§.)*chose the wrong .*"
     )
 
-    private val architectsFirstDraftItem = "ARCHITECT_FIRST_DRAFT".asInternalName()
-
     @SubscribeEvent
     fun onChat(event: LorenzChatEvent) {
         if (!isEnabled()) return
@@ -41,7 +39,7 @@ class DungeonArchitectFeatures {
     }
 
     private fun generateMessage(name: String, event: LorenzChatEvent) {
-        val architectItemAmount = architectsFirstDraftItem.getAmountInSacks()
+        val architectItemAmount = SkyhanniItems.ARCHITECT_FIRST_DRAFT().getAmountInSacks()
         if (architectItemAmount <= 0) return
 
         ChatUtils.clickableChat(

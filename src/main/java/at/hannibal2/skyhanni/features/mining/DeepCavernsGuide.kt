@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.mining
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ParkourJson
 import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
@@ -16,7 +17,6 @@ import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.ParkourHelper
 import io.github.moulberry.notenoughupdates.events.ReplaceItemEvent
@@ -34,7 +34,7 @@ class DeepCavernsGuide {
     private var showStartIcon = false
 
     private val startIcon by lazy {
-        val neuItem = "MAP".asInternalName().getItemStack()
+        val neuItem = SkyhanniItems.MAP().getItemStack()
         Utils.createItemStack(
             neuItem.item,
             "§bDeep Caverns Guide",

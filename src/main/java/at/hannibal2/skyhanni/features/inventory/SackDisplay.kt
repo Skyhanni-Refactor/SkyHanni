@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.config.features.inventory.SackDisplayConfig.NumberF
 import at.hannibal2.skyhanni.config.features.inventory.SackDisplayConfig.PriceFormatEntry
 import at.hannibal2.skyhanni.config.features.inventory.SackDisplayConfig.SortingTypeEntry
 import at.hannibal2.skyhanni.data.SackAPI
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi
@@ -19,7 +20,6 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
@@ -151,7 +151,7 @@ object SackDisplay {
                         )
                     )
                     //TOOD add cache
-                    addItemStack("MAGMA_FISH".asInternalName())
+                    addItemStack(SkyhanniItems.MAGMA_FISH())
                 }
                 if (config.showPrice && price != 0L) addAlignedNumber("§6${format(price)}")
             })

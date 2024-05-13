@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.rift.area.dreadfarm
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
@@ -29,7 +30,7 @@ class RiftAgaricusCap {
     }
 
     private fun updateLocation(): LorenzVec? {
-        if (McPlayer.heldItem?.getInternalName() != RiftAPI.farmingTool) return null
+        if (McPlayer.heldItem?.getInternalName() != SkyhanniItems.FARMING_WAND()) return null
         val currentLocation = McPlayer.blockLookingAt ?: return null
 
         when (currentLocation.getBlockStateAt().toString()) {
