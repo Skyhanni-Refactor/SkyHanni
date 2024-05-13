@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.features.gui.customscoreboard
 
-import at.hannibal2.skyhanni.config.features.gui.customscoreboard.ArrowConfig.ArrowAmountDisplay
 import at.hannibal2.skyhanni.api.BitsAPI
+import at.hannibal2.skyhanni.config.features.gui.customscoreboard.ArrowConfig.ArrowAmountDisplay
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.HypixelData.getMaxPlayersForCurrentServer
 import at.hannibal2.skyhanni.data.HypixelData.getPlayersOnCurrentServer
@@ -39,8 +39,8 @@ import at.hannibal2.skyhanni.utils.StringUtils.firstLetterUppercase
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.pluralize
 import at.hannibal2.skyhanni.utils.TabListData
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import at.hannibal2.skyhanni.utils.TimeUtils.formatted
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.formatted
 import java.util.function.Supplier
 
 internal var unknownLines = listOf<String>()

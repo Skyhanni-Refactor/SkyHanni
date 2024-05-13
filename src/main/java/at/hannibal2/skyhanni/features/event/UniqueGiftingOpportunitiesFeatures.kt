@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.event
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.data.WinterAPI
 import at.hannibal2.skyhanni.events.EntityCustomNameUpdateEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
@@ -16,6 +15,7 @@ import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
+import at.hannibal2.skyhanni.utils.datetime.DateUtils
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -110,7 +110,7 @@ object UniqueGiftingOpportunitiesFeatures {
 
         if (!LorenzUtils.inSkyBlock) return
         if (!config.enabled) return
-        if (!WinterAPI.isDecember()) return
+        if (!DateUtils.isDecember()) return
 
         holdingGift = !config.highlighWithGiftOnly || giftNamePattern.matches(InventoryUtils.itemInHandId.asString())
     }
