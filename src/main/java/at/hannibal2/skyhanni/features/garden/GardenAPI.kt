@@ -29,7 +29,6 @@ import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateShopPr
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addItemStack
 import at.hannibal2.skyhanni.utils.DelayedRun
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.LorenzRarity
@@ -134,7 +133,7 @@ object GardenAPI {
     }
 
     private fun checkItemInHand() {
-        val toolItem = InventoryUtils.getItemInHand()
+        val toolItem = McPlayer.heldItem
         val crop = toolItem?.getCropType()
         val newTool = getToolInHand(toolItem, crop)
         if (toolInHand != newTool) {
@@ -160,7 +159,7 @@ object GardenAPI {
 
     fun isCurrentlyFarming() = inGarden() && GardenCropSpeed.averageBlocksPerSecond > 0.0 && hasFarmingToolInHand()
 
-    fun hasFarmingToolInHand() = InventoryUtils.getItemInHand()?.let {
+    fun hasFarmingToolInHand() = McPlayer.heldItem?.let {
         val crop = it.getCropType()
         getToolInHand(it, crop) != null
     } ?: false
@@ -219,8 +218,8 @@ object GardenAPI {
 
         val blockState = event.getBlockState
         val cropBroken = blockState.getCropType() ?: return
-        if (cropBroken.multiplier == 1) return
-        if (blockState.checkProperty<Int, PropertyInteger>("age") { it == 0 }) return
+        val isBaby = blockState.checkProperty<Int, PropertyInteger>("age") { it == 0 }
+        if (cropBroken.multiplier == 1 && isBaby) return
 
         val position = event.position
         if (lastLocation == position) {

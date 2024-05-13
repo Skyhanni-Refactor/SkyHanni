@@ -9,7 +9,6 @@ import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -17,6 +16,7 @@ import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import at.hannibal2.skyhanni.utils.tracker.TrackerData
@@ -71,12 +71,7 @@ object VerminTracker {
     @SubscribeEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!RiftAPI.inRift()) return
-        checkVacuum()
-    }
-
-    private fun checkVacuum() {
-        hasVacuum = InventoryUtils.getItemsInOwnInventory()
-            .any { it.getInternalName() == TURBOMAX_VACUUM }
+        hasVacuum = McPlayer.has(TURBOMAX_VACUUM)
     }
 
     @SubscribeEvent
@@ -97,7 +92,7 @@ object VerminTracker {
         if (!RiftAPI.inRift() || event.inventoryName != "Vermin Bin") return
 
         val bin = event.inventoryItems[13]?.getLore() ?: return
-        val bag = InventoryUtils.getItemsInOwnInventory()
+        val bag = McPlayer.inventory
             .firstOrNull { it.getInternalName() == TURBOMAX_VACUUM }
             ?.getLore() ?: emptyList()
 

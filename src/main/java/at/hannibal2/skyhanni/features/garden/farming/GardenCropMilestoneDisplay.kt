@@ -29,13 +29,15 @@ import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.TimeUnit
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.TimeUtils.format
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 object GardenCropMilestoneDisplay {
@@ -48,7 +50,7 @@ object GardenCropMilestoneDisplay {
     private val storage get() = ProfileStorageData.profileSpecific?.garden?.customGoalMilestone
     private val bestCropTime = GardenBestCropTime()
 
-    private var lastPlaySoundTime = 0L
+    private var lastPlaySoundTime = SimpleTimeMark.farPast()
     private var needsInventory = false
 
     private var lastWarnedLevel = -1
@@ -197,12 +199,12 @@ object GardenCropMilestoneDisplay {
             crop.setSpeed(farmingFortuneSpeed)
             if (!crop.isMaxed(overflowDisplay) || overflowDisplay) {
                 val missing = need - have
-                val missingTimeSeconds = missing / farmingFortuneSpeed
-                val millis = missingTimeSeconds * 1000
+                val missingTime = (missing / farmingFortuneSpeed).seconds
+                val millis = missingTime.inWholeMilliseconds
                 GardenBestCropTime.timeTillNextCrop[crop] = millis
                 // TODO, change functionality to use enum rather than ordinals
                 val biggestUnit = TimeUnit.entries[config.highestTimeFormat.get().ordinal]
-                val duration = TimeUtils.formatDuration(millis, biggestUnit)
+                val duration = missingTime.format(biggestUnit)
                 tryWarn(millis, "§b${crop.cropName} $nextTier in $duration")
 
                 val speedText = "§7In §b$duration"
@@ -256,11 +258,11 @@ object GardenCropMilestoneDisplay {
 
     private fun tryWarn(millis: Long, title: String) {
         if (!config.warnClose) return
-        if (GardenCropSpeed.lastBrokenTime + 500 <= System.currentTimeMillis()) return
+        if (GardenCropSpeed.lastBrokenTime.passedSince() > 500.milliseconds) return
         if (millis > 5_900) return
 
-        if (System.currentTimeMillis() > lastPlaySoundTime + 1_000) {
-            lastPlaySoundTime = System.currentTimeMillis()
+        if (lastPlaySoundTime.passedSince() > 1.seconds) {
+            lastPlaySoundTime = SimpleTimeMark.now()
             McSound.BEEP.play()
         }
         if (!needsInventory) {
@@ -319,11 +321,10 @@ object GardenCropMilestoneDisplay {
         if (speed != 0.0) {
             val blocksPerSecond = speed * (GardenAPI.getCurrentlyFarmedCrop()?.multiplier ?: 1)
 
-            val missingTimeSeconds = missing / blocksPerSecond
-            val millis = missingTimeSeconds * 1000
+            val missingTime = (missing / blocksPerSecond).seconds
             // TODO, change functionality to use enum rather than ordinals
             val biggestUnit = TimeUnit.entries[config.highestTimeFormat.get().ordinal]
-            val duration = TimeUtils.formatDuration(millis.toLong(), biggestUnit)
+            val duration = missingTime.format(biggestUnit)
             lineMap[MushroomTextEntry.TIME] = Renderable.string("§7In §b$duration")
         }
 

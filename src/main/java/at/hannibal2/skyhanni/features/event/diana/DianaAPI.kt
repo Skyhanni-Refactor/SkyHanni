@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.item.ItemStack
 
 object DianaAPI {
@@ -24,5 +25,5 @@ object DianaAPI {
 
     val ItemStack.isDianaSpade get() = getInternalName() == spade
 
-    private fun hasSpadeInInventory() = InventoryUtils.getItemsInOwnInventory().any { it.isDianaSpade }
+    private fun hasSpadeInInventory() = McPlayer.has(spade)
 }

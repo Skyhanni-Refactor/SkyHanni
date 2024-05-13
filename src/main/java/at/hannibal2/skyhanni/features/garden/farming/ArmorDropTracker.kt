@@ -15,10 +15,10 @@ import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import at.hannibal2.skyhanni.utils.tracker.TrackerData
@@ -115,7 +115,7 @@ object ArmorDropTracker {
     }
 
     private fun checkArmor() {
-        val armorPieces = InventoryUtils.getArmor()
+        val armorPieces = McPlayer.armor
             .mapNotNull { it?.getInternalName()?.asString() }
             .count { armorPattern.matcher(it).matches() }
         hasArmor = armorPieces > 1
@@ -139,7 +139,7 @@ object ArmorDropTracker {
 
             val armorDropName = crop.specialDropType
             val armorName = armorDropInfo[armorDropName]?.armorType ?: return 0.0
-            val pieceCount = InventoryUtils.getArmor()
+            val pieceCount = McPlayer.armor
                 .mapNotNull { it?.getInternalName()?.asString() }
                 .count { it.contains(armorName) || it.contains("FERMENTO") }
 

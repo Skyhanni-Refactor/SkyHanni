@@ -39,12 +39,14 @@ import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimalIfNecessary
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SpecialColour
 import at.hannibal2.skyhanni.utils.StringUtils.find
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.TimeUtils.format
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockStateAt
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -94,7 +96,7 @@ class MinionFeatures {
         if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return
 
         val lookingAt = event.pos.offset(event.face).toLorenzVec()
-        val equipped = InventoryUtils.getItemInHand() ?: return
+        val equipped = McPlayer.heldItem ?: return
 
         if (equipped.displayName.contains(" Minion ") && lookingAt.getBlockStateAt().block == Blocks.air) {
             newMinion = lookingAt.add(0.5, 0.0, 0.5)
@@ -353,8 +355,8 @@ class MinionFeatures {
             }
 
             if (config.emptiedTime.display && lastEmptied != 0L) {
-                val duration = System.currentTimeMillis() - lastEmptied
-                val format = TimeUtils.formatDuration(duration, longName = true) + " ago"
+                val passedSince = SimpleTimeMark(lastEmptied).passedSince()
+                val format = passedSince.format(longName = true) + " ago"
                 val text = "§eHopper Emptied: $format"
                 event.drawString(location.add(y = 1.15), text, true)
             }

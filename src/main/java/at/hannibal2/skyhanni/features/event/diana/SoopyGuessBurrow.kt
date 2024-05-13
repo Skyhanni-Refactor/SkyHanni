@@ -21,10 +21,11 @@ import kotlin.math.sin
 /**
  * Taken and ported from Soopyboo32's javascript module SoopyV2
  */
+// TODO fix whatever is going on in this file
 class SoopyGuessBurrow {
 
     private var dingIndex = 0
-    private var lastDing = 0L
+    private var hasDinged = false
     private var lastDingPitch = 0f
     private var firstPitch = 0f
     private var lastParticlePoint: LorenzVec? = null
@@ -43,7 +44,7 @@ class SoopyGuessBurrow {
 
     @SubscribeEvent
     fun onWorldChange(event: LorenzWorldChangeEvent) {
-        lastDing = 0L
+        hasDinged = false
         lastDingPitch = 0f
         firstPitch = 0f
         lastParticlePoint = null
@@ -63,11 +64,11 @@ class SoopyGuessBurrow {
         if (event.soundName != "note.harp") return
 
         val pitch = event.pitch
-        if (lastDing == 0L) {
+        if (!hasDinged) {
             firstPitch = pitch
         }
 
-        lastDing = System.currentTimeMillis()
+        hasDinged = true
 
         if (pitch < lastDingPitch) {
             firstPitch = pitch
@@ -120,7 +121,7 @@ class SoopyGuessBurrow {
         val lineDist = lastParticlePoint2?.distance(particlePoint!!)!!
 
         distance = distance2!!
-        val changesHelp = particlePoint?.subtract(lastParticlePoint2!!)!!
+        val changesHelp = particlePoint!! - lastParticlePoint2!!
         var changes = listOf(changesHelp.x, changesHelp.y, changesHelp.z)
         changes = changes.map { o -> o / lineDist }
 
@@ -263,7 +264,7 @@ class SoopyGuessBurrow {
 
             distance = distance2!!
 
-            val changesHelp = particlePoint?.subtract(lastParticlePoint2!!)!!
+            val changesHelp = particlePoint!! - lastParticlePoint2!!
 
             var changes = listOf(changesHelp.x, changesHelp.y, changesHelp.z)
             changes = changes.map { o -> o / lineDist }

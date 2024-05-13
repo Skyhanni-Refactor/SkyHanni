@@ -49,6 +49,7 @@ import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getRanchersSpeed
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
@@ -189,8 +190,8 @@ object ItemDisplayOverlayFeatures {
         if (RANCHERS_BOOTS_SPEED.isSelected() && internalName == "RANCHERS_BOOTS".asInternalName()) {
             item.getRanchersSpeed()?.let {
                 val isUsingBlackCat = PetAPI.isCurrentPet("Black Cat")
-                val helmet = InventoryUtils.getHelmet()?.getInternalName()
-                val hand = InventoryUtils.getItemInHand()?.getInternalName()
+                val helmet = McPlayer.helmet?.getInternalName()
+                val hand = McPlayer.heldItem?.getInternalName()
                 val racingHelmet = "RACING_HELMET".asInternalName()
                 val cactusKnife = "CACTUS_KNIFE".asInternalName()
                 val is500 = isUsingBlackCat || helmet == racingHelmet || (GardenAPI.inGarden() && hand == cactusKnife)

@@ -16,7 +16,6 @@ import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.GardenAPI.getCropType
 import at.hannibal2.skyhanni.features.misc.compacttablist.AdvancedPlayerList
 import at.hannibal2.skyhanni.features.rift.RiftAPI
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.colorCodeToRarity
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
@@ -64,7 +63,7 @@ fun getPetDisplay(): String = PetAPI.currentPet?.let {
 } ?: "No pet equipped"
 
 private fun getCropMilestoneDisplay(): String {
-    val crop = InventoryUtils.getItemInHand()?.getCropType()
+    val crop = McPlayer.heldItem?.getCropType()
     val cropCounter = crop?.getCounter()
     val allowOverflow = GardenAPI.config.cropMilestones.overflow.discordRPC
     val tier = cropCounter?.let { getTierForCropCount(it, crop, allowOverflow) }
@@ -163,7 +162,7 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
     }),
 
     ITEM({
-        InventoryUtils.getItemInHand()?.let {
+        McPlayer.heldItem?.let {
             String.format("Holding ${it.displayName.removeColor()}")
         } ?: "No item in hand"
     }),
@@ -261,7 +260,7 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
             } else item.getSubCompound("ExtraAttributes", false)
         }
 
-        val itemInHand = InventoryUtils.getItemInHand()
+        val itemInHand = McPlayer.heldItem
         val itemName = itemInHand?.displayName?.removeColor() ?: ""
 
         val extraAttributes = getExtraAttributes(itemInHand)

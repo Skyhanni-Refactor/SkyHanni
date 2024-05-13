@@ -11,12 +11,12 @@ import at.hannibal2.skyhanni.config.SackData
 import at.hannibal2.skyhanni.config.commands.Commands.init
 import at.hannibal2.skyhanni.data.ActionBarData
 import at.hannibal2.skyhanni.data.ActionBarStatsData
-import at.hannibal2.skyhanni.data.BitsAPI
-import at.hannibal2.skyhanni.data.BlockData
+import at.hannibal2.skyhanni.api.BitsAPI
+import at.hannibal2.skyhanni.api.BlockChangeAPI
 import at.hannibal2.skyhanni.data.BossbarData
 import at.hannibal2.skyhanni.data.ChatManager
 import at.hannibal2.skyhanni.data.CropAccessoryData
-import at.hannibal2.skyhanni.data.EntityData
+import at.hannibal2.skyhanni.api.EntityAttributeAPI
 import at.hannibal2.skyhanni.data.EntityMovementData
 import at.hannibal2.skyhanni.data.FameRanks
 import at.hannibal2.skyhanni.data.FixedRateTimerManager
@@ -504,7 +504,7 @@ class SkyHanniMod {
         loadModule(ScoreboardData())
         loadModule(SeaCreatureFeatures())
         loadModule(SeaCreatureManager())
-        loadModule(EntityData())
+        loadModule(EntityAttributeAPI)
         loadModule(MobData())
         loadModule(MobDetection())
         loadModule(EntityMovementData())
@@ -537,7 +537,7 @@ class SkyHanniMod {
         loadModule(GardenCropSpeed)
         loadModule(GardenWarpCommands())
         loadModule(ProfileStorageData)
-        loadModule(BlockData())
+        loadModule(BlockChangeAPI)
         loadModule(DefaultConfigFeatures)
         loadModule(EntityOutlineRenderer)
         loadModule(KeyboardManager)
@@ -565,7 +565,7 @@ class SkyHanniMod {
         loadModule(BazaarApi())
         loadModule(GardenAPI)
         loadModule(GardenPlotAPI)
-        loadModule(DataWatcherAPI())
+        loadModule(DataWatcherAPI)
         loadModule(CollectionAPI)
         loadModule(FarmingContestAPI)
         loadModule(HighlightOnHoverSlot)
@@ -859,7 +859,7 @@ class SkyHanniMod {
         loadModule(RiftHorsezookaHider())
         loadModule(GriffinPetWarning())
         loadModule(BestiaryData)
-        loadModule(KingTalismanHelper())
+        loadModule(KingTalismanHelper)
         loadModule(HarpFeatures)
         loadModule(EnderNodeTracker)
         loadModule(CompactBestiaryChatMessage())

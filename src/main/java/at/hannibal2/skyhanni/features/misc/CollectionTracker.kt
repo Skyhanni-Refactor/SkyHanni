@@ -19,6 +19,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil.isFormatNumber
 import at.hannibal2.skyhanni.utils.NumberUtil.percentWithColorCode
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.Collections
@@ -166,9 +167,9 @@ object CollectionTracker {
     private fun countCurrentlyInInventory(): Int {
         val cactus = "CACTUS".asInternalName()
         val cactusGreen = "INK_SACK-2".asInternalName()
-        return InventoryUtils.countItemsInLowerInventory {
+        return McPlayer.countItems {
             if (internalName == cactus && it.getInternalName() == cactusGreen) {
-                return@countItemsInLowerInventory true
+                return@countItems true
             }
             it.getInternalName() == internalName
         }

@@ -22,11 +22,13 @@ class VisitorListenerTest {
         mockkObject(GardenAPI)
         every { GardenAPI.inGarden() } returns true
 
-        mockkObject(LorenzUtils)
+        mockkObject(McPlayer)
         every { McPlayer.name } returns "ThePlayerName"
 
         mockkObject(VisitorAPI)
         every { VisitorAPI.addVisitor(any()) } returns true
+
+        mockkObject(LorenzUtils)
 
         listener = VisitorListener()
     }

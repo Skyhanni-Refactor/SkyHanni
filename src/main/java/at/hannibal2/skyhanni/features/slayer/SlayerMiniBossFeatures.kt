@@ -35,9 +35,8 @@ class SlayerMiniBossFeatures {
         val entity = event.entity as? EntityCreature ?: return
         if (DamageIndicatorManager.isBoss(entity)) return
 
-        val maxHealth = event.maxHealth
         for (bossType in SlayerMiniBossType.entries) {
-            if (!bossType.health.any { entity.hasMaxHealth(it, true, maxHealth) }) continue
+            if (!bossType.health.any { entity.hasMaxHealth(it, true, event.normalizedMaxHealth) }) continue
             if (bossType.clazz != entity.javaClass) continue
 
             miniBosses = miniBosses.editCopy { add(entity) }

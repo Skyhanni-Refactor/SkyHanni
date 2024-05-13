@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
@@ -36,31 +37,10 @@ object InventoryUtils {
 
     fun ContainerChest.getInventoryName() = this.lowerChestInventory.displayName.unformattedText.trim()
 
-    fun getItemsInOwnInventory() =
-        getItemsInOwnInventoryWithNull()?.filterNotNull() ?: emptyList()
-
-    fun getItemsInOwnInventoryWithNull() = Minecraft.getMinecraft().thePlayer?.inventory?.mainInventory
-
-    // TODO use this instead of getItemsInOwnInventory() for many cases, e.g. vermin tracker, diana spade, etc
-    fun getItemsInHotbar() =
-        getItemsInOwnInventoryWithNull()?.sliceArray(0..8)?.filterNotNull() ?: emptyList()
-
-    fun countItemsInLowerInventory(predicate: (ItemStack) -> Boolean) =
-        getItemsInOwnInventory().filter { predicate(it) }.sumOf { it.stackSize }
-
     fun inStorage() = openInventoryName().let {
         (it.contains("Storage") && !it.contains("Rift Storage"))
             || it.contains("Ender Chest") || it.contains("Backpack")
     }
-
-    fun getItemInHand(): ItemStack? = Minecraft.getMinecraft().thePlayer.heldItem
-
-    fun getArmor(): Array<ItemStack?> = Minecraft.getMinecraft().thePlayer.inventory.armorInventory
-
-    fun getHelmet(): ItemStack? = getArmor()[3]
-    fun getChestplate(): ItemStack? = getArmor()[2]
-    fun getLeggings(): ItemStack? = getArmor()[1]
-    fun getBoots(): ItemStack? = getArmor()[0]
 
     val isNeuStorageEnabled = RecalculatingValue(10.seconds) {
         try {
@@ -82,8 +62,6 @@ object InventoryUtils {
         val slotUnderMouse = screen.slotUnderMouse ?: return false
         return slotUnderMouse.inventory is InventoryPlayer && slotUnderMouse.stack == itemStack
     }
-
-    fun isItemInInventory(name: NEUInternalName) = name.getAmountInInventory() > 0
 
     fun ContainerChest.getUpperItems(): Map<Slot, ItemStack> = buildMap {
         for ((slot, stack) in getAllItems()) {
@@ -111,5 +89,5 @@ object InventoryUtils {
         return getItemsInOpenChest().find { it.slotIndex == slotIndex }?.stack
     }
 
-    fun NEUInternalName.getAmountInInventory(): Int = countItemsInLowerInventory { it.getInternalNameOrNull() == this }
+    fun NEUInternalName.getAmountInInventory(): Int = McPlayer.countItems { it.getInternalNameOrNull() == this }
 }
