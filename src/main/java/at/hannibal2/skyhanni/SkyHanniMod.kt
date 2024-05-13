@@ -330,7 +330,7 @@ import at.hannibal2.skyhanni.features.misc.FixNEUHeavyPearls
 import at.hannibal2.skyhanni.features.misc.HideArmor
 import at.hannibal2.skyhanni.features.misc.HideFarEntities
 import at.hannibal2.skyhanni.features.misc.InGameDateDisplay
-import at.hannibal2.skyhanni.features.misc.JerryIslandTImer
+import at.hannibal2.skyhanni.features.misc.JerryIslandTimer
 import at.hannibal2.skyhanni.features.misc.JoinCrystalHollows
 import at.hannibal2.skyhanni.features.misc.LesserOrbHider
 import at.hannibal2.skyhanni.features.misc.LockMouseLook
@@ -640,7 +640,7 @@ class SkyHanniMod {
         loadModule(AshfangHideDamageIndicator())
         loadModule(ItemStars())
         loadModule(MinionFeatures())
-        loadModule(JerryIslandTImer())
+        loadModule(JerryIslandTimer())
         loadModule(RngMeterInventory())
         loadModule(WikiManager)
         loadModule(SendCoordinatedCommand())

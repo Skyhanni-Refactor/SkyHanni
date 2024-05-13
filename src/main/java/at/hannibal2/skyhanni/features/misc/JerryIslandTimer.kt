@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
-class JerryIslandTImer {
+class JerryIslandTimer {
 
     private val config get() = SkyHanniMod.feature.gui
     private val winterConfig get() = SkyHanniMod.feature.event.winter
