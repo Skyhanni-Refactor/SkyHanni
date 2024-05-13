@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.features.mining.powdertracker
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.BossbarAPI
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.mining.PowderTrackerConfig.PowderDisplayEntry
-import at.hannibal2.skyhanni.api.BossbarAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
@@ -194,24 +194,6 @@ object PowderTracker {
     }
 
     @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(11, "mining.powderTracker.textFormat") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, PowderDisplayEntry::class.java)
-        }
-
-        event.transform(20, "mining.powderTracker.textFormat") { element ->
-            val newList = JsonArray()
-            for (entry in element.asJsonArray) {
-                if (entry is JsonNull) continue
-                if (entry.asString.let { it != "TITLE" && it != "DISPLAY_MODE" }) {
-                    newList.add(entry)
-                }
-            }
-            newList
-        }
-    }
-
-    @SubscribeEvent
     fun onIslandChange(event: IslandChangeEvent) {
         if (event.newIsland == IslandType.CRYSTAL_HOLLOWS) {
             tracker.firstUpdate()
@@ -367,5 +349,23 @@ object PowderTracker {
 
     fun resetCommand() {
         tracker.resetCommand()
+    }
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.transform(11, "mining.powderTracker.textFormat") { element ->
+            ConfigUtils.migrateIntArrayListToEnumArrayList(element, PowderDisplayEntry::class.java)
+        }
+
+        event.transform(20, "mining.powderTracker.textFormat") { element ->
+            val newList = JsonArray()
+            for (entry in element.asJsonArray) {
+                if (entry is JsonNull) continue
+                if (entry.asString.let { it != "TITLE" && it != "DISPLAY_MODE" }) {
+                    newList.add(entry)
+                }
+            }
+            newList
+        }
     }
 }

@@ -157,13 +157,6 @@ object EnderNodeTracker {
         tracker.update()
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(11, "combat.enderNodeTracker.textFormat") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, EnderNodeDisplayEntry::class.java)
-        }
-    }
-
     private fun getLootProfit(storage: Data): Map<EnderNode, Double> {
         if (!ProfileStorageData.loaded) return emptyMap()
 
@@ -258,5 +251,12 @@ object EnderNodeTracker {
 
     fun resetCommand() {
         tracker.resetCommand()
+    }
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.transform(11, "combat.enderNodeTracker.textFormat") { element ->
+            ConfigUtils.migrateIntArrayListToEnumArrayList(element, EnderNodeDisplayEntry::class.java)
+        }
     }
 }

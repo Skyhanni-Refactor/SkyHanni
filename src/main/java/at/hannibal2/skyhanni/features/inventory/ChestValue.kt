@@ -273,11 +273,11 @@ class ChestValue {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(17, "inventory.chestValueConfig.formatType") { element ->
-            ConfigUtils.migrateIntToEnum(element, NumberFormatEntry::class.java)
-        }
         event.transform(15, "inventory.chestValueConfig.sortingType") { element ->
             ConfigUtils.migrateIntToEnum(element, SortingTypeEntry::class.java)
+        }
+        event.transform(17, "inventory.chestValueConfig.formatType") { element ->
+            ConfigUtils.migrateIntToEnum(element, NumberFormatEntry::class.java)
         }
     }
 }

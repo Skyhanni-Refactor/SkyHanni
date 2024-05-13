@@ -219,6 +219,8 @@ object DiscordRPCManager : IPCListener {
         beenAfkFor = SimpleTimeMark.now()
     }
 
+    private fun PriorityEntry.isSelected() = config.autoPriority.contains(this)
+
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
         event.transform(11, "misc.discordRPC.firstLine") { element ->
@@ -236,6 +238,4 @@ object DiscordRPCManager : IPCListener {
 
         event.move(31, "misc.discordRPC", "gui.discordRPC")
     }
-
-    private fun PriorityEntry.isSelected() = config.autoPriority.contains(this)
 }
