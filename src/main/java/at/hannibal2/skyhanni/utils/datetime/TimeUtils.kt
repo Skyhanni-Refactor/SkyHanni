@@ -153,7 +153,7 @@ private const val FACTOR_HOURS = FACTOR_MINUTES * 60
 private const val FACTOR_DAYS = FACTOR_HOURS * 24
 private const val FACTOR_YEARS = (FACTOR_DAYS * 365.25).toLong()
 
-enum class TimeUnit(val factor: Long, val shortName: String, val longName: String) {
+enum class TimeUnit(val factor: Long, private val shortName: String, private val longName: String) {
     YEAR(FACTOR_YEARS, "y", "Year"),
     DAY(FACTOR_DAYS, "d", "Day"),
     HOUR(FACTOR_HOURS, "h", "Hour"),
