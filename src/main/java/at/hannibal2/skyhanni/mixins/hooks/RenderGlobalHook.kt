@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.mixins.hooks
 
+import at.hannibal2.skyhanni.utils.EntityOutlineRenderer
 import at.hannibal2.skyhanni.utils.RenderUtils
-import at.hannibal2.skyhanni.utils.datetime.EntityOutlineRenderer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.culling.ICamera
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
