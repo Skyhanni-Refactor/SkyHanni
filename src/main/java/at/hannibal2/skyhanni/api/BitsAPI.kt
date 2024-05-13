@@ -235,7 +235,7 @@ object BitsAPI {
                 }
             }
             lore.matchFirst(cookieDurationPattern) {
-                val duration = at.hannibal2.skyhanni.utils.datetime.TimeUtils.getDuration(group("time"))
+                val duration = TimeUtils.getDuration(group("time"))
                 cookieBuffTime = SimpleTimeMark.now() + duration
             }
             lore.matchFirst(noCookieActiveSBMenuPattern) {
