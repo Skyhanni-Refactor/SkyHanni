@@ -24,8 +24,8 @@ import at.hannibal2.skyhanni.utils.SkyBlockTime
 import at.hannibal2.skyhanni.utils.StringUtils.firstLetterUppercase
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import at.hannibal2.skyhanni.utils.TimeUtils.formatted
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.formatted
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import io.github.moulberry.notenoughupdates.miscfeatures.PetInfoOverlay.getCurrentPet
 import net.minecraft.item.ItemStack

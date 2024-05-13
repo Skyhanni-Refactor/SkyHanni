@@ -14,7 +14,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.monster.EntityBlaze
 import net.minecraft.entity.monster.EntityEnderman

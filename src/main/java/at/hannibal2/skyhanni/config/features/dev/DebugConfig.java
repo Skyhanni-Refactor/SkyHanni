@@ -96,11 +96,6 @@ public class DebugConfig {
     public boolean highlightMissingRepo = false;
 
     @Expose
-    @ConfigOption(name = "Hot Swap Detection", desc = "Show chat messages when Hot Swap starts and ends.")
-    @ConfigEditorBoolean
-    public boolean hotSwapDetection = false;
-
-    @Expose
     @ConfigOption(name = "Always Outdated", desc = "For the sake of the auto updater, act like you are always outdated.")
     @ConfigEditorBoolean
     public boolean alwaysOutdated = false;

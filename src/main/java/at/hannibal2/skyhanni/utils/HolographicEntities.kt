@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.mixins.transformers.AccessorRendererLivingEntity
 import at.hannibal2.skyhanni.utils.RenderUtils.getViewerPos
-import at.hannibal2.skyhanni.utils.TimeUtils.inWholeTicks
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.inWholeTicks
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.entity.RendererLivingEntity

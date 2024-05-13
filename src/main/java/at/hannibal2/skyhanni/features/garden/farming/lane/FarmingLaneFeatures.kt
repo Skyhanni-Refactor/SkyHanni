@@ -18,8 +18,8 @@ import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import at.hannibal2.skyhanni.utils.TimeUtils.ticks
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.ticks
 import at.hannibal2.skyhanni.utils.mc.McSound
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.absoluteValue

@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.features.garden.fortuneguide.FFStats
 import at.hannibal2.skyhanni.features.garden.fortuneguide.FFTypes
 import at.hannibal2.skyhanni.features.garden.fortuneguide.FarmingItems
 import at.hannibal2.skyhanni.utils.GuiRenderUtils
-import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 
 class OverviewPage : FFGuideGUI.FFGuidePage() {
 

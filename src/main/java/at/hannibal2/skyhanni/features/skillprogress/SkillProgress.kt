@@ -27,8 +27,8 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SpecialColour
-import at.hannibal2.skyhanni.utils.TimeUnit
-import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUnit
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.renderables.Renderable.Companion.horizontalContainer

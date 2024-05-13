@@ -17,8 +17,8 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
-import at.hannibal2.skyhanni.utils.TimeUtils
-import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern

@@ -16,8 +16,8 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.StringUtils.createCommaSeparatedList
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import at.hannibal2.skyhanni.utils.TimeUtils.timerColor
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.timerColor
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 class SprayDisplay {

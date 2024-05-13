@@ -1,7 +1,10 @@
 package at.hannibal2.skyhanni
 
+import at.hannibal2.skyhanni.api.BitsAPI
+import at.hannibal2.skyhanni.api.BlockChangeAPI
 import at.hannibal2.skyhanni.api.CollectionAPI
 import at.hannibal2.skyhanni.api.DataWatcherAPI
+import at.hannibal2.skyhanni.api.EntityAttributeAPI
 import at.hannibal2.skyhanni.api.GetFromSackAPI
 import at.hannibal2.skyhanni.api.SkillAPI
 import at.hannibal2.skyhanni.config.ConfigFileType
@@ -11,12 +14,9 @@ import at.hannibal2.skyhanni.config.SackData
 import at.hannibal2.skyhanni.config.commands.Commands.init
 import at.hannibal2.skyhanni.data.ActionBarData
 import at.hannibal2.skyhanni.data.ActionBarStatsData
-import at.hannibal2.skyhanni.api.BitsAPI
-import at.hannibal2.skyhanni.api.BlockChangeAPI
 import at.hannibal2.skyhanni.data.BossbarData
 import at.hannibal2.skyhanni.data.ChatManager
 import at.hannibal2.skyhanni.data.CropAccessoryData
-import at.hannibal2.skyhanni.api.EntityAttributeAPI
 import at.hannibal2.skyhanni.data.EntityMovementData
 import at.hannibal2.skyhanni.data.FameRanks
 import at.hannibal2.skyhanni.data.FixedRateTimerManager
@@ -330,6 +330,7 @@ import at.hannibal2.skyhanni.features.misc.FixNEUHeavyPearls
 import at.hannibal2.skyhanni.features.misc.HideArmor
 import at.hannibal2.skyhanni.features.misc.HideFarEntities
 import at.hannibal2.skyhanni.features.misc.InGameDateDisplay
+import at.hannibal2.skyhanni.features.misc.JerryIslandTImer
 import at.hannibal2.skyhanni.features.misc.JoinCrystalHollows
 import at.hannibal2.skyhanni.features.misc.LesserOrbHider
 import at.hannibal2.skyhanni.features.misc.LockMouseLook
@@ -353,7 +354,6 @@ import at.hannibal2.skyhanni.features.misc.ServerRestartTitle
 import at.hannibal2.skyhanni.features.misc.SkyBlockKickDuration
 import at.hannibal2.skyhanni.features.misc.SuperpairsClicksAlert
 import at.hannibal2.skyhanni.features.misc.TabWidgetSettings
-import at.hannibal2.skyhanni.features.misc.TimeFeatures
 import at.hannibal2.skyhanni.features.misc.TpsCounter
 import at.hannibal2.skyhanni.features.misc.compacttablist.AdvancedPlayerList
 import at.hannibal2.skyhanni.features.misc.compacttablist.TabListReader
@@ -640,7 +640,7 @@ class SkyHanniMod {
         loadModule(AshfangHideDamageIndicator())
         loadModule(ItemStars())
         loadModule(MinionFeatures())
-        loadModule(TimeFeatures())
+        loadModule(JerryIslandTImer())
         loadModule(RngMeterInventory())
         loadModule(WikiManager)
         loadModule(SendCoordinatedCommand())

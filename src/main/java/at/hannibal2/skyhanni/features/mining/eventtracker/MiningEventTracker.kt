@@ -19,7 +19,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.toDashlessUUID
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils
 import at.hannibal2.skyhanni.utils.fromJson
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern

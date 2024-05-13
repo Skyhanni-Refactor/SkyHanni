@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils
 
 object GardenCropsInCommand {
 

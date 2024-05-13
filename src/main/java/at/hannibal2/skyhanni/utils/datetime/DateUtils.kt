@@ -1,9 +1,7 @@
-package at.hannibal2.skyhanni.data
+package at.hannibal2.skyhanni.utils.datetime
 
-import at.hannibal2.skyhanni.utils.TimeUtils
 import java.time.Month
 
-object WinterAPI {
-
+object DateUtils {
     fun isDecember() = TimeUtils.getCurrentLocalDate().month == Month.DECEMBER
 }
