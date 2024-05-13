@@ -120,16 +120,6 @@ object ChocolateFactoryStats {
         ))
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(42, "event.chocolateFactory.statsDisplayList") { element ->
-            addToDisplayList(element, "TIME_TOWER", "TIME_TO_PRESTIGE")
-        }
-        event.transform(45, "inventory.chocolateFactory.statsDisplayList") { element ->
-            addToDisplayList(element, "TIME_TO_BEST_UPGRADE")
-        }
-    }
-
     private fun addToDisplayList(element: JsonElement, vararg toAdd: String): JsonElement {
         val jsonArray = element.asJsonArray
         toAdd.forEach { jsonArray.add(JsonPrimitive(it)) }
@@ -163,6 +153,16 @@ object ChocolateFactoryStats {
 
         override fun toString(): String {
             return display
+        }
+
+        @SubscribeEvent
+        fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+            event.transform(42, "event.chocolateFactory.statsDisplayList") { element ->
+                addToDisplayList(element, "TIME_TOWER", "TIME_TO_PRESTIGE")
+            }
+            event.transform(45, "inventory.chocolateFactory.statsDisplayList") { element ->
+                addToDisplayList(element, "TIME_TO_BEST_UPGRADE")
+            }
         }
     }
 }

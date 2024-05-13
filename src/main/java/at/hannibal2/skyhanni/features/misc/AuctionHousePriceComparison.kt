@@ -118,11 +118,6 @@ class AuctionHousePriceComparison {
         }
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(31, "inventory.auctionsPriceComparison", "inventory.auctions.auctionsPriceComparison")
-    }
-
     private fun getColorInBetween(color1: Color, color2: Color, percentage: Double): Color {
         val r1 = color1.red
         val g1 = color1.green
@@ -142,4 +137,9 @@ class AuctionHousePriceComparison {
     private fun lerp(delta: Double, start: Int, end: Int) = start + delta * (end - start)
 
     private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled && inInventory
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.move(31, "inventory.auctionsPriceComparison", "inventory.auctions.auctionsPriceComparison")
+    }
 }

@@ -130,12 +130,12 @@ class SkyMartCopperPrice {
         }
     }
 
+    private fun isEnabled() = GardenAPI.inGarden() && config.copperPrice
+
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
         event.transform(32, "garden.skyMart.itemScale") {
             JsonPrimitive((it.asDouble / 1.851).roundTo(1))
         }
     }
-
-    private fun isEnabled() = GardenAPI.inGarden() && config.copperPrice
 }

@@ -903,6 +903,8 @@ class DamageIndicatorManager {
         }
     }
 
+    fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
+
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
         event.transform(11, "combat.damageIndicator.bossesToShow") { element ->
@@ -922,6 +924,4 @@ class DamageIndicatorManager {
             result
         }
     }
-
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
 }

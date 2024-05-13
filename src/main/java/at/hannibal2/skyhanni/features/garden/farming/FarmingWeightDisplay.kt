@@ -87,12 +87,6 @@ class FarmingWeightDisplay {
         }
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(14, "garden.eliteFarmingWeight.offScreenDropMessage", "garden.eliteFarmingWeights.showLbChange")
-        event.move(34, "garden.eliteFarmingWeights.ETAGoalRank", "garden.eliteFarmingWeights.etaGoalRank")
-    }
-
     companion object {
 
         private val config get() = GardenAPI.config.eliteFarmingWeights
@@ -588,6 +582,12 @@ class FarmingWeightDisplay {
                 CropType.COCOA_BEANS to 267_174.04,
                 CropType.CACTUS to 177_254.45,
             )
+        }
+
+        @SubscribeEvent
+        fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+            event.move(14, "garden.eliteFarmingWeight.offScreenDropMessage", "garden.eliteFarmingWeights.showLbChange")
+            event.move(34, "garden.eliteFarmingWeights.ETAGoalRank", "garden.eliteFarmingWeights.etaGoalRank")
         }
     }
 }

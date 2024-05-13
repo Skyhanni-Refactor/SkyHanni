@@ -60,11 +60,6 @@ class HighlightPlaceableNpcs {
         }
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(31, "stranded", "misc.stranded")
-    }
-
     private fun isPlaceableNpc(lore: List<String>): Boolean {
         // Checking if NPC & placeable
         if (lore.isEmpty() || !(lore.last() == "§ethis NPC!" || lore.last() == "§eyour location!")) {
@@ -76,4 +71,9 @@ class HighlightPlaceableNpcs {
     }
 
     private fun isEnabled() = LorenzUtils.inSkyBlock && LorenzUtils.isStrandedProfile && config.highlightPlaceableNpcs
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.move(31, "stranded", "misc.stranded")
+    }
 }

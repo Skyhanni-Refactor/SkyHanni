@@ -208,12 +208,6 @@ object FossilSolverDisplay {
         config.position.renderStrings(displayList, posLabel = "Fossil Excavator Solver")
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(36, "mining.fossilExcavator", "mining.fossilExcavator2.solver")
-        event.move(37, "mining.fossilExcavator2", "mining.fossilExcavator")
-    }
-
     fun nextData(slotToClick: FossilTile, correctPercentage: Double, fossilsRemaining: Int) {
         val formattedPercentage = (correctPercentage * 100).roundTo(1)
 
@@ -231,4 +225,10 @@ object FossilSolverDisplay {
     }
 
     private fun isEnabled() = IslandType.DWARVEN_MINES.isInIsland() && config.enabled && FossilExcavatorAPI.inInventory
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.move(36, "mining.fossilExcavator", "mining.fossilExcavator2.solver")
+        event.move(37, "mining.fossilExcavator2", "mining.fossilExcavator")
+    }
 }

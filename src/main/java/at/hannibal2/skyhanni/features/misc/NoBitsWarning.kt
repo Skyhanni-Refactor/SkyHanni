@@ -37,13 +37,13 @@ object NoBitsWarning {
         }
     }
 
+    private fun isChatMessageEnabled() = LorenzUtils.inSkyBlock && config.bitsGainChatMessage
+    private fun isWarningEnabled() = LorenzUtils.inSkyBlock && config.enableWarning
+
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
         event.move(35, "misc.noBitsWarning", "misc.noBitsWarning.enabled")
         event.move(40, "misc.noBitsWarning.enabled", "misc.bits.enableWarning")
         event.move(40, "misc.noBitsWarning.notificationSound", "misc.bits.notificationSound")
     }
-
-    private fun isChatMessageEnabled() = LorenzUtils.inSkyBlock && config.bitsGainChatMessage
-    private fun isWarningEnabled() = LorenzUtils.inSkyBlock && config.enableWarning
 }
