@@ -14,6 +14,7 @@ object DateUtils {
     @JvmStatic
     fun isDecember() = now.month == Month.DECEMBER
 
+    // TODO change to use either full range ie. from NZ to Kiribati or just use the local time
     @JvmStatic
     fun isAprilFools() = when {
         SkyHanniMod.feature.dev.debug.alwaysFunnyTime -> true
