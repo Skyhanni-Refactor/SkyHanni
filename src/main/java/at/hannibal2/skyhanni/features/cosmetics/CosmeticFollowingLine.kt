@@ -127,9 +127,6 @@ class CosmeticFollowingLine {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(9, "misc.cosmeticConfig", "misc.cosmetic")
-        event.move(9, "misc.cosmeticConfig.followingLineConfig", "misc.cosmetic.followingLine")
-        event.move(9, "misc.cosmeticConfig.arrowTrailConfig", "misc.cosmetic.arrowTrail")
         event.move(31, "misc.cosmetic", "gui.cosmetic")
     }
 }

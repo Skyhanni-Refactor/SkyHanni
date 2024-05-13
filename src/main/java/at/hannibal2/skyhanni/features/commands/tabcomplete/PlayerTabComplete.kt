@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.commands.tabcomplete
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.FriendAPI
 import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.VipVisitsJson
@@ -18,11 +17,6 @@ object PlayerTabComplete {
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<VipVisitsJson>("VipVisits")
         vipVisits = data.vipVisits
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.tabCompleteCommands", "commands.tabComplete")
     }
 
     enum class PlayerCategory {

@@ -905,9 +905,6 @@ class DamageIndicatorManager {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "damageIndicator", "combat.damageIndicator")
-        event.move(3, "slayer.endermanPhaseDisplay", "slayer.endermen.phaseDisplay")
-        event.move(3, "slayer.blazePhaseDisplay", "slayer.blazes.phaseDisplay")
         event.transform(11, "combat.damageIndicator.bossesToShow") { element ->
             ConfigUtils.migrateIntArrayListToEnumArrayList(element, BossCategory::class.java)
         }

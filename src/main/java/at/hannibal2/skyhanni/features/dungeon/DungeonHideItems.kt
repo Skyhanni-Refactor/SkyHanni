@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.EntityMovementData
 import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.EntityMoveEvent
@@ -206,17 +205,5 @@ class DungeonHideItems {
     fun onWorldChange(event: LorenzWorldChangeEvent) {
         hideParticles.clear()
         movingSkeletonSkulls.clear()
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "dungeon.hideSuperboomTNT", "dungeon.objectHider.hideSuperboomTNT")
-        event.move(3, "dungeon.hideBlessing", "dungeon.objectHider.hideBlessing")
-        event.move(3, "dungeon.hideReviveStone", "dungeon.objectHider.hideReviveStone")
-        event.move(3, "dungeon.hidePremiumFlesh", "dungeon.objectHider.hidePremiumFlesh")
-        event.move(3, "dungeon.hideJournalEntry", "dungeon.objectHider.hideJournalEntry")
-        event.move(3, "dungeon.hideSkeletonSkull", "dungeon.objectHider.hideSkeletonSkull")
-        event.move(3, "dungeon.hideHealerOrbs", "dungeon.objectHider.hideHealerOrbs")
-        event.move(3, "dungeon.hideHealerFairy", "dungeon.objectHider.hideHealerFairy")
     }
 }

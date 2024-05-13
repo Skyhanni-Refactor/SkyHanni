@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.commands
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.GuiKeyPressEvent
 import at.hannibal2.skyhanni.events.MessageSendToServerEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -23,11 +22,6 @@ object WikiManager {
     private const val FANDOM_SEARCH_PREFIX = "Special:Search?query="
 
     private val config get() = SkyHanniMod.feature.misc.commands.betterWiki
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(6, "commands.useFandomWiki", "commands.fandomWiki.enabled")
-    }
 
     @SubscribeEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {

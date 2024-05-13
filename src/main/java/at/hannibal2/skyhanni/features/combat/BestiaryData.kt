@@ -110,8 +110,6 @@ object BestiaryData {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.bestiaryData", "combat.bestiary")
-
         event.transform(15, "combat.bestiary.numberFormat") { element ->
             ConfigUtils.migrateIntToEnum(element, NumberFormatEntry::class.java)
         }

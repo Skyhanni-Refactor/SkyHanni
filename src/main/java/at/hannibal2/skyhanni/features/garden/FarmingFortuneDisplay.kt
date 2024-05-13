@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.garden
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.GardenCropMilestones
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.events.CropClickEvent
@@ -361,10 +360,4 @@ object FarmingFortuneDisplay {
 
     fun CropType.getLatestTrueFarmingFortune() = latestFF?.get(this)
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.farmingFortuneDisplay", "garden.farmingFortunes.display")
-        event.move(3, "garden.farmingFortuneDropMultiplier", "garden.farmingFortunes.dropMultiplier")
-        event.move(3, "garden.farmingFortunePos", "garden.farmingFortunes.pos")
-    }
 }

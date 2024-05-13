@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.DungeonBossRoomEnterEvent
 import at.hannibal2.skyhanni.events.DungeonEnterEvent
@@ -148,12 +147,5 @@ class DungeonCopilot {
         if (!isEnabled()) return
 
         config.pos.renderString(nextStep, posLabel = "Dungeon Copilot")
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "dungeon.messageFilterKeysAndDoors", "dungeon.messageFilter.keysAndDoors")
-        event.move(3, "dungeon.copilotEnabled", "dungeon.dungeonCopilot.enabled")
-        event.move(3, "dungeon.copilotPos", "dungeon.dungeonCopilot.pos")
     }
 }

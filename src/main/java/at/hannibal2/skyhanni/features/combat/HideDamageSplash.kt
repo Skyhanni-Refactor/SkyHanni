@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.combat
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -19,10 +18,5 @@ class HideDamageSplash {
         if (DamageIndicatorManager.isDamageSplash(event.entity)) {
             event.isCanceled = true
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.hideDamageSplash", "combat.hideDamageSplash")
     }
 }
