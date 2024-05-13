@@ -16,7 +16,7 @@ class HighlightDungeonDeathmite {
         if (!SkyHanniMod.feature.dungeon.highlightDeathmites) return
 
         val entity = event.entity
-        val maxHealth = event.maxHealth
+        val maxHealth = event.normalizedMaxHealth
 
         if (entity is EntitySilverfish && maxHealth == 1_000_000_000) {
             RenderLivingEntityHelper.setEntityColorWithNoHurtTime(entity, LorenzColor.DARK_RED.toColor().withAlpha(20))

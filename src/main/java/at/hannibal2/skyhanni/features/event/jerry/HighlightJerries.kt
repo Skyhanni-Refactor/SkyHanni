@@ -31,7 +31,7 @@ class HighlightJerries {
         if (!config.highlightJerries) return
 
         val entity = event.entity
-        val maxHealth = event.maxHealth
+        val maxHealth = event.normalizedMaxHealth
 
         if (entity is EntityVillager && maxHealth in 3..6) {
             val color = listOfLorenzColors[maxHealth].toColor().withAlpha(20)
