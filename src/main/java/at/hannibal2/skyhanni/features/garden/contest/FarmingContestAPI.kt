@@ -4,7 +4,7 @@ import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.events.FarmingContestEvent
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
@@ -49,13 +49,11 @@ object FarmingContestAPI {
     }
 
     @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (event.repeatSeconds(1)) {
-            if (!LorenzUtils.inSkyBlock) return
-            if (!GardenAPI.inGarden()) return
+    fun onSecondPassed(event: SecondPassedEvent) {
+        if (!LorenzUtils.inSkyBlock) return
+        if (!GardenAPI.inGarden()) return
 
-            checkActiveContest()
-        }
+        checkActiveContest()
     }
 
     private fun checkActiveContest() {
