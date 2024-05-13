@@ -516,6 +516,7 @@ class SkyHanniMod {
         loadModule(EntityMovementData())
         loadModule(EntityOutlineRenderer)
         loadModule(EntityUtils)
+        loadModule(EventCounter)
         loadModule(FixedRateTimerManager())
         loadModule(GardenBestCropTime())
         loadModule(GardenComposterUpgradesData())
@@ -559,16 +560,6 @@ class SkyHanniMod {
         loadModule(TrackerManager)
         loadModule(UpdateManager)
         loadModule(UtilsPatterns)
-        loadModule(GuiData)
-        loadModule(BossbarData)
-        loadModule(EntityUtils)
-        loadModule(ChatUtils)
-        loadModule(FixedRateTimerManager())
-        loadModule(ChromaManager)
-        loadModule(ContributorManager)
-        loadModule(TabComplete)
-        loadModule(HypixelBazaarFetcher)
-        loadModule(EventCounter)
         loadModule(VisitorListener())
         loadModule(VisitorRewardWarning())
 //         loadModule(Year300RaffleEvent)
@@ -711,17 +702,6 @@ class SkyHanniMod {
         loadModule(EnchantParser)
         loadModule(EnderNodeTracker)
         loadModule(EndermanSlayerFeatures())
-        loadModule(FireVeilWandParticles())
-        loadModule(HideMobNames())
-        loadModule(HideDamageSplash())
-        loadModule(FerocityDisplay())
-        loadModule(InGameDateDisplay())
-        loadModule(ThunderSparksHighlight())
-        loadModule(BlazeSlayerDaggerHelper())
-        loadModule(HellionShieldHelper())
-        loadModule(BlazeSlayerFirePitsWarning())
-        loadModule(BlazeSlayerClearView())
-        loadModule(FirePillarDisplay())
         loadModule(EndermanSlayerHideParticles())
         loadModule(EnigmaSoulWaypoints)
         loadModule(EstimatedItemValue)
@@ -733,6 +713,7 @@ class SkyHanniMod {
         loadModule(FarmingLaneCreator)
         loadModule(FarmingLaneFeatures)
         loadModule(FarmingWeightDisplay())
+        loadModule(FerocityDisplay())
         loadModule(FirePillarDisplay())
         loadModule(FireVeilWandParticles())
         loadModule(FishingBaitWarnings())
@@ -916,7 +897,7 @@ class SkyHanniMod {
         loadModule(SulphurSkitterBox())
         loadModule(SummoningMobManager())
         loadModule(SummoningSoulsName())
-        loadModule(SuperCraftFeatures())
+        loadModule(SuperCraftFeatures)
         loadModule(SuperpairsClicksAlert())
         loadModule(TabListReader)
         loadModule(TabListRenderer)
@@ -954,21 +935,6 @@ class SkyHanniMod {
         loadModule(WikiManager)
         loadModule(WildStrawberryDyeNotification())
         loadModule(WrongFungiCutterWarning())
-        loadModule(SkillProgress)
-        loadModule(GardenInventoryTooltipOverflow())
-        loadModule(SkillTooltip())
-        loadModule(MaxPurseItems())
-        loadModule(SuperCraftFeatures)
-        loadModule(InfernoMinionFeatures())
-        loadModule(LimboPlaytime())
-        loadModule(RareDropMessages())
-        loadModule(CraftMaterialsFromBazaar())
-        loadModule(DungeonShadowAssassinNotification())
-        loadModule(PestProfitTracker)
-        loadModule(NoBitsWarning)
-        loadModule(ColdOverlay())
-        loadModule(QuiverDisplay())
-        loadModule(QuiverWarning())
 
         // test stuff
         loadModule(ButtonOnPause())
@@ -977,7 +943,6 @@ class SkyHanniMod {
         loadModule(PacketTest)
         loadModule(ParkourWaypointSaver())
         loadModule(SkyHanniDebugsAndTests())
-        loadModule(SkyHanniDebugsAndTests)
         loadModule(TestBingo)
         loadModule(TestCopyBestiaryValues)
         loadModule(TestCopyRngMeterValues)
@@ -1006,10 +971,18 @@ class SkyHanniMod {
         } catch (e: Exception) {
             Exception("Error reading repo data", e).printStackTrace()
         }
+        // TODO rework
+        loadedClasses.clear()
     }
+
+    private val loadedClasses = mutableSetOf<Any>()
 
     fun loadModule(obj: Any) {
         modules.add(obj)
+        if (!loadedClasses.add(obj.javaClass.name)) {
+            println("Loading module twice: ${obj.javaClass.name}")
+        }
+
         MinecraftForge.EVENT_BUS.register(obj)
     }
 

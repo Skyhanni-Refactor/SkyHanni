@@ -1,14 +1,11 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.RawScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.ScoreboardUpdateEvent
-import at.hannibal2.skyhanni.events.PacketEvent
-import at.hannibal2.skyhanni.events.ScoreboardChangeEvent
-import at.hannibal2.skyhanni.events.ScoreboardRawChangeEvent
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.mc.McWorld
-import net.minecraft.client.Minecraft
 import net.minecraft.network.play.server.S3BPacketScoreboardObjective
 import net.minecraft.scoreboard.Score
 import net.minecraft.scoreboard.ScorePlayerTeam
