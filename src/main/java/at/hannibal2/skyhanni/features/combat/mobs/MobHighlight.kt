@@ -43,7 +43,7 @@ class MobHighlight {
         if (!LorenzUtils.inSkyBlock) return
 
         val entity = event.entity
-        val maxHealth = event.maxHealth
+        val maxHealth = event.normalizedMaxHealth
         if (config.arachneKeeperHighlight && (maxHealth == 3_000 || maxHealth == 12_000) && entity is EntityCaveSpider) {
             RenderLivingEntityHelper.setEntityColorWithNoHurtTime(
                 entity,

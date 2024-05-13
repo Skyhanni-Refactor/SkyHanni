@@ -11,7 +11,6 @@ import at.hannibal2.skyhanni.utils.EntityUtils.hasMaxHealth
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.ignoreDerpy
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -36,11 +35,9 @@ class AreaMiniBossFeatures {
         if (!LorenzUtils.inSkyBlock) return
 
         val entity = event.entity
-        // TODO remove workaround by change derpy logic either in hasMaxHealth or in EntityMaxHealthUpdateEvent
-        val maxHealth = event.maxHealth.ignoreDerpy()
         for (bossType in AreaMiniBossType.entries) {
             if (!bossType.clazz.isInstance(entity)) continue
-            if (!entity.hasMaxHealth(bossType.health, false, maxHealth)) continue
+            if (!entity.hasMaxHealth(bossType.health, false, event.actualMaxHealth)) continue
 
             miniBossType = bossType
             val time = SimpleTimeMark.now()

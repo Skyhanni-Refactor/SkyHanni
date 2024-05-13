@@ -1,8 +1,11 @@
-package at.hannibal2.skyhanni.data
+package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.data.FameRank
+import at.hannibal2.skyhanni.data.FameRanks
 import at.hannibal2.skyhanni.data.FameRanks.getFameRankByNameOrNull
+import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.BitsUpdateEvent
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
