@@ -12,7 +12,9 @@ import net.minecraft.item.ItemStack
 
 object DianaAPI {
 
-    fun hasSpadeInHand() = InventoryUtils.itemInHandId == SkyhanniItems.ANCESTRAL_SPADE()
+    private val spade by lazy { SkyhanniItems.ANCESTRAL_SPADE() }
+
+    fun hasSpadeInHand() = InventoryUtils.itemInHandId == spade
 
     private fun isRitualActive() = Perk.MYTHOLOGICAL_RITUAL.isActive ||
         Perk.PERKPOCALYPSE.isActive
@@ -21,7 +23,7 @@ object DianaAPI {
 
     fun isDoingDiana() = IslandType.HUB.isInIsland() && isRitualActive() && hasSpadeInInventory()
 
-    val ItemStack.isDianaSpade get() = getInternalName() == SkyhanniItems.ANCESTRAL_SPADE()
+    val ItemStack.isDianaSpade get() = getInternalName() == spade
 
-    private fun hasSpadeInInventory() = McPlayer.has(SkyhanniItems.ANCESTRAL_SPADE())
+    private fun hasSpadeInInventory() = McPlayer.has(spade)
 }

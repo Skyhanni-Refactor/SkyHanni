@@ -33,6 +33,8 @@ import kotlin.time.Duration.Companion.seconds
 object HoppityEggLocator {
     private val config get() = HoppityEggsManager.config
 
+    private val locatorItem by lazy { SkyhanniItems.EGGLOCATOR() }
+
     private var lastParticlePosition: LorenzVec? = null
     private var lastParticlePositionForever: LorenzVec? = null
     private var lastChange = SimpleTimeMark.farPast()
@@ -249,10 +251,10 @@ object HoppityEggLocator {
     fun isEnabled() = LorenzUtils.inSkyBlock && config.waypoints && !GardenAPI.inGarden()
         && !ReminderUtils.isBusy(true) && ChocolateFactoryAPI.isHoppityEvent()
 
-    private val ItemStack.isLocatorItem get() = getInternalName() == SkyhanniItems.EGGLOCATOR()
+    private val ItemStack.isLocatorItem get() = getInternalName() == locatorItem
 
     private fun hasLocatorInHotbar() = RecalculatingValue(1.seconds) {
-        LorenzUtils.inSkyBlock && McPlayer.has(SkyhanniItems.EGGLOCATOR(), onlyHotBar = true)
+        LorenzUtils.inSkyBlock && McPlayer.has(locatorItem, onlyHotBar = true)
     }.getValue()
 
     private fun LorenzVec.getEggLocationWeight(firstPoint: LorenzVec, secondPoint: LorenzVec): Double {
