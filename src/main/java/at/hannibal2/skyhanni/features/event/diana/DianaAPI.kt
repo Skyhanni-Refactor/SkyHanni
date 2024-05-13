@@ -12,7 +12,7 @@ import net.minecraft.item.ItemStack
 
 object DianaAPI {
 
-    private val spade by lazy { SkyhanniItems.ANCESTRAL_SPADE() }
+    private val spade = SkyhanniItems.ANCESTRAL_SPADE()
 
     fun hasSpadeInHand() = InventoryUtils.itemInHandId == spade
 

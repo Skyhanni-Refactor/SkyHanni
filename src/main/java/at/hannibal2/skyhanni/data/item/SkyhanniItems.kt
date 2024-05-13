@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.data.item
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 
-enum class SkyhanniItems(private var tier: Int? = null) {
+enum class SkyhanniItems(private var id: String? = null, private var tier: Int? = null) {
     ADVANCED_GARDENING_AXE,
     ADVANCED_GARDENING_HOE,
     ANCESTRAL_SPADE,
@@ -11,11 +11,13 @@ enum class SkyhanniItems(private var tier: Int? = null) {
     ARCHITECT_FIRST_DRAFT,
     ARROW,
     ASCENSION_ROPE,
+    BLUE_STAINED_GLASS("STAINED_GLASS-11"),
     BOOKWORM_BOOK,
     BOOK_OF_STATS,
     BOX_OF_SEEDS,
     BUCKET,
     CACTUS,
+    CACTUS_GREEN("INK_SACK-2"),
     CACTUS_KNIFE,
     CHICKEN_HEAD,
     COMPOST,
@@ -79,14 +81,18 @@ enum class SkyhanniItems(private var tier: Int? = null) {
     KUUDRA_TIER_KEY,
     LARVA_HOOK,
     LEATHER,
+    LIME_STAINED_GLASS("STAINED_GLASS-5"),
     MAGIC_RUNE,
     MAGMA_FISH,
     MANA_DISINTEGRATOR,
     MAP,
+    MISSING_ITEM,
     MITE_GEL,
     NETHER_STALK,
     NEW_BOTTLE_OF_JYRRE,
     NEW_YEAR_CAKE,
+    NONE,
+    ORANGE_STAINED_GLASS("STAINED_GLASS-1"),
     PAPER,
     PEST_BEETLE_MONSTER,
     PEST_CRICKET_MONSTER,
@@ -98,14 +104,17 @@ enum class SkyhanniItems(private var tier: Int? = null) {
     PEST_MOTH_MONSTER,
     PEST_RAT_MONSTER,
     PEST_SLUG_MONSTER,
+    PINK_STAINED_GLASS("STAINED_GLASS-6"),
     PLASMA,
     POLARVOID_BOOK,
     PUMPKIN,
+    PURPLE_STAINED_GLASS("STAINED_GLASS-10"),
     RABBIT_HIDE,
     RACING_HELMET,
     RANCHERS_BOOTS,
     RECOMBOBULATOR_3000,
     RED_MUSHROOM,
+    RED_STAINED_GLASS("STAINED_GLASS-14"),
     REFINED_BOTTLE_OF_JYRRE,
     REVENANT_GENERATOR_1,
     ROUGH_AMBER_GEM,
@@ -127,6 +136,7 @@ enum class SkyhanniItems(private var tier: Int? = null) {
     SILENT_DEATH,
     SIL_EX,
     SKELETON_MASTER_CHESTPLATE,
+    SKYBLOCK_COIN,
     SKYBLOCK_ENIGMA_SOUL,
     SKYMART_HYPER_VACUUM,
     SKYMART_TURBO_VACUUM,
@@ -152,6 +162,7 @@ enum class SkyhanniItems(private var tier: Int? = null) {
     WEIRDER_TUBA,
     WEIRD_TUBA,
     WHEAT,
+    WHITE_STAINED_GLASS("STAINED_GLASS"),
     WISP_POTION,
     WIZARD_PORTAL_MEMENTO,
     WOOD_SINGULARITY,
@@ -162,7 +173,7 @@ enum class SkyhanniItems(private var tier: Int? = null) {
 
     // TODO make it work with items with a dash in their name
 
-    private val baseItem by lazy { name.asInternalName() }
+    private val baseItem by lazy { (id ?: name).asInternalName() }
     operator fun invoke() = baseItem
 
     private val internalName get() = "$name;$tier"

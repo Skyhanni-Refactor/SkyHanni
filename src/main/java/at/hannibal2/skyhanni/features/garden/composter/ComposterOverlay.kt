@@ -32,7 +32,6 @@ import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.addSelector
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.NONE
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
@@ -188,10 +187,11 @@ object ComposterOverlay {
                 )
             return
         }
-        if (currentOrganicMatterItem.let { it !in organicMatterFactors.keys && it != NONE }) {
-            currentOrganicMatterItem = NONE
+        if (currentOrganicMatterItem.let { it !in organicMatterFactors.keys && it != SkyhanniItems.NONE() }) {
+            currentOrganicMatterItem = SkyhanniItems.NONE()
         }
-        if (currentFuelItem.let { it !in fuelFactors.keys && it != NONE }) currentFuelItem = NONE
+        if (currentFuelItem.let { it !in fuelFactors.keys && it != SkyhanniItems.NONE() }) currentFuelItem =
+            SkyhanniItems.NONE()
 
         if (inComposter) {
             organicMatterDisplay = drawOrganicMatterDisplay()
@@ -268,7 +268,7 @@ object ComposterOverlay {
             currentOrganicMatterItem = it
             update()
         }
-        if (currentOrganicMatterItem == NONE) {
+        if (currentOrganicMatterItem == SkyhanniItems.NONE()) {
             currentOrganicMatterItem = fillList
             update()
         }
@@ -289,7 +289,7 @@ object ComposterOverlay {
                 currentFuelItem = it
                 update()
             }
-            if (currentFuelItem == NONE) {
+            if (currentFuelItem == SkyhanniItems.NONE()) {
                 currentFuelItem = fillList
                 update()
             }
@@ -300,7 +300,7 @@ object ComposterOverlay {
     private fun addExtraData(newList: MutableList<List<Any>>) {
         val organicMatterItem = currentOrganicMatterItem ?: return
         val fuelItem = currentFuelItem ?: return
-        if (organicMatterItem == NONE || fuelItem == NONE) return
+        if (organicMatterItem == SkyhanniItems.NONE() || fuelItem == SkyhanniItems.NONE()) return
 
         newList.addSelector<TimeType>(
             "§7Per ",

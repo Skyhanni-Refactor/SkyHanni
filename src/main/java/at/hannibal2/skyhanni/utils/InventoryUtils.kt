@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.utils
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.mc.McPlayer
@@ -15,7 +16,7 @@ import kotlin.time.Duration.Companion.seconds
 
 object InventoryUtils {
 
-    var itemInHandId = NEUInternalName.NONE
+    var itemInHandId = SkyhanniItems.NONE()
     var recentItemsInHand = mutableMapOf<Long, NEUInternalName>()
     var latestItemInHand: ItemStack? = null
 

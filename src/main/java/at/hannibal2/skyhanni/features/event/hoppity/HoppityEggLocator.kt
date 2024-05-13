@@ -33,7 +33,7 @@ import kotlin.time.Duration.Companion.seconds
 object HoppityEggLocator {
     private val config get() = HoppityEggsManager.config
 
-    private val locatorItem by lazy { SkyhanniItems.EGGLOCATOR() }
+    private val locatorItem = SkyhanniItems.EGGLOCATOR()
 
     private var lastParticlePosition: LorenzVec? = null
     private var lastParticlePositionForever: LorenzVec? = null

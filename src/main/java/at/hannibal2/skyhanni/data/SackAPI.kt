@@ -141,7 +141,7 @@ object SackAPI {
                 lore.matchAll(gemstonePattern) {
                     val rarity = group("gemrarity")
                     val stored = group("stored").formatInt()
-                    gem.internalName = gemstoneMap[name.removeColor()] ?: NEUInternalName.NONE
+                    gem.internalName = gemstoneMap[name.removeColor()] ?: SkyhanniItems.NONE()
                     if (gemstoneMap.containsKey(name.removeColor())) {
                         val internalName = "${rarity.uppercase()}_${
                             name.uppercase().split(" ")[0].removeColor()
@@ -348,7 +348,7 @@ object SackAPI {
     }
 
     data class SackGemstone(
-        var internalName: NEUInternalName = NEUInternalName.NONE,
+        var internalName: NEUInternalName = SkyhanniItems.NONE(),
         var rough: Int = 0,
         var flawed: Int = 0,
         var fine: Int = 0,
@@ -365,7 +365,7 @@ object SackAPI {
     ) : AbstractSackItem()
 
     data class SackOtherItem(
-        var internalName: NEUInternalName = NEUInternalName.NONE,
+        var internalName: NEUInternalName = SkyhanniItems.NONE(),
         var colorCode: String = "",
         var total: Int = 0,
         var magmaFish: Int = 0,

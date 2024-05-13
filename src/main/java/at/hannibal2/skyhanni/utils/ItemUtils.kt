@@ -93,7 +93,7 @@ object ItemUtils {
         return false
     }
 
-    fun ItemStack.getInternalName() = getInternalNameOrNull() ?: NEUInternalName.NONE
+    fun ItemStack.getInternalName() = getInternalNameOrNull() ?: SkyhanniItems.NONE()
 
     fun ItemStack.getInternalNameOrNull(): NEUInternalName? {
         val data = cachedData
@@ -239,7 +239,7 @@ object ItemUtils {
         val data = cachedData
         data.itemRarityLastCheck = SimpleTimeMark.now().toMillis()
         val internalName = getInternalName()
-        if (internalName == NEUInternalName.NONE) {
+        if (internalName == SkyhanniItems.NONE()) {
             data.itemRarity = null
             data.itemCategory = null
             return
@@ -359,11 +359,11 @@ object ItemUtils {
         if (this == SkyhanniItems.WISP_POTION()) {
             return "§fWisp's Ice-Flavored Water"
         }
-        if (this == NEUInternalName.SKYBLOCK_COIN) {
+        if (this == SkyhanniItems.SKYBLOCK_COIN()) {
             return "§6Coins"
         }
-        if (this == NEUInternalName.NONE) {
-            error("NEUInternalName.NONE has no name!")
+        if (this == SkyhanniItems.NONE()) {
+            error("SkyhanniItems.NONE() has no name!")
         }
         if (NEUItems.ignoreItemsFilter.match(this.asString())) {
             return "§cBugged Item"

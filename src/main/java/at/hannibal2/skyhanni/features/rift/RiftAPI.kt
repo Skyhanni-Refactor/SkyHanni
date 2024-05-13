@@ -20,7 +20,7 @@ object RiftAPI {
     // internal name -> motes
     var motesPrice = emptyMap<NEUInternalName, Double>()
 
-    val farmingTool by lazy { SkyhanniItems.FARMING_WAND() }
+    val farmingTool = SkyhanniItems.FARMING_WAND()
 
     fun ItemStack.motesNpcPrice(): Double? {
         val baseMotes = motesPrice[getInternalName()] ?: return null

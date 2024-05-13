@@ -289,7 +289,7 @@ object NEUItems {
                 val count = ingredient.count.toInt()
                 var internalItemId = ingredient.internalItemId.asInternalName()
                 // ignore cactus green
-                if (internalName == SkyhanniItems.ENCHANTED_CACTUS_GREEN() && internalItemId == "INK_SACK-2".asInternalName()) {
+                if (internalName == SkyhanniItems.ENCHANTED_CACTUS_GREEN() && internalItemId == SkyhanniItems.CACTUS_GREEN()) {
                     internalItemId = SkyhanniItems.CACTUS()
                 }
 

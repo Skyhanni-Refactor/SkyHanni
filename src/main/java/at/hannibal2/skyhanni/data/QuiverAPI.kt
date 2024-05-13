@@ -286,7 +286,7 @@ object QuiverAPI {
         val arrowData = event.getConstant<ArrowTypeJson>("ArrowTypes")
         arrows = arrowData.arrows.map { ArrowType(it.value.arrow, it.key.asInternalName()) }
 
-        NONE_ARROW_TYPE = getArrowByNameOrNull(NEUInternalName.NONE)
+        NONE_ARROW_TYPE = getArrowByNameOrNull(SkyhanniItems.NONE())
         FLINT_ARROW_TYPE = getArrowByNameOrNull(SkyhanniItems.ARROW())
     }
 
