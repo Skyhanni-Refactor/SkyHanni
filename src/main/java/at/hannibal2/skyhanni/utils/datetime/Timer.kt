@@ -1,5 +1,6 @@
-package at.hannibal2.skyhanni.utils
+package at.hannibal2.skyhanni.utils.datetime
 
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import com.google.gson.annotations.Expose
 import kotlin.time.Duration
 
