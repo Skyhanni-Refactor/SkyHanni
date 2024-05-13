@@ -62,9 +62,6 @@ class FireVeilWandParticles {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "itemAbilities.fireVeilWandDisplayColor", "itemAbilities.fireVeilWands.displayColor")
-        event.move(3, "itemAbilities.fireVeilWandDisplay", "itemAbilities.fireVeilWands.display")
-
         event.transform(15, "itemAbilities.fireVeilWands.display") { element ->
             ConfigUtils.migrateIntToEnum(element, DisplayEntry::class.java)
         }

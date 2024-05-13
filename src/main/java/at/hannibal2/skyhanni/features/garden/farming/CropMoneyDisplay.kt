@@ -439,21 +439,6 @@ object CropMoneyDisplay {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.moneyPerHourDisplay", "garden.moneyPerHours.display")
-        event.move(3, "garden.moneyPerHourShowOnlyBest", "garden.moneyPerHours.showOnlyBest")
-        event.move(3, "garden.moneyPerHourShowCurrent", "garden.moneyPerHours.showCurrent")
-        event.move(3, "garden.moneyPerHourAlwaysOn", "garden.moneyPerHours.alwaysOn")
-        event.move(3, "garden.moneyPerHourCompact", "garden.moneyPerHours.compact")
-        event.move(3, "garden.moneyPerHourCompactPrice", "garden.moneyPerHours.compactPrice")
-        event.move(3, "garden.moneyPerHourUseCustomFormat", "garden.moneyPerHours.useCustomFormat")
-        event.move(3, "garden.moneyPerHourCustomFormat", "garden.moneyPerHours.customFormat")
-        event.move(3, "garden.moneyPerHourMergeSeeds", "garden.moneyPerHours.mergeSeeds")
-        event.move(3, "garden.moneyPerHourBountiful", "garden.moneyPerHours.bountiful")
-        event.move(3, "garden.moneyPerHourMooshroom", "garden.moneyPerHours.mooshroom")
-        event.move(3, "garden.moneyPerHourArmor", "garden.moneyPerHours.armor")
-        event.move(3, "garden.moneyPerHourDicer", "garden.moneyPerHours.dicer")
-        event.move(3, "garden.moneyPerHourHideTitle", "garden.moneyPerHours.hideTitle")
-        event.move(3, "garden.moneyPerHourPos", "garden.moneyPerHours.pos")
         event.transform(11, "garden.moneyPerHours.customFormat") { element ->
             ConfigUtils.migrateIntArrayListToEnumArrayList(element, CustomFormatEntry::class.java)
         }

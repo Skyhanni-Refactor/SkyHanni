@@ -132,9 +132,6 @@ class SkyMartCopperPrice {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.skyMartCopperPrice", "garden.skyMart.copperPrice")
-        event.move(3, "garden.skyMartCopperPriceAdvancedStats", "garden.skyMart.copperPriceAdvancedStats")
-        event.move(3, "garden.skyMartCopperPricePos", "garden.skyMart.copperPricePos")
         event.transform(32, "garden.skyMart.itemScale") {
             JsonPrimitive((it.asDouble / 1.851).roundTo(1))
         }

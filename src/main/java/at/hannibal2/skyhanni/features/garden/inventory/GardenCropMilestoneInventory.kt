@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.garden.inventory
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.GardenCropMilestones
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.events.CropMilestoneUpdateEvent
@@ -77,11 +76,5 @@ class GardenCropMilestoneInventory {
         val progressBar = StringUtils.progressBar(percentage, 19)
         event.toolTip.add(index, "$progressBar §e${counter.addSeparators()}§6/§e${NumberUtil.format(maxCounter)}")
         event.toolTip.add(index, "§7Progress to Tier $maxTier: §e$percentageFormat")
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.numberAverageCropMilestone", "garden.number.averageCropMilestone")
-        event.move(3, "garden.cropMilestoneTotalProgress", "garden.tooltipTweak.cropMilestoneTotalProgress")
     }
 }

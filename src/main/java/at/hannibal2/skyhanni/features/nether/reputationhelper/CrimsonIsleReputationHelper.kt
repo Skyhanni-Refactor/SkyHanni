@@ -147,19 +147,6 @@ class CrimsonIsleReputationHelper(skyHanniMod: SkyHanniMod) {
         )
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.crimsonIsleReputationHelper", "crimsonIsle.reputationHelper.enabled")
-        event.move(2, "misc.reputationHelperUseHotkey", "crimsonIsle.reputationHelper.useHotkey")
-        event.move(2, "misc.reputationHelperHotkey", "crimsonIsle.reputationHelper.hotkey")
-        event.move(2, "misc.crimsonIsleReputationHelperPos", "crimsonIsle.reputationHelper.position")
-        event.move(2, "misc.crimsonIsleReputationShowLocation", "crimsonIsle.reputationHelper.showLocation")
-
-        event.transform(15, "crimsonIsle.reputationHelper.showLocation") { element ->
-            ConfigUtils.migrateIntToEnum(element, ShowLocationEntry::class.java)
-        }
-    }
-
     fun update() {
         ProfileStorageData.profileSpecific?.crimsonIsle?.let {
             questHelper.saveConfig(it)
@@ -189,5 +176,12 @@ class CrimsonIsleReputationHelper(skyHanniMod: SkyHanniMod) {
         ShowLocationEntry.ALWAYS -> true
         ShowLocationEntry.ONLY_HOTKEY -> config.hotkey.isKeyHeld()
         else -> false
+    }
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.transform(15, "crimsonIsle.reputationHelper.showLocation") { element ->
+            ConfigUtils.migrateIntToEnum(element, ShowLocationEntry::class.java)
+        }
     }
 }

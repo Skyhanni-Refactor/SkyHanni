@@ -225,13 +225,6 @@ object EstimatedItemValue {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "misc.estimatedIemValueEnabled", "misc.estimatedItemValues.enabled")
-        event.move(3, "misc.estimatedItemValueHotkey", "misc.estimatedItemValues.hotkey")
-        event.move(3, "misc.estimatedIemValueAlwaysEnabled", "misc.estimatedItemValues.alwaysEnabled")
-        event.move(3, "misc.estimatedIemValueEnchantmentsCap", "misc.estimatedItemValues.enchantmentsCap")
-        event.move(3, "misc.estimatedIemValueExactPrice", "misc.estimatedItemValues.exactPrice")
-        event.move(3, "misc.itemPriceDataPos", "misc.estimatedItemValues.itemPriceDataPos")
-
         event.move(31, "misc.estimatedItemValues", "inventory.estimatedItemValues")
     }
 }

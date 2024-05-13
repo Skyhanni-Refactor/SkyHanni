@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.jsonobjects.repo.HideNotClickableItemsJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SalvageFilter
 import at.hannibal2.skyhanni.events.GuiContainerEvent
@@ -598,13 +597,4 @@ class HideNotClickableItems {
     }
 
     private fun isEnabled() = LorenzUtils.inSkyBlock && config.items
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "inventory.hideNotClickableItems", "inventory.hideNotClickable.items")
-        event.move(3, "inventory.hideNotClickableItemsBlockClicks", "inventory.hideNotClickable.itemsBlockClicks")
-        event.move(3, "inventory.hideNotClickableOpacity", "inventory.hideNotClickable.opacity")
-        event.move(3, "inventory.notClickableItemsBypass", "inventory.hideNotClickable.itemsBypass")
-        event.move(3, "inventory.hideNotClickableItemsGreenLine", "inventory.hideNotClickable.itemsGreenLine")
-    }
 }

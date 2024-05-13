@@ -4,7 +4,6 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.ConfigGuiManager
 import at.hannibal2.skyhanni.config.ConfigManager
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.core.config.Position
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.events.GuiKeyPressEvent
@@ -571,15 +570,5 @@ class SkyHanniDebugsAndTests {
 //        println("particleCount: $particleCount")
 //        println("particleSpeed: $particleSpeed")
 //        println("offset: $offset")
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "dev.debugEnabled", "dev.debug.enabled")
-        event.move(3, "dev.showInternalName", "dev.debug.showInternalName")
-        event.move(3, "dev.showEmptyNames", "dev.debug.showEmptyNames")
-        event.move(3, "dev.showItemRarity", "dev.debug.showItemRarity")
-        event.move(3, "dev.copyInternalName", "dev.debug.copyInternalName")
-        event.move(3, "dev.showNpcPrice", "dev.debug.showNpcPrice")
     }
 }

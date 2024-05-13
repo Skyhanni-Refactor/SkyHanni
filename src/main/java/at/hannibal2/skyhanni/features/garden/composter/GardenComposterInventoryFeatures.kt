@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.garden.composter
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
@@ -94,11 +93,5 @@ class GardenComposterInventoryFeatures {
                 }
             }
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.composterUpgradePrice", "garden.composters.upgradePrice")
-        event.move(3, "garden.composterHighLightUpgrade", "garden.composters.highlightUpgrade")
     }
 }

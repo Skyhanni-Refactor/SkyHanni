@@ -134,11 +134,6 @@ object LimboTimeTracker {
         shownPB = false
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(27, oldPath = "misc.limboTimePB", newPath = "#player.personalBest")
-    }
-
     fun printStats(onlyPlaytime: Boolean = false) {
         val timeInLimbo: Int = if (LorenzUtils.inLimbo) limboJoinTime.passedSince().inWholeSeconds.toInt() else 0
         val playtime: Int = if (LorenzUtils.inLimbo) (storage?.playtime
@@ -204,5 +199,10 @@ object LimboTimeTracker {
         val string = input.toString()
         return if (string.endsWith(".0")) return string.dropLast(2)
         else string
+    }
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.move(27, oldPath = "misc.limboTimePB", newPath = "#player.personalBest")
     }
 }

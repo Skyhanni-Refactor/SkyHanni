@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.mixins.transformers.AccessorKeyBinding
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -9,7 +8,6 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiEditSign
 import net.minecraft.client.settings.KeyBinding
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.input.Keyboard
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
@@ -87,18 +85,5 @@ object GardenCustomKeybinds {
         ci.cancel()
         keyBinding as AccessorKeyBinding
         keyBinding.pressTime_skyhanni++
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.keyBindEnabled", "garden.keyBind.enabled")
-        event.move(3, "garden.keyBindAttack", "garden.keyBind.attack")
-        event.move(3, "garden.keyBindUseItem", "garden.keyBind.useItem")
-        event.move(3, "garden.keyBindLeft", "garden.keyBind.left")
-        event.move(3, "garden.keyBindRight", "garden.keyBind.right")
-        event.move(3, "garden.keyBindForward", "garden.keyBind.forward")
-        event.move(3, "garden.keyBindBack", "garden.keyBind.back")
-        event.move(3, "garden.keyBindJump", "garden.keyBind.jump")
-        event.move(3, "garden.keyBindSneak", "garden.keyBind.sneak")
     }
 }

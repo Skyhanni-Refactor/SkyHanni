@@ -89,19 +89,6 @@ class FarmingWeightDisplay {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(1, "garden.eliteFarmingWeightoffScreenDropMessage")
-        event.move(3, "garden.eliteFarmingWeightDisplay", "garden.eliteFarmingWeights.display")
-        event.move(3, "garden.eliteFarmingWeightPos", "garden.eliteFarmingWeights.pos")
-        event.move(3, "garden.eliteFarmingWeightLeaderboard", "garden.eliteFarmingWeights.leaderboard")
-        event.move(3, "garden.eliteFarmingWeightOvertakeETA", "garden.eliteFarmingWeights.overtakeETA")
-        event.move(
-            3,
-            "garden.eliteFarmingWeightOffScreenDropMessage",
-            "garden.eliteFarmingWeights.offScreenDropMessage"
-        )
-        event.move(3, "garden.eliteFarmingWeightOvertakeETAAlways", "garden.eliteFarmingWeights.overtakeETAAlways")
-        event.move(3, "garden.eliteFarmingWeightETAGoalRank", "garden.eliteFarmingWeights.ETAGoalRank")
-        event.move(3, "garden.eliteFarmingWeightIgnoreLow", "garden.eliteFarmingWeights.ignoreLow")
         event.move(14, "garden.eliteFarmingWeight.offScreenDropMessage", "garden.eliteFarmingWeights.showLbChange")
         event.move(34, "garden.eliteFarmingWeights.ETAGoalRank", "garden.eliteFarmingWeights.etaGoalRank")
     }

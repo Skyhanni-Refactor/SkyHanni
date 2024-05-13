@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.GuiKeyPressEvent
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
@@ -198,11 +197,6 @@ object HarpFeatures {
         event.stackTip = KeyboardManager.getKeyName(keyCode).take(3)
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.harpKeybinds", "inventory.helper.harp.keybinds")
-        event.move(2, "misc.harpNumbers", "inventory.helper.harp.showNumbers")
-    }
 
     @SubscribeEvent
     fun onTooltip(event: LorenzToolTipEvent) {
