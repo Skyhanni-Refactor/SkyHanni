@@ -8,10 +8,10 @@ import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactor
 import at.hannibal2.skyhanni.utils.DisplayTableEntry
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
@@ -145,7 +145,7 @@ object HoppityCollectionStats {
                 add("§7Total Rabbits Found: §a${displayFound + displayDuplicates}")
                 add("")
                 add("§7Chocolate Per Second: §a$displayChocolatePerSecond")
-                add("§7Chocolate Multiplier: §a${displayChocolateMultiplier.round(3)}")
+                add("§7Chocolate Multiplier: §a${displayChocolateMultiplier.roundTo(3)}")
             }
             table.add(
                 DisplayTableEntry(

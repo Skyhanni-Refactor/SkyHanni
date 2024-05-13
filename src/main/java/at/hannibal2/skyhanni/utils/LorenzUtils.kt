@@ -81,24 +81,6 @@ object LorenzUtils {
 
     fun SimpleDateFormat.formatCurrentTime(): String = this.format(System.currentTimeMillis())
 
-    fun Double.round(decimals: Int): Double {
-        var multiplier = 1.0
-        repeat(decimals) { multiplier *= 10 }
-        val result = kotlin.math.round(this * multiplier) / multiplier
-        val a = result.toString()
-        val b = toString()
-        return if (a.length > b.length) this else result
-    }
-
-    fun Float.round(decimals: Int): Float {
-        var multiplier = 1.0
-        repeat(decimals) { multiplier *= 10 }
-        val result = kotlin.math.round(this * multiplier) / multiplier
-        val a = result.toString().length
-        val b = toString().length
-        return if (a > b) this else result.toFloat()
-    }
-
     // TODO use derpy() on every use case
     val EntityLivingBase.baseMaxHealth: Int
         get() = this.getEntityAttribute(SharedMonsterAttributes.maxHealth).baseValue.toInt()

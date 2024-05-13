@@ -21,8 +21,8 @@ import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getAbilityScrolls
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemId
@@ -171,7 +171,7 @@ class ItemAbilityCooldown {
                 ItemAbility.STAFF_OF_THE_VOLCANO.sound()
             }
             // Holy Ice
-            event.soundName == "random.drink" && event.pitch.round(1) == 1.8f && event.volume == 1.0f -> {
+            event.soundName == "random.drink" && event.pitch.roundTo(1) == 1.8f && event.volume == 1.0f -> {
                 ItemAbility.HOLY_ICE.sound()
             }
             // Royal Pigeon

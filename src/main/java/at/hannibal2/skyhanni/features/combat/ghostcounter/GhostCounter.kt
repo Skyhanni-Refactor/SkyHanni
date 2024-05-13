@@ -47,7 +47,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
-import at.hannibal2.skyhanni.utils.NumberUtil.roundToPrecision
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
@@ -152,7 +152,7 @@ object GhostCounter {
             0.0 -> "0"
             else -> {
                 val mf = (((storage?.totalMF!! / Option.TOTALDROPS.get()) + Math.ulp(1.0)) * 100) / 100
-                mf.roundToPrecision(2).toString()
+                mf.roundTo(2).toString()
             }
         }
 
