@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 object BlockChangeAPI {
 
     @SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)
-    fun onChatPacket(event: PacketEvent.ReceiveEvent) {
+    fun onPacketReceive(event: PacketEvent.ReceiveEvent) {
         if (event.packet is S23PacketBlockChange) {
             val blockPos = event.packet.blockPosition ?: return
             val blockState = event.packet.blockState ?: return

@@ -19,6 +19,7 @@ import at.hannibal2.skyhanni.data.ActionBarStatsData
 import at.hannibal2.skyhanni.data.ChatManager
 import at.hannibal2.skyhanni.data.CropAccessoryData
 import at.hannibal2.skyhanni.data.EntityMovementData
+import at.hannibal2.skyhanni.data.EventCounter
 import at.hannibal2.skyhanni.data.FameRanks
 import at.hannibal2.skyhanni.data.FixedRateTimerManager
 import at.hannibal2.skyhanni.data.FriendAPI
@@ -87,6 +88,7 @@ import at.hannibal2.skyhanni.features.chat.playerchat.PlayerChatFilter
 import at.hannibal2.skyhanni.features.chat.playerchat.PlayerChatModifier
 import at.hannibal2.skyhanni.features.chroma.ChromaManager
 import at.hannibal2.skyhanni.features.combat.BestiaryData
+import at.hannibal2.skyhanni.features.combat.FerocityDisplay
 import at.hannibal2.skyhanni.features.combat.HideDamageSplash
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
 import at.hannibal2.skyhanni.features.combat.endernodetracker.EnderNodeTracker
@@ -483,7 +485,7 @@ import org.apache.logging.log4j.Logger
     clientSideOnly = true,
     useMetadata = true,
     guiFactory = "at.hannibal2.skyhanni.config.ConfigGuiForgeInterop",
-    version = "0.25.Beta.25",
+    version = "0.25.Beta.26",
 )
 class SkyHanniMod {
 
@@ -557,6 +559,16 @@ class SkyHanniMod {
         loadModule(TrackerManager)
         loadModule(UpdateManager)
         loadModule(UtilsPatterns)
+        loadModule(GuiData)
+        loadModule(BossbarData)
+        loadModule(EntityUtils)
+        loadModule(ChatUtils)
+        loadModule(FixedRateTimerManager())
+        loadModule(ChromaManager)
+        loadModule(ContributorManager)
+        loadModule(TabComplete)
+        loadModule(HypixelBazaarFetcher)
+        loadModule(EventCounter)
         loadModule(VisitorListener())
         loadModule(VisitorRewardWarning())
 //         loadModule(Year300RaffleEvent)
@@ -699,6 +711,17 @@ class SkyHanniMod {
         loadModule(EnchantParser)
         loadModule(EnderNodeTracker)
         loadModule(EndermanSlayerFeatures())
+        loadModule(FireVeilWandParticles())
+        loadModule(HideMobNames())
+        loadModule(HideDamageSplash())
+        loadModule(FerocityDisplay())
+        loadModule(InGameDateDisplay())
+        loadModule(ThunderSparksHighlight())
+        loadModule(BlazeSlayerDaggerHelper())
+        loadModule(HellionShieldHelper())
+        loadModule(BlazeSlayerFirePitsWarning())
+        loadModule(BlazeSlayerClearView())
+        loadModule(FirePillarDisplay())
         loadModule(EndermanSlayerHideParticles())
         loadModule(EnigmaSoulWaypoints)
         loadModule(EstimatedItemValue)
@@ -931,6 +954,21 @@ class SkyHanniMod {
         loadModule(WikiManager)
         loadModule(WildStrawberryDyeNotification())
         loadModule(WrongFungiCutterWarning())
+        loadModule(SkillProgress)
+        loadModule(GardenInventoryTooltipOverflow())
+        loadModule(SkillTooltip())
+        loadModule(MaxPurseItems())
+        loadModule(SuperCraftFeatures)
+        loadModule(InfernoMinionFeatures())
+        loadModule(LimboPlaytime())
+        loadModule(RareDropMessages())
+        loadModule(CraftMaterialsFromBazaar())
+        loadModule(DungeonShadowAssassinNotification())
+        loadModule(PestProfitTracker)
+        loadModule(NoBitsWarning)
+        loadModule(ColdOverlay())
+        loadModule(QuiverDisplay())
+        loadModule(QuiverWarning())
 
         // test stuff
         loadModule(ButtonOnPause())
