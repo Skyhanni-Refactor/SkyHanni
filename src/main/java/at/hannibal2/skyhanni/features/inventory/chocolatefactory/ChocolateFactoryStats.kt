@@ -165,4 +165,14 @@ object ChocolateFactoryStats {
             }
         }
     }
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.transform(42, "event.chocolateFactory.statsDisplayList") { element ->
+            addToDisplayList(element, "TIME_TOWER", "TIME_TO_PRESTIGE")
+        }
+        event.transform(45, "inventory.chocolateFactory.statsDisplayList") { element ->
+            addToDisplayList(element, "TIME_TO_BEST_UPGRADE")
+        }
+    }
 }
