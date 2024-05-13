@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.config
 import at.hannibal2.skyhanni.events.LorenzEvent
 import at.hannibal2.skyhanni.features.misc.limbo.LimboTimeTracker
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils.asIntOrNull
+import at.hannibal2.skyhanni.utils.asIntOrNull
 import at.hannibal2.skyhanni.utils.shDeepCopy
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject

@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import java.io.Reader
 import kotlin.reflect.jvm.javaType
 import kotlin.reflect.typeOf
@@ -35,3 +36,5 @@ fun JsonElement.shDeepCopy(): JsonElement {
         else -> this
     }
 }
+
+val JsonPrimitive.asIntOrNull get() = takeIf { it.isNumber }?.asInt

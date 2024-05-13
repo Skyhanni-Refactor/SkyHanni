@@ -18,7 +18,6 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import com.google.gson.JsonPrimitive
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiEditSign
 import net.minecraft.entity.EntityLivingBase
@@ -93,18 +92,6 @@ object LorenzUtils {
 
     fun consoleLog(text: String) {
         SkyHanniMod.consoleLog(text)
-    }
-
-    fun getPointsForDojoRank(rank: String): Int {
-        return when (rank) {
-            "S" -> 1000
-            "A" -> 800
-            "B" -> 600
-            "C" -> 400
-            "D" -> 200
-            "F" -> 0
-            else -> 0
-        }
     }
 
     fun getSBMonthByName(month: String): Int {
@@ -268,8 +255,6 @@ object LorenzUtils {
             }
         }, duration.inWholeMilliseconds)
     }
-
-    val JsonPrimitive.asIntOrNull get() = takeIf { it.isNumber }?.asInt
 
     fun sendTitle(text: String, duration: Duration, height: Double = 1.8, fontSize: Float = 4f) {
         TitleManager.sendTitle(text, duration, height, fontSize)
