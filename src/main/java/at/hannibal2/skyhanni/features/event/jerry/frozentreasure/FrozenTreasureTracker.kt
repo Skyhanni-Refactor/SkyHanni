@@ -1,6 +1,8 @@
 package at.hannibal2.skyhanni.features.event.jerry.frozentreasure
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.config.features.event.winter.FrozenTreasureConfig
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.ScoreboardData
@@ -10,6 +12,7 @@ import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
+import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
@@ -177,5 +180,20 @@ object FrozenTreasureTracker {
 
     fun resetCommand() {
         tracker.resetCommand()
+    }
+
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.move(
+            11,
+            "event.winter.frozenTreasureTracker.textFormat",
+            "event.winter.frozenTreasureTracker.textFormat"
+        ) { element ->
+            ConfigUtils.migrateIntArrayListToEnumArrayList(
+                element,
+                FrozenTreasureConfig.FrozenTreasureDisplayEntry::class.java
+            )
+        }
     }
 }

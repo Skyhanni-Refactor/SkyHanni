@@ -685,7 +685,7 @@ class SkyHanniMod {
         loadModule(InGameDateDisplay())
         loadModule(ThunderSparksHighlight())
         loadModule(BlazeSlayerDaggerHelper())
-        loadModule(HellionShieldHelper())
+        loadModule(HellionShieldHelper)
         loadModule(BlazeSlayerFirePitsWarning())
         loadModule(BlazeSlayerClearView())
         loadModule(FirePillarDisplay())
