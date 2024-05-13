@@ -16,6 +16,7 @@ public class PlayerMessagesConfig {
     @ConfigOption(name = "Enable Chat Formatting", desc = "Enable player chat modifications. Required for all settings below.")
     @ConfigEditorBoolean
     @FeatureToggle
+    // TODO rename to enabled
     public boolean enable = false;
 
     @Expose
