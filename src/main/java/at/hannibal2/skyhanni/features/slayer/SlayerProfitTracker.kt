@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.slayer
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SlayerProfitTrackerItemsJson
@@ -26,8 +25,6 @@ import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.ItemTrackerData
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniItemTracker
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
 import com.google.gson.annotations.Expose
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -214,28 +211,6 @@ object SlayerProfitTracker {
         if (!SlayerAPI.isInCorrectArea) return
 
         getTracker()?.renderDisplay(config.pos)
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(10, "#profile.slayerProfitData") { old ->
-            for (data in old.asJsonObject.entrySet().map { it.value.asJsonObject }) {
-                val items = data.get("items").asJsonObject
-                for (item in items.entrySet().map { it.value.asJsonObject }) {
-                    val oldValue = item.get("timesDropped")
-                    item.add("timesGained", oldValue)
-                }
-
-                val coinAmount = data.get("mobKillCoins")
-                val coins = JsonObject()
-                coins.add("internalName", JsonPrimitive("SKYBLOCK_COIN"))
-                coins.add("timesDropped", JsonPrimitive(1))
-                coins.add("totalAmount", coinAmount)
-                items.add("SKYBLOCK_COIN", coins)
-            }
-
-            old
-        }
     }
 
     fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled

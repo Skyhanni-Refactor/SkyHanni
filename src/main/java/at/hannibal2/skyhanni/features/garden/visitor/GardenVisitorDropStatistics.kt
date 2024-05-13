@@ -293,14 +293,7 @@ object GardenVisitorDropStatistics {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        val originalPrefix = "garden.visitorDropsStatistics."
         val newPrefix = "garden.visitors.dropsStatistics."
-        event.move(3, "${originalPrefix}enabled", "${newPrefix}enabled")
-        event.move(3, "${originalPrefix}textFormat", "${newPrefix}textFormat")
-        event.move(3, "${originalPrefix}displayNumbersFirst", "${newPrefix}displayNumbersFirst")
-        event.move(3, "${originalPrefix}displayIcons", "${newPrefix}displayIcons")
-        event.move(3, "${originalPrefix}onlyOnBarn", "${newPrefix}onlyOnBarn")
-        event.move(3, "${originalPrefix}visitorDropPos", "${newPrefix}pos")
 
         event.transform(11, "${newPrefix}textFormat") { element ->
             ConfigUtils.migrateIntArrayListToEnumArrayList(element, DropsStatisticsTextEntry::class.java)

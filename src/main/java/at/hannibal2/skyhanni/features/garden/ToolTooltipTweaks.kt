@@ -157,10 +157,6 @@ class ToolTooltipTweaks {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.compactToolTooltips", "garden.tooltipTweak.compactToolTooltips")
-        event.move(3, "garden.fortuneTooltipKeybind", "garden.tooltipTweak.fortuneTooltipKeybind")
-        event.move(3, "garden.cropTooltipFortune", "garden.tooltipTweak.cropTooltipFortune")
-
         event.transform(15, "garden.tooltipTweak.cropTooltipFortune") { element ->
             ConfigUtils.migrateIntToEnum(element, CropTooltipFortuneEntry::class.java)
         }

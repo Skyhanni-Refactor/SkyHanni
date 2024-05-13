@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.chat
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.ChatManager
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -51,11 +50,6 @@ class WatchdogHider {
         private const val WATCHDOG_START_LINE = "§f"
         private const val WATCHDOG_ANNOUNCEMENT_LINE = "§4[WATCHDOG ANNOUNCEMENT]"
         private const val WATCHDOG_END_LINE = "§c"
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "chat.watchDog", "chat.filterType.watchDog")
     }
 }
 

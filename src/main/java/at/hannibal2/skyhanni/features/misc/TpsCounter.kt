@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
@@ -95,12 +94,6 @@ class TpsCounter {
 
     private fun isEnabled() = LorenzUtils.onHypixel && config.tpsDisplay &&
         (LorenzUtils.inSkyBlock || OutsideSbFeature.TPS_DISPLAY.isSelected())
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.tpsDisplayEnabled", "gui.tpsDisplay")
-        event.move(2, "misc.tpsDisplayPosition", "gui.tpsDisplayPosition")
-    }
 
     private fun getColor(tps: Double) = when {
         tps > 19.8 -> "§2"

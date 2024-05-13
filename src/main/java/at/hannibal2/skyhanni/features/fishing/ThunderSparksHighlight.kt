@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
@@ -68,10 +67,4 @@ class ThunderSparksHighlight {
 
     private fun isEnabled() =
         (IslandType.CRIMSON_ISLE.isInIsland() || LorenzUtils.isStrandedProfile) && config.highlight
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "fishing.thunderSparkHighlight", "fishing.thunderSpark.highlight")
-        event.move(3, "fishing.thunderSparkColor", "fishing.thunderSpark.color")
-    }
 }

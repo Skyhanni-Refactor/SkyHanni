@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.event.jerry.frozentreasure
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.config.features.event.winter.FrozenTreasureConfig.FrozenTreasureDisplayEntry
+import at.hannibal2.skyhanni.config.features.event.winter.FrozenTreasureConfig
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.ScoreboardData
@@ -173,18 +173,6 @@ object FrozenTreasureTracker {
         tracker.renderDisplay(config.position)
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.frozenTreasureTracker", "event.winter.frozenTreasureTracker")
-        event.move(
-            11,
-            "event.winter.frozenTreasureTracker.textFormat",
-            "event.winter.frozenTreasureTracker.textFormat"
-        ) { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, FrozenTreasureDisplayEntry::class.java)
-        }
-    }
-
     private fun onJerryWorkshop() = IslandType.WINTER.isInIsland()
 
     private fun inGlacialCave() =
@@ -192,5 +180,20 @@ object FrozenTreasureTracker {
 
     fun resetCommand() {
         tracker.resetCommand()
+    }
+
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.move(
+            11,
+            "event.winter.frozenTreasureTracker.textFormat",
+            "event.winter.frozenTreasureTracker.textFormat"
+        ) { element ->
+            ConfigUtils.migrateIntArrayListToEnumArrayList(
+                element,
+                FrozenTreasureConfig.FrozenTreasureDisplayEntry::class.java
+            )
+        }
     }
 }

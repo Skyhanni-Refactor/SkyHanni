@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.rift.area.wyldwoods
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
@@ -20,10 +19,5 @@ object ShyCruxWarnings {
         if (McWorld.entities.any { it.name in shyNames && it.distanceToPlayer() < 8 }) {
             LorenzUtils.sendTitle("§eLook away!", 150.milliseconds)
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(9, "rift.area.wyldWoodsConfig", "rift.area.wyldWoods")
     }
 }

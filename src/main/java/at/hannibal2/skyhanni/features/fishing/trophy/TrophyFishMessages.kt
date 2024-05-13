@@ -90,14 +90,6 @@ class TrophyFishMessages {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "fishing.trophyCounter", "fishing.trophyFishing.chatMessages.enabled")
-        event.move(2, "fishing.trophyDesign", "fishing.trophyFishing.chatMessages.design")
-        event.move(2, "fishing.trophyFishTotalAmount", "fishing.trophyFishing.chatMessages.totalAmount")
-        event.move(2, "fishing.trophyFishTooltip", "fishing.trophyFishing.chatMessages.tooltip")
-        event.move(2, "fishing.trophyFishDuplicateHider", "fishing.trophyFishing.chatMessages.duplicateHider")
-        event.move(2, "fishing.trophyFishBronzeHider", "fishing.trophyFishing.chatMessages.bronzeHider")
-        event.move(2, "fishing.trophyFishSilverHider", "fishing.trophyFishing.chatMessages.silverHider")
-
         event.transform(15, "fishing.trophyFishing.chatMessages.design") { element ->
             ConfigUtils.migrateIntToEnum(element, DesignFormat::class.java)
         }

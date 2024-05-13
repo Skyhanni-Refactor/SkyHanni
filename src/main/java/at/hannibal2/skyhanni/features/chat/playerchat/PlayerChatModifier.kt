@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.chat.playerchat
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.hypixel.chat.event.SystemMessageEvent
 import at.hannibal2.skyhanni.features.misc.MarkedPlayerManager
 import at.hannibal2.skyhanni.utils.StringUtils.applyIfPossible
@@ -59,11 +58,5 @@ class PlayerChatModifier {
         string = MarkedPlayerManager.replaceInChat(string)
 
         return string
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "chat.playerRankHider", "chat.playerMessage.playerRankHider")
-        event.move(3, "chat.chatFilter", "chat.playerMessage.chatFilter")
     }
 }

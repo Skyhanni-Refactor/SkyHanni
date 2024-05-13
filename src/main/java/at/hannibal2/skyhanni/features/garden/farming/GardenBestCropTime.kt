@@ -139,12 +139,6 @@ class GardenBestCropTime {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.cropMilestoneBestType", "garden.cropMilestones.next.bestType")
-        event.move(3, "garden.cropMilestoneShowOnlyBest", "garden.cropMilestones.next.showOnlyBest")
-        event.move(3, "garden.cropMilestoneShowCurrent", "garden.cropMilestones.next.showCurrent")
-        event.move(3, "garden.cropMilestoneBestCompact", "garden.cropMilestones.next.bestCompact")
-        event.move(3, "garden.cropMilestoneBestHideTitle", "garden.cropMilestones.next.bestHideTitle")
-
         event.transform(17, "garden.cropMilestones.next.bestType") { element ->
             ConfigUtils.migrateIntToEnum(element, BestTypeEntry::class.java)
         }

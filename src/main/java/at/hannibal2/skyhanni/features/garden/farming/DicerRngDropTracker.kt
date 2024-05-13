@@ -1,7 +1,5 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
-import at.hannibal2.skyhanni.config.ConfigManager
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
@@ -150,27 +148,6 @@ object DicerRngDropTracker {
     class ItemDrop(val crop: CropType, val rarity: DropRarity, val pattern: Pattern)
 
     fun isEnabled() = GardenAPI.inGarden() && config.display
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.dicerCounterDisplay", "garden.dicerCounters.display")
-        event.move(3, "garden.dicerCounterHideChat", "garden.dicerCounters.hideChat")
-        event.move(3, "garden.dicerCounterPos", "garden.dicerCounters.pos")
-
-        event.move(7, "#profile.garden.dicerRngDrops", "#profile.garden.dicerDropTracker.drops") { old ->
-            val items: MutableMap<CropType, MutableMap<DropRarity, Int>> = mutableMapOf()
-            val oldItems = ConfigManager.gson.fromJson<Map<String, Int>>(old, Map::class.java)
-            for ((internalName, amount) in oldItems) {
-                val split = internalName.split(".")
-                val crop = CropType.getByName(split[0])
-                val rarityName = split[1]
-                val rarity = DropRarity.valueOf(rarityName)
-                items.getOrPut(crop) { mutableMapOf() }[rarity] = amount
-            }
-
-            ConfigManager.gson.toJsonTree(items)
-        }
-    }
 
     fun resetCommand() {
         tracker.resetCommand()

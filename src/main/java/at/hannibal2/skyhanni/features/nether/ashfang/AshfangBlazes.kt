@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.nether.ashfang
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.EntityHealthUpdateEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
@@ -98,13 +97,6 @@ class AshfangBlazes {
     fun onWorldChange(event: LorenzWorldChangeEvent) {
         blazeColor.clear()
         blazeArmorStand = emptyMap()
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "ashfang.nextResetCooldown", "crimsonIsle.ashfang.nextResetCooldown")
-        event.move(2, "ashfang.highlightBlazes", "crimsonIsle.ashfang.highlightBlazes")
-        event.move(2, "ashfang.hideNames", "crimsonIsle.ashfang.hide.fullNames")
     }
 
     private fun isEnabled(): Boolean {

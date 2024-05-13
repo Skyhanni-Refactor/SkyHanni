@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.rift.area.stillgorechateau
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.jsonobjects.repo.RiftEffigiesJson
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
@@ -159,9 +158,4 @@ object RiftBloodEffigies {
     }
 
     fun isEnabled() = RiftAPI.inRift() && config.enabled && RiftAPI.inStillgoreChateau()
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(9, "rift.area.stillgoreChateauConfig", "rift.area.stillgoreChateau")
-    }
 }

@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.slayer.enderman
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
@@ -216,21 +215,5 @@ class EndermanSlayerFeatures {
         nukekubiSkulls.clear()
         sittingBeacon = emptyMap()
         logger.log("Reset everything (world change)")
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(
-            3,
-            "slayer.endermanBeaconConfig.highlightBeacon",
-            "slayer.endermen.endermanBeaconConfig.highlightBeacon"
-        )
-        event.move(3, "slayer.endermanBeaconConfig.beaconColor", "slayer.endermen.endermanBeaconConfig.beaconColor")
-        event.move(3, "slayer.endermanBeaconConfig.showWarning", "slayer.endermen.endermanBeaconConfig.showWarning")
-        event.move(3, "slayer.endermanBeaconConfig.showLine", "slayer.endermen.endermanBeaconConfig.showLine")
-        event.move(3, "slayer.endermanBeaconConfig.lneColor", "slayer.endermen.endermanBeaconConfig.lineColor")
-        event.move(3, "slayer.endermanBeaconConfig.lineWidth", "slayer.endermen.endermanBeaconConfig.lineWidth")
-        event.move(3, "slayer.endermanHighlightNukekebi", "slayer.endermen.highlightNukekebi")
-        event.move(9, "slayer.enderman.endermanBeaconConfig", "slayer.endermen.beacon")
     }
 }

@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.garden.visitor
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.CropClickEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
@@ -212,12 +211,4 @@ class GardenVisitorTimer {
     private fun isSixthVisitorEnabled() = config.sixthVisitorEnabled
     private fun isSixthVisitorWarningEnabled() = config.sixthVisitorWarning
     private fun isEnabled() = GardenAPI.inGarden() && config.enabled
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.visitorTimerEnabled", "garden.visitors.timer.enabled")
-        event.move(3, "garden.visitorTimerSixthVisitorEnabled", "garden.visitors.timer.sixthVisitorEnabled")
-        event.move(3, "garden.visitorTimerSixthVisitorWarning", "garden.visitors.timer.sixthVisitorWarning")
-        event.move(3, "garden.visitorTimerPos", "garden.visitors.timer.pos")
-    }
 }

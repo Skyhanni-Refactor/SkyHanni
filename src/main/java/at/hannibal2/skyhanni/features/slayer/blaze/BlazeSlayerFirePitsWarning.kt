@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.slayer.blaze
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.BossHealthChangeEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.BossType
@@ -65,9 +64,4 @@ class BlazeSlayerFirePitsWarning {
             BossType.SLAYER_BLAZE_TYPHOEUS_3,
             BossType.SLAYER_BLAZE_TYPHOEUS_4,
         )
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "slayer.firePitsWarning", "slayer.blazes.firePitsWarning")
-    }
 }

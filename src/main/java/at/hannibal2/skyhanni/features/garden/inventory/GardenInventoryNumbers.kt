@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.garden.inventory
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.GardenCropMilestones
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.data.model.ComposterUpgrade
@@ -54,12 +53,5 @@ class GardenInventoryNumbers {
                 event.stackTip = "$level"
             }
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.numberCropMilestone", "garden.number.cropMilestone")
-        event.move(3, "garden.numberCropUpgrades", "garden.number.cropUpgrades")
-        event.move(3, "garden.numberComposterUpgrades", "garden.number.composterUpgrades")
     }
 }

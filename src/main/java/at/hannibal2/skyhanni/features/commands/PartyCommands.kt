@@ -6,9 +6,9 @@ import at.hannibal2.skyhanni.data.FriendAPI
 import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.events.MessageSendToServerEvent
 import at.hannibal2.skyhanni.features.misc.limbo.LimboTimeTracker
+import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.mc.McWorld
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object PartyCommands {
@@ -111,8 +111,6 @@ object PartyCommands {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(5, "commands.usePartyTransferAlias", "commands.shortCommands")
-
         event.move(31, "commands", "misc.commands")
     }
 }

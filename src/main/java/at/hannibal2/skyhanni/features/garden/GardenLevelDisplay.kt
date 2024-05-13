@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.garden
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
@@ -219,9 +218,4 @@ class GardenLevelDisplay {
 
     private fun isEnabled() = GardenAPI.inGarden() && config.display
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.gardenLevelDisplay", "garden.gardenLevels.display")
-        event.move(3, "garden.gardenLevelPos", "garden.gardenLevels.pos")
-    }
 }

@@ -1,9 +1,7 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Marker
@@ -241,34 +239,5 @@ class MinecraftConsoleFilter(private val loggerConfigName: String) : Filter {
         t: Throwable?,
     ): Filter.Result {
         return Filter.Result.ACCEPT
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "dev.printUnfilteredDebugs", "dev.minecraftConsoles.printUnfilteredDebugs")
-        event.move(3, "dev.logUnfilteredFile", "dev.minecraftConsoles.logUnfilteredFile")
-        event.move(
-            3,
-            "dev.printUnfilteredDebugsOutsideSkyBlock",
-            "dev.minecraftConsoles.printUnfilteredDebugsOutsideSkyBlock"
-        )
-        event.move(3, "dev.printFilteredReason", "dev.minecraftConsoles.printFilteredReason")
-        event.move(3, "dev.filterChat", "dev.minecraftConsoles.consoleFilter.filterChat")
-        event.move(3, "dev.filterGrowBuffer", "dev.minecraftConsoles.consoleFilter.filterGrowBuffer")
-        event.move(3, "dev.filterUnknownSound", "dev.minecraftConsoles.consoleFilter.filterUnknownSound")
-        event.move(
-            3,
-            "dev.filterParticleVillagerHappy",
-            "dev.minecraftConsoles.consoleFilter.filterParticleVillagerHappy"
-        )
-        event.move(
-            3,
-            "dev.filterAmsHelperTransformer",
-            "dev.minecraftConsoles.consoleFilter.filterAmsHelperTransformer"
-        )
-        event.move(3, "dev.filterAsmHelperApplying", "dev.minecraftConsoles.consoleFilter.filterAsmHelperApplying")
-        event.move(3, "dev.filterBiomeIdBounds", "dev.minecraftConsoles.consoleFilter.filterBiomeIdBounds")
-        event.move(3, "dev.filterScoreboardErrors", "dev.minecraftConsoles.consoleFilter.filterScoreboardErrors")
-        event.move(3, "dev.filterOptiFine", "dev.minecraftConsoles.consoleFilter.filterOptiFine")
     }
 }

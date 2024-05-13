@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
@@ -119,16 +118,5 @@ class FishingTimer {
         val text = "$color$timeFormat §8(§e$currentCount §b$name§8)"
 
         config.pos.renderString(text, posLabel = "BarnTimer")
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "fishing.barnTimer", "fishing.barnTimer.enabled")
-        event.move(3, "fishing.barnTimerAlertTime", "fishing.barnTimer.alertTime")
-        event.move(3, "fishing.barnTimerCrystalHollows", "fishing.barnTimer.crystalHollows")
-        event.move(3, "fishing.barnTimerForStranded", "fishing.barnTimer.forStranded")
-        event.move(3, "fishing.wormLimitAlert", "fishing.barnTimer.wormLimitAlert")
-        event.move(3, "fishing.manualResetTimer", "fishing.barnTimer.manualResetTimer")
-        event.move(3, "fishing.barnTimerPos", "fishing.barnTimer.pos")
     }
 }

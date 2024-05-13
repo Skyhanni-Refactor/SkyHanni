@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.GuiKeyPressEvent
 import at.hannibal2.skyhanni.test.command.CopyItemCommand.copyItemToClipboard
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -66,12 +65,5 @@ object TestExportTools {
     inline fun <reified T> getTestData(category: Key<T>, name: String): T {
         val reader = InputStreamReader(javaClass.getResourceAsStream("/testdata/${category.name}/$name.json")!!)
         return fromJson(category, reader)
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "dev.copyNBTDataCompressed", "dev.debug.copyNBTDataCompressed")
-        event.move(4, "dev.debug.copyNBTData", "dev.debug.copyItemData")
-        event.move(4, "dev.debug.copyNBTDataCompressed", "dev.debug.copyItemDataCompressed")
     }
 }

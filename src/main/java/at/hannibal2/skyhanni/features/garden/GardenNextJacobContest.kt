@@ -632,16 +632,6 @@ object GardenNextJacobContest {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.nextJacobContestDisplay", "garden.nextJacobContests.display")
-        event.move(3, "garden.nextJacobContestEverywhere", "garden.nextJacobContests.everywhere")
-        event.move(3, "garden.nextJacobContestOtherGuis", "garden.nextJacobContests.otherGuis")
-        event.move(3, "garden.nextJacobContestsFetchAutomatically", "garden.nextJacobContests.fetchAutomatically")
-        event.move(3, "garden.nextJacobContestsShareAutomatically", "garden.nextJacobContests.shareAutomatically")
-        event.move(3, "garden.nextJacobContestWarn", "garden.nextJacobContests.warn")
-        event.move(3, "garden.nextJacobContestWarnTime", "garden.nextJacobContests.warnTime")
-        event.move(3, "garden.nextJacobContestWarnPopup", "garden.nextJacobContests.warnPopup")
-        event.move(3, "garden.nextJacobContestPos", "garden.nextJacobContests.pos")
-
         event.transform(15, "garden.nextJacobContests.shareAutomatically") { element ->
             ConfigUtils.migrateIntToEnum(element, ShareContestsEntry::class.java)
         }

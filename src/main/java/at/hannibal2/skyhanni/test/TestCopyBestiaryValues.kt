@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.InventoryUpdatedEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -108,10 +107,5 @@ object TestCopyBestiaryValues {
         OS.copyToClipboard(text)
 
         SkyHanniDebugsAndTests.displayLine = "Bestiary for $titleName"
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "dev.copyBestiaryData", "dev.debug.copyBestiaryData")
     }
 }

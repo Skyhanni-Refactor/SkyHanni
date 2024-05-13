@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.itemabilities
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
@@ -64,13 +63,6 @@ class ChickenHeadTimer {
         }
 
         config.position.renderString(displayText, posLabel = "Chicken Head Timer")
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.chickenHeadTimerHideChat", "itemAbilities.chickenHead.hideChat")
-        event.move(2, "misc.chickenHeadTimerPosition", "itemAbilities.chickenHead.position")
-        event.move(2, "misc.chickenHeadTimerDisplay", "itemAbilities.chickenHead.displayTimer")
     }
 
     fun isEnabled() = LorenzUtils.inSkyBlock && config.displayTimer

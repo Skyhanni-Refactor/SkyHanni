@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.garden.composter
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.GuiRenderEvent
@@ -197,19 +196,5 @@ class ComposterDisplay {
             })
         }
         LorenzUtils.sendTitle("§eComposter Warning!", 3.seconds)
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.composterDisplayEnabled", "garden.composters.displayEnabled")
-        event.move(3, "garden.composterDisplayOutsideGarden", "garden.composters.displayOutsideGarden")
-        event.move(3, "garden.composterWarnAlmostClose", "garden.composters.warnAlmostClose")
-        event.move(3, "garden.composterDisplayPos", "garden.composters.displayPos")
-        event.move(3, "garden.composterOutsideGardenPos", "garden.composters.outsideGardenPos")
-        event.move(3, "garden.composterNotifyLowEnabled", "garden.composters.notifyLow.enabled")
-        event.move(3, "garden.composterNotifyLowEnabled", "garden.composters.notifyLow.enabled")
-        event.move(3, "garden.composterNotifyLowTitle", "garden.composters.notifyLow.title")
-        event.move(3, "garden.composterNotifyLowOrganicMatter", "garden.composters.notifyLow.organicMatter")
-        event.move(3, "garden.composterNotifyLowFuel", "garden.composters.notifyLow.fuel")
     }
 }

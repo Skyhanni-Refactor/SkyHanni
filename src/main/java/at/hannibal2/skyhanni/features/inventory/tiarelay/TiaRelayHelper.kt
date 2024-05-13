@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.inventory.tiarelay
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.PlaySoundEvent
 import at.hannibal2.skyhanni.events.RenderInventoryItemTipEvent
@@ -137,15 +136,6 @@ class TiaRelayHelper {
 
         lastClickSlot = event.slotId
         lastClickTime = SimpleTimeMark.now()
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.tiaRelayMute", "inventory.helper.tiaRelay.tiaRelayMute")
-        event.move(2, "misc.tiaRelayHelper", "inventory.helper.tiaRelay.soundHelper")
-
-        event.move(2, "misc.tiaRelayNextWaypoint", "inventory.helper.tiaRelay.nextWaypoint")
-        event.move(2, "misc.tiaRelayAllWaypoints", "inventory.helper.tiaRelay.allWaypoints")
     }
 
     class Sound(val name: String, val pitch: Float)

@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.DamageIndicatorFinalBossEvent
 import at.hannibal2.skyhanni.events.EntityHealthUpdateEvent
@@ -119,11 +118,5 @@ class DungeonCleanEnd {
         if (shouldBlock() && !chestsSpawned && event.soundName.startsWith("note.")) {
             event.isCanceled = true
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "dungeon.cleanEndToggle", "dungeon.cleanEnd.enabled")
-        event.move(3, "dungeon.cleanEndF3IgnoreGuardians", "dungeon.cleanEnd.F3IgnoreGuardians")
     }
 }

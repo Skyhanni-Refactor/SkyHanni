@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.rift.area.westvillage.kloon
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
@@ -164,10 +163,5 @@ class KloonHacking {
         }
         nearestTerminal = closestTerminal
         return closestTerminal
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(9, "rift.area.westVillageConfig", "rift.area.westVillage")
     }
 }

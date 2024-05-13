@@ -615,12 +615,6 @@ object ComposterOverlay {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.composterOverlay", "garden.composters.overlay")
-        event.move(3, "garden.composterOverlayPriceType", "garden.composters.overlayPriceType")
-        event.move(3, "garden.composterOverlayRetrieveFrom", "garden.composters.retrieveFrom")
-        event.move(3, "garden.composterOverlayOrganicMatterPos", "garden.composters.overlayOrganicMatterPos")
-        event.move(3, "garden.composterOverlayFuelExtrasPos", "garden.composters.overlayFuelExtrasPos")
-        event.move(3, "garden.composterRoundDown", "garden.composters.roundDown")
         event.transform(15, "garden.composters.overlayPriceType") { element ->
             ConfigUtils.migrateIntToEnum(element, OverlayPriceTypeEntry::class.java)
         }

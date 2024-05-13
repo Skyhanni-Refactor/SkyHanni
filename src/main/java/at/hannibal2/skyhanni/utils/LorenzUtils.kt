@@ -153,7 +153,7 @@ object LorenzUtils {
             '6' -> "Legendary"
             'd' -> "Mythic"
             'b' -> "Divine"
-            '4' -> "Supreme" // legacy items
+            '4' -> "Ultimate"
             else -> "Special"
         }
     }
