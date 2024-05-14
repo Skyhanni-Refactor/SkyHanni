@@ -3,11 +3,11 @@ package at.hannibal2.skyhanni.utils
 import java.awt.Color
 import kotlin.math.max
 
-object ColorUtils {
+object ColourUtils {
 
     /** transfer string colors from the config to java.awt.Color */
-    fun String.toChromaColor() = Color(toChromaColorInt(), true)
-    fun String.toChromaColorInt() = SpecialColour.specialToChromaRGB(this)
+    fun String.toChromaColour() = Color(toChromaColourInt(), true)
+    fun String.toChromaColourInt() = SpecialColour.specialToChromaRGB(this)
 
     fun String.getFirstColorCode() = this.takeIf { it.firstOrNull() == '§' }?.getOrNull(1)
 

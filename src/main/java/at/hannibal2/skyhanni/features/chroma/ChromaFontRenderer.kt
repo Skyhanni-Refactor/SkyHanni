@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.features.chroma
 
-import at.hannibal2.skyhanni.utils.ColorUtils
+import at.hannibal2.skyhanni.utils.ColourUtils
 import at.hannibal2.skyhanni.utils.shader.ShaderHelper
 import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.opengl.GL11
@@ -44,9 +44,9 @@ class ChromaFontRenderer(private val baseColor: Int) {
 
     fun bindActualColor(alpha: Float): ChromaFontRenderer {
         GlStateManager.color(
-            ColorUtils.getRed(baseColor).toFloat() / 255f,
-            ColorUtils.getGreen(baseColor).toFloat() / 255f,
-            ColorUtils.getBlue(baseColor).toFloat() / 255f,
+            ColourUtils.getRed(baseColor).toFloat() / 255f,
+            ColourUtils.getGreen(baseColor).toFloat() / 255f,
+            ColourUtils.getBlue(baseColor).toFloat() / 255f,
             alpha
         )
         return this

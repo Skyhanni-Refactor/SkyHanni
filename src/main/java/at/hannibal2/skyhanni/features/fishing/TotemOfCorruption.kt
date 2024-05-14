@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -86,7 +86,7 @@ object TotemOfCorruption {
         if (!isEffectiveAreaEnabled()) return
         if (totems.isEmpty()) return
 
-        val color = config.color.toChromaColor()
+        val color = config.color.toChromaColour()
         for (totem in totems) {
             // The center of the totem is the upper part of the armor stand
             when (config.outlineType) {

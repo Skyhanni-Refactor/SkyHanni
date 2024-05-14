@@ -6,7 +6,7 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColorInt
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColourInt
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
@@ -42,7 +42,7 @@ object ThunderSparksHighlight {
         if (!isEnabled()) return
 
         val special = config.color
-        val color = Color(special.toChromaColorInt(), true)
+        val color = Color(special.toChromaColourInt(), true)
 
         val playerLocation = LocationUtils.playerLocation()
         for (spark in sparks) {

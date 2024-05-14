@@ -5,7 +5,7 @@ import at.hannibal2.skyhanni.data.GuiEditManager
 import at.hannibal2.skyhanni.data.GuiEditManager.getAbsX
 import at.hannibal2.skyhanni.data.GuiEditManager.getAbsY
 import at.hannibal2.skyhanni.data.GuiEditManager.getDummySize
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.RenderUtils
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.Minecraft
@@ -62,7 +62,7 @@ class RenderBackground {
                     y - border,
                     elementWidth + border * 3,
                     elementHeight + border * 2,
-                    backgroundConfig.color.toChromaColor().rgb,
+                    backgroundConfig.color.toChromaColour().rgb,
                     backgroundConfig.roundedCornerSmoothness
                 )
             }
@@ -72,8 +72,8 @@ class RenderBackground {
                     y - border,
                     elementWidth + border * 3,
                     elementHeight + border * 2,
-                    outlineConfig.colorTop.toChromaColor().rgb,
-                    outlineConfig.colorBottom.toChromaColor().rgb,
+                    outlineConfig.colorTop.toChromaColour().rgb,
+                    outlineConfig.colorBottom.toChromaColour().rgb,
                     outlineConfig.thickness,
                     backgroundConfig.roundedCornerSmoothness,
                     outlineConfig.blur

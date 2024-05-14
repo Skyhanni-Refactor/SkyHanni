@@ -7,7 +7,7 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.MobEvent
 import at.hannibal2.skyhanni.test.command.CopyNearbyEntitiesCommand.getMobInfo
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
@@ -50,13 +50,13 @@ object MatriarchHelper {
     fun onRender(event: LorenzRenderWorldEvent) {
         if (!isEnabled()) return
         if (config.highlight) {
-            val color = config.highlightColor.toChromaColor()
+            val color = config.highlightColor.toChromaColour()
             pearlList.forEach {
                 event.drawFilledBoundingBox_nea(it.boundingBox.expandToEdge(), color, 1.0f)
             }
         }
         if (config.line) {
-            val color = config.lineColor.toChromaColor()
+            val color = config.lineColor.toChromaColour()
             var prePoint = event.exactPlayerEyeLocation()
             pearlList.forEach {
                 val point = it.baseEntity.getLorenzVec().add(y = 1.2)

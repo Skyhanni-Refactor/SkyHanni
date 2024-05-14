@@ -7,7 +7,7 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzLogger
@@ -64,7 +64,7 @@ object PatcherSendCoordinates {
         for (beacon in patcherBeacon) {
             val location = beacon.location
             event.drawColor(location, LorenzColor.DARK_GREEN, alpha = 1f)
-            event.drawWaypointFilled(location, config.color.toChromaColor(), true, true)
+            event.drawWaypointFilled(location, config.color.toChromaColour(), true, true)
             event.drawString(location.add(0.5, 0.5, 0.5), beacon.name, true, LorenzColor.DARK_BLUE.toColor())
         }
     }

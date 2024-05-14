@@ -10,8 +10,8 @@ import at.hannibal2.skyhanni.events.ServerBlockChangeEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
-import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
+import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils.canBeSeen
 import at.hannibal2.skyhanni.utils.EntityUtils.getBlockInHand
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
@@ -67,7 +67,7 @@ object EndermanSlayerFeatures {
                     flyingBeacons.add(entity)
                     RenderLivingEntityHelper.setEntityColor(
                         entity,
-                        beaconConfig.beaconColor.toChromaColor().withAlpha(1)
+                        beaconConfig.beaconColor.toChromaColour().withAlpha(1)
                     ) {
                         beaconConfig.highlightBeacon
                     }
@@ -104,7 +104,7 @@ object EndermanSlayerFeatures {
             endermenWithBeacons.removeIf { it.isDead || !hasBeaconInHand(it) }
 
             endermenWithBeacons.map { it.getLorenzVec().add(-0.5, 0.2, -0.5) }
-                .forEach { event.drawColor(it, beaconConfig.beaconColor.toChromaColor(), alpha = 0.5f) }
+                .forEach { event.drawColor(it, beaconConfig.beaconColor.toChromaColour(), alpha = 0.5f) }
         }
 
         for ((location, time) in sittingBeacon) {
@@ -113,7 +113,7 @@ object EndermanSlayerFeatures {
                 event.draw3DLine(
                     event.exactPlayerEyeLocation(),
                     location.add(0.5, 1.0, 0.5),
-                    beaconConfig.lineColor.toChromaColor(),
+                    beaconConfig.lineColor.toChromaColour(),
                     beaconConfig.lineWidth,
                     true
                 )
@@ -122,8 +122,8 @@ object EndermanSlayerFeatures {
             if (beaconConfig.highlightBeacon) {
                 val duration = 5.seconds - time.passedSince()
                 val durationFormat = duration.format(showMilliSeconds = true)
-                event.drawColor(location, beaconConfig.beaconColor.toChromaColor(), alpha = 1f)
-                event.drawWaypointFilled(location, beaconConfig.beaconColor.toChromaColor(), true, true)
+                event.drawColor(location, beaconConfig.beaconColor.toChromaColour(), alpha = 1f)
+                event.drawWaypointFilled(location, beaconConfig.beaconColor.toChromaColour(), true, true)
                 event.drawDynamicText(location.add(y = 1), "§4Beacon §b$durationFormat", 1.8)
             }
         }
@@ -139,7 +139,7 @@ object EndermanSlayerFeatures {
                 event.draw3DLine(
                     event.exactPlayerEyeLocation(),
                     beaconLocation.add(0.5, 1.0, 0.5),
-                    beaconConfig.lineColor.toChromaColor(),
+                    beaconConfig.lineColor.toChromaColour(),
                     beaconConfig.lineWidth,
                     true
                 )

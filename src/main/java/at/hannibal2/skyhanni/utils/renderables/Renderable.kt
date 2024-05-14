@@ -8,8 +8,8 @@ import at.hannibal2.skyhanni.data.ToolTipData
 import at.hannibal2.skyhanni.features.chroma.ChromaShaderManager
 import at.hannibal2.skyhanni.features.chroma.ChromaType
 import at.hannibal2.skyhanni.utils.CollectionUtils.contains
-import at.hannibal2.skyhanni.utils.ColorUtils
-import at.hannibal2.skyhanni.utils.ColorUtils.darker
+import at.hannibal2.skyhanni.utils.ColourUtils
+import at.hannibal2.skyhanni.utils.ColourUtils.darker
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyClicked
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzLogger
@@ -459,7 +459,7 @@ interface Renderable {
             }
 
             private val color = if (texture == null) {
-                ColorUtils.blendRGB(startColor, endColor, percent)
+                ColourUtils.blendRGB(startColor, endColor, percent)
             } else {
                 startColor
             }
