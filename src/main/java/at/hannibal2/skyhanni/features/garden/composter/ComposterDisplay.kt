@@ -12,7 +12,7 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
+import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -24,7 +24,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class ComposterDisplay {
+object ComposterDisplay {
 
     private val config get() = GardenAPI.config.composters
     private val storage get() = GardenAPI.storage
@@ -33,21 +33,6 @@ class ComposterDisplay {
 
     private val bucket by lazy { SkyhanniItems.BUCKET().getItemStack() }
     private var tabListData by ComposterAPI::tabListData
-
-    enum class DataType(rawPattern: String, val icon: String) {
-        ORGANIC_MATTER(" Organic Matter: §r(.*)", "WHEAT"),
-        FUEL(" Fuel: §r(.*)", "OIL_BARREL"),
-        TIME_LEFT(" Time Left: §r(.*)", "WATCH"),
-        STORED_COMPOST(" Stored Compost: §r(.*)", "COMPOST");
-
-        val displayItem by lazy { icon.asInternalName().getItemStack() }
-
-        val pattern by lazy { rawPattern.toPattern() }
-
-        fun addToList(map: Map<DataType, String>): List<Any> {
-            return listOf(displayItem, map[this]!!)
-        }
-    }
 
     @SubscribeEvent
     fun onTabListUpdate(event: TabListUpdateEvent) {
@@ -197,5 +182,20 @@ class ComposterDisplay {
             })
         }
         LorenzUtils.sendTitle("§eComposter Warning!", 3.seconds)
+    }
+
+    enum class DataType(rawPattern: String, val icon: NEUInternalName) {
+        ORGANIC_MATTER(" Organic Matter: §r(.*)", SkyhanniItems.WHEAT()),
+        FUEL(" Fuel: §r(.*)", SkyhanniItems.OIL_BARREL()),
+        TIME_LEFT(" Time Left: §r(.*)", SkyhanniItems.WATCH()),
+        STORED_COMPOST(" Stored Compost: §r(.*)", SkyhanniItems.COMPOST());
+
+        val displayItem by lazy { icon.getItemStack() }
+
+        val pattern by lazy { rawPattern.toPattern() }
+
+        fun addToList(map: Map<DataType, String>): List<Any> {
+            return listOf(displayItem, map[this]!!)
+        }
     }
 }

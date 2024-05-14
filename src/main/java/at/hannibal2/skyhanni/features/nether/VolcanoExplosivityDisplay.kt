@@ -12,7 +12,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class VolcanoExplosivityDisplay {
+object VolcanoExplosivityDisplay {
 
     private val config get() = SkyHanniMod.feature.crimsonIsle
     private val patternGroup = RepoPattern.group("crimson.volcano")

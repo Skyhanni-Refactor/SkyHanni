@@ -19,8 +19,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
-class ToolTooltipTweaks {
+object ToolTooltipTweaks {
 
+    // TODO repo patterns
     private val config get() = GardenAPI.config.tooltipTweak
     private val tooltipFortunePattern =
         "^§5§o§7Farming Fortune: §a\\+([\\d.]+)(?: §2\\(\\+\\d\\))?(?: §9\\(\\+(\\d+)\\))?$".toRegex()

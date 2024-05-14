@@ -24,7 +24,7 @@ import net.minecraft.entity.monster.EntityZombie
 import net.minecraft.entity.passive.EntityWolf
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SlayerMiniBossFeatures {
+object SlayerMiniBossFeatures {
 
     private val config get() = SkyHanniMod.feature.slayer
     private var miniBosses = listOf<EntityCreature>()

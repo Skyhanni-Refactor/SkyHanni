@@ -70,7 +70,7 @@ object VerminTracker {
     @SubscribeEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!RiftAPI.inRift()) return
-        hasVacuum = McPlayer.has(SkyhanniItems.TURBOMAX_VACUUM())
+        hasVacuum = McPlayer.has(SkyhanniItems.TURBOMAX_VACUUM(), true)
     }
 
     @SubscribeEvent

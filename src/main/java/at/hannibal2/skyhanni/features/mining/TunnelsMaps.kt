@@ -49,7 +49,7 @@ import java.awt.Color
 import kotlin.math.roundToInt
 import kotlin.time.Duration.Companion.seconds
 
-class TunnelsMaps {
+object TunnelsMaps {
 
     private val config get() = SkyHanniMod.feature.mining.tunnelMaps
 

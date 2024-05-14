@@ -22,7 +22,7 @@ import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class QuiverDisplay {
+object QuiverDisplay {
 
     private val config get() = SkyHanniMod.feature.combat.quiverConfig.quiverDisplay
 

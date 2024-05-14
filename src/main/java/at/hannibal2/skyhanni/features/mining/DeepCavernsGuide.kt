@@ -25,7 +25,7 @@ import net.minecraft.client.player.inventory.ContainerLocalMenu
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DeepCavernsGuide {
+object DeepCavernsGuide {
 
     private val config get() = SkyHanniMod.feature.mining.deepCavernsGuide
 

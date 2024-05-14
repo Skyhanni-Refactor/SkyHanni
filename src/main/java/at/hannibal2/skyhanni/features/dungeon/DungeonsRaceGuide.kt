@@ -16,7 +16,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.findMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DungeonsRaceGuide {
+object DungeonsRaceGuide {
 
     private val config get() = SkyHanniMod.feature.dungeon.dungeonsRaceGuide
     private val raceActivePattern by RepoPattern.pattern(

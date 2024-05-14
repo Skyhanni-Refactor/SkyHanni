@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.util.ChatComponentText
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class RareDropMessages {
+object RareDropMessages {
 
     private val chatGroup = RepoPattern.group("pet.chatdrop")
 

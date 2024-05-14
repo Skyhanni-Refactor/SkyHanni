@@ -8,7 +8,7 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class AshfangMinisNametagHider {
+object AshfangMinisNametagHider {
 
     private val config get() = SkyHanniMod.feature.combat.mobs
 

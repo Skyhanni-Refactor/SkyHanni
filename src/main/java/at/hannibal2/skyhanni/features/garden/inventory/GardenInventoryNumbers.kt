@@ -14,7 +14,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class GardenInventoryNumbers {
+object GardenInventoryNumbers {
 
     private val config get() = GardenAPI.config.number
 

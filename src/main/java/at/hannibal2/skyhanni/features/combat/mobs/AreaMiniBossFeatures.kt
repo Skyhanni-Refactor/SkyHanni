@@ -23,7 +23,7 @@ import net.minecraft.entity.passive.EntityWolf
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class AreaMiniBossFeatures {
+object AreaMiniBossFeatures {
 
     private val config get() = SkyHanniMod.feature.combat.mobs
     private var lastSpawnTime = SimpleTimeMark.farPast()

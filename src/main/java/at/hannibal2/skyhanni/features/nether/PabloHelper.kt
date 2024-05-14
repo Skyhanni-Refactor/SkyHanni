@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.minutes
 
 // https://wiki.hypixel.net/Pablo
-class PabloHelper {
+object PabloHelper {
 
     private val config get() = SkyHanniMod.feature.crimsonIsle
 

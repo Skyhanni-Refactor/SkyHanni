@@ -22,7 +22,7 @@ import kotlin.math.sin
  * Taken and ported from Soopyboo32's javascript module SoopyV2
  */
 // TODO fix whatever is going on in this file
-class SoopyGuessBurrow {
+object SoopyGuessBurrow {
 
     private var dingIndex = 0
     private var hasDinged = false

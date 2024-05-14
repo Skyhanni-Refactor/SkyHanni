@@ -13,11 +13,11 @@ import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class RiftOdonata {
+object RiftOdonata {
 
     private val config get() = RiftAPI.config.area.wyldWoods.odonata
     private var hasBottleInHand = false
-    private val odonataSkullTexture =
+    private const val ODONATA_SKULL_TEXTURE =
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWZkODA2ZGVmZGZkZjU5YjFmMjYwOWM4ZWUzNjQ2NjZkZTY2MTI3YTYyMzQxNWI1NDMwYzkzNThjNjAxZWY3YyJ9fX0="
     private val emptyBottle by lazy { SkyhanniItems.EMPTY_ODONATA_BOTTLE() }
 
@@ -36,7 +36,7 @@ class RiftOdonata {
 
     private fun findOdonatas() {
         for (stand in McWorld.getEntitiesOf<EntityArmorStand>()) {
-            if (stand.hasSkullTexture(odonataSkullTexture)) {
+            if (stand.hasSkullTexture(ODONATA_SKULL_TEXTURE)) {
                 RenderLivingEntityHelper.setEntityColor(
                     stand,
                     config.highlightColor.toChromaColour().withAlpha(1)

@@ -20,7 +20,7 @@ import java.util.LinkedList
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
-class ArrowTrail {
+object ArrowTrail {
 
     private val config get() = SkyHanniMod.feature.gui.cosmetic.arrowTrail
 

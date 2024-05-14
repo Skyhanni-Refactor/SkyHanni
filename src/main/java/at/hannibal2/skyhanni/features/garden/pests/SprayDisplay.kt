@@ -20,7 +20,7 @@ import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.timerColor
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SprayDisplay {
+object SprayDisplay {
 
     private val config get() = PestAPI.config.spray
     private var display: String? = null

@@ -14,7 +14,7 @@ import net.minecraft.inventory.Slot
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HighlightMissingRepoItems {
+object HighlightMissingRepoItems {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {

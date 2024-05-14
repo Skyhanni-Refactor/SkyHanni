@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class ChocolateFactoryShortcut {
+object ChocolateFactoryShortcut {
 
     private val config get() = ChocolateFactoryAPI.config
     private var showItem = false

@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.ceil
 import kotlin.time.Duration.Companion.milliseconds
 
-class JacobContestFFNeededDisplay {
+object JacobContestFFNeededDisplay {
 
     private val config get() = GardenAPI.config
     private var display = emptyList<List<Any>>()

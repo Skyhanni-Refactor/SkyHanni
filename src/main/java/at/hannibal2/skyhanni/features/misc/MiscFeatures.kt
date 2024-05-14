@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 /**
  *  I need these features in my dev env
  */
-class MiscFeatures {
+object MiscFeatures {
 
     @SubscribeEvent
     fun onEnderTeleport(event: EnderTeleportEvent) {

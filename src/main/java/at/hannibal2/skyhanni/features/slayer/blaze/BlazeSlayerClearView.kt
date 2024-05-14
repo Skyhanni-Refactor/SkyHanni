@@ -10,7 +10,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.entity.projectile.EntityFireball
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BlazeSlayerClearView {
+object BlazeSlayerClearView {
 
     private var nearBlaze = false
 

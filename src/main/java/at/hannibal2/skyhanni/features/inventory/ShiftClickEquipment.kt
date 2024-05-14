@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils.makeShiftClick
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ShiftClickEquipment {
+object ShiftClickEquipment {
 
     @SubscribeEvent
     fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {

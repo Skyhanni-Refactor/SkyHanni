@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 // TODO remove this workaround once PestParticleWaypoint does work again
-class PestParticleLine {
+object PestParticleLine {
     private val config get() = SkyHanniMod.feature.garden.pests.pestWaypoint
 
     class ParticleLocation(val location: LorenzVec, val spawnTime: SimpleTimeMark)

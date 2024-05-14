@@ -230,14 +230,9 @@ object LorenzUtils {
         }
     }
 
-    private val recalculateDerpy =
-        RecalculatingValue(1.seconds) { Perk.DOUBLE_MOBS_HP.isActive }
+    fun Int.derpy() = if (Perk.DOUBLE_MOBS_HP.isActive) this / 2 else this
 
-    val isDerpy get() = recalculateDerpy.getValue()
-
-    fun Int.derpy() = if (isDerpy) this / 2 else this
-
-    fun Int.ignoreDerpy() = if (isDerpy) this * 2 else this
+    fun Int.ignoreDerpy() = if (Perk.DOUBLE_MOBS_HP.isActive) this * 2 else this
 
     fun runDelayed(duration: Duration, runnable: () -> Unit) {
         Timer().schedule(object : TimerTask() {

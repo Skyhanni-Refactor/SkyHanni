@@ -16,7 +16,7 @@ import at.hannibal2.skyhanni.utils.getLorenzVec
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.TreeSet
 
-class MatriarchHelper {
+object MatriarchHelper {
 
     private val config get() = SkyHanniMod.feature.crimsonIsle.matriarchHelper
 

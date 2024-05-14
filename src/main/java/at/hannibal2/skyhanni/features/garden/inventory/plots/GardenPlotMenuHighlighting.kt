@@ -13,7 +13,7 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class GardenPlotMenuHighlighting {
+object GardenPlotMenuHighlighting {
 
     private val config get() = GardenAPI.config.plotMenuHighlighting
 

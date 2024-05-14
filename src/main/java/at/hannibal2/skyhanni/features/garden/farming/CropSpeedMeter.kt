@@ -13,12 +13,15 @@ import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class CropSpeedMeter {
+object CropSpeedMeter {
 
     private var display = emptyList<String>()
     private var currentCrop: CropType? = null
     private var currentBlocks = 0
     private var snapshot = emptyList<String>()
+
+    var enabled = false
+    private var startCrops = mapOf<CropType, Long>()
 
     @SubscribeEvent
     fun onCropClick(event: CropClickEvent) {
@@ -112,16 +115,10 @@ class CropSpeedMeter {
         currentBlocks++
     }
 
-    companion object {
-
-        var enabled = false
-        private var startCrops = mapOf<CropType, Long>()
-
-        fun toggle() {
-            enabled = !enabled
-            ChatUtils.chat("Crop Speed Meter " + if (enabled) "§aEnabled" else "§cDisabled")
-            startCrops = emptyMap()
-        }
+    fun toggle() {
+        enabled = !enabled
+        ChatUtils.chat("Crop Speed Meter " + if (enabled) "§aEnabled" else "§cDisabled")
+        startCrops = emptyMap()
     }
 
     @SubscribeEvent

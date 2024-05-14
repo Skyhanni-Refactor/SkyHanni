@@ -8,7 +8,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HighlightInquisitors {
+object HighlightInquisitors {
 
     private val config get() = SkyHanniMod.feature.event.diana
 

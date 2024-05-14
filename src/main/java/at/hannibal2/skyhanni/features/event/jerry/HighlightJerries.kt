@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.entity.passive.EntityVillager
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HighlightJerries {
+object HighlightJerries {
 
     private val config get() = SkyHanniMod.feature.event.jerry
 

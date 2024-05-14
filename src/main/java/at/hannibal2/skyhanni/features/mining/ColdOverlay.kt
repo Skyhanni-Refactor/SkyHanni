@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
 import kotlin.time.Duration.Companion.seconds
 
-class ColdOverlay {
+object ColdOverlay {
 
     private val config get() = SkyHanniMod.feature.mining.coldOverlay
 

@@ -5,7 +5,7 @@ import at.hannibal2.skyhanni.events.LorenzToolTipEvent
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemUuid
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ShowItemUuid {
+object ShowItemUuid {
 
     @SubscribeEvent
     fun onTooltip(event: LorenzToolTipEvent) {

@@ -12,15 +12,12 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.concurrent.fixedRateTimer
 
-class TpsCounter {
+object TpsCounter {
 
     private val config get() = SkyHanniMod.feature.gui
 
-    companion object {
-
-        private const val MIN_DATA_AMOUNT = 5
-        private const val WAIT_AFTER_WORLD_SWITCH = 6
-    }
+    private const val MIN_DATA_AMOUNT = 5
+    private const val WAIT_AFTER_WORLD_SWITCH = 6
 
     private var packetsFromLastSecond = 0
     private var tpsList = mutableListOf<Int>()
@@ -30,7 +27,6 @@ class TpsCounter {
     private var display = ""
 
     init {
-        // TODO use SecondPassedEvent + passedSince
         fixedRateTimer(name = "skyhanni-tps-counter-seconds", period = 1000L) {
             if (!isEnabled()) return@fixedRateTimer
             if (packetsFromLastSecond == 0) return@fixedRateTimer

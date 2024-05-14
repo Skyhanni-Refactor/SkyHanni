@@ -7,11 +7,15 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.util.IChatComponent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class WatchdogHider {
+object WatchdogHider {
 
     private var inWatchdog = false
     private var blockedLines = 0
     private var startLineComponent: IChatComponent? = null
+
+    private const val WATCHDOG_START_LINE = "§f"
+    private const val WATCHDOG_ANNOUNCEMENT_LINE = "§4[WATCHDOG ANNOUNCEMENT]"
+    private const val WATCHDOG_END_LINE = "§c"
 
     @SubscribeEvent
     fun onChat(event: LorenzChatEvent) {
@@ -43,13 +47,6 @@ class WatchdogHider {
                 inWatchdog = false
             }
         }
-    }
-
-    companion object {
-
-        private const val WATCHDOG_START_LINE = "§f"
-        private const val WATCHDOG_ANNOUNCEMENT_LINE = "§4[WATCHDOG ANNOUNCEMENT]"
-        private const val WATCHDOG_END_LINE = "§c"
     }
 }
 

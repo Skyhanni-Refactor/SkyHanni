@@ -18,8 +18,11 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 // TODO split into two classes: TranslatorCommand and GoogleTranslator. only communicates via getTranslationFromEnglish and getTranslationToEnglish
-class Translator {
+object Translator {
 
+    private val config get() = SkyHanniMod.feature.chat
+
+    //TODO ???????????????????
     private val messageContentRegex = Regex(".*: (.*)")
 
     // Logic for listening for a user click on a chat message is from NotEnoughUpdates
@@ -46,52 +49,47 @@ class Translator {
         return style
     }
 
-    companion object {
+    fun toEnglish(args: Array<String>) {
+        val message = args.joinToString(" ").removeColor()
 
-        private val config get() = SkyHanniMod.feature.chat
-
-        fun toEnglish(args: Array<String>) {
-            val message = args.joinToString(" ").removeColor()
-
-            coroutineScope.launch {
-                GoogleTranslator.translate(message, "auto", "en").run(
-                    {
-                        if (it is GoogleTranslator.SameLanguageError) {
-                            ChatUtils.userError("The source and target languages are the same (${it.lang})")
-                        } else {
-                            ChatUtils.userError("Unable to translate message, an error occurred: ${it.message}")
-                        }
-                    },
-                    { ChatUtils.chat("Found translation: §f${it.text}") }
-                )
-            }
-        }
-
-        fun fromEnglish(args: Array<String>) {
-            if (args.size < 2 || args[0].length != 2) { // args[0] is the language code
-                ChatUtils.userError("Usage: /shcopytranslation <two letter language code (at the end of a translation)> <message>")
-                return
-            }
-            val language = args[0]
-            val message = args.drop(1).joinToString(" ")
-
-            coroutineScope.launch {
-                GoogleTranslator.translate(message, "en", language).run(
-                    {
-                        if (it is GoogleTranslator.SameLanguageError) {
-                            ChatUtils.userError("Could not translate message, the source and target languages are the same (${it.lang})")
-                        } else {
-                            ChatUtils.userError("Unable to translate message, an error occurred: ${it.message}")
-                        }
-                    },
-                    {
-                        ChatUtils.chat("Copied translation to clipboard: §f${it.text}")
-                        OS.copyToClipboard(it.text)
+        coroutineScope.launch {
+            GoogleTranslator.translate(message, "auto", "en").run(
+                {
+                    if (it is GoogleTranslator.SameLanguageError) {
+                        ChatUtils.userError("The source and target languages are the same (${it.lang})")
+                    } else {
+                        ChatUtils.userError("Unable to translate message, an error occurred: ${it.message}")
                     }
-                )
-            }
+                },
+                { ChatUtils.chat("Found translation: §f${it.text}") }
+            )
         }
-
-        fun isEnabled() = config.translator
     }
+
+    fun fromEnglish(args: Array<String>) {
+        if (args.size < 2 || args[0].length != 2) { // args[0] is the language code
+            ChatUtils.userError("Usage: /shcopytranslation <two letter language code (at the end of a translation)> <message>")
+            return
+        }
+        val language = args[0]
+        val message = args.drop(1).joinToString(" ")
+
+        coroutineScope.launch {
+            GoogleTranslator.translate(message, "en", language).run(
+                {
+                    if (it is GoogleTranslator.SameLanguageError) {
+                        ChatUtils.userError("Could not translate message, the source and target languages are the same (${it.lang})")
+                    } else {
+                        ChatUtils.userError("Unable to translate message, an error occurred: ${it.message}")
+                    }
+                },
+                {
+                    ChatUtils.chat("Copied translation to clipboard: §f${it.text}")
+                    OS.copyToClipboard(it.text)
+                }
+            )
+        }
+    }
+
+    fun isEnabled() = config.translator
 }

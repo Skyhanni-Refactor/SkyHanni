@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class QuickCraftFeatures {
+object QuickCraftFeatures {
 
     private val config get() = SkyHanniMod.feature.inventory
     private val quickCraftSlots = listOf(16, 25, 34)

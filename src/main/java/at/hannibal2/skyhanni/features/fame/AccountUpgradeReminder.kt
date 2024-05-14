@@ -17,11 +17,16 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
-class AccountUpgradeReminder {
+object AccountUpgradeReminder {
 
     private var inInventory = false
     private var duration: Duration? = null
     private var lastReminderSend = SimpleTimeMark.farPast()
+
+    // TODO make into repo pattern
+    private val durationRegex = "§8Duration: (\\d{1,3})d".toRegex()
+    private val startedRegex = "§eYou started the §r§a(.+) §r§eupgrade!".toRegex()
+    private val claimedRegex = "§eYou claimed the §r§a.+ §r§eupgrade!".toRegex()
 
     // TODO: find a way to save SimpleTimeMark directly in the config
     private var nextCompletionTime: SimpleTimeMark?
@@ -104,17 +109,10 @@ class AccountUpgradeReminder {
         nextCompletionTime = SimpleTimeMark.farPast()
     }
 
-    companion object {
-
-        private val durationRegex = "§8Duration: (\\d{1,3})d".toRegex()
-        private val startedRegex = "§eYou started the §r§a(.+) §r§eupgrade!".toRegex()
-        private val claimedRegex = "§eYou claimed the §r§a.+ §r§eupgrade!".toRegex()
-
-        private fun isEnabled() = SkyHanniMod.feature.misc.accountUpgradeReminder
-
-        fun disable() {
-            SkyHanniMod.feature.misc.accountUpgradeReminder = false
-            ChatUtils.chat("Disabled account upgrade reminder.")
-        }
+    fun disable() {
+        SkyHanniMod.feature.misc.accountUpgradeReminder = false
+        ChatUtils.chat("Disabled account upgrade reminder.")
     }
+
+    private fun isEnabled() = SkyHanniMod.feature.misc.accountUpgradeReminder
 }

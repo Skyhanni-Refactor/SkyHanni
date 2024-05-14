@@ -21,7 +21,7 @@ import net.minecraft.entity.monster.EntityBlaze
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class AshfangBlazes {
+object AshfangBlazes {
 
     private val config get() = SkyHanniMod.feature.crimsonIsle.ashfang
 

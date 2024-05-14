@@ -17,11 +17,11 @@ import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class AshfangGravityOrbs {
+object AshfangGravityOrbs {
 
     private val config get() = SkyHanniMod.feature.crimsonIsle.ashfang.gravityOrbs
 
-    private val texture = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV" +
+    private const val ORB_TEXTURE = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV" +
         "0L3RleHR1cmUvMWE2OWNjZjdhZDkwNGM5YTg1MmVhMmZmM2Y1YjRlMjNhZGViZjcyZWQxMmQ1ZjI0Yjc4Y2UyZDQ0YjRhMiJ9fX0="
     private val orbs = mutableListOf<EntityArmorStand>()
 
@@ -30,7 +30,7 @@ class AshfangGravityOrbs {
         if (!isEnabled()) return
 
         McWorld.getEntitiesOf<EntityArmorStand>()
-            .filter { it !in orbs && it.hasSkullTexture(texture) }
+            .filter { it !in orbs && it.hasSkullTexture(ORB_TEXTURE) }
             .forEach { orbs.add(it) }
     }
 

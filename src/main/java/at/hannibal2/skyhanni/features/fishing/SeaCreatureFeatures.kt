@@ -30,7 +30,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class SeaCreatureFeatures {
+object SeaCreatureFeatures {
 
     private val config get() = SkyHanniMod.feature.fishing.rareCatches
     private var rareSeaCreatures = listOf<EntityLivingBase>()

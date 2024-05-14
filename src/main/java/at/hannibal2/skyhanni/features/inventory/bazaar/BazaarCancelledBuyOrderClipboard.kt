@@ -17,7 +17,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BazaarCancelledBuyOrderClipboard {
+object BazaarCancelledBuyOrderClipboard {
 
     private val patternGroup = RepoPattern.group("bazaar.cancelledorder")
 

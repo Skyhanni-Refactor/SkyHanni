@@ -32,7 +32,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class PestFinder {
+object PestFinder {
 
     private val config get() = PestAPI.config.pestFinder
 

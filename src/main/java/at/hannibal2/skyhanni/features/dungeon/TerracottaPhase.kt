@@ -9,7 +9,7 @@ import net.minecraft.entity.EntityLivingBase
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class TerracottaPhase {
+object TerracottaPhase {
 
     private val config get() = SkyHanniMod.feature.dungeon.terracottaPhase
 

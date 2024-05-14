@@ -16,7 +16,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.StringUtils
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class GardenCropMilestoneInventory {
+object GardenCropMilestoneInventory {
 
     private var average = -1.0
     private val config get() = GardenAPI.config

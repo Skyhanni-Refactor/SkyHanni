@@ -12,7 +12,7 @@ import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class LivingMetalSuitProgress {
+object LivingMetalSuitProgress {
 
     private val config get() = RiftAPI.config.area.livingCave.livingMetalSuitProgress
     private var display = emptyList<List<Any>>()

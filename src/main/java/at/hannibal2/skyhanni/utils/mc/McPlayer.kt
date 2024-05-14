@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.utils.mc
 
+import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacks
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
@@ -49,6 +50,8 @@ object McPlayer {
     val boots: ItemStack? get() = armor[0]
 
     fun countItems(predicate: (ItemStack) -> Boolean) = inventory.filter(predicate).sumOf { it.stackSize }
+    fun countItems(item: NEUInternalName, checkSacks: Boolean = false) =
+        countItems { it.getInternalNameOrNull() == item } + if (checkSacks) item.getAmountInSacks() else 0
 
     fun has(item: NEUInternalName, onlyHotBar: Boolean = false) =
         (if (onlyHotBar) hotbar else inventory).any { it.getInternalNameOrNull() == item }

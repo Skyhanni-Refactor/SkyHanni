@@ -19,7 +19,7 @@ import net.minecraft.entity.monster.EntitySpider
 import net.minecraft.init.Blocks
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class MobHighlight {
+object MobHighlight {
 
     private val config get() = SkyHanniMod.feature.combat.mobs
 

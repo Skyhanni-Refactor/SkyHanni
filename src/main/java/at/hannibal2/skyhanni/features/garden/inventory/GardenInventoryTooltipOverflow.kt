@@ -17,7 +17,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 // TODO: Merge common code with skill overflow
-class GardenInventoryTooltipOverflow {
+object GardenInventoryTooltipOverflow {
 
     private val config get() = SkyHanniMod.feature.garden.cropMilestones.overflow
 

@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class SkyBlockKickDuration {
+object SkyBlockKickDuration {
 
     private val config get() = SkyHanniMod.feature.misc.kickDuration
 

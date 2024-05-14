@@ -13,7 +13,7 @@ import at.hannibal2.skyhanni.utils.datetime.TimeUtils.formatted
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class InGameDateDisplay {
+object InGameDateDisplay {
 
     private val config get() = SkyHanniMod.feature.gui.inGameDate
 

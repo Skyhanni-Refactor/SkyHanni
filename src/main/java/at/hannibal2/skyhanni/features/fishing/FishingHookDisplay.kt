@@ -12,11 +12,12 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class FishingHookDisplay {
+object FishingHookDisplay {
 
     private val config get() = SkyHanniMod.feature.fishing.fishingHookDisplay
+
     private var armorStand: EntityArmorStand? = null
-    private val potentionArmorStands = mutableListOf<EntityArmorStand>()
+    private val potentialArmorStands = mutableListOf<EntityArmorStand>()
     private val pattern = "§e§l(\\d+(\\.\\d+)?)".toPattern()
 
     @SubscribeEvent
@@ -34,7 +35,7 @@ class FishingHookDisplay {
         if (!isEnabled()) return
 
         if (armorStand == null) {
-            val filter = potentionArmorStands.filter { it.hasCustomName() && it.hasCorrectName() }
+            val filter = potentialArmorStands.filter { it.hasCustomName() && it.hasCorrectName() }
             if (filter.size == 1) {
                 armorStand = filter[0]
             }
@@ -42,7 +43,7 @@ class FishingHookDisplay {
     }
 
     private fun reset() {
-        potentionArmorStands.clear()
+        potentialArmorStands.clear()
         armorStand = null
     }
 
@@ -52,7 +53,7 @@ class FishingHookDisplay {
         val entity = event.entity ?: return
         if (entity !is EntityArmorStand) return
 
-        potentionArmorStands.add(entity)
+        potentialArmorStands.add(entity)
     }
 
     @SubscribeEvent

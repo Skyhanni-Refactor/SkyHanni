@@ -6,7 +6,7 @@ import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class WarpIsCommand {
+object WarpIsCommand {
 
     @SubscribeEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {

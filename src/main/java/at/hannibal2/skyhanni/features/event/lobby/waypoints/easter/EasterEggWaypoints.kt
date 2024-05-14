@@ -13,7 +13,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class EasterEggWaypoints {
+object EasterEggWaypoints {
 
     private val config get() = SkyHanniMod.feature.event.lobbyWaypoints.easterEgg
     private var closest: EasterEgg? = null

@@ -15,7 +15,7 @@ import net.minecraft.entity.item.EntityItem
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class GlowingDroppedItems {
+object GlowingDroppedItems {
 
     private val config get() = SkyHanniMod.feature.misc.glowingDroppedItems
 

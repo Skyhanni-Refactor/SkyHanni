@@ -22,7 +22,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class JacobContestTimeNeeded {
+object JacobContestTimeNeeded {
 
     private val config get() = GardenAPI.config
     private var display = emptyList<List<Any>>()

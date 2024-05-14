@@ -21,7 +21,7 @@ import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class LivingCaveDefenseBlocks {
+object LivingCaveDefenseBlocks {
 
     private val config get() = RiftAPI.config.area.livingCave.defenseBlockConfig
     private var movingBlocks = mapOf<DefenseBlock, Long>()

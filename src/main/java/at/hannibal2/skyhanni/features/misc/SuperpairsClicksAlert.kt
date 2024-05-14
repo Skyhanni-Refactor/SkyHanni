@@ -10,7 +10,7 @@ import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SuperpairsClicksAlert {
+object SuperpairsClicksAlert {
 
     private val config get() = SkyHanniMod.feature.misc
 

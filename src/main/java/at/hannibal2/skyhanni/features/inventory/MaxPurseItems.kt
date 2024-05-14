@@ -15,7 +15,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class MaxPurseItems {
+object MaxPurseItems {
     private val config get() = SkyHanniMod.feature.inventory.bazaar
 
     private val patternGroup = RepoPattern.group("inventory.maxpurse")

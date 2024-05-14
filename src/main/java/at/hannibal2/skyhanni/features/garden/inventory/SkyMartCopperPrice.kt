@@ -25,7 +25,7 @@ import com.google.gson.JsonPrimitive
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SkyMartCopperPrice {
+object SkyMartCopperPrice {
 
     private val copperPattern by RepoPattern.pattern(
         "garden.inventory.skymart.copper",
@@ -35,10 +35,7 @@ class SkyMartCopperPrice {
     private var display = emptyList<Renderable>()
     private val config get() = GardenAPI.config.skyMart
 
-    companion object {
-
-        var inInventory = false
-    }
+    var inInventory = false
 
     private fun ItemStack.loreCosts(): MutableList<NEUInternalName> {
         var found = false
