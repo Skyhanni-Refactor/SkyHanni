@@ -1,8 +1,8 @@
 package at.hannibal2.skyhanni.api
 
+import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.events.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.events.entity.EntityAttributeUpdateEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.entity.item.EntityArmorStand
@@ -31,7 +31,7 @@ object EntityAttributeAPI {
     // TODO Check for runic and corrupted mobs
     private fun normalizeHealth(maxHealth: Double): Int {
         return when {
-            LorenzUtils.isDerpy -> maxHealth / 2.0
+            Perk.DOUBLE_MOBS_HP.isActive -> maxHealth / 2.0
             else -> maxHealth
         }.toInt()
     }

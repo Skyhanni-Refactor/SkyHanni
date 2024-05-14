@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.features.dungeon
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage.DungeonStorage.DungeonRunInfo
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacks
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.DungeonCompleteEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
@@ -15,7 +14,6 @@ import at.hannibal2.skyhanni.features.dungeon.DungeonAPI.DungeonChest
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
-import at.hannibal2.skyhanni.utils.InventoryUtils.getAmountInInventory
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
@@ -25,6 +23,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.StringUtils.anyMatches
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
@@ -118,7 +117,7 @@ object CroesusChestTracker {
     private fun kismetDungeonChestSetup(event: InventoryFullyOpenedEvent) {
         chestInventory = DungeonChest.getByInventoryName(event.inventoryName) ?: return
         if (config.kismetStackSize) {
-            kismetAmountCache = getKismetAmount()
+            kismetAmountCache = McPlayer.countItems(SkyhanniItems.KISMET_FEATHER(), true)
         }
         if (config.showUsedKismets) {
             val kismetItem = event.inventoryItems[KISMET_SLOT] ?: return
@@ -243,9 +242,6 @@ object CroesusChestTracker {
     }
 
     private fun getKismetUsed(runIndex: Int) = getRun0(runIndex)?.kismetUsed ?: false
-
-    private fun getKismetAmount() =
-        SkyhanniItems.KISMET_FEATHER().getAmountInSacks() + SkyhanniItems.KISMET_FEATHER().getAmountInInventory()
 
     private fun croesusSlotMapToRun(slotId: Int) = when (slotId) {
         in 10..16 -> slotId - 10 // 0 - 6

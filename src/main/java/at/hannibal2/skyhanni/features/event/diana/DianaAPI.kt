@@ -21,9 +21,7 @@ object DianaAPI {
 
     fun hasGriffinPet() = PetAPI.isCurrentPet("Griffin")
 
-    fun isDoingDiana() = IslandType.HUB.isInIsland() && isRitualActive() && hasSpadeInInventory()
+    fun isDoingDiana() = IslandType.HUB.isInIsland() && isRitualActive() && McPlayer.has(spade, true)
 
     val ItemStack.isDianaSpade get() = getInternalName() == spade
-
-    private fun hasSpadeInInventory() = McPlayer.has(spade)
 }
