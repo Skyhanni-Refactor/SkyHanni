@@ -11,7 +11,7 @@ import at.hannibal2.skyhanni.utils.NEUItems.getPrice
 import at.hannibal2.skyhanni.utils.NumberUtil
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class GardenNextPlotPrice {
+object GardenNextPlotPrice {
 
     @SubscribeEvent
     fun onTooltip(event: LorenzToolTipEvent) {

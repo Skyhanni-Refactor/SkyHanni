@@ -8,9 +8,19 @@ import at.hannibal2.skyhanni.events.SeaCreatureFishEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SeaCreatureManager {
+object SeaCreatureManager {
 
     private var doubleHook = false
+
+    private val seaCreatureMap = mutableMapOf<String, SeaCreature>()
+    var allFishingMobs = mapOf<String, SeaCreature>()
+    var allVariants = mapOf<String, List<String>>()
+
+    // TODO repo pattern
+    private val doubleHookMessages = setOf(
+        "§eIt's a §r§aDouble Hook§r§e! Woot woot!",
+        "§eIt's a §r§aDouble Hook§r§e!"
+    )
 
     @SubscribeEvent
     fun onChat(event: LorenzChatEvent) {
@@ -57,23 +67,11 @@ class SeaCreatureManager {
                 counter++
             }
         }
-        SeaCreatureManager.allFishingMobs = allFishingMobs
+        this.allFishingMobs = allFishingMobs
         allVariants = variants
     }
 
-    companion object {
-
-        private val seaCreatureMap = mutableMapOf<String, SeaCreature>()
-        var allFishingMobs = mapOf<String, SeaCreature>()
-        var allVariants = mapOf<String, List<String>>()
-
-        private val doubleHookMessages = setOf(
-            "§eIt's a §r§aDouble Hook§r§e! Woot woot!",
-            "§eIt's a §r§aDouble Hook§r§e!"
-        )
-
-        fun getSeaCreature(message: String): SeaCreature? {
-            return seaCreatureMap.getOrDefault(message, null)
-        }
+    private fun getSeaCreature(message: String): SeaCreature? {
+        return seaCreatureMap.getOrDefault(message, null)
     }
 }

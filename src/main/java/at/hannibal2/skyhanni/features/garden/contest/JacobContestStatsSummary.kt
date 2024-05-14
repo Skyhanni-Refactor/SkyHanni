@@ -11,7 +11,7 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class JacobContestStatsSummary {
+object JacobContestStatsSummary {
 
     private val config get() = GardenAPI.config
     private var blocksBroken = 0

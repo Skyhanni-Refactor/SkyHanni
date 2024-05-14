@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class GardenWarpCommands {
+object GardenWarpCommands {
 
     private val config get() = GardenAPI.config.gardenCommands
 

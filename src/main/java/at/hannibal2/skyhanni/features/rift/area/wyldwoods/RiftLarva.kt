@@ -12,7 +12,7 @@ import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class RiftLarva {
+object RiftLarva {
 
     private val config get() = RiftAPI.config.area.wyldWoods.larvas
     private var hasHookInHand = false

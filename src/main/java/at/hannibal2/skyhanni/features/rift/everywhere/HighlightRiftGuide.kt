@@ -13,7 +13,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HighlightRiftGuide {
+object HighlightRiftGuide {
 
     private var inInventory = false
     private var highlightedItems = emptyList<Int>()

@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.utils.LorenzColor
 import net.minecraft.entity.monster.EntitySilverfish
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HighlightDungeonDeathmite {
+object HighlightDungeonDeathmite {
 
     @SubscribeEvent
     fun onEntityHealthUpdate(event: EntityMaxHealthUpdateEvent) {

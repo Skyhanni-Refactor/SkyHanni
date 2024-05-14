@@ -17,7 +17,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class RiftTimer {
+object RiftTimer {
 
     private val config get() = RiftAPI.config.timer
 

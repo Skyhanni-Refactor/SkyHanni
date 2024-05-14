@@ -14,7 +14,7 @@ import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class TubulatorParkour {
+object TubulatorParkour {
 
     private val config get() = RiftAPI.config.area.mirrorverse.tubulatorConfig
     private var parkourHelper: ParkourHelper? = null

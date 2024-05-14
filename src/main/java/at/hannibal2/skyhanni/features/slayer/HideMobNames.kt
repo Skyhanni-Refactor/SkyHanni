@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.regex.Pattern
 
-class HideMobNames {
+object HideMobNames {
 
     private val lastMobName = mutableMapOf<EntityArmorStand, String>()
     private val mobNamesHidden = mutableListOf<EntityArmorStand>()

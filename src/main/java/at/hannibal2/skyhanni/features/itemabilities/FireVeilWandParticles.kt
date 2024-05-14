@@ -20,7 +20,7 @@ import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class FireVeilWandParticles {
+object FireVeilWandParticles {
 
     private val config get() = SkyHanniMod.feature.inventory.itemAbilities.fireVeilWands
 

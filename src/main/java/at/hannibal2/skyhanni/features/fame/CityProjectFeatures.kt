@@ -39,7 +39,9 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class CityProjectFeatures {
+object CityProjectFeatures {
+
+    private val config get() = SkyHanniMod.feature.event.cityProject
 
     private var display = emptyList<List<Any>>()
     private var inInventory = false
@@ -55,13 +57,9 @@ class CityProjectFeatures {
         "§aProject is (?:being built|released)!"
     )
 
-    companion object {
-
-        private val config get() = SkyHanniMod.feature.event.cityProject
-        fun disable() {
-            config.dailyReminder = false
-            ChatUtils.chat("Disabled city project reminder messages!")
-        }
+    fun disable() {
+        config.dailyReminder = false
+        ChatUtils.chat("Disabled city project reminder messages!")
     }
 
     @SubscribeEvent

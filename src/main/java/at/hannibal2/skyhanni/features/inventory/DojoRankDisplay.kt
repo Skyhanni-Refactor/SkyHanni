@@ -18,7 +18,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DojoRankDisplay {
+object DojoRankDisplay {
 
     private val config get() = SkyHanniMod.feature.crimsonIsle
     private var display = emptyList<String>()

@@ -11,7 +11,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SharkFishCounter {
+object SharkFishCounter {
 
     private var counter = mutableListOf(0, 0, 0, 0)
     private var display = ""

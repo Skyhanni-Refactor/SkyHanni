@@ -9,7 +9,7 @@ import net.minecraft.entity.projectile.EntitySmallFireball
 import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ParticleHider {
+object ParticleHider {
 
     private fun inM7Boss() = DungeonAPI.inDungeon() && DungeonAPI.dungeonFloor == "M7" && DungeonAPI.inBossRoom
 

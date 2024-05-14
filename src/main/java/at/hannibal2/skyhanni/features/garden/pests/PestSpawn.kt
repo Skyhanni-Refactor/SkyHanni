@@ -17,7 +17,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class PestSpawn {
+object PestSpawn {
 
     private val config get() = PestAPI.config.pestSpawn
 

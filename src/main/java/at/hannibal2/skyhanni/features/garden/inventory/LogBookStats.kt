@@ -18,7 +18,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.init.Items
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class LogBookStats {
+object LogBookStats {
 
     private val groupPattern = RepoPattern.group("garden.inventory.logbook")
     private val visitedPattern by groupPattern.pattern(

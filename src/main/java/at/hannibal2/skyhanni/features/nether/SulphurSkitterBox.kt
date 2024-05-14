@@ -21,12 +21,12 @@ import net.minecraft.util.BlockPos
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 
-class SulphurSkitterBox {
+object SulphurSkitterBox {
 
     private val config get() = SkyHanniMod.feature.fishing.trophyFishing.sulphurSkitterBox
     private var spongeBlocks = listOf<BlockPos>()
     private var closestBlock: BlockPos? = null
-    private val radius = 8
+    private const val RADIUS = 8
 
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
@@ -43,8 +43,8 @@ class SulphurSkitterBox {
                 val loc = it.toLorenzVec()
                 loc.getBlockAt() == Blocks.sponge && loc.distanceToPlayer() <= 15
             }.filter {
-                val pos1 = it.add(-radius, -radius, -radius)
-                val pos2 = it.add(radius, radius, radius)
+                val pos1 = it.add(-RADIUS, -RADIUS, -RADIUS)
+                val pos2 = it.add(RADIUS, RADIUS, RADIUS)
                 BlockPos.getAllInBox(pos1, pos2).any { pos ->
                     pos.toLorenzVec().getBlockAt() in FishingAPI.lavaBlocks
                 }
@@ -63,8 +63,8 @@ class SulphurSkitterBox {
         closestBlock?.let {
             val vec = it.toLorenzVec()
             if (vec.distanceToPlayer() >= 50) return
-            val pos1 = vec.add(-radius, -radius, -radius)
-            val pos2 = vec.add(radius, radius, radius)
+            val pos1 = vec.add(-RADIUS, -RADIUS, -RADIUS)
+            val pos2 = vec.add(RADIUS, RADIUS, RADIUS)
             val axis = BoundingBox(pos1, pos2).expandToEdge()
 
             drawBox(axis, event.partialTicks)

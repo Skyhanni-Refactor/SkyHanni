@@ -34,7 +34,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.ceil
 import kotlin.time.Duration.Companion.seconds
 
-class SlayerRngMeterDisplay {
+object SlayerRngMeterDisplay {
 
     private val config get() = SkyHanniMod.feature.slayer.rngMeterDisplay
 

@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.features.mining.eventtracker
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.BossbarAPI
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.api.BossbarAPI
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.BossbarUpdateEvent
@@ -31,7 +31,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class MiningEventTracker {
+object MiningEventTracker {
     private val config get() = SkyHanniMod.feature.mining.miningEvent
 
     private val patternGroup = RepoPattern.group("mining.eventtracker")
@@ -61,11 +61,9 @@ class MiningEventTracker {
 
     private var canRequestAt = SimpleTimeMark.farPast()
 
-    companion object {
-        var apiErrorCount = 0
+    var apiErrorCount = 0
 
-        val apiError get() = apiErrorCount > 0
-    }
+    val apiError get() = apiErrorCount > 0
 
     @SubscribeEvent
     fun onWorldChange(event: LorenzWorldChangeEvent) {

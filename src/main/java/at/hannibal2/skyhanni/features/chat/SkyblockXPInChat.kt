@@ -6,7 +6,7 @@ import at.hannibal2.skyhanni.events.ActionBarValueUpdateEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SkyblockXPInChat {
+object SkyblockXPInChat {
 
     val config get() = SkyHanniMod.feature.chat.skyBlockXPInChat
 

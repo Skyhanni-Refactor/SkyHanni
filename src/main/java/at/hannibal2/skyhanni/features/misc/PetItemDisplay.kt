@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getPetItem
 import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class PetItemDisplay {
+object PetItemDisplay {
 
     private val config get() = SkyHanniMod.feature.misc.pets
 

@@ -13,7 +13,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.ParkourHelper
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class RiftLavaMazeParkour {
+object RiftLavaMazeParkour {
 
     private val config get() = RiftAPI.config.area.mirrorverse.lavaMazeConfig
     private var parkourHelper: ParkourHelper? = null

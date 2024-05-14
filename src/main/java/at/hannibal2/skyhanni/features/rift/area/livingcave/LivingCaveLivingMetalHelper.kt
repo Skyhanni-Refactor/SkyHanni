@@ -13,7 +13,7 @@ import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzVec
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class LivingCaveLivingMetalHelper {
+object LivingCaveLivingMetalHelper {
 
     private val config get() = RiftAPI.config.area.livingCave.livingCaveLivingMetalConfig
     private var lastClicked: LorenzVec? = null

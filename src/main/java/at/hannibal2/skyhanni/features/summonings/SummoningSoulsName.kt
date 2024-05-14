@@ -16,10 +16,10 @@ import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SummoningSoulsName {
+object SummoningSoulsName {
 
     // TODO repo
-    private val texture =
+    private const val TEXTURE =
         "ewogICJ0aW1lc3RhbXAiIDogMTYwMTQ3OTI2NjczMywKICAicHJvZmlsZUlkIiA6ICJmMzA1ZjA5NDI0NTg0ZjU" +
             "4YmEyYjY0ZjAyZDcyNDYyYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJqcm9ja2EzMyIsCiAgInNpZ25hdH" +
             "VyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgI" +
@@ -42,7 +42,7 @@ class SummoningSoulsName {
         for (entity in McWorld.getEntitiesOf<EntityArmorStand>()) {
             if (souls.contains(entity)) continue
 
-            if (entity.hasSkullTexture(texture)) {
+            if (entity.hasSkullTexture(TEXTURE)) {
                 val soulLocation = entity.getLorenzVec()
 
                 val map = mutableMapOf<EntityLiving, Double>()

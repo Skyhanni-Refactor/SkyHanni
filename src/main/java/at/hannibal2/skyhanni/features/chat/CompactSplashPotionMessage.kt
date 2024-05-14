@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class CompactSplashPotionMessage {
+object CompactSplashPotionMessage {
 
     private val config get() = SkyHanniMod.feature.chat.compactPotionMessages
 

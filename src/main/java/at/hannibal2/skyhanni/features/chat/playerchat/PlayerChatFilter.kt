@@ -6,22 +6,18 @@ import at.hannibal2.skyhanni.utils.MultiFilter
 import net.minecraft.util.IChatComponent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class PlayerChatFilter {
+object PlayerChatFilter {
 
-    companion object {
+    private val filters = mutableMapOf<String, MultiFilter>()
 
-        private val filters = mutableMapOf<String, MultiFilter>()
-
-        fun shouldChatFilter(original: IChatComponent): Boolean {
-            val message = original.formattedText.lowercase()
-            for (filter in filters) {
-                filter.value.matchResult(message)?.let {
-                    return true
-                }
+    fun shouldChatFilter(original: IChatComponent): Boolean {
+        val message = original.formattedText.lowercase()
+        for (filter in filters) {
+            filter.value.matchResult(message)?.let {
+                return true
             }
-
-            return false
         }
+        return false
     }
 
     @SubscribeEvent

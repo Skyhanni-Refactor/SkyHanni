@@ -19,7 +19,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class PetExpTooltip {
+object PetExpTooltip {
 
     private val config get() = SkyHanniMod.feature.misc.pets.petExperienceToolTip
     private val level100Common = 5_624_785

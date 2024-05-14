@@ -26,7 +26,7 @@ import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ShowMotesNpcSellPrice {
+object ShowMotesNpcSellPrice {
 
     private val config get() = RiftAPI.config.motes
 

@@ -8,7 +8,7 @@ import net.minecraft.entity.EntityLivingBase
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HideDamageSplash {
+object HideDamageSplash {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityLivingBase>) {

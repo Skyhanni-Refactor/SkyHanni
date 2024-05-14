@@ -16,7 +16,9 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class PlayerDeathMessages {
+object PlayerDeathMessages {
+
+    private val config get() = SkyHanniMod.feature.gui.markedPlayers
 
     private val lastTimePlayerSeen = mutableMapOf<String, Long>()
 
@@ -40,12 +42,12 @@ class PlayerDeathMessages {
         val message = event.message
         deathMessagePattern.matchMatcher(message) {
             val name = group("name")
-            if (MarkedPlayerManager.config.highlightInChat &&
+            if (config.highlightInChat &&
                 !DungeonAPI.inDungeon() && !LorenzUtils.inKuudraFight && MarkedPlayerManager.isMarkedPlayer(name)
             ) {
                 val reason = group("reason").removeColor()
 
-                val color = MarkedPlayerManager.config.chatColor.getChatColor()
+                val color = config.chatColor.getChatColor()
                 ChatUtils.chat(" §c☠ $color$name §7$reason", false)
                 event.blockedReason = "marked_player_death"
                 return

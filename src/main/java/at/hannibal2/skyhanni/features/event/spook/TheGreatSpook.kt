@@ -10,7 +10,7 @@ import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class TheGreatSpook {
+object TheGreatSpook {
 
     // §r§cPrimal Fears§r§7: §r§6§lREADY!!
     private val config get() = SkyHanniMod.feature.event.spook

@@ -11,7 +11,7 @@ import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class TiaRelayWaypoints {
+object TiaRelayWaypoints {
 
     private val config get() = SkyHanniMod.feature.inventory.helper.tiaRelay
     private var waypoint: LorenzVec? = null

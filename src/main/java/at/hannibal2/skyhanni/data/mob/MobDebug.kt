@@ -14,7 +14,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class MobDebug {
+object MobDebug {
 
     private val config get() = SkyHanniMod.feature.dev.mobDebug.mobDetection
 

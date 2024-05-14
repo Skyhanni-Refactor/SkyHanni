@@ -29,7 +29,7 @@ import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BingoNextStepHelper {
+object BingoNextStepHelper {
 
     private val config get() = SkyHanniMod.feature.event.bingo.bingoCard
     private var dirty = true
@@ -61,72 +61,69 @@ class BingoNextStepHelper {
     private val islands = mutableMapOf<IslandType, IslandVisitStep>()
     private val rhysTaskName = "30x Enchanted Minerals (Redstone, Lapis Lazuli, Coal) (for Rhys)"
 
-    companion object {
+    private val finalSteps = mutableListOf<NextStep>()
+    private var currentSteps = emptyList<NextStep>()
+    var currentHelp = emptyList<String>()
 
-        private val finalSteps = mutableListOf<NextStep>()
-        private var currentSteps = emptyList<NextStep>()
-        var currentHelp = emptyList<String>()
+    fun command() {
+        updateResult(true)
+    }
 
-        fun command() {
-            updateResult(true)
-        }
-
-        private fun updateResult(print: Boolean = false) {
+    private fun updateResult(print: Boolean = false) {
+        if (print) println()
+        currentSteps = listOf()
+        for (step in finalSteps) {
+            printRequirements(step, print)
             if (print) println()
-            currentSteps = listOf()
-            for (step in finalSteps) {
-                printRequirements(step, print)
-                if (print) println()
-            }
-
-            currentHelp = drawDisplay(print)
         }
 
-        private fun drawDisplay(print: Boolean): MutableList<String> {
-            val newCurrentHelp = mutableListOf<String>()
-            newCurrentHelp.add("§6Bingo Step Helper:")
+        currentHelp = drawDisplay(print)
+    }
 
-            if (currentSteps.isEmpty()) {
-                newCurrentHelp.add("§cOpen the §e/bingo §ccard.")
-            }
-            for (currentStep in currentSteps) {
-                val text = getName(currentStep)
-                newCurrentHelp.add("  §7$text")
-                if (print) println(text)
-            }
-            if (print) println()
-            return newCurrentHelp
+    private fun drawDisplay(print: Boolean): MutableList<String> {
+        val newCurrentHelp = mutableListOf<String>()
+        newCurrentHelp.add("§6Bingo Step Helper:")
+
+        if (currentSteps.isEmpty()) {
+            newCurrentHelp.add("§cOpen the §e/bingo §ccard.")
         }
+        for (currentStep in currentSteps) {
+            val text = getName(currentStep)
+            newCurrentHelp.add("  §7$text")
+            if (print) println(text)
+        }
+        if (print) println()
+        return newCurrentHelp
+    }
 
-        private fun printRequirements(step: NextStep, print: Boolean, parentDone: Boolean = false, depth: Int = 0) {
-            if (print) println(getName(step, parentDone, depth))
-            var requirementsToDo = 0
-            for (requirement in step.requirements) {
-                printRequirements(requirement, print, step.done || parentDone, depth + 1)
-                if (!requirement.done) {
-                    requirementsToDo++
-                }
-            }
-
-            if (!step.done && !parentDone && requirementsToDo == 0 && !currentSteps.contains(step)) {
-                currentSteps = currentSteps.editCopy { add(step) }
+    private fun printRequirements(step: NextStep, print: Boolean, parentDone: Boolean = false, depth: Int = 0) {
+        if (print) println(getName(step, parentDone, depth))
+        var requirementsToDo = 0
+        for (requirement in step.requirements) {
+            printRequirements(requirement, print, step.done || parentDone, depth + 1)
+            if (!requirement.done) {
+                requirementsToDo++
             }
         }
 
-        private fun getName(step: NextStep, parentDone: Boolean = false, depth: Int = 0): String {
-            val prefix = "  ".repeat(depth) + if (step.done) "[DONE] " else if (parentDone) "[done] " else ""
-            val suffix = if (step is ProgressionStep) progressDisplay(step) else ""
-            return prefix + step.displayName + suffix
+        if (!step.done && !parentDone && requirementsToDo == 0 && !currentSteps.contains(step)) {
+            currentSteps = currentSteps.editCopy { add(step) }
         }
+    }
 
-        private fun progressDisplay(step: ProgressionStep): String {
-            val having = step.amountHaving
-            return if (having > 0) {
-                val needed = step.amountNeeded
-                val percentage = LorenzUtils.formatPercentage(having.toDouble() / needed)
-                " $percentage (${having.addSeparators()}/${needed.addSeparators()})"
-            } else ""
-        }
+    private fun getName(step: NextStep, parentDone: Boolean = false, depth: Int = 0): String {
+        val prefix = "  ".repeat(depth) + if (step.done) "[DONE] " else if (parentDone) "[done] " else ""
+        val suffix = if (step is ProgressionStep) progressDisplay(step) else ""
+        return prefix + step.displayName + suffix
+    }
+
+    private fun progressDisplay(step: ProgressionStep): String {
+        val having = step.amountHaving
+        return if (having > 0) {
+            val needed = step.amountNeeded
+            val percentage = LorenzUtils.formatPercentage(having.toDouble() / needed)
+            " $percentage (${having.addSeparators()}/${needed.addSeparators()})"
+        } else ""
     }
 
     init {

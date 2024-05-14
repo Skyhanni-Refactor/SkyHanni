@@ -19,41 +19,38 @@ import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 
-class GardenBestCropTime {
+object GardenBestCropTime {
 
     var display = emptyList<List<Any>>()
 
-    companion object {
+    private val config get() = GardenAPI.config.cropMilestones
+    val timeTillNextCrop = mutableMapOf<CropType, Long>()
 
-        private val config get() = GardenAPI.config.cropMilestones
-        val timeTillNextCrop = mutableMapOf<CropType, Long>()
+    fun reset() {
+        timeTillNextCrop.clear()
+        updateTimeTillNextCrop()
+    }
 
-        fun reset() {
-            timeTillNextCrop.clear()
-            updateTimeTillNextCrop()
-        }
+    fun updateTimeTillNextCrop() {
+        val useOverflow = config.overflow.bestCropTime
+        for (crop in CropType.entries) {
+            val speed = crop.getSpeed() ?: continue
+            if (crop.isMaxed(useOverflow)) continue
 
-        fun updateTimeTillNextCrop() {
-            val useOverflow = config.overflow.bestCropTime
-            for (crop in CropType.entries) {
-                val speed = crop.getSpeed() ?: continue
-                if (crop.isMaxed(useOverflow)) continue
+            val counter = crop.getCounter()
+            val currentTier = GardenCropMilestones.getTierForCropCount(counter, crop, allowOverflow = true)
 
-                val counter = crop.getCounter()
-                val currentTier = GardenCropMilestones.getTierForCropCount(counter, crop, allowOverflow = true)
+            val cropsForCurrentTier = GardenCropMilestones.getCropsForTier(currentTier, crop)
+            val nextTier = if (config.bestShowMaxedNeeded.get()) 46 else currentTier + 1
+            val cropsForNextTier = GardenCropMilestones.getCropsForTier(nextTier, crop)
 
-                val cropsForCurrentTier = GardenCropMilestones.getCropsForTier(currentTier, crop)
-                val nextTier = if (config.bestShowMaxedNeeded.get()) 46 else currentTier + 1
-                val cropsForNextTier = GardenCropMilestones.getCropsForTier(nextTier, crop)
+            val have = counter - cropsForCurrentTier
+            val need = cropsForNextTier - cropsForCurrentTier
 
-                val have = counter - cropsForCurrentTier
-                val need = cropsForNextTier - cropsForCurrentTier
-
-                val missing = need - have
-                val missingTimeSeconds = missing / speed
-                val millis = missingTimeSeconds * 1000
-                timeTillNextCrop[crop] = millis
-            }
+            val missing = need - have
+            val missingTimeSeconds = missing / speed
+            val millis = missingTimeSeconds * 1000
+            timeTillNextCrop[crop] = millis
         }
     }
 

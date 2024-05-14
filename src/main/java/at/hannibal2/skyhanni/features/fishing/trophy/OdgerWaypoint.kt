@@ -14,7 +14,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class OdgerWaypoint {
+object OdgerWaypoint {
 
     private val config get() = SkyHanniMod.feature.fishing.trophyFishing
     private val location = LorenzVec(-373, 207, -808)

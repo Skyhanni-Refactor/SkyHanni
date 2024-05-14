@@ -10,7 +10,7 @@ import net.minecraft.scoreboard.ScorePlayerTeam
 import net.minecraft.scoreboard.Team
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DungeonTeammateOutlines {
+object DungeonTeammateOutlines {
 
     private val config get() = SkyHanniMod.feature.dungeon
 

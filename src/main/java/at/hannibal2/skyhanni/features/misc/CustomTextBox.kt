@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class CustomTextBox {
+object CustomTextBox {
 
     private val config get() = SkyHanniMod.feature.gui.customTextBox
     private var display = listOf<String>()

@@ -312,7 +312,7 @@ object Commands {
         registerCommand(
             "shlimbo",
             "Warps you to Limbo."
-        ) { MiscFeatures().goToLimbo() }
+        ) { MiscFeatures.goToLimbo() }
         registerCommand(
             "shlanedetection",
             "Detect a farming lane in garden"

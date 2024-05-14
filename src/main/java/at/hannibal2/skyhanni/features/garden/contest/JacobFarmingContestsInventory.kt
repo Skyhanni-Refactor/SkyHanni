@@ -31,7 +31,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class JacobFarmingContestsInventory {
+object JacobFarmingContestsInventory {
 
     private val realTime = mutableMapOf<Int, String>()
 

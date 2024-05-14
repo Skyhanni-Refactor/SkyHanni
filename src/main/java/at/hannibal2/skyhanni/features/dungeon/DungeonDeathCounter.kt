@@ -10,7 +10,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DungeonDeathCounter {
+object DungeonDeathCounter {
     private val config get() = SkyHanniMod.feature.dungeon
 
     private var display = ""

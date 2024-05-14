@@ -28,7 +28,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-class OwnInventoryData {
+object OwnInventoryData {
 
     private var itemAmounts = mapOf<NEUInternalName, Int>()
     private var dirty = false

@@ -18,7 +18,7 @@ import net.minecraft.entity.EntityLivingBase
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class SlayerQuestWarning {
+object SlayerQuestWarning {
 
     private val config get() = SkyHanniMod.feature.slayer
 

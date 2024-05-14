@@ -17,11 +17,11 @@ import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class AshfangBlazingSouls {
+object AshfangBlazingSouls {
 
     private val config get() = SkyHanniMod.feature.crimsonIsle.ashfang.blazingSouls
 
-    private val texture =
+    private const val SOUL_TEXTURE =
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvODI4N2IzOTdkYWY5NTE2YTBiZDc2ZjVmMWI3YmY5Nzk1MTVkZjNkNWQ4MzNlMDYzNWZhNjhiMzdlZTA4MjIxMiJ9fX0="
     private val souls = mutableListOf<EntityArmorStand>()
 
@@ -30,7 +30,7 @@ class AshfangBlazingSouls {
         if (!isEnabled()) return
 
         McWorld.getEntitiesOf<EntityArmorStand>()
-            .filter { it !in souls && it.hasSkullTexture(texture) }
+            .filter { it !in souls && it.hasSkullTexture(SOUL_TEXTURE) }
             .forEach { souls.add(it) }
     }
 

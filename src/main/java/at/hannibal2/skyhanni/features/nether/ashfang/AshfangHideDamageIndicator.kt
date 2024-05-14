@@ -9,7 +9,7 @@ import net.minecraft.entity.EntityLivingBase
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class AshfangHideDamageIndicator {
+object AshfangHideDamageIndicator {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityLivingBase>) {

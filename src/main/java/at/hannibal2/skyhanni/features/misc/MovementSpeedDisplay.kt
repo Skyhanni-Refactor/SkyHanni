@@ -14,24 +14,21 @@ import net.minecraft.init.Blocks
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.concurrent.fixedRateTimer
 
-class MovementSpeedDisplay {
+object MovementSpeedDisplay {
 
     private val config get() = SkyHanniMod.feature.misc
 
     private var display = ""
     private val soulsandSpeeds = mutableListOf<Double>()
 
-    companion object {
-        /**
-         * This speed value represents the movement speed in blocks per second.
-         * This has nothing to do with the speed stat.
-         */
-        var speed = 0.0
-        var usingSoulsandSpeed = false
-    }
+    /**
+     * This speed value represents the movement speed in blocks per second.
+     * This has nothing to do with the speed stat.
+     */
+    var speed = 0.0
+    var usingSoulsandSpeed = false
 
     init {
-        // TODO use LorenzTickEvent
         fixedRateTimer(name = "skyhanni-movement-speed-display", period = 250, initialDelay = 1_000) {
             checkSpeed()
         }

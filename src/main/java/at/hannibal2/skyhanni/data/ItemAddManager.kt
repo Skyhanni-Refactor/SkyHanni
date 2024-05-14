@@ -19,12 +19,9 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-class ItemAddManager {
-    enum class Source {
-        ITEM_ADD,
-        SACKS,
-        ;
-    }
+object ItemAddManager {
+    private var lastDiceRoll = SimpleTimeMark.farPast()
+    private var superCraftedItems = TimeLimitedSet<NEUInternalName>(30.seconds)
 
     private val diceRollChatPattern by RepoPattern.pattern(
         "data.itemmanager.diceroll",
@@ -83,9 +80,6 @@ class ItemAddManager {
         ItemAddEvent(internalName, amount, this).postAndCatch()
     }
 
-    private var lastDiceRoll = SimpleTimeMark.farPast()
-    private var superCraftedItems = TimeLimitedSet<NEUInternalName>(30.seconds)
-
     @SubscribeEvent
     fun onChat(event: LorenzChatEvent) {
         if (diceRollChatPattern.matches(event.message)) {
@@ -96,5 +90,11 @@ class ItemAddManager {
             if (!SackAPI.sackListInternalNames.contains(internalName.asString())) return@matchMatcher
             superCraftedItems.add(internalName)
         }
+    }
+
+    enum class Source {
+        ITEM_ADD,
+        SACKS,
+        ;
     }
 }

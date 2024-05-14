@@ -12,12 +12,12 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class LesserOrbHider {
+object LesserOrbHider {
 
     private val config get() = SkyHanniMod.feature.misc
     private val hiddenEntities = CollectionUtils.weakReferenceList<EntityArmorStand>()
 
-    private val lesserTexture =
+    private const val LESSER_ORB_TEXTURE =
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjgzMjM2NjM5NjA3MDM2YzFiYTM5MWMyYjQ2YTljN2IwZWZkNzYwYzhiZmEyOTk2YTYwNTU1ODJiNGRhNSJ9fX0="
 
     @SubscribeEvent
@@ -25,7 +25,7 @@ class LesserOrbHider {
         val entity = event.entity
         val itemStack = event.newItemStack ?: return
 
-        if (entity is EntityArmorStand && event.isHand && itemStack.getSkullTexture() == lesserTexture) {
+        if (entity is EntityArmorStand && event.isHand && itemStack.getSkullTexture() == LESSER_ORB_TEXTURE) {
             hiddenEntities.add(entity)
         }
     }

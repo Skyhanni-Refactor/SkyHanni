@@ -10,7 +10,7 @@ import java.util.regex.Pattern
 
 private typealias MessageTypes = ChatConfig.DungeonMessageTypes
 
-class DungeonChatFilter {
+object DungeonChatFilter {
 
     private val config get() = SkyHanniMod.feature.chat
 

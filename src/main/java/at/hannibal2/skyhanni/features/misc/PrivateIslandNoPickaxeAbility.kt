@@ -9,9 +9,9 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class PrivateIslandNoPickaxeAbility {
+object PrivateIslandNoPickaxeAbility {
 
-    val config get() = SkyHanniMod.feature.mining
+    private val config get() = SkyHanniMod.feature.mining
 
     @SubscribeEvent
     fun onClick(event: WorldClickEvent) {

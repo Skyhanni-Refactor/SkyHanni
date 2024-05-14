@@ -16,7 +16,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class RiftMotesOrb {
+object RiftMotesOrb {
 
     private val config get() = RiftAPI.config.motesOrbs
 

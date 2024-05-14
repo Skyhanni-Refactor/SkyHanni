@@ -17,7 +17,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.inventory.ContainerChest
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BingoCardTips {
+object BingoCardTips {
 
     private val config get() = SkyHanniMod.feature.event.bingo.bingoCard
 

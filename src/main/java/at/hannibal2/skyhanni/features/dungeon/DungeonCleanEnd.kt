@@ -17,7 +17,7 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.monster.EntityGuardian
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DungeonCleanEnd {
+object DungeonCleanEnd {
 
     private val config get() = SkyHanniMod.feature.dungeon.cleanEnd
     private val catacombsPattern by RepoPattern.pattern(

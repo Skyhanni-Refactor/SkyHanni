@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HideFarEntities {
+object HideFarEntities {
     private val config get() = SkyHanniMod.feature.misc.hideFarEntities
 
     private var ignored = emptySet<Int>()

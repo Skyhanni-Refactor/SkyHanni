@@ -26,7 +26,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.EnumMap
 
-class MinionXp {
+object MinionXp {
 
     private val config get() = SkyHanniMod.feature.misc.minions
 

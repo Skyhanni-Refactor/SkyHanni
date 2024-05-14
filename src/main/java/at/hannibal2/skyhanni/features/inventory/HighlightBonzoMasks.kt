@@ -14,15 +14,13 @@ import java.awt.Color
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
-import kotlin.time.ExperimentalTime
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
 
 /**
  * @author Linnea Gräf
  */
-@OptIn(ExperimentalTime::class)
-class HighlightBonzoMasks {
+object HighlightBonzoMasks {
 
     private val config get() = SkyHanniMod.feature.inventory.itemAbilities
 
@@ -52,6 +50,7 @@ class HighlightBonzoMasks {
         }
     }
 
+    // TODO wtffffffffffffffffffffffffffffffffffffffffffffffffffffff
     private fun maskType(item: ItemStack): String? {
         return when (item.getInternalName().asString()) {
             "STARRED_BONZO_MASK" -> "BONZO_MASK"
@@ -77,15 +76,12 @@ class HighlightBonzoMasks {
         maskTimers.clear()
     }
 
-    companion object {
-        data class CooldownTimer(val timeMark: TimeMark, val duration: Duration) {
+    data class CooldownTimer(val timeMark: TimeMark, val duration: Duration) {
 
-            val percentComplete: Double
-                get() =
-                    timeMark.elapsedNow().toDouble(DurationUnit.SECONDS) / duration.toDouble(DurationUnit.SECONDS)
+        val percentComplete: Double
+            get() = timeMark.elapsedNow().toDouble(DurationUnit.SECONDS) / duration.toDouble(DurationUnit.SECONDS)
 
-            val isActive: Boolean get() = timeMark.elapsedNow() < duration
-        }
+        val isActive: Boolean get() = timeMark.elapsedNow() < duration
     }
 }
 

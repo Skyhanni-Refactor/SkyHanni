@@ -15,7 +15,7 @@ import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.StringUtils.isRoman
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SkillTooltip {
+object SkillTooltip {
 
     private val overflowConfig get() = SkillProgress.config.overflowConfig
     private val customGoalConfig get() = SkillProgress.config.customGoalConfig

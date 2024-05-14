@@ -15,21 +15,19 @@ import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class ChickenHeadTimer {
+object ChickenHeadTimer {
     private val config get() = SkyHanniMod.feature.inventory.itemAbilities.chickenHead
 
     private var hasChickenHead = false
     private var lastTime = SimpleTimeMark.farPast()
     private val cooldown = 5.seconds
 
-    private val chickenHead = SkyhanniItems.CHICKEN_HEAD()
-
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
         if (!isEnabled()) return
         if (!event.isMod(5)) return
 
-        hasChickenHead = McPlayer.helmet?.getInternalName() == chickenHead
+        hasChickenHead = McPlayer.helmet?.getInternalName() == SkyhanniItems.CHICKEN_HEAD()
     }
 
     @SubscribeEvent

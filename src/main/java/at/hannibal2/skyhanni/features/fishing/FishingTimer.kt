@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-class FishingTimer {
+object FishingTimer {
 
     private val config get() = SkyHanniMod.feature.fishing.barnTimer
     private val barnLocation = LorenzVec(108, 89, -252)

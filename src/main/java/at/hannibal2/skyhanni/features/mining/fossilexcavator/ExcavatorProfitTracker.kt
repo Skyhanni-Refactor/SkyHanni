@@ -23,7 +23,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ExcavatorProfitTracker {
+object ExcavatorProfitTracker {
 
     private val config get() = SkyHanniMod.feature.mining.fossilExcavator.profitTracker
 

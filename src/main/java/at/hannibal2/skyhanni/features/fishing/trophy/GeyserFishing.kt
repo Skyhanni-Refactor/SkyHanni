@@ -18,7 +18,7 @@ import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class GeyserFishing {
+object GeyserFishing {
     private val config get() = SkyHanniMod.feature.fishing.trophyFishing.geyserOptions
 
     private val geyserOffset = LorenzVec(0.1f, 0.6f, 0.1f)

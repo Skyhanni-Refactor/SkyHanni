@@ -18,7 +18,7 @@ import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.inventory.ContainerChest
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class GardenComposterInventoryFeatures {
+object GardenComposterInventoryFeatures {
 
     private val config get() = GardenAPI.config.composters
 
