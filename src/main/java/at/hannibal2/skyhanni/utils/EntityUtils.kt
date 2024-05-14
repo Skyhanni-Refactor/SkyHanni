@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.utils
 
+import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.data.mob.MobFilter.isRealPlayer
 import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
@@ -86,7 +87,7 @@ object EntityUtils {
 
     // TODO remove baseMaxHealth
     fun EntityLivingBase.hasMaxHealth(health: Int, boss: Boolean = false, maxHealth: Int = baseMaxHealth): Boolean {
-        val derpyMultiplier = if (LorenzUtils.isDerpy) 2 else 1
+        val derpyMultiplier = if (Perk.DOUBLE_MOBS_HP.isActive) 2 else 1
         if (maxHealth == health * derpyMultiplier) return true
 
         if (!boss && !DungeonAPI.inDungeon()) {

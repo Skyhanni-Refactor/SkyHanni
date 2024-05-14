@@ -8,10 +8,10 @@ object GoogleTranslator {
     private const val URL = "https://translate.google.com/translate_a/single"
     private val GSON = Gson()
 
-    data class Sentence(val text: String, val from: String, val to: String)
+    data class Sentence(val trans: String, val orig: String)
     data class Translation(val sentences: List<Sentence>, val src: String) {
 
-        val text: String get() = sentences.joinToString(" ") { it.text }
+        val text: String get() = sentences.joinToString(" ") { it.trans }
     }
 
     open class Error(val error: String, val message: String) {

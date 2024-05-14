@@ -2,8 +2,6 @@ package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
-import at.hannibal2.skyhanni.utils.mc.McPlayer
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
@@ -89,7 +87,4 @@ object InventoryUtils {
     fun getItemAtSlotIndex(slotIndex: Int): ItemStack? {
         return getItemsInOpenChest().find { it.slotIndex == slotIndex }?.stack
     }
-
-    // TODO add a method that also can include the amounts in your sacks
-    fun NEUInternalName.getAmountInInventory(): Int = McPlayer.countItems { it.getInternalNameOrNull() == this }
 }
