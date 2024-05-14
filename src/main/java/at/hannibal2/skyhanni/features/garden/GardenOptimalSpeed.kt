@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden
 
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
@@ -155,7 +156,7 @@ object GardenOptimalSpeed {
         if (System.currentTimeMillis() < lastWarnTime + 20_000) return
 
         lastWarnTime = System.currentTimeMillis()
-        LorenzUtils.sendTitle("§cWrong speed!", 3.seconds)
+        TitleManager.sendTitle("§cWrong speed!", 3.seconds)
         cropInHand?.let {
             var text = "Wrong speed for ${it.cropName}: §f$currentSpeed"
             if (sneaking) text += " §7[Sneaking]"

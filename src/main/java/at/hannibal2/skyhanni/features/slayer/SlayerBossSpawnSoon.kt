@@ -2,8 +2,8 @@ package at.hannibal2.skyhanni.features.slayer
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.SlayerAPI
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.SlayerProgressChangeEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
@@ -37,7 +37,7 @@ object SlayerBossSpawnSoon {
         if (completion > config.percent / 100.0) {
             if (!warned || (config.repeat && completion != lastCompletion)) {
                 McSound.BEEP.play()
-                LorenzUtils.sendTitle("§eSlayer boss soon!", 2.seconds)
+                TitleManager.sendTitle("§eSlayer boss soon!", 2.seconds)
                 warned = true
             }
         } else {

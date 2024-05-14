@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.slayer.enderman
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
@@ -20,7 +21,6 @@ import at.hannibal2.skyhanni.utils.LocationUtils.canBeSeen
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
@@ -72,7 +72,7 @@ object EndermanSlayerFeatures {
                         beaconConfig.highlightBeacon
                     }
                     if (beaconConfig.showWarning) {
-                        LorenzUtils.sendTitle("§4Beacon", 2.seconds)
+                        TitleManager.sendTitle("§4Beacon", 2.seconds)
                     }
                     logger.log("Added flying beacons at ${entity.getLorenzVec()}")
                 }

@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.event.diana
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.EntityHealthUpdateEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
@@ -13,7 +14,6 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.hasGroup
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -294,7 +294,7 @@ object InquisitorWaypointShare {
         if (!waypoints.containsKey(name)) {
             ChatUtils.chat("$displayName §l§efound an inquisitor at §l§c${x.toInt()} ${y.toInt()} ${z.toInt()}!")
             if (name != McPlayer.name) {
-                LorenzUtils.sendTitle("§dINQUISITOR §efrom §b$displayName", 5.seconds)
+                TitleManager.sendTitle("§dINQUISITOR §efrom §b$displayName", 5.seconds)
                 McSound.BEEP.play()
             }
         }

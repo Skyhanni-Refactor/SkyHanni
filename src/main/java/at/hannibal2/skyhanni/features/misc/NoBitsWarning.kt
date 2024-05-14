@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.BitsUpdateEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
@@ -25,7 +26,7 @@ object NoBitsWarning {
                     HypixelCommands.bazaar("booster cookie")
                 }
             )
-            LorenzUtils.sendTitle("§bNo Bits Available", 5.seconds)
+            TitleManager.sendTitle("§bNo Bits Available", 5.seconds)
             if (config.notificationSound) {
                 McSound.playOnRepeat("note.pling", 0.6f, 1f, 100, 10)
             }

@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.garden.composter
 
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.TabListUpdateEvent
@@ -113,7 +114,7 @@ object ComposterDisplay {
 
         if (ComposterAPI.getOrganicMatter() <= config.notifyLow.organicMatter && System.currentTimeMillis() >= storage.informedAboutLowMatter) {
             if (config.notifyLow.title) {
-                LorenzUtils.sendTitle("§cYour Organic Matter is low", 4.seconds)
+                TitleManager.sendTitle("§cYour Organic Matter is low", 4.seconds)
             }
             ChatUtils.chat("§cYour Organic Matter is low!")
             storage.informedAboutLowMatter = System.currentTimeMillis() + 60_000 * 5
@@ -123,7 +124,7 @@ object ComposterDisplay {
             System.currentTimeMillis() >= storage.informedAboutLowFuel
         ) {
             if (config.notifyLow.title) {
-                LorenzUtils.sendTitle("§cYour Fuel is low", 4.seconds)
+                TitleManager.sendTitle("§cYour Fuel is low", 4.seconds)
             }
             ChatUtils.chat("§cYour Fuel is low!")
             storage.informedAboutLowFuel = System.currentTimeMillis() + 60_000 * 5
@@ -181,7 +182,7 @@ object ComposterDisplay {
                 HypixelCommands.warp("garden")
             })
         }
-        LorenzUtils.sendTitle("§eComposter Warning!", 3.seconds)
+        TitleManager.sendTitle("§eComposter Warning!", 3.seconds)
     }
 
     enum class DataType(rawPattern: String, val icon: NEUInternalName) {

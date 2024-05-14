@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.data.GardenCropMilestones.isMaxed
 import at.hannibal2.skyhanni.data.GardenCropMilestones.setCounter
 import at.hannibal2.skyhanni.data.ProfileStorageData
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.CropMilestoneUpdateEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
@@ -272,7 +273,7 @@ object GardenCropMilestoneDisplay {
             McSound.BEEP.play()
         }
         if (!needsInventory) {
-            LorenzUtils.sendTitle(title, 1.5.seconds)
+            TitleManager.sendTitle(title, 1.5.seconds)
         }
     }
 

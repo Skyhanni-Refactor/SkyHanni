@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.event.hoppity
 
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.ItemClickEvent
@@ -226,7 +227,7 @@ object HoppityEggLocator {
         }
 
         if (maxLineDistance.isEmpty()) {
-            LorenzUtils.sendTitle("§cNo eggs found, try getting closer", 2.seconds)
+            TitleManager.sendTitle("§cNo eggs found, try getting closer", 2.seconds)
             return
         }
         secondPos = maxLineDistance.first().nearestPointOnLine(firstPos, secondPos)

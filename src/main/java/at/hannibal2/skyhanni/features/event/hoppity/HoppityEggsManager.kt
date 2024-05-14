@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.event.hoppity
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
@@ -13,12 +14,12 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.fromNow
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.now
-import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
@@ -153,7 +154,7 @@ object HoppityEggsManager {
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.showClaimedEggs) return
-        if (isBuzy()) return
+        if (isBusy()) return
         if (!ChocolateFactoryAPI.isHoppityEvent()) return
 
         val displayList = HoppityEggType.entries
@@ -185,17 +186,17 @@ object HoppityEggsManager {
 
     private fun warn() {
         if (!config.warnUnclaimedEggs) return
-        if (isBuzy()) return
+        if (isBusy()) return
         if (lastWarnTime.passedSince() < 30.seconds) return
 
         lastWarnTime = now()
         val amount = HoppityEggType.entries.size
         ChatUtils.chat("All $amount Hoppity Eggs are ready to be found.!")
-        LorenzUtils.sendTitle("§e$amount Hoppity Eggs!", 5.seconds)
+        TitleManager.sendTitle("§e$amount Hoppity Eggs!", 5.seconds)
         McSound.PLING.play()
     }
 
-    private fun isBuzy() = ReminderUtils.isBusy(config.showDuringContest)
+    private fun isBusy() = ReminderUtils.isBusy(config.showDuringContest)
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {

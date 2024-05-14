@@ -14,7 +14,6 @@ import net.minecraft.network.play.server.S45PacketTitle
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
 import kotlin.time.Duration
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 object TitleManager {
@@ -25,7 +24,7 @@ object TitleManager {
     private var heightModifier = 1.8
     private var fontSizeModifier = 4f
 
-    fun sendTitle(text: String, duration: Duration, height: Double, fontSize: Float) {
+    fun sendTitle(text: String, duration: Duration, height: Double = 1.8, fontSize: Float = 4f) {
         originalText = text
         display = "§f$text"
         endTime = SimpleTimeMark.now() + duration
@@ -35,7 +34,7 @@ object TitleManager {
 
     fun optionalResetTitle(condition: (String) -> Boolean) {
         if (condition(originalText)) {
-            sendTitle("", 1.milliseconds, 1.8, 4f)
+            endTime = SimpleTimeMark.farPast()
         }
     }
 
@@ -79,12 +78,13 @@ object TitleManager {
         val height = scaledResolution.scaledHeight
 
         GlStateManager.enableBlend()
-        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0)
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
         val renderer = Minecraft.getMinecraft().fontRendererObj
 
         GlStateManager.pushMatrix()
         GlStateManager.translate((width / 2).toFloat(), (height / heightModifier).toFloat(), 3.0f)
-        GlStateManager.scale(fontSizeModifier, fontSizeModifier, fontSizeModifier)
+        GlStateManager.scale(fontSizeModifier, fontSizeModifier, 1f)
+        // TODO dont use neu text method
         TextRenderUtils.drawStringCenteredScaledMaxWidth(display, renderer, 0f, 0f, true, 75, 0)
         GlStateManager.popMatrix()
     }

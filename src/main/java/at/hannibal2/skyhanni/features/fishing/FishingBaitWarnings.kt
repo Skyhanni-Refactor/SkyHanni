@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.FishingBobberInWaterEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI.isBait
@@ -78,13 +79,13 @@ object FishingBaitWarnings {
 
     private fun showBaitChangeWarning(before: String, after: String) {
         McSound.CLICK.play()
-        LorenzUtils.sendTitle("§eBait changed!", 2.seconds)
+        TitleManager.sendTitle("§eBait changed!", 2.seconds)
         ChatUtils.chat("Fishing Bait changed: $before §e-> $after")
     }
 
     private fun showNoBaitWarning() {
         McSound.ERROR.play()
-        LorenzUtils.sendTitle("§cNo bait is used!", 2.seconds)
+        TitleManager.sendTitle("§cNo bait is used!", 2.seconds)
         ChatUtils.chat("You're not using any fishing baits!")
     }
 

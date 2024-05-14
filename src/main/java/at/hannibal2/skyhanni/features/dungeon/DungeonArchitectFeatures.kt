@@ -2,11 +2,11 @@ package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacks
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -48,7 +48,7 @@ object DungeonArchitectFeatures {
             { HypixelCommands.getFromSacks("ARCHITECT_FIRST_DRAFT", 1) },
             prefix = false
         )
-        LorenzUtils.sendTitle("§c§lPUZZLE FAILED!", 3.seconds)
+        TitleManager.sendTitle("§c§lPUZZLE FAILED!", 3.seconds)
         event.blockedReason = "puzzle_fail"
     }
 

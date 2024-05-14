@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.OwnInventoryItemUpdateEvent
@@ -8,7 +9,6 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemBlink
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
@@ -36,7 +36,7 @@ object WildStrawberryDyeNotification {
         val internalName = itemStack.getInternalName()
         if (internalName == SkyhanniItems.DYE_WILD_STRAWBERRY()) {
             val name = itemStack.name
-            LorenzUtils.sendTitle(name, 5.seconds)
+            TitleManager.sendTitle(name, 5.seconds)
             ChatUtils.chat("You found a $name§e!")
             McSound.BEEP.play()
             ItemBlink.setBlink(itemStack, 5_000)

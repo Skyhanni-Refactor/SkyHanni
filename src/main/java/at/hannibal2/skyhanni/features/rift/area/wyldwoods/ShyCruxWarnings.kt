@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.features.rift.area.wyldwoods
 
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
@@ -17,7 +17,7 @@ object ShyCruxWarnings {
     fun onTick(event: LorenzTickEvent) {
         if (!RiftAPI.inRift() || !config.shyWarning) return
         if (McWorld.entities.any { it.name in shyNames && it.distanceToPlayer() < 8 }) {
-            LorenzUtils.sendTitle("§eLook away!", 150.milliseconds)
+            TitleManager.sendTitle("§eLook away!", 150.milliseconds)
         }
     }
 }
