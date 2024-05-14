@@ -17,13 +17,13 @@ class PartyMemberOutlines {
 
     @SubscribeEvent
     fun onRenderEntityOutlines(event: RenderEntityOutlineEvent) {
-        if (!config.enabled && (!LorenzUtils.inSkyBlock || !OutsideSbFeature.HIGHLIGHT_PARTY_MEMBERS.isSelected()) && DungeonAPI.inDungeon()
-        ) return
-
-        if (event.type === RenderEntityOutlineEvent.Type.NO_XRAY) {
+        if (isEnabled() && event.type === RenderEntityOutlineEvent.Type.NO_XRAY) {
             event.queueEntitiesToOutline { entity -> getEntityOutlineColor(entity) }
         }
     }
+
+    fun isEnabled() = config.enabled &&
+        (LorenzUtils.inSkyBlock || OutsideSbFeature.HIGHLIGHT_PARTY_MEMBERS.isSelected()) && !DungeonAPI.inDungeon()
 
     private fun getEntityOutlineColor(entity: Entity): Int? {
         if (entity !is EntityOtherPlayerMP || !PartyAPI.partyMembers.contains(entity.name)) return null
