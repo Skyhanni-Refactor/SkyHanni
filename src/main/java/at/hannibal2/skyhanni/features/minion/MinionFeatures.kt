@@ -61,7 +61,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 
-class MinionFeatures {
+object MinionFeatures {
 
     private val config get() = SkyHanniMod.feature.misc.minions
     private var lastClickedEntity: LorenzVec? = null
@@ -89,6 +89,11 @@ class MinionFeatures {
         "item.collect",
         "^§aCollect All$"
     )
+
+    var lastMinion: LorenzVec? = null
+    private var lastStorage: LorenzVec? = null
+    var minionInventoryOpen = false
+    var minionStorageInventoryOpen = false
 
     @SubscribeEvent
     fun onPlayerInteract(event: PlayerInteractEvent) {
@@ -213,7 +218,7 @@ class MinionFeatures {
 
         val size = removedEntities.size
         if (size == 0) return
-        Companion.minions = minions.editCopy {
+        this.minions = minions.editCopy {
             for (removedEntity in removedEntities) {
                 remove(removedEntity)
             }
@@ -396,25 +401,17 @@ class MinionFeatures {
         }
     }
 
-    companion object {
-
-        var lastMinion: LorenzVec? = null
-        var lastStorage: LorenzVec? = null
-        var minionInventoryOpen = false
-        var minionStorageInventoryOpen = false
-
-        private var minions: Map<LorenzVec, ProfileSpecificStorage.MinionConfig>?
-            get() {
-                return ProfileStorageData.profileSpecific?.minions
-            }
-            set(value) {
-                ProfileStorageData.profileSpecific?.minions = value
-            }
-
-        fun clearMinionData() {
-            minions = mutableMapOf()
-            ChatUtils.chat("Manually reset all private island minion location data!")
+    private var minions: Map<LorenzVec, ProfileSpecificStorage.MinionConfig>?
+        get() {
+            return ProfileStorageData.profileSpecific?.minions
         }
+        set(value) {
+            ProfileStorageData.profileSpecific?.minions = value
+        }
+
+    fun clearMinionData() {
+        minions = mutableMapOf()
+        ChatUtils.chat("Manually reset all private island minion location data!")
     }
 
     @SubscribeEvent

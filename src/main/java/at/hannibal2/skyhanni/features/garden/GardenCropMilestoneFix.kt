@@ -19,7 +19,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class GardenCropMilestoneFix {
+object GardenCropMilestoneFix {
     private val patternGroup = RepoPattern.group("garden.cropmilestone.fix")
 
     /**

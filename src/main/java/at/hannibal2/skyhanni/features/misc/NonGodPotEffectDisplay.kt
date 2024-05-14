@@ -32,7 +32,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class NonGodPotEffectDisplay {
+object NonGodPotEffectDisplay {
 
     private val config get() = SkyHanniMod.feature.misc.potionEffect
     private var checkFooter = false

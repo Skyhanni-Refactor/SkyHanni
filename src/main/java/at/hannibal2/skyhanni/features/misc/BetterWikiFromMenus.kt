@@ -10,7 +10,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BetterWikiFromMenus {
+object BetterWikiFromMenus {
 
     private val config get() = SkyHanniMod.feature.misc.commands.betterWiki
 

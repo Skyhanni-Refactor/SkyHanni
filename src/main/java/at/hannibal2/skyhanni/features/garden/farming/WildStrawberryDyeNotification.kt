@@ -15,7 +15,7 @@ import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class WildStrawberryDyeNotification {
+object WildStrawberryDyeNotification {
 
     private var lastCloseTime = SimpleTimeMark.farPast()
 

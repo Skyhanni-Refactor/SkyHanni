@@ -14,7 +14,7 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class QuiverWarning {
+object QuiverWarning {
 
     private val config get() = SkyHanniMod.feature.combat.quiverConfig
 

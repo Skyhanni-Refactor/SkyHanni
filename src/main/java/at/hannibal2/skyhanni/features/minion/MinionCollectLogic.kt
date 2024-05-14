@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class MinionCollectLogic {
+object MinionCollectLogic {
 
     private var oldMap = mapOf<NEUInternalName, Int>()
 

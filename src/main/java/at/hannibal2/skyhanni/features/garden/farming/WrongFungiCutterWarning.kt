@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class WrongFungiCutterWarning {
+object WrongFungiCutterWarning {
 
     private var mode = FungiMode.UNKNOWN
     private var lastPlaySoundTime = 0L

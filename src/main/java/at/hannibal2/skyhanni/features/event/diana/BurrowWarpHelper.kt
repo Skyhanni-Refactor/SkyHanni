@@ -18,7 +18,7 @@ import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class BurrowWarpHelper {
+object BurrowWarpHelper {
 
     private var lastWarpTime = SimpleTimeMark.farPast()
     private var lastWarp: WarpPoint? = null
@@ -90,37 +90,34 @@ class BurrowWarpHelper {
         event.addData(list)
     }
 
-    companion object {
+    private val config get() = SkyHanniMod.feature.event.diana
+    var currentWarp: WarpPoint? = null
 
-        private val config get() = SkyHanniMod.feature.event.diana
-        var currentWarp: WarpPoint? = null
+    fun shouldUseWarps(target: LorenzVec, debug: MutableList<String>? = null) {
+        debug?.add("target: ${target.printWithAccuracy(1)}")
+        val playerLocation = LocationUtils.playerLocation()
+        debug?.add("playerLocation: ${playerLocation.printWithAccuracy(1)}")
+        val warpPoint = getNearestWarpPoint(target)
+        debug?.add("warpPoint: ${warpPoint.displayName}")
 
-        fun shouldUseWarps(target: LorenzVec, debug: MutableList<String>? = null) {
-            debug?.add("target: ${target.printWithAccuracy(1)}")
-            val playerLocation = LocationUtils.playerLocation()
-            debug?.add("playerLocation: ${playerLocation.printWithAccuracy(1)}")
-            val warpPoint = getNearestWarpPoint(target)
-            debug?.add("warpPoint: ${warpPoint.displayName}")
+        val playerDistance = playerLocation.distance(target)
+        debug?.add("playerDistance: ${playerDistance.roundTo(1)}")
+        val warpDistance = warpPoint.distance(target)
+        debug?.add("warpDistance: ${warpDistance.roundTo(1)}")
+        val difference = playerDistance - warpDistance
+        debug?.add("difference: ${difference.roundTo(1)}")
+        val setWarpPoint = difference > 10
+        debug?.add("setWarpPoint: $setWarpPoint")
+        currentWarp = if (setWarpPoint) warpPoint else null
+    }
 
-            val playerDistance = playerLocation.distance(target)
-            debug?.add("playerDistance: ${playerDistance.roundTo(1)}")
-            val warpDistance = warpPoint.distance(target)
-            debug?.add("warpDistance: ${warpDistance.roundTo(1)}")
-            val difference = playerDistance - warpDistance
-            debug?.add("difference: ${difference.roundTo(1)}")
-            val setWarpPoint = difference > 10
-            debug?.add("setWarpPoint: $setWarpPoint")
-            currentWarp = if (setWarpPoint) warpPoint else null
-        }
+    private fun getNearestWarpPoint(location: LorenzVec) =
+        WarpPoint.entries.filter { it.unlocked && !it.ignored() }.map { it to it.distance(location) }
+            .sorted().first().first
 
-        private fun getNearestWarpPoint(location: LorenzVec) =
-            WarpPoint.entries.filter { it.unlocked && !it.ignored() }.map { it to it.distance(location) }
-                .sorted().first().first
-
-        fun resetDisabledWarps() {
-            WarpPoint.entries.forEach { it.unlocked = true }
-            ChatUtils.chat("Reset disabled burrow warps.")
-        }
+    fun resetDisabledWarps() {
+        WarpPoint.entries.forEach { it.unlocked = true }
+        ChatUtils.chat("Reset disabled burrow warps.")
     }
 
     enum class WarpPoint(

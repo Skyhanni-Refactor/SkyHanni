@@ -18,7 +18,7 @@ import net.minecraft.entity.item.EntityItem
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 
-class ShowFishingItemName {
+object ShowFishingItemName {
 
     private val config get() = SkyHanniMod.feature.fishing.fishedItemName
     private var hasRodInHand = false

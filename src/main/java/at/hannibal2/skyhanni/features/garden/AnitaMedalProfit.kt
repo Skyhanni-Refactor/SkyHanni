@@ -24,15 +24,12 @@ import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class AnitaMedalProfit {
+object AnitaMedalProfit {
 
     private val config get() = GardenAPI.config.anitaShop
     private var display = emptyList<Renderable>()
 
-    companion object {
-
-        var inInventory = false
-    }
+    var inInventory = false
 
     enum class MedalType(val displayName: String, val factorBronze: Int) {
         GOLD("§6Gold medal", 8),

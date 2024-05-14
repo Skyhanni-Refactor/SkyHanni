@@ -12,7 +12,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BetterSignEditing {
+object BetterSignEditing {
 
     private var pasteLastClicked = false
     private var copyLastClicked = false

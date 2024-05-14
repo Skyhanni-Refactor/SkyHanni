@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 import kotlin.time.Duration.Companion.milliseconds
 
-class RiftWiltedBerberisHelper {
+object RiftWiltedBerberisHelper {
 
     private val config get() = RiftAPI.config.area.dreadfarm.wiltedBerberis
     private var isOnFarmland = false

@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class JyrreTimer {
+object JyrreTimer {
 
     private val config get() = SkyHanniMod.feature.event.winter.jyrreTimer
     private val drankBottlePattern by RepoPattern.pattern(

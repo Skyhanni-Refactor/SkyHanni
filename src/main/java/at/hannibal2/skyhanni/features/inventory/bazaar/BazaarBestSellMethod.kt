@@ -17,7 +17,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BazaarBestSellMethod {
+object BazaarBestSellMethod {
     private val config get() = SkyHanniMod.feature.inventory.bazaar
 
     private var display = ""

@@ -16,7 +16,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.potion.Potion
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HideArmor {
+object HideArmor {
 
     private val config get() = SkyHanniMod.feature.misc.hideArmor2
     private var armor = mapOf<Int, ItemStack>()

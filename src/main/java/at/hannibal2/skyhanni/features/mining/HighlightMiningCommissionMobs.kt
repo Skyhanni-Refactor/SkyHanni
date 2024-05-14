@@ -19,7 +19,7 @@ import net.minecraft.entity.monster.EntityMagmaCube
 import net.minecraft.entity.monster.EntitySlime
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HighlightMiningCommissionMobs {
+object HighlightMiningCommissionMobs {
 
     private val config get() = SkyHanniMod.feature.mining
     // TODO Commissin API

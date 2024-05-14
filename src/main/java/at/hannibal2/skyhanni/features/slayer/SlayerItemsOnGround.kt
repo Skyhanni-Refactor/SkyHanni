@@ -17,7 +17,7 @@ import net.minecraft.init.Items
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class SlayerItemsOnGround {
+object SlayerItemsOnGround {
 
     private val config get() = SkyHanniMod.feature.slayer.itemsOnGround
 

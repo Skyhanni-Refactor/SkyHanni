@@ -11,7 +11,7 @@ import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class CrystalHollowsNamesInCore {
+object CrystalHollowsNamesInCore {
 
     private val config get() = SkyHanniMod.feature.mining
     private val coreLocations = mapOf(

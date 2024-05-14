@@ -36,7 +36,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.max
 
-class ItemAbilityCooldown {
+object ItemAbilityCooldown {
 
     private val config get() = SkyHanniMod.feature.inventory.itemAbilities
 

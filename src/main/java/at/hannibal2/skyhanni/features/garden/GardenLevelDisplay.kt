@@ -30,7 +30,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 
-class GardenLevelDisplay {
+object GardenLevelDisplay {
 
     private val config get() = GardenAPI.config.gardenLevels
     private var useRomanNumerals: Boolean

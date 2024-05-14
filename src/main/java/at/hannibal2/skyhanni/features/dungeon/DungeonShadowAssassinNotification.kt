@@ -10,7 +10,7 @@ import net.minecraft.network.play.server.S44PacketWorldBorder
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class DungeonShadowAssassinNotification {
+object DungeonShadowAssassinNotification {
     private val config get() = SkyHanniMod.feature.dungeon
 
     @SubscribeEvent

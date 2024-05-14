@@ -18,7 +18,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class LimboPlaytime {
+object LimboPlaytime {
     private lateinit var modifiedList: MutableList<String>
     private var setMinutes = false
     private val patternGroup = RepoPattern.group("misc.limbo.tooltip")
@@ -36,7 +36,7 @@ class LimboPlaytime {
 
     private val storage get() = ProfileStorageData.playerSpecific?.limbo
 
-    private val itemName = "§aLimbo"
+    private const val LIMBO_ITEM_NAME = "§aLimbo"
     private lateinit var limboItem: ItemStack
     private var lastCreateCooldown = SimpleTimeMark.farPast()
 
@@ -52,7 +52,7 @@ class LimboPlaytime {
             lastCreateCooldown = SimpleTimeMark.now()
             limboItem = Utils.createItemStack(
                 SkyhanniItems.ENDER_PEARL().getItemStack().item,
-                itemName,
+                LIMBO_ITEM_NAME,
                 *createItemLore()
             )
         }

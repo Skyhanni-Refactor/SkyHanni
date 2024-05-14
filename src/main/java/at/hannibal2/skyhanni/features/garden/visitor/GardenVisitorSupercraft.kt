@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class GardenVisitorSupercraft {
+object GardenVisitorSupercraft {
 
     private val isSupercraftEnabled get() = VisitorAPI.config.shoppingList.showSuperCraft
 

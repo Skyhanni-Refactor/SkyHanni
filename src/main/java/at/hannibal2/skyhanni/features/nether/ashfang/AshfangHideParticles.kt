@@ -12,7 +12,7 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class AshfangHideParticles {
+object AshfangHideParticles {
 
     private var nearAshfang = false
 

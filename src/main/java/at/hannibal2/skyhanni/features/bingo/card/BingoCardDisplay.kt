@@ -27,45 +27,41 @@ import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.days
 
-class BingoCardDisplay {
+object BingoCardDisplay {
 
     private var display = emptyList<Renderable>()
 
     private var hasHiddenPersonalGoals = false
 
-    companion object {
+    private const val MAX_PERSONAL_GOALS = 20
 
-        private const val MAX_PERSONAL_GOALS = 20
-        private const val MAX_COMMUNITY_GOALS = 5
+    private val config get() = SkyHanniMod.feature.event.bingo.bingoCard
+    private var displayMode = 0
 
-        private val config get() = SkyHanniMod.feature.event.bingo.bingoCard
-        private var displayMode = 0
+    fun command() {
+        reload()
+    }
 
-        fun command() {
-            reload()
+    private fun reload() {
+        BingoAPI.bingoGoals.clear()
+    }
+
+    fun toggleCommand() {
+        if (!LorenzUtils.isBingoProfile) {
+            ChatUtils.userError("This command only works on a bingo profile!")
+            return
         }
-
-        private fun reload() {
-            BingoAPI.bingoGoals.clear()
+        if (!config.enabled) {
+            ChatUtils.userError("Bingo Card is disabled in the config!")
+            return
         }
+        toggleMode()
+    }
 
-        fun toggleCommand() {
-            if (!LorenzUtils.isBingoProfile) {
-                ChatUtils.userError("This command only works on a bingo profile!")
-                return
-            }
-            if (!config.enabled) {
-                ChatUtils.userError("Bingo Card is disabled in the config!")
-                return
-            }
-            toggleMode()
-        }
-
-        private fun toggleMode() {
-            displayMode++
-            if (displayMode == 3) {
-                displayMode = 0
-            }
+    private fun toggleMode() {
+        displayMode++
+        if (displayMode == 3) {
+            displayMode = 0
         }
     }
 

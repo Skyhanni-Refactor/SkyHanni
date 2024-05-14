@@ -10,7 +10,7 @@ import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getPetCandyUsed
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getPetLevel
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class PetCandyUsedDisplay {
+object PetCandyUsedDisplay {
 
     private val config get() = SkyHanniMod.feature.misc.petCandy
 

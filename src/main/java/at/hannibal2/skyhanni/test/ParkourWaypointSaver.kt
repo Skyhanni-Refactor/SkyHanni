@@ -16,7 +16,7 @@ import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 
-class ParkourWaypointSaver {
+object ParkourWaypointSaver {
 
     private val config get() = SkyHanniMod.feature.dev.waypoint
     private var timeLastSaved = SimpleTimeMark.farPast()

@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.datetime.SkyblockSeason
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class AtmosphericFilterDisplay {
+object AtmosphericFilterDisplay {
 
     private val config get() = SkyHanniMod.feature.garden.atmosphericFilterDisplay
 

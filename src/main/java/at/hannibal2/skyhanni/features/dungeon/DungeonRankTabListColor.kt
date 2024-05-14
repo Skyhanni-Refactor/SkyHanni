@@ -7,7 +7,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DungeonRankTabListColor {
+object DungeonRankTabListColor {
 
     private val config get() = SkyHanniMod.feature.dungeon.tabList
     private val pattern = "§r(?<playerName>.*) §r§f\\(§r§d(?<className>.*) (?<classLevel>.*)§r§f\\)§r".toPattern()

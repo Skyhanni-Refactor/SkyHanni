@@ -10,7 +10,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.anyMatches
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class RestorePieceOfWizardPortalLore {
+object RestorePieceOfWizardPortalLore {
 
     private val config get() = SkyHanniMod.feature.misc
 

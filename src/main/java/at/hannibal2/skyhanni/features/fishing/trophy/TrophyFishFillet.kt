@@ -13,7 +13,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.input.Keyboard
 
-class TrophyFishFillet {
+object TrophyFishFillet {
 
     @SubscribeEvent
     fun onTooltip(event: LorenzToolTipEvent) {

@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class GriffinPetWarning {
+object GriffinPetWarning {
 
     private var lastWarnTime = SimpleTimeMark.farPast()
 

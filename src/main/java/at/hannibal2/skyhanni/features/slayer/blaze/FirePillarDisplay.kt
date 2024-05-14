@@ -12,7 +12,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class FirePillarDisplay {
+object FirePillarDisplay {
     private val config get() = SkyHanniMod.feature.slayer.blazes
 
     /**

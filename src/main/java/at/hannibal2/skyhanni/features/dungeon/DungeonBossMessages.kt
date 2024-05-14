@@ -5,7 +5,7 @@ import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DungeonBossMessages {
+object DungeonBossMessages {
 
     private val config get() = SkyHanniMod.feature.chat
     private val bossPattern = "§([cd4])\\[BOSS] (.*)".toPattern()

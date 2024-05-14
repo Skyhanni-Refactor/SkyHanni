@@ -92,6 +92,7 @@ enum class SkyhanniItems(private var id: String? = null, private var tier: Int? 
     NEW_BOTTLE_OF_JYRRE,
     NEW_YEAR_CAKE,
     NONE,
+    OIL_BARREL,
     ORANGE_STAINED_GLASS("STAINED_GLASS-1"),
     PAPER,
     PEST_BEETLE_MONSTER,
@@ -159,6 +160,7 @@ enum class SkyhanniItems(private var id: String? = null, private var tier: Int? 
     VOIDLING_GENERATOR_1,
     VOLTA,
     VOODOO_DOLL_WILTED,
+    WATCH,
     WEIRDER_TUBA,
     WEIRD_TUBA,
     WHEAT,
@@ -170,8 +172,6 @@ enum class SkyhanniItems(private var id: String? = null, private var tier: Int? 
     ZOMBIE_KNIGHT_SWORD,
     ZOMBIE_SOLDIER_CUTLASS,
     ;
-
-    // TODO make it work with items with a dash in their name
 
     private val baseItem by lazy { (id ?: name).asInternalName() }
     operator fun invoke() = baseItem

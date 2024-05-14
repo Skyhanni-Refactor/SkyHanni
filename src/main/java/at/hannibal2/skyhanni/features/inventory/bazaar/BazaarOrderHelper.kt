@@ -19,7 +19,7 @@ import net.minecraft.inventory.ContainerChest
 import net.minecraft.inventory.Slot
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BazaarOrderHelper {
+object BazaarOrderHelper {
     private val patternGroup = RepoPattern.group("bazaar.orderhelper")
     private val bazaarItemNamePattern by patternGroup.pattern(
         "itemname",
@@ -34,13 +34,10 @@ class BazaarOrderHelper {
         "§7Price per unit: §6(?<number>.*) coins"
     )
 
-    companion object {
-
-        fun isBazaarOrderInventory(inventoryName: String): Boolean = when (inventoryName) {
-            "Your Bazaar Orders" -> true
-            "Co-op Bazaar Orders" -> true
-            else -> false
-        }
+    fun isBazaarOrderInventory(inventoryName: String): Boolean = when (inventoryName) {
+        "Your Bazaar Orders" -> true
+        "Co-op Bazaar Orders" -> true
+        else -> false
     }
 
     @SubscribeEvent

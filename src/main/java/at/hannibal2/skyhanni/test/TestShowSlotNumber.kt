@@ -5,7 +5,7 @@ import at.hannibal2.skyhanni.events.RenderInventoryItemTipEvent
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class TestShowSlotNumber {
+object TestShowSlotNumber {
 
     @SubscribeEvent
     fun onRenderItemTip(event: RenderInventoryItemTipEvent) {

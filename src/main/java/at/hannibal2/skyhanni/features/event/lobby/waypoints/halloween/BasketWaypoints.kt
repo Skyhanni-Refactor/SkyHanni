@@ -14,7 +14,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BasketWaypoints {
+object BasketWaypoints {
 
     private val config get() = SkyHanniMod.feature.event.lobbyWaypoints.halloweenBasket
     private var closest: Basket? = null

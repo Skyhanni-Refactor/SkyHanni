@@ -12,7 +12,7 @@ import net.minecraft.entity.monster.EntityEnderman
 import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class EndermanSlayerHideParticles {
+object EndermanSlayerHideParticles {
 
     private var endermanLocations = listOf<LorenzVec>()
 

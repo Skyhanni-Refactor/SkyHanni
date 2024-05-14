@@ -13,7 +13,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 
-class BlobbercystsHighlight {
+object BlobbercystsHighlight {
 
     private val config get() = SkyHanniMod.feature.rift.area.colosseum
     private val entityList = mutableListOf<EntityOtherPlayerMP>()

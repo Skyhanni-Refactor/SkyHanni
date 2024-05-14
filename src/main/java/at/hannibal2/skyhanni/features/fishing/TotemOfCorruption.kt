@@ -32,7 +32,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class TotemOfCorruption {
+object TotemOfCorruption {
 
     private val config get() = SkyHanniMod.feature.fishing.totemOfCorruption
 

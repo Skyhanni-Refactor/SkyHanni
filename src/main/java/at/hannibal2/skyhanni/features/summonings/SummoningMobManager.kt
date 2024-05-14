@@ -26,7 +26,7 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SummoningMobManager {
+object SummoningMobManager {
 
     private val config get() = SkyHanniMod.feature.combat.summonings
 

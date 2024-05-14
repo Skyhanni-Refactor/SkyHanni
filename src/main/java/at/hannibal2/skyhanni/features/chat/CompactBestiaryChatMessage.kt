@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.util.IChatComponent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class CompactBestiaryChatMessage {
+object CompactBestiaryChatMessage {
 
     private var inBestiary = false
     private var bestiaryDescription = mutableListOf<String>()
@@ -22,6 +22,8 @@ class CompactBestiaryChatMessage {
     private var milestoneMessage: String? = null
 
     private val milestonePattern = "^.+(§8\\d{1,3}➡§e\\d{1,3})$".toRegex()
+
+    // TODO more repo patterns
 
     @SubscribeEvent
     fun onChat(event: LorenzChatEvent) {

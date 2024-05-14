@@ -14,7 +14,7 @@ import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockStateAt
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class RiftAgaricusCap {
+object RiftAgaricusCap {
 
     private val config get() = RiftAPI.config.area.dreadfarm
     private var startTime = SimpleTimeMark.farPast()

@@ -21,7 +21,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 // TODO Remove all removeColor calls in this class. Deal with the color code in regex.
-class DungeonFinderFeatures {
+object DungeonFinderFeatures {
     private val config get() = SkyHanniMod.feature.dungeon.partyFinder
 
     //  Repo group and patterns

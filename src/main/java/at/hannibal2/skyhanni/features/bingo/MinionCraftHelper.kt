@@ -30,7 +30,7 @@ import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class MinionCraftHelper {
+object MinionCraftHelper {
 
     private val config get() = SkyHanniMod.feature.event.bingo
 

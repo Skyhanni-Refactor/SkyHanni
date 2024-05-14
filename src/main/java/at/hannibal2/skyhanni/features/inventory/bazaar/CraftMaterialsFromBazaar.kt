@@ -22,7 +22,7 @@ import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class CraftMaterialsFromBazaar {
+object CraftMaterialsFromBazaar {
 
     private val config get() = SkyHanniMod.feature.inventory.bazaar
 

@@ -7,7 +7,7 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import net.minecraft.entity.passive.EntityHorse
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class RiftHorsezookaHider {
+object RiftHorsezookaHider {
 
     @SubscribeEvent
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {

@@ -32,6 +32,7 @@ object AdvancedPlayerList {
     val tabPlayerData = mutableMapOf<String, PlayerData>()
 
     private val config get() = SkyHanniMod.feature.gui.compactTabList.advancedPlayerList
+    private val markedPlayerConfig get() = SkyHanniMod.feature.gui.markedPlayers
 
     private val levelPattern by RepoPattern.pattern(
         "misc.compacttablist.advanced.level",
@@ -249,7 +250,7 @@ object AdvancedPlayerList {
 
     enum class SocialIcon(val icon: () -> String, val score: Int) {
         ME("", 10),
-        MARKED({ "${MarkedPlayerManager.config.chatColor.getChatColor()}§lMARKED" }, 8),
+        MARKED({ "${markedPlayerConfig.chatColor.getChatColor()}§lMARKED" }, 8),
         PARTY("§9§lP", 5),
         FRIEND("§d§lF", 4),
         GUILD("§2§lG", 3),

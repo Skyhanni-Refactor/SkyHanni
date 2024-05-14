@@ -11,7 +11,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class MineshaftCorpseProfitPer {
+object MineshaftCorpseProfitPer {
     private val config get() = SkyHanniMod.feature.mining.mineshaft
 
     @SubscribeEvent

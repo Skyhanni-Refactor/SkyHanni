@@ -11,7 +11,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class EstimatedWardrobePrice {
+object EstimatedWardrobePrice {
 
     private val config get() = SkyHanniMod.feature.inventory.estimatedItemValues
     var data = mutableMapOf<Int, MutableList<ItemStack>>()

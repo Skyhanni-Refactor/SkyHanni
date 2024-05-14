@@ -14,7 +14,7 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ItemStars {
+object ItemStars {
 
     private val config get() = SkyHanniMod.feature.inventory
 

@@ -17,7 +17,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class PowerStoneGuideFeatures {
+object PowerStoneGuideFeatures {
 
     private var missing = mutableMapOf<Int, NEUInternalName>()
     private var inInventory = false
