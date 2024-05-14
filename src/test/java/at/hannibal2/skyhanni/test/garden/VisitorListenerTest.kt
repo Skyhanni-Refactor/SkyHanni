@@ -30,7 +30,7 @@ class VisitorListenerTest {
 
         mockkObject(LorenzUtils)
 
-        listener = VisitorListener()
+        listener = VisitorListener
     }
 
     @Test
