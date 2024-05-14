@@ -272,6 +272,7 @@ import at.hannibal2.skyhanni.features.inventory.SuperCraftFeatures
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarBestSellMethod
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarCancelledBuyOrderClipboard
+import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarDataHolder
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarOpenPriceWebsite
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarOrderHelper
 import at.hannibal2.skyhanni.features.inventory.bazaar.CraftMaterialsFromBazaar
@@ -565,7 +566,8 @@ class SkyHanniMod {
 //         loadModule(Year300RaffleEvent)
 
         // APIs
-        loadModule(BazaarApi())
+        loadModule(BazaarApi)
+        loadModule(BazaarDataHolder)
         loadModule(BingoAPI)
         loadModule(BitsAPI)
         loadModule(ChocolateFactoryAPI)

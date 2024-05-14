@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.inventory.bazaar
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.data.jsonobjects.other.SkyblockItemsDataJson
+import at.hannibal2.skyhanni.events.HypixelJoinEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.APIUtil
@@ -10,14 +11,19 @@ import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.fromJson
 import kotlinx.coroutines.launch
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BazaarDataHolder {
+object BazaarDataHolder {
 
-    companion object {
+    private var npcPrices = mapOf<NEUInternalName, Double>()
 
-        private var npcPrices = mapOf<NEUInternalName, Double>()
+    fun getNpcPrice(internalName: NEUInternalName) = npcPrices[internalName]
 
-        fun getNpcPrice(internalName: NEUInternalName) = npcPrices[internalName]
+    @SubscribeEvent
+    fun onHypixelJoin(event: HypixelJoinEvent) {
+        SkyHanniMod.coroutineScope.launch {
+            npcPrices = loadNpcPrices()
+        }
     }
 
     private fun loadNpcPrices(): MutableMap<NEUInternalName, Double> {
@@ -41,13 +47,4 @@ class BazaarDataHolder {
         }
         return list
     }
-
-    fun start() {
-        SkyHanniMod.coroutineScope.launch {
-            npcPrices = loadNpcPrices()
-        }
-
-        // TODO use SecondPassedEvent
-    }
-
 }
