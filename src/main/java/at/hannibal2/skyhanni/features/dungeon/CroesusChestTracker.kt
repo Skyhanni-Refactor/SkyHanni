@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage.DungeonStorage.DungeonRunInfo
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacks
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.DungeonCompleteEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
@@ -19,7 +20,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.StringUtils.anyMatches
@@ -53,8 +53,6 @@ class CroesusChestTracker {
     private val emptySlotId = 22
     private val frontArrowSlotId = 53
     private val backArrowSlotId = 45
-
-    private val kismetInternalName = "KISMET_FEATHER".asInternalName()
 
     private var inCroesusInventory = false
     private var croesusEmpty = false
@@ -242,7 +240,8 @@ class CroesusChestTracker {
 
     private fun getKismetUsed(runIndex: Int) = getRun0(runIndex)?.kismetUsed ?: false
 
-    private fun getKismetAmount() = kismetInternalName.getAmountInSacks() + kismetInternalName.getAmountInInventory()
+    private fun getKismetAmount() =
+        SkyhanniItems.KISMET_FEATHER().getAmountInSacks() + SkyhanniItems.KISMET_FEATHER().getAmountInInventory()
 
     private fun croesusSlotMapToRun(slotId: Int) = when (slotId) {
         in 10..16 -> slotId - 10 // 0 - 6

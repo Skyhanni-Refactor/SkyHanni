@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.HideNotClickableItemsJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SalvageFilter
 import at.hannibal2.skyhanni.events.GuiContainerEvent
@@ -29,7 +30,6 @@ import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.MultiFilter
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.RenderUtils.drawBorder
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -67,8 +67,6 @@ class HideNotClickableItems {
         "inventory.hidenotclickable.seeds",
         "SEEDS|CARROT_ITEM|POTATO_ITEM|PUMPKIN_SEEDS|SUGAR_CANE|MELON_SEEDS|CACTUS|INK_SACK-3"
     )
-
-    private val netherWart by lazy { "NETHER_STALK".asInternalName() }
 
     @SubscribeEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
@@ -226,7 +224,7 @@ class HideNotClickableItems {
 
         // TODO add more special named fossils (hypixel why)
         val list = listOf(
-            "HELIX".asInternalName(),
+            SkyhanniItems.HELIX(),
         )
 
         if (internalName in list) {
@@ -419,7 +417,7 @@ class HideNotClickableItems {
             return true
         }
 
-        if (stack.getInternalName() == netherWart) return false
+        if (stack.getInternalName() == SkyhanniItems.NETHER_STALK()) return false
 
         hideReason = "This item is not a nether wart!"
         return true

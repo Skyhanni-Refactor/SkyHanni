@@ -4,8 +4,6 @@ import at.hannibal2.skyhanni.mixins.hooks.tryToReplaceScoreboardLine
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.UtilsPatterns
-import java.time.LocalDate
-import java.time.ZoneId
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
@@ -137,8 +135,6 @@ object TimeUtils {
             }
         ) ?: ""
     }
-
-    fun getCurrentLocalDate(): LocalDate = LocalDate.now(ZoneId.of("UTC"))
 
     val Long.ticks get() = (this * 50).milliseconds
     val Int.ticks get() = (this * 50).milliseconds

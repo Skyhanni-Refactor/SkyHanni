@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.pests
 
 import at.hannibal2.skyhanni.data.ScoreboardData
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
@@ -24,7 +25,6 @@ import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceSqToPlayer
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
@@ -50,11 +50,11 @@ object PestAPI {
     var lastPestKillTime = SimpleTimeMark.farPast()
 
     val vacuumVariants = listOf(
-        "SKYMART_VACUUM".asInternalName(),
-        "SKYMART_TURBO_VACUUM".asInternalName(),
-        "SKYMART_HYPER_VACUUM".asInternalName(),
-        "INFINI_VACUUM".asInternalName(),
-        "INFINI_VACUUM_HOOVERIUS".asInternalName(),
+        SkyhanniItems.SKYMART_VACUUM(),
+        SkyhanniItems.SKYMART_TURBO_VACUUM(),
+        SkyhanniItems.SKYMART_HYPER_VACUUM(),
+        SkyhanniItems.INFINI_VACUUM(),
+        SkyhanniItems.INFINI_VACUUM_HOOVERIUS(),
     )
 
     fun hasVacuumInHand() = InventoryUtils.itemInHandId in vacuumVariants
@@ -121,28 +121,27 @@ object PestAPI {
     var firstScoreboardCheck = false
 
     private fun fixPests(loop: Int = 2) {
-        val accurateAmount = getPlotsWithAccuratePests().sumOf { it.pests }
-        val inaccurateAmount = getPlotsWithInaccuratePests().size
-        if (scoreboardPests == accurateAmount + inaccurateAmount) { // if we can assume all inaccurate plots have 1 pest each
-            for (plot in getPlotsWithInaccuratePests()) {
-                plot.pests = 1
-                plot.isPestCountInaccurate = false
-            }
-        } else if (inaccurateAmount == 1) { // if we can assume all the inaccurate pests are in the only inaccurate plot
-            val plot = getPlotsWithInaccuratePests().firstOrNull() ?: return
-            plot.pests = scoreboardPests - accurateAmount
-            plot.isPestCountInaccurate = false
-        } else if (accurateAmount + inaccurateAmount > scoreboardPests) { // when logic fails and we reach impossible pest counts
-            getInfestedPlots().forEach {
-                it.pests = 0
-                it.isPestCountInaccurate = true
-            }
-            if (loop > 0) {
-                DelayedRun.runDelayed(2.seconds) {
-                    fixPests(loop - 1)
+        DelayedRun.runDelayed(2.seconds) {
+            val accurateAmount = getPlotsWithAccuratePests().sumOf { it.pests }
+            val inaccurateAmount = getPlotsWithInaccuratePests().size
+            if (scoreboardPests == accurateAmount + inaccurateAmount) { // if we can assume all inaccurate plots have 1 pest each
+                for (plot in getPlotsWithInaccuratePests()) {
+                    plot.pests = 1
+                    plot.isPestCountInaccurate = false
                 }
+            } else if (inaccurateAmount == 1) { // if we can assume all the inaccurate pests are in the only inaccurate plot
+                val plot = getPlotsWithInaccuratePests().firstOrNull() ?: return@runDelayed
+                plot.pests = scoreboardPests - accurateAmount
+                plot.isPestCountInaccurate = false
+            } else if (accurateAmount + inaccurateAmount > scoreboardPests) { // when logic fails and we reach impossible pest counts
+                getInfestedPlots().forEach {
+                    it.pests = 0
+                    it.isPestCountInaccurate = true
+                }
+                if (loop > 0) {
+                    fixPests(loop - 1)
+                } else sendPestError()
             }
-            else sendPestError()
         }
     }
 

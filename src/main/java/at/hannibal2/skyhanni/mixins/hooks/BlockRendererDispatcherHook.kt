@@ -8,6 +8,8 @@ import net.minecraft.client.resources.model.IBakedModel
 import net.minecraft.util.BlockPos
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
+
+// Taken and modified from Skytils
 fun modifyGetModelFromBlockState(
     blockRendererDispatcher: BlockRendererDispatcher,
     state: IBlockState?,

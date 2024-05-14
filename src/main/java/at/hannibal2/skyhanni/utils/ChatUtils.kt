@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.utils.chat.Text.url
 import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ChatComponentText
+import net.minecraft.util.ChatStyle
 import net.minecraft.util.IChatComponent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.LinkedList
@@ -237,5 +238,12 @@ object ChatUtils {
                 property.jumpToEditor()
             }
         )
+    }
+
+    fun IChatComponent.changeColor(color: LorenzColor): IChatComponent {
+        chatStyle = ChatStyle().also {
+            it.color = color.toChatFormatting()
+        }
+        return this
     }
 }

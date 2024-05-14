@@ -134,4 +134,8 @@ public class DebugConfig {
     // Does not have a config element!
     @Expose
     public Position trackSoundPosition = new Position(0, 0);
+
+    // Also does not have a config element!
+    @Expose
+    public Position trackParticlePosition = new Position(0, 0);
 }

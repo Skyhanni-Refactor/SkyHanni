@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.utils
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.mc.McPlayer
@@ -15,7 +16,7 @@ import kotlin.time.Duration.Companion.seconds
 
 object InventoryUtils {
 
-    var itemInHandId = NEUInternalName.NONE
+    var itemInHandId = SkyhanniItems.NONE()
     var recentItemsInHand = mutableMapOf<Long, NEUInternalName>()
     var latestItemInHand: ItemStack? = null
 
@@ -89,5 +90,6 @@ object InventoryUtils {
         return getItemsInOpenChest().find { it.slotIndex == slotIndex }?.stack
     }
 
+    // TODO add a method that also can include the amounts in your sacks
     fun NEUInternalName.getAmountInInventory(): Int = McPlayer.countItems { it.getInternalNameOrNull() == this }
 }

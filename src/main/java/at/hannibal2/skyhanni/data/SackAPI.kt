@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.data
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.features.inventory.SackDisplayConfig.PriceFrom
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.neu.NeuSacksJson
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
@@ -140,7 +141,7 @@ object SackAPI {
                 lore.matchAll(gemstonePattern) {
                     val rarity = group("gemrarity")
                     val stored = group("stored").formatInt()
-                    gem.internalName = gemstoneMap[name.removeColor()] ?: NEUInternalName.NONE
+                    gem.internalName = gemstoneMap[name.removeColor()] ?: SkyhanniItems.NONE()
                     if (gemstoneMap.containsKey(name.removeColor())) {
                         val internalName = "${rarity.uppercase()}_${
                             name.uppercase().split(" ")[0].removeColor()
@@ -212,7 +213,7 @@ object SackAPI {
                         val filletPerTrophy = FishingAPI.getFilletPerTrophy(stack.getInternalName())
                         val filletValue = filletPerTrophy * stored
                         item.magmaFish = filletValue
-                        "MAGMA_FISH".asInternalName().sackPrice(filletValue)
+                        SkyhanniItems.MAGMA_FISH().sackPrice(filletValue)
                     } else {
                         internalName.sackPrice(stored).coerceAtLeast(0)
                     }
@@ -347,7 +348,7 @@ object SackAPI {
     }
 
     data class SackGemstone(
-        var internalName: NEUInternalName = NEUInternalName.NONE,
+        var internalName: NEUInternalName = SkyhanniItems.NONE(),
         var rough: Int = 0,
         var flawed: Int = 0,
         var fine: Int = 0,
@@ -364,7 +365,7 @@ object SackAPI {
     ) : AbstractSackItem()
 
     data class SackOtherItem(
-        var internalName: NEUInternalName = NEUInternalName.NONE,
+        var internalName: NEUInternalName = SkyhanniItems.NONE(),
         var colorCode: String = "",
         var total: Int = 0,
         var magmaFish: Int = 0,
@@ -404,18 +405,18 @@ data class SackItem(
 
 // TODO repo
 private val gemstoneMap = mapOf(
-    "Jade Gemstones" to "ROUGH_JADE_GEM".asInternalName(),
-    "Amber Gemstones" to "ROUGH_AMBER_GEM".asInternalName(),
-    "Topaz Gemstones" to "ROUGH_TOPAZ_GEM".asInternalName(),
-    "Sapphire Gemstones" to "ROUGH_SAPPHIRE_GEM".asInternalName(),
-    "Amethyst Gemstones" to "ROUGH_AMETHYST_GEM".asInternalName(),
-    "Jasper Gemstones" to "ROUGH_JASPER_GEM".asInternalName(),
-    "Ruby Gemstones" to "ROUGH_RUBY_GEM".asInternalName(),
-    "Opal Gemstones" to "ROUGH_OPAL_GEM".asInternalName(),
-    "Onyx Gemstones" to "ROUGH_ONYX_GEM".asInternalName(),
-    "Aquamarine Gemstones" to "ROUGH_AQUAMARINE_GEM".asInternalName(),
-    "Citrine Gemstones" to "ROUGH_CITRINE_GEM".asInternalName(),
-    "Peridot Gemstones" to "ROUGH_PERIDOT_GEM".asInternalName(),
+    "Jade Gemstones" to SkyhanniItems.ROUGH_JADE_GEM(),
+    "Amber Gemstones" to SkyhanniItems.ROUGH_AMBER_GEM(),
+    "Topaz Gemstones" to SkyhanniItems.ROUGH_TOPAZ_GEM(),
+    "Sapphire Gemstones" to SkyhanniItems.ROUGH_SAPPHIRE_GEM(),
+    "Amethyst Gemstones" to SkyhanniItems.ROUGH_AMETHYST_GEM(),
+    "Jasper Gemstones" to SkyhanniItems.ROUGH_JASPER_GEM(),
+    "Ruby Gemstones" to SkyhanniItems.ROUGH_RUBY_GEM(),
+    "Opal Gemstones" to SkyhanniItems.ROUGH_OPAL_GEM(),
+    "Onyx Gemstones" to SkyhanniItems.ROUGH_ONYX_GEM(),
+    "Aquamarine Gemstones" to SkyhanniItems.ROUGH_AQUAMARINE_GEM(),
+    "Citrine Gemstones" to SkyhanniItems.ROUGH_CITRINE_GEM(),
+    "Peridot Gemstones" to SkyhanniItems.ROUGH_PERIDOT_GEM(),
 )
 
 // ideally should be correct but using alright should also be fine unless they sold their whole sacks

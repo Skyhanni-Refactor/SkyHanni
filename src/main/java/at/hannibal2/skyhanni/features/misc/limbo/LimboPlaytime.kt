@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.features.misc.limbo
 
 import at.hannibal2.skyhanni.data.ProfileStorageData
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.InventoryOpenEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
@@ -36,7 +36,6 @@ class LimboPlaytime {
 
     private val storage get() = ProfileStorageData.playerSpecific?.limbo
 
-    private val itemID = "ENDER_PEARL".asInternalName()
     private val itemName = "§aLimbo"
     private lateinit var limboItem: ItemStack
     private var lastCreateCooldown = SimpleTimeMark.farPast()
@@ -52,7 +51,7 @@ class LimboPlaytime {
         if (lastCreateCooldown.passedSince() > 3.seconds) {
             lastCreateCooldown = SimpleTimeMark.now()
             limboItem = Utils.createItemStack(
-                itemID.getItemStack().item,
+                SkyhanniItems.ENDER_PEARL().getItemStack().item,
                 itemName,
                 *createItemLore()
             )

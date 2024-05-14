@@ -1,13 +1,13 @@
 package at.hannibal2.skyhanni.features.itemabilities
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
@@ -22,7 +22,7 @@ class ChickenHeadTimer {
     private var lastTime = SimpleTimeMark.farPast()
     private val cooldown = 5.seconds
 
-    private val chickenHead = "CHICKEN_HEAD".asInternalName()
+    private val chickenHead = SkyhanniItems.CHICKEN_HEAD()
 
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {

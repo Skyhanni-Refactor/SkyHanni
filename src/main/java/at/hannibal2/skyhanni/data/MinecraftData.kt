@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.data
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.ItemInHandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.client.Minecraft
 import net.minecraft.network.play.server.S29PacketSoundEffect
@@ -82,12 +82,12 @@ object MinecraftData {
     fun onTick(event: LorenzTickEvent) {
         if (!LorenzUtils.inSkyBlock) return
         val hand = McPlayer.heldItem
-        val newItem = hand?.getInternalName() ?: NEUInternalName.NONE
+        val newItem = hand?.getInternalName() ?: SkyhanniItems.NONE()
         val oldItem = InventoryUtils.itemInHandId
         if (newItem != oldItem) {
 
             InventoryUtils.recentItemsInHand.keys.removeIf { it + 30_000 > System.currentTimeMillis() }
-            if (newItem != NEUInternalName.NONE) {
+            if (newItem != SkyhanniItems.NONE()) {
                 InventoryUtils.recentItemsInHand[System.currentTimeMillis()] = newItem
             }
             InventoryUtils.itemInHandId = newItem
@@ -98,7 +98,7 @@ object MinecraftData {
 
     @SubscribeEvent
     fun onWorldChange(event: LorenzWorldChangeEvent) {
-        InventoryUtils.itemInHandId = NEUInternalName.NONE
+        InventoryUtils.itemInHandId = SkyhanniItems.NONE()
         InventoryUtils.recentItemsInHand.clear()
     }
 }

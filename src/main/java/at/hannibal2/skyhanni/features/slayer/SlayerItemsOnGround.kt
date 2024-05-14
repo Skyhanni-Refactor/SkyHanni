@@ -2,12 +2,12 @@ package at.hannibal2.skyhanni.features.slayer
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.SlayerAPI
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
@@ -38,7 +38,7 @@ class SlayerItemsOnGround {
             // happens in spiders den sometimes
             if (itemStack.item == Items.spawn_egg) continue
             if (itemStack.getInternalName().equals("")) continue // TODO remove, should never happen
-            if (itemStack.getInternalName() == NEUInternalName.NONE) continue
+            if (itemStack.getInternalName() == SkyhanniItems.NONE()) continue
 
             val (itemName, price) = SlayerAPI.getItemNameAndPrice(itemStack.getInternalName(), itemStack.stackSize)
             if (config.minimumPrice > price) continue

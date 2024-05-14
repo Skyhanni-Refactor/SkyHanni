@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.OwnInventoryItemUpdateEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
@@ -8,7 +9,6 @@ import at.hannibal2.skyhanni.utils.ItemBlink
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
@@ -18,8 +18,6 @@ import kotlin.time.Duration.Companion.seconds
 class WildStrawberryDyeNotification {
 
     private var lastCloseTime = SimpleTimeMark.farPast()
-
-    val item by lazy { "DYE_WILD_STRAWBERRY".asInternalName() }
 
     @SubscribeEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
@@ -36,7 +34,7 @@ class WildStrawberryDyeNotification {
         val itemStack = event.itemStack
 
         val internalName = itemStack.getInternalName()
-        if (internalName == item) {
+        if (internalName == SkyhanniItems.DYE_WILD_STRAWBERRY()) {
             val name = itemStack.name
             LorenzUtils.sendTitle(name, 5.seconds)
             ChatUtils.chat("You found a $name§e!")

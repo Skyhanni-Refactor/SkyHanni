@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.garden.composter
 
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.TabListUpdateEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
@@ -30,7 +31,7 @@ class ComposterDisplay {
     private var display = emptyList<List<Any>>()
     private var composterEmptyTime: Duration? = null
 
-    private val bucket by lazy { "BUCKET".asInternalName().getItemStack() }
+    private val bucket by lazy { SkyhanniItems.BUCKET().getItemStack() }
     private var tabListData by ComposterAPI::tabListData
 
     enum class DataType(rawPattern: String, val icon: String) {

@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.config.ConfigManager
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.other.HypixelApiTrophyFish
 import at.hannibal2.skyhanni.data.jsonobjects.other.HypixelPlayerApiJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.MultiFilterJson
@@ -155,7 +156,7 @@ object NEUItems {
     fun NEUInternalName.getNpcPrice() = getNpcPriceOrNull() ?: -1.0
 
     fun NEUInternalName.getNpcPriceOrNull(): Double? {
-        if (this == NEUInternalName.WISP_POTION) {
+        if (this == SkyhanniItems.WISP_POTION()) {
             return 20_000.0
         }
         return BazaarDataHolder.getNpcPrice(this)
@@ -165,7 +166,7 @@ object NEUItems {
         manager.auctionManager.transformHypixelBazaarToNEUItemId(hypixelId).asInternalName()
 
     fun NEUInternalName.getPriceOrNull(useSellingPrice: Boolean = false): Double? {
-        if (this == NEUInternalName.WISP_POTION) {
+        if (this == SkyhanniItems.WISP_POTION()) {
             return 20_000.0
         }
 
@@ -177,7 +178,7 @@ object NEUItems {
         if (result != -1L) return result.toDouble()
 
         if (equals("JACK_O_LANTERN")) {
-            return "PUMPKIN".asInternalName().getPrice(useSellingPrice) + 1
+            return SkyhanniItems.PUMPKIN().getPrice(useSellingPrice) + 1
         }
         if (equals("GOLDEN_CARROT")) {
             // 6.8 for some players
@@ -288,22 +289,22 @@ object NEUItems {
                 val count = ingredient.count.toInt()
                 var internalItemId = ingredient.internalItemId.asInternalName()
                 // ignore cactus green
-                if (internalName == "ENCHANTED_CACTUS_GREEN".asInternalName() && internalItemId == "INK_SACK-2".asInternalName()) {
-                    internalItemId = "CACTUS".asInternalName()
+                if (internalName == SkyhanniItems.ENCHANTED_CACTUS_GREEN() && internalItemId == SkyhanniItems.CACTUS_GREEN()) {
+                    internalItemId = SkyhanniItems.CACTUS()
                 }
 
                 // ignore wheat in enchanted cookie
-                if (internalName == "ENCHANTED_COOKIE".asInternalName() && internalItemId == "WHEAT".asInternalName()) {
+                if (internalName == SkyhanniItems.ENCHANTED_COOKIE() && internalItemId == SkyhanniItems.WHEAT()) {
                     continue
                 }
 
                 // ignore golden carrot in enchanted golden carrot
-                if (internalName == "ENCHANTED_GOLDEN_CARROT".asInternalName() && internalItemId == "GOLDEN_CARROT".asInternalName()) {
+                if (internalName == SkyhanniItems.ENCHANTED_GOLDEN_CARROT() && internalItemId == SkyhanniItems.GOLDEN_CARROT()) {
                     continue
                 }
 
                 // ignore rabbit hide in leather
-                if (internalName == "LEATHER".asInternalName() && internalItemId == "RABBIT_HIDE".asInternalName()) {
+                if (internalName == SkyhanniItems.LEATHER() && internalItemId == SkyhanniItems.RABBIT_HIDE()) {
                     continue
                 }
 

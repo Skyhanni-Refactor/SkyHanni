@@ -19,6 +19,7 @@ import at.hannibal2.skyhanni.data.ActionBarStatsData
 import at.hannibal2.skyhanni.data.ChatManager
 import at.hannibal2.skyhanni.data.CropAccessoryData
 import at.hannibal2.skyhanni.data.EntityMovementData
+import at.hannibal2.skyhanni.data.EventCounter
 import at.hannibal2.skyhanni.data.FameRanks
 import at.hannibal2.skyhanni.data.FixedRateTimerManager
 import at.hannibal2.skyhanni.data.FriendAPI
@@ -87,6 +88,7 @@ import at.hannibal2.skyhanni.features.chat.playerchat.PlayerChatFilter
 import at.hannibal2.skyhanni.features.chat.playerchat.PlayerChatModifier
 import at.hannibal2.skyhanni.features.chroma.ChromaManager
 import at.hannibal2.skyhanni.features.combat.BestiaryData
+import at.hannibal2.skyhanni.features.combat.FerocityDisplay
 import at.hannibal2.skyhanni.features.combat.HideDamageSplash
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
 import at.hannibal2.skyhanni.features.combat.endernodetracker.EnderNodeTracker
@@ -445,8 +447,8 @@ import at.hannibal2.skyhanni.test.TestCopyRngMeterValues
 import at.hannibal2.skyhanni.test.TestExportTools
 import at.hannibal2.skyhanni.test.TestShowSlotNumber
 import at.hannibal2.skyhanni.test.WorldEdit
-import at.hannibal2.skyhanni.test.command.CopyNearbyParticlesCommand
 import at.hannibal2.skyhanni.test.command.ErrorManager
+import at.hannibal2.skyhanni.test.command.TrackParticlesCommand
 import at.hannibal2.skyhanni.test.command.TrackSoundsCommand
 import at.hannibal2.skyhanni.test.hotswap.HotswapSupport
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -483,7 +485,7 @@ import org.apache.logging.log4j.Logger
     clientSideOnly = true,
     useMetadata = true,
     guiFactory = "at.hannibal2.skyhanni.config.ConfigGuiForgeInterop",
-    version = "0.25.Beta.25",
+    version = "0.25.Beta.26",
 )
 class SkyHanniMod {
 
@@ -514,6 +516,7 @@ class SkyHanniMod {
         loadModule(EntityMovementData())
         loadModule(EntityOutlineRenderer)
         loadModule(EntityUtils)
+        loadModule(EventCounter)
         loadModule(FixedRateTimerManager())
         loadModule(GardenBestCropTime())
         loadModule(GardenComposterUpgradesData())
@@ -710,6 +713,7 @@ class SkyHanniMod {
         loadModule(FarmingLaneCreator)
         loadModule(FarmingLaneFeatures)
         loadModule(FarmingWeightDisplay())
+        loadModule(FerocityDisplay())
         loadModule(FirePillarDisplay())
         loadModule(FireVeilWandParticles())
         loadModule(FishingBaitWarnings())
@@ -893,7 +897,7 @@ class SkyHanniMod {
         loadModule(SulphurSkitterBox())
         loadModule(SummoningMobManager())
         loadModule(SummoningSoulsName())
-        loadModule(SuperCraftFeatures())
+        loadModule(SuperCraftFeatures)
         loadModule(SuperpairsClicksAlert())
         loadModule(TabListReader)
         loadModule(TabListRenderer)
@@ -932,26 +936,24 @@ class SkyHanniMod {
         loadModule(WildStrawberryDyeNotification())
         loadModule(WrongFungiCutterWarning())
 
-        init()
-
         // test stuff
         loadModule(ButtonOnPause())
-        loadModule(CopyNearbyParticlesCommand)
         loadModule(FixGhostEntities)
         loadModule(HighlightMissingRepoItems())
         loadModule(PacketTest)
         loadModule(ParkourWaypointSaver())
         loadModule(SkyHanniDebugsAndTests())
-        loadModule(SkyHanniDebugsAndTests)
         loadModule(TestBingo)
         loadModule(TestCopyBestiaryValues)
         loadModule(TestCopyRngMeterValues)
         loadModule(TestShowSlotNumber())
+        loadModule(TrackParticlesCommand)
         loadModule(TrackSoundsCommand)
         loadModule(WorldEdit)
-        PreInitFinishedEvent().postAndCatch()
 
         loadModule(MobDebug())
+        init()
+        PreInitFinishedEvent().postAndCatch()
     }
 
     @Mod.EventHandler
@@ -969,10 +971,18 @@ class SkyHanniMod {
         } catch (e: Exception) {
             Exception("Error reading repo data", e).printStackTrace()
         }
+        // TODO rework
+        loadedClasses.clear()
     }
+
+    private val loadedClasses = mutableSetOf<Any>()
 
     fun loadModule(obj: Any) {
         modules.add(obj)
+        if (!loadedClasses.add(obj.javaClass.name)) {
+            println("Loading module twice: ${obj.javaClass.name}")
+        }
+
         MinecraftForge.EVENT_BUS.register(obj)
     }
 

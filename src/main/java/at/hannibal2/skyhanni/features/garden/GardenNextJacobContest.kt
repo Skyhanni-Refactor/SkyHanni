@@ -100,7 +100,7 @@ object GardenNextJacobContest {
             return
         }
 
-        event.addData {
+        event.addIrrelevant {
             add("Current time: ${SimpleTimeMark.now()}")
             add("")
 

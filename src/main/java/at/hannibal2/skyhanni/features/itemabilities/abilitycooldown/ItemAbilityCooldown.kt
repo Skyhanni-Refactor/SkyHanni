@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.itemabilities.abilitycooldown
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.events.ItemClickEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
@@ -21,7 +22,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getAbilityScrolls
@@ -57,9 +57,6 @@ class ItemAbilityCooldown {
     private var lastAbility = ""
     private var items = mapOf<String, List<ItemText>>()
     private var abilityItems = mapOf<ItemStack, MutableList<ItemAbility>>()
-    private val WEIRD_TUBA = "WEIRD_TUBA".asInternalName()
-    private val WEIRDER_TUBA = "WEIRDER_TUBA".asInternalName()
-    private val VOODOO_DOLL_WILTED = "VOODOO_DOLL_WILTED".asInternalName()
 
     @SubscribeEvent
     fun onPlaySound(event: PlaySoundEvent) {
@@ -89,8 +86,8 @@ class ItemAbilityCooldown {
                 if (event.pitch == 1f && event.volume == 1f) {
                     val internalName = McPlayer.heldItem?.getInternalName() ?: return
                     if (!internalName.equalsOneOf(
-                            "SHADOW_FURY".asInternalName(),
-                            "STARRED_SHADOW_FURY".asInternalName()
+                            SkyhanniItems.SHADOW_FURY(),
+                            SkyhanniItems.STARRED_SHADOW_FURY(),
                         )
                     ) return
 
@@ -124,7 +121,7 @@ class ItemAbilityCooldown {
             // Jinxed Voodoo Doll Miss
             event.soundName == "mob.ghast.scream" && event.volume == 1.0f && event.pitch >= 1.6 && event.pitch <= 1.7 -> {
                 val recentItems = InventoryUtils.recentItemsInHand.values
-                if (VOODOO_DOLL_WILTED in recentItems) {
+                if (SkyhanniItems.VOODOO_DOLL_WILTED() in recentItems) {
                     ItemAbility.VOODOO_DOLL_WILTED.sound()
                 }
             }
@@ -135,10 +132,10 @@ class ItemAbilityCooldown {
             // Weird Tuba & Weirder Tuba
             event.soundName == "mob.wolf.howl" && event.volume == 0.5f -> {
                 val recentItems = InventoryUtils.recentItemsInHand.values
-                if (WEIRD_TUBA in recentItems) {
+                if (SkyhanniItems.WEIRD_TUBA() in recentItems) {
                     ItemAbility.WEIRD_TUBA.sound()
                 }
-                if (WEIRDER_TUBA in recentItems) {
+                if (SkyhanniItems.WEIRDER_TUBA() in recentItems) {
                     ItemAbility.WEIRDER_TUBA.sound()
                 }
             }

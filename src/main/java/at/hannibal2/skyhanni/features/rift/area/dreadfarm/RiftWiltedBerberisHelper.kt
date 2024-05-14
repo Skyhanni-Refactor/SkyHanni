@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.rift.area.dreadfarm
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.ReceiveParticleEvent
@@ -45,7 +46,7 @@ class RiftWiltedBerberisHelper {
 
         list = list.editCopy { removeIf { it.lastTime.passedSince() > 500.milliseconds } }
 
-        hasFarmingToolInHand = McPlayer.heldItem?.getInternalName() == RiftAPI.farmingTool
+        hasFarmingToolInHand = McPlayer.heldItem?.getInternalName() == SkyhanniItems.FARMING_WAND()
 
         if (Minecraft.getMinecraft().thePlayer.onGround) {
             val block = LocationUtils.playerLocation().add(y = -1).getBlockAt()

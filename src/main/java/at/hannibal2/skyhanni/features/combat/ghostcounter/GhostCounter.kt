@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.config.features.combat.ghostcounter.GhostCounterCon
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.SkillExperience
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
@@ -42,7 +43,6 @@ import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
@@ -114,9 +114,6 @@ object GhostCounter {
     private var currentSkill = ""
     private var currentSkillLevel = -1
     private const val CONFIG_VALUE_VERSION = 1
-    private val SORROW = "SORROW".asInternalName()
-    private val PLASMA = "PLASMA".asInternalName()
-    private val VOLTA = "VOLTA".asInternalName()
 
     @SubscribeEvent
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
@@ -262,10 +259,10 @@ object GhostCounter {
         addAsSingletonList(etaFormatting.base.formatText(eta).formatText(killETA))
 
         val rate = 0.12 * (1 + (avgMagicFind.toDouble() / 100))
-        val sorrowValue = SORROW.getBazaarData()?.sellOfferPrice?.toLong() ?: 0L
+        val sorrowValue = SkyhanniItems.SORROW().getBazaarData()?.sellOfferPrice?.toLong() ?: 0L
         val final: String = (killInterp * sorrowValue * (rate / 100)).toLong().addSeparators()
-        val plasmaValue = PLASMA.getBazaarData()?.sellOfferPrice?.toLong() ?: 0L
-        val voltaValue = VOLTA.getBazaarData()?.sellOfferPrice?.toLong() ?: 0L
+        val plasmaValue = SkyhanniItems.PLASMA().getBazaarData()?.sellOfferPrice?.toLong() ?: 0L
+        val voltaValue = SkyhanniItems.VOLTA().getBazaarData()?.sellOfferPrice?.toLong() ?: 0L
         var moneyMade: Long = 0
         val priceMap = listOf(
             Triple("Sorrow", Option.SORROWCOUNT.getInt(), sorrowValue),

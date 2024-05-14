@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.bingo
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
@@ -156,11 +157,11 @@ class MinionCraftHelper {
         for (internalId in NEUItems.allNeuRepoItems().keys) {
             val internalName = internalId.asInternalName()
             if (internalName.endsWith("_GENERATOR_1")) {
-                if (internalName == "REVENANT_GENERATOR_1".asInternalName() ||
-                    internalName == "TARANTULA_GENERATOR_1".asInternalName() ||
-                    internalName == "VOIDLING_GENERATOR_1".asInternalName() ||
-                    internalName == "INFERNO_GENERATOR_1".asInternalName() ||
-                    internalName == "VAMPIRE_GENERATOR_1".asInternalName()
+                if (internalName == SkyhanniItems.REVENANT_GENERATOR_1() ||
+                    internalName == SkyhanniItems.TARANTULA_GENERATOR_1() ||
+                    internalName == SkyhanniItems.VOIDLING_GENERATOR_1() ||
+                    internalName == SkyhanniItems.INFERNO_GENERATOR_1() ||
+                    internalName == SkyhanniItems.VAMPIRE_GENERATOR_1()
                 ) continue
                 tierOneMinions.add(internalName)
             }

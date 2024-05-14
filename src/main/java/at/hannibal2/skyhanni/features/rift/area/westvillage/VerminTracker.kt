@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.rift.area.westvillage
 
 import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.IslandChangeEvent
@@ -12,7 +13,6 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.matches
@@ -45,7 +45,6 @@ object VerminTracker {
     )
 
     private var hasVacuum = false
-    private val TURBOMAX_VACUUM = "TURBOMAX_VACUUM".asInternalName()
 
     private val config get() = RiftAPI.config.area.westVillage.verminTracker
 
@@ -71,7 +70,7 @@ object VerminTracker {
     @SubscribeEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!RiftAPI.inRift()) return
-        hasVacuum = McPlayer.has(TURBOMAX_VACUUM)
+        hasVacuum = McPlayer.has(SkyhanniItems.TURBOMAX_VACUUM())
     }
 
     @SubscribeEvent
@@ -93,7 +92,7 @@ object VerminTracker {
 
         val bin = event.inventoryItems[13]?.getLore() ?: return
         val bag = McPlayer.inventory
-            .firstOrNull { it.getInternalName() == TURBOMAX_VACUUM }
+            .firstOrNull { it.getInternalName() == SkyhanniItems.TURBOMAX_VACUUM() }
             ?.getLore() ?: emptyList()
 
         val binCounts = countVermin(bin)
