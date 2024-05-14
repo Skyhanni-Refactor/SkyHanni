@@ -3,8 +3,8 @@ package at.hannibal2.skyhanni.features.rift.area.wyldwoods
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
-import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
+import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
@@ -39,7 +39,7 @@ class RiftOdonata {
             if (stand.hasSkullTexture(odonataSkullTexture)) {
                 RenderLivingEntityHelper.setEntityColor(
                     stand,
-                    config.highlightColor.toChromaColor().withAlpha(1)
+                    config.highlightColor.toChromaColour().withAlpha(1)
                 ) { isEnabled() && hasBottleInHand }
             }
         }

@@ -7,7 +7,7 @@ import at.hannibal2.skyhanni.events.InventoryOpenEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
 import at.hannibal2.skyhanni.features.inventory.AuctionsHighlighter
 import at.hannibal2.skyhanni.features.misc.items.EstimatedItemValueCalculator
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -74,11 +74,11 @@ class AuctionHousePriceComparison {
     fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
         if (!isEnabled()) return
 
-        val good = config.good.toChromaColor()
-        val veryGood = config.veryGood.toChromaColor()
+        val good = config.good.toChromaColour()
+        val veryGood = config.veryGood.toChromaColour()
 
-        val bad = config.bad.toChromaColor()
-        val veryBad = config.veryBad.toChromaColor()
+        val bad = config.bad.toChromaColour()
+        val veryBad = config.veryBad.toChromaColour()
 
 
         for (slot in InventoryUtils.getItemsInOpenChest()) {

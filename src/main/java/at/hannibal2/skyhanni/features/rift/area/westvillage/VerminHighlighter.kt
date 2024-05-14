@@ -4,8 +4,8 @@ import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
-import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
+import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
 import at.hannibal2.skyhanni.utils.InventoryUtils
@@ -41,7 +41,7 @@ class VerminHighlighter {
             checkedEntites.add(id)
 
             if (!isVermin(entity)) continue
-            val color = config.color.get().toChromaColor().withAlpha(60)
+            val color = config.color.get().toChromaColour().withAlpha(60)
             RenderLivingEntityHelper.setEntityColorWithNoHurtTime(entity, color) { isEnabled() }
         }
     }

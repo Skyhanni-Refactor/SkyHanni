@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColorInt
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColourInt
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
@@ -76,7 +76,7 @@ class SulphurSkitterBox {
     }
 
     private fun drawBox(axis: BoundingBox, partialTicks: Float) {
-        val color = Color(config.boxColor.toChromaColorInt(), true)
+        val color = Color(config.boxColor.toChromaColourInt(), true)
         when (config.boxType) {
             SulphurSkitterBoxConfig.BoxType.FULL -> {
                 RenderUtils.drawFilledBoundingBox_nea(

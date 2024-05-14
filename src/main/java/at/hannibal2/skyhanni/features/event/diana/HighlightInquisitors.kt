@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.event.diana
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColorInt
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColourInt
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
@@ -20,7 +20,7 @@ class HighlightInquisitors {
         val entity = event.entity
 
         if (entity is EntityPlayer && entity.name == "Minos Inquisitor") {
-            val color = config.color.toChromaColorInt()
+            val color = config.color.toChromaColourInt()
             RenderLivingEntityHelper.setEntityColorWithNoHurtTime(entity, color) { config.highlightInquisitors }
         }
     }

@@ -10,7 +10,7 @@ import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.InventoryUtils.getAllItems
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
@@ -121,12 +121,12 @@ object EnigmaSoulWaypoints {
         for ((slot, stack) in chest.getAllItems()) {
             for (soul in trackedSouls) {
                 if (stack.displayName.removeColor().contains(soul)) {
-                    slot highlight config.colour.toChromaColor()
+                    slot highlight config.colour.toChromaColour()
                 }
             }
         }
         if (!adding) {
-            chest.inventorySlots[31] highlight config.colour.toChromaColor()
+            chest.inventorySlots[31] highlight config.colour.toChromaColour()
         }
     }
 
@@ -135,7 +135,7 @@ object EnigmaSoulWaypoints {
         if (!isEnabled()) return
         for (soul in trackedSouls) {
             soulLocations[soul]?.let {
-                event.drawWaypointFilled(it, config.colour.toChromaColor(), seeThroughBlocks = true, beacon = true)
+                event.drawWaypointFilled(it, config.colour.toChromaColour(), seeThroughBlocks = true, beacon = true)
                 event.drawDynamicText(it.add(y = 1), "§5$soul Soul", 1.5)
             }
         }

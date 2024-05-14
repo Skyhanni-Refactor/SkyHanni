@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.ParkourHelper
@@ -74,7 +74,7 @@ class DungeonsRaceGuide {
     private fun updateConfig() {
         parkourHelpers.forEach {
             it.value.rainbowColor = config.rainbowColor.get()
-            it.value.monochromeColor = config.monochromeColor.get().toChromaColor()
+            it.value.monochromeColor = config.monochromeColor.get().toChromaColour()
             it.value.lookAhead = config.lookAhead.get() + 1
         }
     }

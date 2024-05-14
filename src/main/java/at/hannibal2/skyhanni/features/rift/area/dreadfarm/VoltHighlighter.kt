@@ -5,7 +5,7 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
 import at.hannibal2.skyhanni.utils.RenderUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
@@ -62,7 +62,7 @@ object VoltHighlighter {
                 ) { config.voltMoodMeter }
             if (state == VoltState.DOING_LIGHTNING && config.voltRange) {
                 RenderUtils.drawCylinderInWorld(
-                    config.voltColour.toChromaColor(),
+                    config.voltColour.toChromaColour(),
                     entity.posX,
                     entity.posY - 4f,
                     entity.posZ,

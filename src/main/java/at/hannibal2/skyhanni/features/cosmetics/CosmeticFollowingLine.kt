@@ -7,7 +7,7 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -41,7 +41,7 @@ class CosmeticFollowingLine {
         updateClose(event)
 
         val firstPerson = Minecraft.getMinecraft().gameSettings.thirdPersonView == 0
-        val color = config.lineColor.toChromaColor()
+        val color = config.lineColor.toChromaColour()
 
         renderClose(event, firstPerson, color)
         renderFar(event, firstPerson, color)
