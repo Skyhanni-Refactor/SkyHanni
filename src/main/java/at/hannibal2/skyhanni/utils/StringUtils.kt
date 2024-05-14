@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.data.hypixel.chat.event.SystemMessageEvent
 import at.hannibal2.skyhanni.mixins.transformers.AccessorChatComponentText
 import at.hannibal2.skyhanni.utils.GuiRenderUtils.darkenColor
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
+import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiUtilRenderComponents
 import net.minecraft.event.ClickEvent
@@ -100,29 +101,6 @@ object StringUtils {
 
     fun UUID.toDashlessUUID(): String = toString().replace("-", "")
 
-    inline fun <T> Pattern.matchMatcher(text: String, consumer: Matcher.() -> T) =
-        matcher(text).let { if (it.matches()) consumer(it) else null }
-
-    inline fun <T> Pattern.findMatcher(text: String, consumer: Matcher.() -> T) =
-        matcher(text).let { if (it.find()) consumer(it) else null }
-
-    inline fun <T> Sequence<String>.matchFirst(pattern: Pattern, consumer: Matcher.() -> T): T? =
-        toList().matchFirst(pattern, consumer)
-
-    inline fun <T> List<String>.matchFirst(pattern: Pattern, consumer: Matcher.() -> T): T? {
-        for (line in this) {
-            pattern.matcher(line).let { if (it.matches()) return consumer(it) }
-        }
-        return null
-    }
-
-    inline fun <T> List<String>.matchAll(pattern: Pattern, consumer: Matcher.() -> T): T? {
-        for (line in this) {
-            pattern.matcher(line).let { if (it.find()) consumer(it) }
-        }
-        return null
-    }
-
     private fun String.internalCleanPlayerName(): String {
         val split = trim().split(" ")
         return if (split.size > 1) {
@@ -141,15 +119,6 @@ object StringUtils {
         } else {
             internalCleanPlayerName()
         }
-    }
-
-    inline fun <T> List<Pattern>.matchMatchers(text: String, consumer: Matcher.() -> T): T? {
-        for (pattern in iterator()) {
-            pattern.matchMatcher<T>(text) {
-                return consumer()
-            }
-        }
-        return null
     }
 
     fun getColor(string: String, default: Int, darker: Boolean = true): Int {

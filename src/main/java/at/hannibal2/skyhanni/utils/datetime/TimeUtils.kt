@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.utils.datetime
 
 import at.hannibal2.skyhanni.mixins.hooks.tryToReplaceScoreboardLine
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
-import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.UtilsPatterns
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds

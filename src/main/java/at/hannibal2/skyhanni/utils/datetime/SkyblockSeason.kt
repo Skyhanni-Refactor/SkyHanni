@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.utils.datetime
 
 import at.hannibal2.skyhanni.utils.RecalculatingValue
-import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.UtilsPatterns.seasonPattern
 import kotlin.time.Duration.Companion.seconds
 
