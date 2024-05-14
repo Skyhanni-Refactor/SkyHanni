@@ -220,6 +220,15 @@ object ChatUtils {
         sendQueue.add(message)
     }
 
+    //JvmStatic needed since this is also used in moulconfig runnable
+    @JvmStatic
+    fun sendCommandToServer(command: String) {
+        if (command.startsWith("/")) {
+            debug("Sending wrong command to server? ($command)")
+        }
+        sendQueue.add("/$command")
+    }
+
     fun MessageSendToServerEvent.isCommand(commandWithSlash: String) =
         splitMessage.takeIf { it.isNotEmpty() }?.get(0) == commandWithSlash
 

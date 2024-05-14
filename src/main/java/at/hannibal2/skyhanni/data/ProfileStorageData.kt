@@ -11,7 +11,6 @@ import at.hannibal2.skyhanni.events.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.TabListUpdateEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchFirst
@@ -73,7 +72,7 @@ object ProfileStorageData {
                     "§cCan not read profile name from tab list! Open /widget and enable Profile Widget. " +
                         "This is needed for the mod to function! And therefore this warning cannot be disabled",
                     onClick = {
-                        HypixelCommands.widget()
+                        ChatUtils.sendCommandToServer("widget")
                     }
                 )
             } else {

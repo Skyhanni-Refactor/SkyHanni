@@ -14,7 +14,6 @@ import at.hannibal2.skyhanni.events.SlayerChangeEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
@@ -204,7 +203,11 @@ object SlayerRngMeterDisplay {
 
     private fun makeLink(text: String) =
         Renderable.clickAndHover(text, listOf("§eClick to open RNG Meter Inventory."), onClick = {
-            HypixelCommands.showRng("slayer", SlayerAPI.getActiveSlayer()?.rngName)
+            if (SlayerAPI.getActiveSlayer()?.rngName == null) {
+                ChatUtils.sendCommandToServer("rng")
+            } else {
+                ChatUtils.sendCommandToServer("rng slayer ${SlayerAPI.getActiveSlayer()?.rngName}")
+            }
         })
 
     fun drawDisplay(): String {

@@ -4,7 +4,6 @@ import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
 import at.hannibal2.skyhanni.events.MessageSendToServerEvent
 import at.hannibal2.skyhanni.features.misc.LockMouseLook
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
@@ -33,20 +32,20 @@ object GardenWarpCommands {
 
         if (message == "/home") {
             event.isCanceled = true
-            HypixelCommands.warp("garden")
+            ChatUtils.sendCommandToServer("warp garden")
             ChatUtils.chat("§aTeleported you to the spawn location!", prefix = false)
         }
 
         if (message == "/barn") {
             event.isCanceled = true
-            HypixelCommands.teleportToPlot("barn")
+            ChatUtils.sendCommandToServer("tptoplot barn")
             LockMouseLook.autoDisable()
         }
 
         tpPlotPattern.matchMatcher(event.message) {
             event.isCanceled = true
             val plotName = group("plot")
-            HypixelCommands.teleportToPlot(plotName)
+            ChatUtils.sendCommandToServer("tptoplot $plotName")
             LockMouseLook.autoDisable()
         }
     }
@@ -61,16 +60,16 @@ object GardenWarpCommands {
 
         when (event.keyCode) {
             config.homeHotkey -> {
-                HypixelCommands.warp("garden")
+                ChatUtils.sendCommandToServer("warp garden")
             }
 
             config.sethomeHotkey -> {
-                HypixelCommands.setHome()
+                ChatUtils.sendCommandToServer("sethome")
             }
 
             config.barnHotkey -> {
                 LockMouseLook.autoDisable()
-                HypixelCommands.teleportToPlot("barn")
+                ChatUtils.sendCommandToServer("tptoplot barn")
             }
 
             else -> return

@@ -9,7 +9,6 @@ import at.hannibal2.skyhanni.events.LorenzToolTipEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -96,7 +95,7 @@ object GardenLevelDisplay {
                 " \n§b§lGARDEN LEVEL UP §8$oldLevel ➜ §b$newLevel\n" +
                     " §8+§aRespect from Elite Farmers and SkyHanni members :)\n ",
                 onClick = {
-                    HypixelCommands.gardenLevels()
+                    ChatUtils.sendCommandToServer("gardenlevels")
                 },
                 prefix = false
             )

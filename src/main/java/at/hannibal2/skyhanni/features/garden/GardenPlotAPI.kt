@@ -5,7 +5,7 @@ import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.features.garden.pests.SprayType
 import at.hannibal2.skyhanni.features.misc.LockMouseLook
-import at.hannibal2.skyhanni.utils.HypixelCommands
+import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -207,8 +207,8 @@ object GardenPlotAPI {
     fun Plot.isPlayerInside() = box.contains(McPlayer.pos)
 
     fun Plot.sendTeleportTo() {
-        if (isBarn()) HypixelCommands.teleportToPlot("barn")
-        else HypixelCommands.teleportToPlot(name)
+        if (isBarn()) ChatUtils.sendCommandToServer("tptoplot barn")
+        else ChatUtils.sendCommandToServer("tptoplot $name")
         LockMouseLook.autoDisable()
     }
 

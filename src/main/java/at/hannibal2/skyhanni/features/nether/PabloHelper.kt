@@ -4,7 +4,6 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -36,7 +35,7 @@ object PabloHelper {
         if (McPlayer.countItems { it.name.contains(itemName) } > 0) return
 
         ChatUtils.clickableChat("Click here to grab an $itemName from sacks!", onClick = {
-            HypixelCommands.getFromSacks(itemName, 1)
+            ChatUtils.sendCommandToServer("gfs $itemName 1")
         })
         lastSentMessage = SimpleTimeMark.now()
     }

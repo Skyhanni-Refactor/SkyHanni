@@ -8,7 +8,6 @@ import at.hannibal2.skyhanni.events.garden.pests.PestSpawnEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
@@ -130,7 +129,7 @@ object PestSpawn {
 
         if (config.chatMessageFormat == PestSpawnConfig.ChatMessageFormatEntry.COMPACT) {
             ChatUtils.clickableChat(message, onClick = {
-                HypixelCommands.teleportToPlot(plotName)
+                ChatUtils.sendCommandToServer("tptoplot $plotName")
             })
         }
     }

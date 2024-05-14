@@ -9,7 +9,6 @@ import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUInternalName
@@ -178,7 +177,7 @@ object ComposterDisplay {
             ChatUtils.chat(warningMessage)
         } else {
             ChatUtils.clickableChat(warningMessage, onClick = {
-                HypixelCommands.warp("garden")
+                ChatUtils.sendCommandToServer("warp garden")
             })
         }
         LorenzUtils.sendTitle("§eComposter Warning!", 3.seconds)

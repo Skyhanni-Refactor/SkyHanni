@@ -10,7 +10,7 @@ import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.HypixelCommands
+import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils.getAllItems
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -54,7 +54,7 @@ object BazaarApi {
         if (NEUItems.neuHasFocus()) return
         if (LorenzUtils.noTradeMode) return
         if (DungeonAPI.inDungeon() || LorenzUtils.inKuudraFight) return
-        HypixelCommands.bazaar(displayName.removeColor())
+        ChatUtils.sendCommandToServer("bz ${displayName.removeColor()}")
         if (amount != -1) OS.copyToClipboard(amount.toString())
         currentSearchedItem = displayName.removeColor()
     }

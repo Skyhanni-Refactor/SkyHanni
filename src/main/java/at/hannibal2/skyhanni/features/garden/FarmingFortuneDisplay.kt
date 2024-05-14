@@ -12,7 +12,6 @@ import at.hannibal2.skyhanni.features.garden.CropType.Companion.getTurboCrop
 import at.hannibal2.skyhanni.features.garden.pests.PestAPI
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.NEUInternalName
@@ -190,7 +189,7 @@ object FarmingFortuneDisplay {
                     "§cshowing latest Crop Fortune."
                 ),
                 onClick = {
-                    HypixelCommands.widget()
+                    ChatUtils.sendCommandToServer("widget")
                 }
             ))
         } else {
@@ -201,7 +200,7 @@ object FarmingFortuneDisplay {
                     "§cshowing the Farming Fortune stat."
                 ),
                 onClick = {
-                    HypixelCommands.widget()
+                    ChatUtils.sendCommandToServer("widget")
                 }
             ))
         }
@@ -217,7 +216,7 @@ object FarmingFortuneDisplay {
                 "§cCan not read Farming Fortune from tab list! Open /widget and enable the Stats Widget " +
                     "and showing the Farming Fortune stat.",
                 onClick = {
-                    HypixelCommands.widget()
+                    ChatUtils.sendCommandToServer("widget")
                 }
             )
             lastUniversalFortuneMissingError = SimpleTimeMark.now()
@@ -228,7 +227,7 @@ object FarmingFortuneDisplay {
                 "§cCan not read Crop Fortune from tab list! Open /widget and enable the Stats Widget " +
                     "and showing latest Crop Fortune.",
                 onClick = {
-                    HypixelCommands.widget()
+                    ChatUtils.sendCommandToServer("widget")
                 }
             )
             lastCropFortuneMissingError = SimpleTimeMark.now()

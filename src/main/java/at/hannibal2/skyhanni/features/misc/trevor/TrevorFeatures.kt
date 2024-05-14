@@ -15,9 +15,9 @@ import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
+import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
 import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
@@ -288,7 +288,7 @@ object TrevorFeatures {
             val timeSince = lastChatPromptTime.passedSince()
             if (timeSince > 200.milliseconds && timeSince < 5.seconds) {
                 lastChatPromptTime = SimpleTimeMark.farPast()
-                HypixelCommands.chatPrompt(lastChatPrompt)
+                ChatUtils.sendCommandToServer("chatprompt $lastChatPrompt")
                 lastChatPrompt = ""
                 timeLastWarped = SimpleTimeMark.now()
                 return
@@ -296,7 +296,7 @@ object TrevorFeatures {
         }
 
         if (config.warpToTrapper && timeLastWarped.passedSince() > 3.seconds && teleportBlock.passedSince() > 5.seconds) {
-            HypixelCommands.warp("trapper")
+            ChatUtils.sendCommandToServer("warp trapper")
             timeLastWarped = SimpleTimeMark.now()
         }
     }

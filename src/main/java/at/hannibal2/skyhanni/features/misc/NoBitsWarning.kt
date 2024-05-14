@@ -4,7 +4,6 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.BitsUpdateEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.mc.McSound
@@ -22,7 +21,7 @@ object NoBitsWarning {
             ChatUtils.clickableChat(
                 "§bNo Bits Available! §eClick to run /bz booster cookie.",
                 onClick = {
-                    HypixelCommands.bazaar("booster cookie")
+                    ChatUtils.sendCommandToServer("bz booster cookie")
                 }
             )
             LorenzUtils.sendTitle("§bNo Bits Available", 5.seconds)

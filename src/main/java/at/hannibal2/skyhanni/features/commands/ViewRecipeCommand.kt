@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.commands
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.events.MessageSendToServerEvent
-import at.hannibal2.skyhanni.utils.HypixelCommands
+import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.NEUItems
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -20,7 +20,7 @@ object ViewRecipeCommand {
         val item = message.uppercase().substringAfter("viewrecipe").trim()
         if (item.isEmpty()) return
         event.isCanceled = true
-        HypixelCommands.viewRecipe(item)
+        ChatUtils.sendCommandToServer("viewrecipe $item")
     }
 
     val list by lazy {

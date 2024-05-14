@@ -5,7 +5,6 @@ import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacks
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -45,7 +44,7 @@ object DungeonArchitectFeatures {
         ChatUtils.clickableChat(
             "§c§lPUZZLE FAILED! §r§b$name §r§efailed a puzzle. \n" +
                 "§eClick here to get §5Architect's First Draft §7(§e${architectItemAmount}x left§7)",
-            { HypixelCommands.getFromSacks("ARCHITECT_FIRST_DRAFT", 1) },
+            { ChatUtils.sendCommandToServer("gfs ARCHITECT_FIRST_DRAFT 1") },
             prefix = false
         )
         LorenzUtils.sendTitle("§c§lPUZZLE FAILED!", 3.seconds)

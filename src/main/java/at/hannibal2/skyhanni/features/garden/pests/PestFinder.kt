@@ -17,7 +17,6 @@ import at.hannibal2.skyhanni.features.garden.GardenPlotAPI.renderPlot
 import at.hannibal2.skyhanni.features.garden.GardenPlotAPI.sendTeleportTo
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUItems
@@ -84,7 +83,7 @@ object PestFinder {
                     "Runs /desk."
                 ),
                 onClick = {
-                    HypixelCommands.gardenDesk()
+                    ChatUtils.sendCommandToServer("desk")
                 }
             ))
         }

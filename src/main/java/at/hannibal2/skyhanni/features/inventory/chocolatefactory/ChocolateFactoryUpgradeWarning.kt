@@ -4,7 +4,6 @@ import at.hannibal2.skyhanni.events.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.minutes
@@ -46,7 +45,7 @@ object ChocolateFactoryUpgradeWarning {
         ChatUtils.clickableChat(
             "You have a Chocolate factory upgrade available to purchase!",
             onClick = {
-                HypixelCommands.chocolateFactory()
+                ChatUtils.sendCommandToServer("cf")
             }
         )
     }

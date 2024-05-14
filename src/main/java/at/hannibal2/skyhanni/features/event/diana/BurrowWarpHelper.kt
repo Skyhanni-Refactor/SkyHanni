@@ -8,7 +8,6 @@ import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.sorted
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -34,7 +33,7 @@ object BurrowWarpHelper {
         currentWarp?.let {
             if (lastWarpTime.passedSince() > 5.seconds) {
                 lastWarpTime = SimpleTimeMark.now()
-                HypixelCommands.warp(it.name)
+                ChatUtils.sendCommandToServer("warp ${it.name}")
                 lastWarp = currentWarp
                 GriffinBurrowHelper.lastTitleSentTime = SimpleTimeMark.now() + 2.seconds
                 TitleManager.optionalResetTitle {

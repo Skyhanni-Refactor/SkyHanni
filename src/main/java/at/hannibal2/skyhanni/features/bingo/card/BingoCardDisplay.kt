@@ -10,7 +10,6 @@ import at.hannibal2.skyhanni.features.bingo.card.goals.BingoGoal
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.BingoNextStepHelper
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -84,7 +83,7 @@ object BingoCardDisplay {
             newList.add(Renderable.clickAndHover("§cOpen the §e/bingo §ccard.",
                 listOf("Click to run §e/bingo"),
                 onClick = {
-                    HypixelCommands.bingo()
+                    ChatUtils.sendCommandToServer("bingo")
                 }
             ))
         } else {

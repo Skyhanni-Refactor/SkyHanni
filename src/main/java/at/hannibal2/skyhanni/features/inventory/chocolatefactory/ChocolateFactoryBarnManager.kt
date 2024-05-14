@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.features.event.hoppity.HoppityEggsManager
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -88,7 +87,7 @@ object ChocolateFactoryBarnManager {
             ChatUtils.clickableChat(
                 "Open your chocolate factory to see your barn's capacity status!",
                 onClick = {
-                    HypixelCommands.chocolateFactory()
+                    ChatUtils.sendCommandToServer("cf")
                 }
             )
             return
@@ -103,7 +102,7 @@ object ChocolateFactoryBarnManager {
                 "§cYour barn is almost full! §7(${barnStatus()}). §cUpgrade it so they don't get crushed"
             },
             onClick = {
-                HypixelCommands.chocolateFactory()
+                ChatUtils.sendCommandToServer("cf")
             }
         )
         McSound.BEEP.play()

@@ -4,7 +4,7 @@ import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.utils.HypixelCommands
+import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -63,7 +63,7 @@ object ChocolateFactoryShortcut {
         if (!showItem || event.slotId != 15) return
         event.cancel()
         if (lastClick.passedSince() > 2.seconds) {
-            HypixelCommands.chocolateFactory()
+            ChatUtils.sendCommandToServer("cf")
             lastClick = SimpleTimeMark.now()
         }
     }

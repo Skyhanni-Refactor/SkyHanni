@@ -17,7 +17,6 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -561,7 +560,7 @@ object GardenNextJacobContest {
             } else {
                 ChatUtils.chat("This year's contests aren't available to fetch automatically yet, please load them from your calendar or wait 10 minutes.")
                 ChatUtils.clickableChat("Click here to open your calendar!", onClick = {
-                    HypixelCommands.calendar()
+                    ChatUtils.sendCommandToServer("calendar")
                 })
             }
 

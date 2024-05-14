@@ -25,7 +25,6 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
 import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -491,7 +490,7 @@ object ComposterOverlay {
         }
 
         val havingInSacks = internalName.getAmountInSacksOrNull() ?: run {
-            HypixelCommands.getFromSacks(internalName.asString(), itemsNeeded - havingInInventory)
+            ChatUtils.sendCommandToServer("gfs ${internalName.asString()} ${itemsNeeded - havingInInventory}")
             // TODO Add sack type repo data
 
             val isDwarvenMineable =
@@ -500,7 +499,7 @@ object ComposterOverlay {
             ChatUtils.clickableChat(
                 "Sacks could not be loaded. Click here and open your §9$sackType Sack §eto update the data!",
                 onClick = {
-                    HypixelCommands.sacks()
+                    ChatUtils.sendCommandToServer("sax")
                 }
             )
             return
@@ -516,7 +515,7 @@ object ComposterOverlay {
             return
         }
 
-        HypixelCommands.getFromSacks(internalName.asString(), itemsNeeded - havingInInventory)
+        ChatUtils.sendCommandToServer("gfs ${internalName.asString()} ${itemsNeeded - havingInInventory}")
         val havingInTotal = havingInInventory + havingInSacks
         if (itemsNeeded >= havingInTotal) {
             if (LorenzUtils.noTradeMode) {
@@ -525,7 +524,7 @@ object ComposterOverlay {
                 ChatUtils.clickableChat( // TODO Add this as a separate feature, and then don't send any msg if the feature is disabled
                     "You're out of $itemName §ein your sacks! Click here to buy more on the Bazaar!",
                     onClick = {
-                        HypixelCommands.bazaar(itemName.removeColor())
+                        ChatUtils.sendCommandToServer("bz ${itemName.removeColor()}")
                     }
                 )
             }
