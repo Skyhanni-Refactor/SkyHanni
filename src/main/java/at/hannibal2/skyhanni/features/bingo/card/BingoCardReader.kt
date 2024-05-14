@@ -22,7 +22,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration
 
-class BingoCardReader {
+object BingoCardReader {
 
     private val config get() = SkyHanniMod.feature.event.bingo.bingoCard
     private val patternGroup = RepoPattern.group("bingo.card")

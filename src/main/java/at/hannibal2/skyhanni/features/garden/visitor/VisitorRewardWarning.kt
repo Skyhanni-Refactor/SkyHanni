@@ -23,7 +23,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.seconds
 
-class VisitorRewardWarning {
+object VisitorRewardWarning {
     private val config get() = VisitorAPI.config.rewardWarning
 
     @SubscribeEvent

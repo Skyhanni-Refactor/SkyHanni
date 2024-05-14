@@ -128,6 +128,7 @@ object RepoPatternManager {
         }
     }
 
+    // TODO fix this allowing single part keys
     val keyShape = Pattern.compile("^(?:[a-z0-9]+\\.)*[a-z0-9]+$")
 
     /**

@@ -15,7 +15,7 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.minutes
 
-class TiaRelayHelper {
+object TiaRelayHelper {
 
     private val config get() = SkyHanniMod.feature.inventory.helper.tiaRelay
     private var inInventory = false

@@ -24,7 +24,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.network.play.client.C02PacketUseEntity
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HighlightVisitorsOutsideOfGarden {
+object HighlightVisitorsOutsideOfGarden {
 
     private var visitorJson = mapOf<String?, List<GardenVisitor>>()
 

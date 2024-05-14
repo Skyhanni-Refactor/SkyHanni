@@ -13,7 +13,7 @@ import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement
 import net.minecraft.network.play.client.C0APacketAnimation
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ItemClickData {
+object ItemClickData {
 
     @SubscribeEvent
     fun onItemClickSend(event: PacketEvent.SendEvent) {
@@ -57,26 +57,4 @@ class ItemClickData {
             }
         }
     }
-
-    /* @SubscribeEvent
-    fun onEntityClick(event: InputEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
-        val minecraft = Minecraft.getMinecraft()
-
-        val attackKey = minecraft.gameSettings.keyBindAttack
-        val useKey = minecraft.gameSettings.keyBindUseItem
-
-        val clickType = when {
-            attackKey.isKeyDown -> ClickType.LEFT_CLICK
-            useKey.isKeyDown -> ClickType.RIGHT_CLICK
-            else -> return
-        }
-
-        val clickedEntity = minecraft.pointedEntity
-        if (minecraft.thePlayer == null) return
-        if (clickedEntity == null) return
-
-        EntityClickEvent(clickType, clickedEntity, InventoryUtils.getItemInHand()).postAndCatch()
-    } */
 }

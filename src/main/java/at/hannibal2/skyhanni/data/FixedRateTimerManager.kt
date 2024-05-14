@@ -5,7 +5,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.mc.McClient
 import kotlin.concurrent.fixedRateTimer
 
-class FixedRateTimerManager {
+object FixedRateTimerManager {
     private var totalSeconds = 0
 
     init {
