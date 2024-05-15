@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.features.garden
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.GardenToolChangeEvent
@@ -167,9 +166,4 @@ object GardenOptimalSpeed {
     }
 
     private fun isRancherOverlayEnabled() = GardenAPI.inGarden() && config.signEnabled
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(14, "garden.optimalSpeeds.enabled", "garden.optimalSpeeds.showOnHUD")
-    }
 }

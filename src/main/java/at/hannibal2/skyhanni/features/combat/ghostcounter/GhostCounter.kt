@@ -1,8 +1,6 @@
 package at.hannibal2.skyhanni.features.combat.ghostcounter
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.config.features.combat.ghostcounter.GhostCounterConfig.GhostDisplayEntry
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.SkillExperience
@@ -39,7 +37,6 @@ import at.hannibal2.skyhanni.utils.CombatUtils.lastKillUpdate
 import at.hannibal2.skyhanni.utils.CombatUtils.lastUpdate
 import at.hannibal2.skyhanni.utils.CombatUtils.xpGainHour
 import at.hannibal2.skyhanni.utils.CombatUtils.xpGainHourLast
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
@@ -48,8 +45,8 @@ import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
-import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -512,11 +509,4 @@ object GhostCounter {
     }
 
     fun isEnabled() = IslandType.DWARVEN_MINES.isInIsland() && config.enabled
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(11, "combat.ghostCounter.ghostDisplayText") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, GhostDisplayEntry::class.java)
-        }
-    }
 }
