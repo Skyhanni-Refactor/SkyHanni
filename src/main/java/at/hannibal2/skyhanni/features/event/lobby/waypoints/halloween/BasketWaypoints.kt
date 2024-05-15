@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.event.lobby.waypoints.halloween
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.events.LorenzChatEvent
@@ -95,9 +94,4 @@ object BasketWaypoints {
     }
 
     private fun isEnabled() = HypixelData.hypixelLive && !LorenzUtils.inSkyBlock
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(13, "event.halloweenBasket", "event.lobbyWaypoints.halloweenBasket")
-    }
 }

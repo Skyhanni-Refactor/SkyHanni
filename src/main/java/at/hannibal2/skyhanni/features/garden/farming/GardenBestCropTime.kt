@@ -1,8 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.garden.cropmilestones.NextConfig
-import at.hannibal2.skyhanni.config.features.garden.cropmilestones.NextConfig.BestTypeEntry
 import at.hannibal2.skyhanni.data.GardenCropMilestones
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.data.GardenCropMilestones.isMaxed
@@ -13,10 +11,8 @@ import at.hannibal2.skyhanni.features.garden.GardenNextJacobContest
 import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed.getSpeed
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.sorted
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.datetime.TimeUnit
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 
 object GardenBestCropTime {
@@ -133,11 +129,4 @@ object GardenBestCropTime {
     }
 
     private fun getGardenExpForTier(gardenLevel: Int) = if (gardenLevel > 30) 300 else gardenLevel * 10
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(17, "garden.cropMilestones.next.bestType") { element ->
-            ConfigUtils.migrateIntToEnum(element, BestTypeEntry::class.java)
-        }
-    }
 }

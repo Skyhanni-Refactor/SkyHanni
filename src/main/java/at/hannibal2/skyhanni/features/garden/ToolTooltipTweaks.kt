@@ -1,12 +1,10 @@
 package at.hannibal2.skyhanni.features.garden
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.garden.TooltipTweaksConfig.CropTooltipFortuneEntry
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
 import at.hannibal2.skyhanni.features.garden.FarmingFortuneDisplay.getAbilityFortune
 import at.hannibal2.skyhanni.features.garden.GardenAPI.getCropType
 import at.hannibal2.skyhanni.features.garden.fortuneguide.FFGuideGUI
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
@@ -153,13 +151,6 @@ object ToolTooltipTweaks {
     private fun MutableListIterator<String>.addStat(description: String, value: Number) {
         if (value.toDouble() != 0.0) {
             add("$description${value.formatStat()}")
-        }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(15, "garden.tooltipTweak.cropTooltipFortune") { element ->
-            ConfigUtils.migrateIntToEnum(element, CropTooltipFortuneEntry::class.java)
         }
     }
 }

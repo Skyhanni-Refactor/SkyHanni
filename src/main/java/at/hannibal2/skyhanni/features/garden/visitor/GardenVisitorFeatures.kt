@@ -28,7 +28,6 @@ import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.ItemBlink
 import at.hannibal2.skyhanni.utils.ItemUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -57,8 +56,6 @@ import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import com.google.gson.JsonArray
-import com.google.gson.JsonPrimitive
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiEditSign
 import net.minecraft.entity.EntityLivingBase
@@ -621,28 +618,6 @@ object GardenVisitorFeatures {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(11, "garden.visitors.rewardWarning.drops") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, VisitorReward::class.java)
-        }
-        event.transform(12, "garden.visitors.rewardWarning.drops") { element ->
-            val drops = JsonArray()
-            for (jsonElement in element.asJsonArray) {
-                val old = jsonElement.asString
-                val new = VisitorReward.entries.firstOrNull { old.startsWith(it.name) }
-                if (new == null) {
-                    println("error with migrating old VisitorReward entity: '$old'")
-                    continue
-                }
-                drops.add(JsonPrimitive(new.name))
-            }
-
-            drops
-        }
-
-        event.transform(15, "garden.visitors.highlightStatus") { element ->
-            ConfigUtils.migrateIntToEnum(element, HighlightMode::class.java)
-        }
-
         event.move(18, "garden.visitors.needs", "garden.visitors.shoppingList")
     }
 }

@@ -1,13 +1,11 @@
 package at.hannibal2.skyhanni.features.fishing.trophy
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.ChatMessagesConfig.DesignFormat
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyFishManager.getTooltip
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.CollectionUtils.sumAllValues
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.ordinal
@@ -87,11 +85,4 @@ object TrophyFishMessages {
     private fun shouldBlockTrophyFish(rarity: TrophyRarity, amount: Int) =
         config.bronzeHider && rarity == TrophyRarity.BRONZE && amount != 1
             || config.silverHider && rarity == TrophyRarity.SILVER && amount != 1
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(15, "fishing.trophyFishing.chatMessages.design") { element ->
-            ConfigUtils.migrateIntToEnum(element, DesignFormat::class.java)
-        }
-    }
 }

@@ -1,9 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.composter
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.garden.composter.ComposterConfig
-import at.hannibal2.skyhanni.config.features.garden.composter.ComposterConfig.OverlayPriceTypeEntry
-import at.hannibal2.skyhanni.config.features.garden.composter.ComposterConfig.RetrieveFromEntry
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacksOrNull
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenJson
@@ -24,7 +21,6 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.KeyboardManager
@@ -610,15 +606,5 @@ object ComposterOverlay {
         COMPOST("Compost", 1),
         HOUR("Hour", 60 * 60),
         DAY("Day", 60 * 60 * 24),
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(15, "garden.composters.overlayPriceType") { element ->
-            ConfigUtils.migrateIntToEnum(element, OverlayPriceTypeEntry::class.java)
-        }
-        event.transform(15, "garden.composters.retrieveFrom") { element ->
-            ConfigUtils.migrateIntToEnum(element, RetrieveFromEntry::class.java)
-        }
     }
 }

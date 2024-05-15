@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.nether.reputationhelper
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.crimsonisle.ReputationHelperConfig.ShowLocationEntry
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
@@ -17,7 +16,6 @@ import at.hannibal2.skyhanni.features.nether.reputationhelper.miniboss.DailyMini
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -176,12 +174,5 @@ class CrimsonIsleReputationHelper(skyHanniMod: SkyHanniMod) {
         ShowLocationEntry.ALWAYS -> true
         ShowLocationEntry.ONLY_HOTKEY -> config.hotkey.isKeyHeld()
         else -> false
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(15, "crimsonIsle.reputationHelper.showLocation") { element ->
-            ConfigUtils.migrateIntToEnum(element, ShowLocationEntry::class.java)
-        }
     }
 }

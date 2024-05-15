@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.itemabilities
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.itemability.FireVeilWandConfig.DisplayEntry
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
@@ -10,7 +9,6 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.ReceiveParticleEvent
 import at.hannibal2.skyhanni.features.nether.ashfang.AshfangFreezeCooldown
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils
@@ -57,12 +55,5 @@ object FireVeilWandParticles {
 
         val color = config.displayColor.toChromaColour()
         RenderUtils.drawCircle(Minecraft.getMinecraft().thePlayer, event.partialTicks, 3.5, color)
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(15, "itemAbilities.fireVeilWands.display") { element ->
-            ConfigUtils.migrateIntToEnum(element, DisplayEntry::class.java)
-        }
     }
 }

@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.inventory.ChestValueConfig.NumberFormatEntry
 import at.hannibal2.skyhanni.config.features.inventory.ChestValueConfig.SortingTypeEntry
 import at.hannibal2.skyhanni.data.IslandType
@@ -13,7 +12,6 @@ import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.misc.items.EstimatedItemValue
 import at.hannibal2.skyhanni.features.misc.items.EstimatedItemValueCalculator
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
@@ -270,14 +268,4 @@ object ChestValue {
     )
 
     private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(15, "inventory.chestValueConfig.sortingType") { element ->
-            ConfigUtils.migrateIntToEnum(element, SortingTypeEntry::class.java)
-        }
-        event.transform(17, "inventory.chestValueConfig.formatType") { element ->
-            ConfigUtils.migrateIntToEnum(element, NumberFormatEntry::class.java)
-        }
-    }
 }

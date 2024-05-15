@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.misc.compacttablist
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.GuildAPI
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.misc.compacttablist.AdvancedPlayerListConfig.PlayerSortEntry
 import at.hannibal2.skyhanni.data.FriendAPI
 import at.hannibal2.skyhanni.data.IslandType
@@ -13,7 +12,6 @@ import at.hannibal2.skyhanni.features.misc.ContributorManager
 import at.hannibal2.skyhanni.features.misc.MarkedPlayerManager
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
@@ -22,7 +20,6 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.regex.Matcher
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.minutes
@@ -258,12 +255,5 @@ object AdvancedPlayerList {
         ;
 
         constructor(icon: String, score: Int) : this({ icon }, score)
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(15, "misc.compactTabList.advancedPlayerList.playerSortOrder") { element ->
-            ConfigUtils.migrateIntToEnum(element, PlayerSortEntry::class.java)
-        }
     }
 }

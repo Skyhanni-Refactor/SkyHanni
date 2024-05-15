@@ -28,7 +28,6 @@ import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.pests.PestAPI
 import at.hannibal2.skyhanni.features.skillprogress.SkillProgress
 import at.hannibal2.skyhanni.features.skillprogress.SkillType
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemUtils
@@ -41,13 +40,13 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimalIfNecessary
+import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
+import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getBottleOfJyrreSeconds
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getEdition
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getNewYearCake
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getPetLevel
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getRanchersSpeed
-import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
-import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -290,9 +289,6 @@ object ItemDisplayOverlayFeatures {
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(11, "inventory.itemNumberAsStackSize") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, ItemNumberEntry::class.java)
-        }
         event.transform(29, "inventory.itemNumberAsStackSize") { element ->
             fixRemovedConfigElement(element)
         }

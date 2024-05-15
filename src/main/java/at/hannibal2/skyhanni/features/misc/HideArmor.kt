@@ -1,10 +1,8 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.misc.HideArmorConfig.ModeEntry
 import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.getArmorInventory
 import at.hannibal2.skyhanni.utils.EntityUtils.hasPotionEffect
 import at.hannibal2.skyhanni.utils.EntityUtils.isNPC
@@ -63,13 +61,6 @@ object HideArmor {
 
         for ((index, stack) in armor) {
             armorInventory[index] = stack
-        }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(15, "misc.hideArmor2.mode") { element ->
-            ConfigUtils.migrateIntToEnum(element, ModeEntry::class.java)
         }
     }
 }

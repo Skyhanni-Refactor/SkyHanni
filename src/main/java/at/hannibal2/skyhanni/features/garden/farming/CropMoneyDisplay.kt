@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.garden.MoneyPerHourConfig.CustomFormatEntry
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GardenToolChangeEvent
@@ -22,7 +21,6 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.moveEntryToTop
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.itemNameWithoutColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -437,11 +435,4 @@ object CropMoneyDisplay {
     }
 
     private fun isEnabled() = GardenAPI.inGarden() && config.display
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(11, "garden.moneyPerHours.customFormat") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, CustomFormatEntry::class.java)
-        }
-    }
 }
