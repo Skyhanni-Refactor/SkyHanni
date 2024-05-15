@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.utils.http
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import com.google.gson.Gson
 import java.net.URL
 import java.net.URLEncoder
 import javax.net.ssl.HttpsURLConnection
@@ -36,12 +37,12 @@ object Http {
         return connection
     }
 
-    fun <T : Any> get(
+    suspend fun <T : Any> get(
         url: String,
         queries: Map<String, Any> = mapOf(),
         timeout: Int = 10000,
         headers: Map<String, String> = mapOf(),
-        handler: (HttpResponse) -> T
+        handler: suspend HttpResponse.() -> T
     ): T {
         val connection = createConnection(url, timeout, queries, headers)
         connection.requestMethod = "GET"
@@ -53,24 +54,38 @@ object Http {
         return data
     }
 
-    fun <T : Any> post(
+    suspend fun <T : Any> post(
         url: String,
         timeout: Int = 10000,
         queries: Map<String, Any> = mapOf(),
         headers: Map<String, String> = mapOf(),
-        text: String,
-        handler: (HttpResponse) -> T
+        body: String,
+        handler: suspend HttpResponse.() -> T
     ): T {
         val connection = createConnection(url, timeout, queries, headers)
         connection.requestMethod = "POST"
         connection.doOutput = true
 
-        connection.outputStream.use { it.write(text.toByteArray()) }
+        connection.outputStream.use { it.write(body.toByteArray()) }
 
         val data = handler(HttpResponse(connection.responseCode, connection.headerFields, connection.inputStream))
 
         connection.disconnect()
 
         return data
+    }
+
+    suspend fun <T : Any> post(
+        url: String,
+        timeout: Int = 10000,
+        queries: Map<String, Any> = mapOf(),
+        headers: Map<String, String> = mapOf(),
+        gson: Gson,
+        body: Any,
+        handler: suspend HttpResponse.() -> T
+    ): T {
+        val newHeaders = headers.toMutableMap()
+        newHeaders["Content-Type"] = "application/json"
+        return post(url, timeout, queries, newHeaders, gson.toJson(body), handler)
     }
 }

@@ -44,3 +44,10 @@ data class PestWeightData(
     @Expose val brackets: Map<Int, Int>,
     @Expose @SerializedName("values") val pestWeights: Map<PestType, Map<Int, Double>>
 )
+
+data class EliteContests(
+    @Expose val year: Int,
+    @Expose val count: Int = 0,
+    @Expose val complete: Boolean,
+    @Expose val contests: Map<Long, List<CropType>>
+)

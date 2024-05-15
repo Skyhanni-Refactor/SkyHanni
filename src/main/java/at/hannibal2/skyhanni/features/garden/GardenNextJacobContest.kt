@@ -2,10 +2,12 @@ package at.hannibal2.skyhanni.features.garden
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigFileType
+import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.config.features.garden.NextJacobContestConfig.ShareContestsEntry
 import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.data.jsonobjects.other.EliteContests
 import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
@@ -15,7 +17,6 @@ import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.TabListUpdateEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI.addCropIcon
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
@@ -32,15 +33,18 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.http.Http
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.Gson
 import com.google.gson.JsonPrimitive
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonWriter
 import io.github.moulberry.notenoughupdates.util.toJsonArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import net.minecraft.item.ItemStack
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.Display
@@ -82,6 +86,15 @@ object GardenNextJacobContest {
     private const val MAX_CONTESTS_PER_YEAR = 124
 
     private val contestDuration = 20.minutes
+    private val eliteBotGson = ConfigManager.createBaseGsonBuilder()
+        .registerTypeAdapter(CropType::class.java, object : TypeAdapter<CropType>() {
+            override fun write(out: JsonWriter, value: CropType) {}
+
+            override fun read(reader: JsonReader): CropType {
+                return CropType.getByName(reader.nextString())
+            }
+        }.nullSafe())
+        .create()
 
     private var lastWarningTime = SimpleTimeMark.farPast()
     private var loadedContestsYear = -1
@@ -539,49 +552,48 @@ object GardenNextJacobContest {
 
     suspend fun fetchUpcomingContests() {
         try {
-            val url = "https://api.elitebot.dev/contests/at/now"
-            val result = withContext(dispatcher) { APIUtil.getJSONResponse(url) }.asJsonObject
+            Http.get("https://api.elitebot.dev/contests/at/now") {
+                if (this.isOk) {
+                    val data = this.asJson<EliteContests>(eliteBotGson)
+                    if (data.complete) {
+                        val newContests = data.contests
+                            .filter { it.value.size == 3 }
+                            .entries
+                            .associateTo(mutableMapOf()) { (timestamp, crops) ->
+                                val timeMark = (timestamp * 1000).asTimeMark()
+                                timeMark + contestDuration to FarmingContest(timeMark + contestDuration, crops)
+                            }
 
-            val newContests = mutableMapOf<SimpleTimeMark, FarmingContest>()
+                        if (newContests.count() == MAX_CONTESTS_PER_YEAR) {
+                            ChatUtils.chat("Successfully loaded this year's contests from elitebot.dev automatically!")
 
-            val complete = result["complete"].asBoolean
-            if (complete) {
-                for (entry in result["contests"].asJsonObject.entrySet()) {
-                    var timestamp = entry.key.toLongOrNull() ?: continue
-                    val timeMark = (timestamp * 1000).asTimeMark()
-                    timestamp *= 1_000 // Seconds to milliseconds
+                            contests = newContests
+                            fetchedFromElite = true
+                            nextContestsAvailableAt = SkyBlockTime(SkyBlockTime.now().year + 1, 1, 2).toMillis()
+                            loadedContestsYear = SkyBlockTime.now().year
 
-                    val crops = entry.value.asJsonArray.map {
-                        CropType.getByName(it.asString)
+                            saveConfig()
+                        }
+                    } else {
+                        ChatUtils.chat("This year's contests aren't available to fetch automatically yet, please load them from your calendar or wait 10 minutes.")
+                        ChatUtils.clickableChat("Click here to open your calendar!", onClick = {
+                            HypixelCommands.calendar()
+                        })
                     }
-
-                    if (crops.size != 3) continue
-
-                    newContests[timeMark + contestDuration] = FarmingContest(timeMark + contestDuration, crops)
+                } else {
+                    ErrorManager.logErrorStateWithData(
+                        "Failed to fetch upcoming contests. Please report this error if it continues to occur",
+                        "fetchUpcomingContests not successful",
+                        "response" to this.asText(),
+                        "status" to this.status
+                    )
                 }
-            } else {
-                ChatUtils.chat("This year's contests aren't available to fetch automatically yet, please load them from your calendar or wait 10 minutes.")
-                ChatUtils.clickableChat("Click here to open your calendar!", onClick = {
-                    HypixelCommands.calendar()
-                })
-            }
-
-            if (newContests.count() == MAX_CONTESTS_PER_YEAR) {
-                ChatUtils.chat("Successfully loaded this year's contests from elitebot.dev automatically!")
-
-                contests = newContests
-                fetchedFromElite = true
-                nextContestsAvailableAt = SkyBlockTime(SkyBlockTime.now().year + 1, 1, 2).toMillis()
-                loadedContestsYear = SkyBlockTime.now().year
-
-                saveConfig()
             }
         } catch (e: Exception) {
             ErrorManager.logErrorWithData(
                 e,
                 "Failed to fetch upcoming contests. Please report this error if it continues to occur"
             )
-
         }
     }
 
@@ -605,25 +617,27 @@ object GardenNextJacobContest {
             }
         }
 
-        val url = "https://api.elitebot.dev/contests/at/now"
-        val body = Gson().toJson(formatted)
-
-        val result = withContext(dispatcher) { APIUtil.postJSONIsSuccessful(url, body) }
-
-        if (result) {
-            ChatUtils.chat("Successfully submitted this years upcoming contests, thank you for helping everyone out!")
-        } else {
-            ErrorManager.logErrorStateWithData(
-                "Something went wrong submitting upcoming contests!",
-                "submitContestsToElite not successful"
-            )
+        Http.post(
+            "https://api.elitebot.dev/contests/at/now",
+            gson = Gson(),
+            body = formatted
+        ) {
+            if (this.isOk) {
+                ChatUtils.chat("Successfully submitted this years upcoming contests, thank you for helping everyone out!")
+            } else {
+                ErrorManager.logErrorStateWithData(
+                    "Something went wrong submitting upcoming contests!",
+                    "submitContestsToElite not successful",
+                    "response" to this.asText(),
+                    "status" to this.status,
+                )
+            }
         }
     } catch (e: Exception) {
         ErrorManager.logErrorWithData(
             e, "Failed to submit upcoming contests. Please report this error if it continues to occur.",
             "contests" to contests
         )
-        null
     }
 
     private val config get() = GardenAPI.config.nextJacobContests

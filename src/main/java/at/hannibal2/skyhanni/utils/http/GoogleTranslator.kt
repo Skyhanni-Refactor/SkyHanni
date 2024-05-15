@@ -21,7 +21,7 @@ object GoogleTranslator {
     class SameLanguageError(val lang: String) :
         Error("SameLanguage", "The source and target languages are the same ($lang)")
 
-    fun translate(text: String, from: String, to: String): Either<Error, Translation> {
+    suspend fun translate(text: String, from: String, to: String): Either<Error, Translation> {
         val queries = mapOf(
             "client" to "gtx",
             "sl" to from,
@@ -31,10 +31,10 @@ object GoogleTranslator {
             "q" to text
         )
 
-        return Http.get(URL, queries = queries) { response ->
-            if (response.isOk) {
+        return Http.get(URL, queries = queries) {
+            if (this.isOk) {
                 try {
-                    val translation = response.asJson<Translation>(GSON)
+                    val translation = this.asJson<Translation>(GSON)
                     if (translation.src == from) {
                         Either.Left(SameLanguageError(from))
                     } else {
@@ -44,7 +44,7 @@ object GoogleTranslator {
                     Either.Left(Error("UnknownError", e.message ?: "Unknown error"))
                 }
             } else {
-                Either.Left(Error(response.status, response.asText()))
+                Either.Left(Error(this.status, this.asText()))
             }
         }
     }
