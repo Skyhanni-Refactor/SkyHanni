@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.events.FishingBobberInWaterEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils
