@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.config.features.crimsonisle;
 
 import at.hannibal2.skyhanni.config.FeatureToggle;
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import at.hannibal2.skyhanni.config.core.config.Position;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorBoolean;
@@ -44,26 +43,14 @@ public class ReputationHelperConfig {
     @ConfigEditorDropdown
     public ShowLocationEntry showLocation = ShowLocationEntry.ONLY_HOTKEY;
 
-    public enum ShowLocationEntry implements HasLegacyId {
-        ALWAYS("Always", 0),
-        ONLY_HOTKEY("Only With Hotkey", 1),
-        NEVER("Never", 2);
+    public enum ShowLocationEntry {
+        ALWAYS("Always"),
+        ONLY_HOTKEY("Only With Hotkey"),
+        NEVER("Never");
         private final String str;
-        private final int legacyId;
 
-        ShowLocationEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         ShowLocationEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override

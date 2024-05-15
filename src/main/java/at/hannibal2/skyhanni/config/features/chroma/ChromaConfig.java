@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.config.features.chroma;
 
 import at.hannibal2.skyhanni.config.FeatureToggle;
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import at.hannibal2.skyhanni.features.chroma.ChromaManager;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorBoolean;
@@ -45,28 +44,16 @@ public class ChromaConfig {
     @ConfigEditorDropdown
     public Direction chromaDirection = Direction.FORWARD_RIGHT;
 
-    public enum Direction implements HasLegacyId {
-        FORWARD_RIGHT("Forward + Right", 0),
-        FORWARD_LEFT("Forward + Left", 1),
-        BACKWARD_RIGHT("Backward + Right", 2),
-        BACKWARD_LEFT("Backward + Left", 3);
+    public enum Direction {
+        FORWARD_RIGHT("Forward + Right"),
+        FORWARD_LEFT("Forward + Left"),
+        BACKWARD_RIGHT("Backward + Right"),
+        BACKWARD_LEFT("Backward + Left");
 
         private final String str;
-        private final int legacyId;
 
-        Direction(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         Direction(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override

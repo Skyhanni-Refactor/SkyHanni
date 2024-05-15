@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.config.features.garden;
 
 import at.hannibal2.skyhanni.config.FeatureToggle;
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import at.hannibal2.skyhanni.config.core.config.Position;
 import at.hannibal2.skyhanni.features.garden.CropType;
 import com.google.gson.annotations.Expose;
@@ -42,28 +41,16 @@ public class NextJacobContestConfig {
     @ConfigEditorDropdown
     public ShareContestsEntry shareAutomatically = ShareContestsEntry.ASK;
 
-    public enum ShareContestsEntry implements HasLegacyId {
-        ASK("Ask When Needed", 0),
-        AUTO("Share Automatically", 1),
-        DISABLED("Disabled", 2),
+    public enum ShareContestsEntry {
+        ASK("Ask When Needed"),
+        AUTO("Share Automatically"),
+        DISABLED("Disabled"),
         ;
 
         private final String str;
-        private final int legacyId;
 
-        ShareContestsEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         ShareContestsEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override

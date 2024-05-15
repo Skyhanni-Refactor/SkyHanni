@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.config.features.combat;
 
 import at.hannibal2.skyhanni.config.FeatureToggle;
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import at.hannibal2.skyhanni.config.core.config.Position;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorBoolean;
@@ -21,26 +20,14 @@ public class BestiaryConfig {
     @ConfigEditorDropdown
     public NumberFormatEntry numberFormat = NumberFormatEntry.SHORT;
 
-    public enum NumberFormatEntry implements HasLegacyId {
-        SHORT("Short", 0),
-        LONG("Long", 1);
+    public enum NumberFormatEntry {
+        SHORT("Short"),
+        LONG("Long");
 
         private final String str;
-        private final int legacyId;
 
-        NumberFormatEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         NumberFormatEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override
@@ -54,32 +41,20 @@ public class BestiaryConfig {
     @ConfigEditorDropdown
     public DisplayTypeEntry displayType = DisplayTypeEntry.GLOBAL_MAX;
 
-    public enum DisplayTypeEntry implements HasLegacyId {
-        GLOBAL_MAX("Global to max", 0),
-        GLOBAL_NEXT("Global to next tier", 1),
-        LOWEST_TOTAL("Lowest total kills", 2),
-        HIGHEST_TOTAL("Highest total kills", 3),
-        LOWEST_MAX("Lowest kills needed to max", 4),
-        HIGHEST_MAX("Highest kills needed to max", 5),
-        LOWEST_NEXT("Lowest kills needed to next tier", 6),
-        HIGHEST_NEXT("Highest kills needed to next tier", 7);
+    public enum DisplayTypeEntry {
+        GLOBAL_MAX("Global to max"),
+        GLOBAL_NEXT("Global to next tier"),
+        LOWEST_TOTAL("Lowest total kills"),
+        HIGHEST_TOTAL("Highest total kills"),
+        LOWEST_MAX("Lowest kills needed to max"),
+        HIGHEST_MAX("Highest kills needed to max"),
+        LOWEST_NEXT("Lowest kills needed to next tier"),
+        HIGHEST_NEXT("Highest kills needed to next tier");
 
         private final String str;
-        private final int legacyId;
 
-        DisplayTypeEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         DisplayTypeEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override

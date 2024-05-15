@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.config.features.misc;
 
 import at.hannibal2.skyhanni.config.FeatureToggle;
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.Accordion;
@@ -23,26 +22,14 @@ public class TrackerConfig {
     @ConfigEditorDropdown
     public PriceFromEntry priceFrom = PriceFromEntry.SELL_OFFER;
 
-    public enum PriceFromEntry implements HasLegacyId {
-        INSTANT_SELL("Instant Sell", 0),
-        SELL_OFFER("Sell Offer", 1),
-        NPC("NPC", 2);
+    public enum PriceFromEntry {
+        INSTANT_SELL("Instant Sell"),
+        SELL_OFFER("Sell Offer"),
+        NPC("NPC");
         private final String str;
-        private final int legacyId;
 
-        PriceFromEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         PriceFromEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override

@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.config.features.garden.cropmilestones;
 
 import at.hannibal2.skyhanni.config.FeatureToggle;
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import at.hannibal2.skyhanni.config.core.config.Position;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.Accordion;
@@ -56,30 +55,18 @@ public class CropMilestonesConfig {
     @ConfigEditorDropdown
     public Property<TimeFormatEntry> highestTimeFormat = Property.of(YEAR);
 
-    public enum TimeFormatEntry implements HasLegacyId {
-        YEAR("Year", 0),
-        DAY("Day", 1),
-        HOUR("Hour", 2),
-        MINUTE("Minute", 3),
-        SECOND("Second", 4),
+    public enum TimeFormatEntry {
+        YEAR("Year"),
+        DAY("Day"),
+        HOUR("Hour"),
+        MINUTE("Minute"),
+        SECOND("Second"),
         ;
 
         private final String str;
-        private final int legacyId;
 
-        TimeFormatEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         TimeFormatEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override
@@ -111,34 +98,22 @@ public class CropMilestonesConfig {
         BLOCKS_PER_SECOND
     ));
 
-    public enum MilestoneTextEntry implements HasLegacyId {
-        TITLE("§6Crop Milestones", 0),
-        MILESTONE_TIER("§7Pumpkin Tier 22", 1),
-        NUMBER_OUT_OF_TOTAL("§e12,300§8/§e100,000", 2),
-        TIME("§7In §b12m 34s", 3),
+    public enum MilestoneTextEntry {
+        TITLE("§6Crop Milestones"),
+        MILESTONE_TIER("§7Pumpkin Tier 22"),
+        NUMBER_OUT_OF_TOTAL("§e12,300§8/§e100,000"),
+        TIME("§7In §b12m 34s"),
         CROPS_PER_SECOND("§7Crops/Second§8: §e205.75"),
-        CROPS_PER_MINUTE("§7Crops/Minute§8: §e12,345", 4),
+        CROPS_PER_MINUTE("§7Crops/Minute§8: §e12,345"),
         CROPS_PER_HOUR("§7Crops/Hour§8: §e740,700"),
-        BLOCKS_PER_SECOND("§7Blocks/Second§8: §e19.85", 5),
-        PERCENTAGE("§7Percentage: §e12.34%", 6),
+        BLOCKS_PER_SECOND("§7Blocks/Second§8: §e19.85"),
+        PERCENTAGE("§7Percentage: §e12.34%"),
         ;
 
         private final String str;
-        private final int legacyId;
 
-        MilestoneTextEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         MilestoneTextEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override
