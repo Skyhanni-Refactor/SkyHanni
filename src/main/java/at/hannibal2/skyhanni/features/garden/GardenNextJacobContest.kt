@@ -33,14 +33,12 @@ import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.http.Http
+import at.hannibal2.skyhanni.utils.json.SkyHanniTypeAdapters
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.Gson
 import com.google.gson.JsonPrimitive
-import com.google.gson.TypeAdapter
-import com.google.gson.stream.JsonReader
-import com.google.gson.stream.JsonWriter
 import io.github.moulberry.notenoughupdates.util.toJsonArray
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -86,13 +84,7 @@ object GardenNextJacobContest {
 
     private val contestDuration = 20.minutes
     private val eliteBotGson = ConfigManager.createBaseGsonBuilder()
-        .registerTypeAdapter(CropType::class.java, object : TypeAdapter<CropType>() {
-            override fun write(out: JsonWriter, value: CropType) {}
-
-            override fun read(reader: JsonReader): CropType {
-                return CropType.getByName(reader.nextString())
-            }
-        }.nullSafe())
+        .registerTypeAdapter(CropType::class.java, SkyHanniTypeAdapters.CROP_TYPE.nullSafe())
         .create()
 
     private var lastWarningTime = SimpleTimeMark.farPast()

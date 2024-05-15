@@ -20,10 +20,10 @@ import at.hannibal2.skyhanni.utils.LorenzRarity
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
+import at.hannibal2.skyhanni.utils.json.SkyHanniTypeAdapters
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -62,96 +62,29 @@ private fun GsonBuilder.reigsterIfBeta(create: TypeAdapterFactory): GsonBuilder 
 
 class ConfigManager {
     companion object {
-        fun createBaseGsonBuilder(): GsonBuilder {
-            return GsonBuilder().setPrettyPrinting()
-                .excludeFieldsWithoutExposeAnnotation()
-                .serializeSpecialFloatingPointValues()
-                .registerTypeAdapterFactory(PropertyTypeAdapterFactory())
-                .registerTypeAdapterFactory(KotlinTypeAdapterFactory())
-                .registerTypeAdapter(UUID::class.java, object : TypeAdapter<UUID>() {
-                    override fun write(out: JsonWriter, value: UUID) {
-                        out.value(value.toString())
-                    }
+        fun createBaseGsonBuilder(): GsonBuilder = GsonBuilder().setPrettyPrinting()
+            .excludeFieldsWithoutExposeAnnotation()
+            .serializeSpecialFloatingPointValues()
+            .registerTypeAdapterFactory(PropertyTypeAdapterFactory())
+            .registerTypeAdapterFactory(KotlinTypeAdapterFactory())
+            .registerTypeAdapter(UUID::class.java, SkyHanniTypeAdapters.UUID.nullSafe())
+            .registerTypeAdapter(LorenzVec::class.java, SkyHanniTypeAdapters.VEC_STRING.nullSafe())
+            .registerTypeAdapter(TrophyRarity::class.java, SkyHanniTypeAdapters.TROPHY_RARITY.nullSafe())
+            .registerTypeAdapter(ItemStack::class.java, SkyHanniTypeAdapters.NEU_ITEMSTACK.nullSafe())
+            .registerTypeAdapter(NEUInternalName::class.java, SkyHanniTypeAdapters.INTERNAL_NAME.nullSafe())
+            .registerTypeAdapter(LorenzRarity::class.java, SkyHanniTypeAdapters.RARITY.nullSafe())
+            .registerTypeAdapter(IslandType::class.java, SkyHanniTypeAdapters.ISLAND_TYPE.nullSafe())
+            .registerTypeAdapter(TrackerDisplayMode::class.java, SkyHanniTypeAdapters.TRACKER_DISPLAY_MODE.nullSafe())
+            .registerTypeAdapter(SimpleTimeMark::class.java, object : TypeAdapter<SimpleTimeMark>() {
+                override fun write(out: JsonWriter, value: SimpleTimeMark) {
+                    out.value(value.toMillis())
+                }
 
-                    override fun read(reader: JsonReader): UUID {
-                        return UUID.fromString(reader.nextString())
-                    }
-                }.nullSafe())
-                .registerTypeAdapter(LorenzVec::class.java, object : TypeAdapter<LorenzVec>() {
-                    override fun write(out: JsonWriter, value: LorenzVec) {
-                        value.run { out.value("$x:$y:$z") }
-                    }
-
-                    override fun read(reader: JsonReader): LorenzVec {
-                        return LorenzVec.decodeFromString(reader.nextString())
-                    }
-                }.nullSafe())
-                .registerTypeAdapter(TrophyRarity::class.java, object : TypeAdapter<TrophyRarity>() {
-                    override fun write(out: JsonWriter, value: TrophyRarity) {
-                        value.run { out.value(value.name) }
-                    }
-
-                    override fun read(reader: JsonReader): TrophyRarity {
-                        val text = reader.nextString()
-                        return TrophyRarity.getByName(text) ?: error("Could not parse TrophyRarity from '$text'")
-                    }
-                }.nullSafe())
-                .registerTypeAdapter(ItemStack::class.java, object : TypeAdapter<ItemStack>() {
-                    override fun write(out: JsonWriter, value: ItemStack) {
-                        out.value(NEUItems.saveNBTData(value))
-                    }
-
-                    override fun read(reader: JsonReader): ItemStack {
-                        return NEUItems.loadNBTData(reader.nextString())
-                    }
-                }.nullSafe())
-                .registerTypeAdapter(NEUInternalName::class.java, object : TypeAdapter<NEUInternalName>() {
-                    override fun write(out: JsonWriter, value: NEUInternalName) {
-                        out.value(value.asString())
-                    }
-
-                    override fun read(reader: JsonReader): NEUInternalName {
-                        return reader.nextString().asInternalName()
-                    }
-                }.nullSafe())
-                .registerTypeAdapter(LorenzRarity::class.java, object : TypeAdapter<LorenzRarity>() {
-                    override fun write(out: JsonWriter, value: LorenzRarity) {
-                        out.value(value.name)
-                    }
-
-                    override fun read(reader: JsonReader): LorenzRarity {
-                        return LorenzRarity.valueOf(reader.nextString().uppercase().replace(" ", "_"))
-                    }
-                }.nullSafe())
-                .registerTypeAdapter(IslandType::class.java, object : TypeAdapter<IslandType>() {
-                    override fun write(out: JsonWriter, value: IslandType) {
-                        out.value(value.name)
-                    }
-
-                    override fun read(reader: JsonReader): IslandType {
-                        return IslandType.valueOf(reader.nextString().uppercase())
-                    }
-                }.nullSafe())
-                .registerTypeAdapter(TrackerDisplayMode::class.java, object : TypeAdapter<TrackerDisplayMode>() {
-                    override fun write(out: JsonWriter, value: TrackerDisplayMode) {
-                        out.value(value.name)
-                    }
-
-                    override fun read(reader: JsonReader): TrackerDisplayMode {
-                        return TrackerDisplayMode.valueOf(reader.nextString())
-                    }
-                }.nullSafe())
-                .registerTypeAdapter(SimpleTimeMark::class.java, object : TypeAdapter<SimpleTimeMark>() {
-                    override fun write(out: JsonWriter, value: SimpleTimeMark) {
-                        out.value(value.toMillis())
-                    }
-
-                    override fun read(reader: JsonReader): SimpleTimeMark {
-                        return reader.nextString().toLong().asTimeMark()
-                    }
-                }.nullSafe())
-                .enableComplexMapKeySerialization()
-        }
+                override fun read(reader: JsonReader): SimpleTimeMark {
+                    return reader.nextString().toLong().asTimeMark()
+                }
+            }.nullSafe())
+            .enableComplexMapKeySerialization()
 
         val gson: Gson = createBaseGsonBuilder()
             // TODO reenable with toggle that is default disabled

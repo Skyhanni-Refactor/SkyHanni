@@ -11,11 +11,14 @@ import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.getBazaarData
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarDataHolder
 import at.hannibal2.skyhanni.test.command.ErrorManager
+import at.hannibal2.skyhanni.utils.EncodingUtils.fromBase64
+import at.hannibal2.skyhanni.utils.EncodingUtils.toBase64
 import at.hannibal2.skyhanni.utils.ItemBlink.checkBlinkItem
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.isInt
 import at.hannibal2.skyhanni.utils.PrimitiveItemStack.Companion.makePrimitiveStack
+import at.hannibal2.skyhanni.utils.json.fromJson
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import com.google.gson.TypeAdapter
@@ -353,12 +356,12 @@ object NEUItems {
             jsonObject.add("internalname", JsonPrimitive("_"))
         }
         if (removeLore && jsonObject.has("lore")) jsonObject.remove("lore")
-        val jsonString = jsonObject.toString()
-        return StringUtils.encodeBase64(jsonString)
+        val jsonString = jsonObject.toString().toByteArray()
+        return jsonString.toBase64()
     }
 
     fun loadNBTData(encoded: String): ItemStack {
-        val jsonString = StringUtils.decodeBase64(encoded)
+        val jsonString = String(encoded.fromBase64())
         val jsonObject = ConfigManager.gson.fromJson(jsonString, JsonObject::class.java)
         return manager.jsonToStack(jsonObject, false)
     }

@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.data.model
 
 import at.hannibal2.skyhanni.config.ConfigManager.Companion.registerTypeAdapter
 import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.fromJson
+import at.hannibal2.skyhanni.utils.json.fromJson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.annotations.Expose

@@ -3,8 +3,7 @@ package at.hannibal2.skyhanni.config
 import at.hannibal2.skyhanni.events.LorenzEvent
 import at.hannibal2.skyhanni.features.misc.limbo.LimboTimeTracker
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.asIntOrNull
-import at.hannibal2.skyhanni.utils.shDeepCopy
+import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
@@ -13,16 +12,6 @@ object ConfigUpdaterMigrator {
 
     val logger = LorenzLogger("ConfigMigration")
     const val CONFIG_VERSION = 45
-    fun JsonElement.at(chain: List<String>, init: Boolean): JsonElement? {
-        if (chain.isEmpty()) return this
-        if (this !is JsonObject) return null
-        var obj = this[chain.first()]
-        if (obj == null && init) {
-            obj = JsonObject()
-            this.add(chain.first(), obj)
-        }
-        return obj?.at(chain.drop(1), init)
-    }
 
     data class ConfigFixEvent(
         val old: JsonObject,
@@ -108,7 +97,7 @@ object ConfigUpdaterMigrator {
     }
 
     fun fixConfig(config: JsonObject): JsonObject {
-        val lastVersion = (config["lastVersion"] as? JsonPrimitive)?.asIntOrNull ?: -1
+        val lastVersion = (config["lastVersion"] as? JsonPrimitive)?.takeIf { it.isNumber }?.asInt ?: -1
         if (lastVersion > CONFIG_VERSION) {
             error("Cannot downgrade config")
         }
@@ -139,5 +128,32 @@ object ConfigUpdaterMigrator {
         }.also {
             logger.log("Final config: $it")
         }
+    }
+
+    // Extension Functions
+
+    private fun JsonElement.at(chain: List<String>, init: Boolean): JsonElement? {
+        if (chain.isEmpty()) return this
+        if (this !is JsonObject) return null
+        var obj = this[chain.first()]
+        if (obj == null && init) {
+            obj = JsonObject()
+            this.add(chain.first(), obj)
+        }
+        return obj?.at(chain.drop(1), init)
+    }
+
+    private fun JsonElement.shDeepCopy(): JsonElement = when (this) {
+        is JsonObject -> JsonObject().also {
+            for (entry in this.entrySet()) {
+                it.add(entry.key, entry.value.shDeepCopy())
+                }
+        }
+        is JsonArray -> JsonArray().also {
+            for (entry in this) {
+                it.add(entry.shDeepCopy())
+            }
+        }
+        else -> this
     }
 }

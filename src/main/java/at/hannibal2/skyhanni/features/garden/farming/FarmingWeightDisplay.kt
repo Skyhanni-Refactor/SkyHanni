@@ -30,14 +30,12 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.StringUtils.toDashlessUUID
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
-import at.hannibal2.skyhanni.utils.fromJson
+import at.hannibal2.skyhanni.utils.json.fromJson
+import at.hannibal2.skyhanni.utils.json.SkyHanniTypeAdapters
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.system.OS
 import com.google.gson.JsonObject
-import com.google.gson.TypeAdapter
-import com.google.gson.stream.JsonReader
-import com.google.gson.stream.JsonWriter
 import kotlinx.coroutines.launch
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.minutes
@@ -115,20 +113,8 @@ object FarmingWeightDisplay {
 
     private val eliteWeightApiGson by lazy {
         ConfigManager.createBaseGsonBuilder()
-            .registerTypeAdapter(CropType::class.java, object : TypeAdapter<CropType>() {
-                override fun write(out: JsonWriter, value: CropType) {}
-
-                override fun read(reader: JsonReader): CropType {
-                    return CropType.getByName(reader.nextString())
-                }
-            }.nullSafe())
-            .registerTypeAdapter(PestType::class.java, object : TypeAdapter<PestType>() {
-                override fun write(out: JsonWriter, value: PestType) {}
-
-                override fun read(reader: JsonReader): PestType {
-                    return PestType.getByName(reader.nextString())
-                }
-            }.nullSafe())
+            .registerTypeAdapter(CropType::class.java, SkyHanniTypeAdapters.CROP_TYPE.nullSafe())
+            .registerTypeAdapter(PestType::class.java, SkyHanniTypeAdapters.PEST_TYPE.nullSafe())
             .create()
     }
 

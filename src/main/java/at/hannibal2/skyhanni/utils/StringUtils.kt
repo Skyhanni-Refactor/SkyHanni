@@ -13,7 +13,6 @@ import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
 import net.minecraft.util.EnumChatFormatting
 import net.minecraft.util.IChatComponent
-import java.util.Base64
 import java.util.UUID
 import java.util.function.Predicate
 import java.util.regex.Matcher
@@ -132,10 +131,6 @@ object StringUtils {
         }
         return default
     }
-
-    fun encodeBase64(input: String) = Base64.getEncoder().encodeToString(input.toByteArray())
-
-    fun decodeBase64(input: String) = Base64.getDecoder().decode(input).decodeToString()
 
     fun addFormat(text: String, format: String): String {
         if (text.length < 2) return text
