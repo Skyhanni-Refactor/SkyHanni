@@ -102,57 +102,33 @@ object NumberUtil {
         return this.toString() + this.ordinal()
     }
 
-    fun Number.addSeparators() = NumberFormat.getNumberInstance().format(this)
+    fun Number.addSeparators(): String = NumberFormat.getNumberInstance().format(this)
 
     fun String.romanToDecimalIfNecessary() = toIntOrNull() ?: romanToDecimal()
 
-    /**
-     * This code was converted to Kotlin and taken under CC BY-SA 3.0 license
-     * @link https://stackoverflow.com/a/9073310
-     */
     fun String.romanToDecimal(): Int {
-        var decimal = 0
-        var lastNumber = 0
-        val romanNumeral = this.uppercase()
-        for (x in romanNumeral.length - 1 downTo 0) {
-            when (romanNumeral[x]) {
-                'M' -> {
-                    decimal = processDecimal(1000, lastNumber, decimal)
-                    lastNumber = 1000
-                }
-
-                'D' -> {
-                    decimal = processDecimal(500, lastNumber, decimal)
-                    lastNumber = 500
-                }
-
-                'C' -> {
-                    decimal = processDecimal(100, lastNumber, decimal)
-                    lastNumber = 100
-                }
-
-                'L' -> {
-                    decimal = processDecimal(50, lastNumber, decimal)
-                    lastNumber = 50
-                }
-
-                'X' -> {
-                    decimal = processDecimal(10, lastNumber, decimal)
-                    lastNumber = 10
-                }
-
-                'V' -> {
-                    decimal = processDecimal(5, lastNumber, decimal)
-                    lastNumber = 5
-                }
-
-                'I' -> {
-                    decimal = processDecimal(1, lastNumber, decimal)
-                    lastNumber = 1
-                }
+        val reverseString = this.reversed()
+        var result = 0
+        var previousValue = 0
+        for (character in reverseString) {
+            val currentValue = when (character) {
+                'I' -> 1
+                'V' -> 5
+                'X' -> 10
+                'L' -> 50
+                'C' -> 100
+                'D' -> 500
+                'M' -> 1000
+                else -> 0
             }
+            if (previousValue > currentValue) {
+                result -= currentValue
+            } else {
+                result += currentValue
+            }
+            previousValue = currentValue
         }
-        return decimal
+        return result
     }
 
     fun Int.toRoman(): String {
@@ -161,12 +137,6 @@ object NumberUtil {
         return if (this == l) {
             romanSymbols[this]!!
         } else romanSymbols[l] + (this - l).toRoman()
-    }
-
-    private fun processDecimal(decimal: Int, lastNumber: Int, lastDecimal: Int) = if (lastNumber > decimal) {
-        lastDecimal - decimal
-    } else {
-        lastDecimal + decimal
     }
 
     private val numberPattern = "^[0-9]*$".toPattern()
