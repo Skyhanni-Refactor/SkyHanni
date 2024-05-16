@@ -21,8 +21,8 @@ import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
-import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getExtraAttributes
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getExtraAttributes
 import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.removeResets
 import at.hannibal2.skyhanni.utils.StringUtils.trimWhiteSpace
@@ -231,7 +231,7 @@ object QuiverAPI {
         }
     }
 
-    fun Int.asArrowPercentage() = ((this.toFloat() / MAX_ARROW_AMOUNT) * 100).roundTo(1)
+    fun asArrowPercentage(value: Int) = ((value.toFloat() / MAX_ARROW_AMOUNT) * 100).roundTo(1)
 
     fun hasBowInInventory() = hasBow
 
