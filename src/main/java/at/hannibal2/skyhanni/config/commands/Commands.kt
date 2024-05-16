@@ -73,6 +73,7 @@ import at.hannibal2.skyhanni.test.command.CopyBossbarCommand
 import at.hannibal2.skyhanni.test.command.CopyItemCommand
 import at.hannibal2.skyhanni.test.command.CopyNearbyEntitiesCommand
 import at.hannibal2.skyhanni.test.command.CopyScoreboardCommand
+import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.test.command.SoundCommand
 import at.hannibal2.skyhanni.test.command.TestChatCommand
 import at.hannibal2.skyhanni.test.command.TrackParticlesCommand
@@ -519,6 +520,13 @@ object Commands {
             "shaddfoundburrowlocationsfromclipboard",
             "Add all ever found burrow locations from clipboard"
         ) { AllBurrowsList.addFromClipboard() }
+        registerCommand(
+            "shreseterrors",
+            "Reset the error cache"
+        ) {
+            ErrorManager.resetCache()
+            ChatUtils.chat("Error cache reset!")
+        }
     }
 
     private fun internalCommands() {

@@ -1,26 +1,34 @@
 package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.utils.ItemUtils.isEnchanted
+import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getDungeonStarCount
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getEnchantments
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getHotPotatoCount
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemUuid
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getReforgeName
-import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.hasArtOfPeace
+import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.hasArtOfWar
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.isRecombobulated
+import net.minecraft.item.ItemStack
+import net.minecraft.nbt.CompressedStreamTools
 import org.junit.jupiter.api.Test
 
 class ItemModifierTest {
 
+    private fun getTestItem(id: String): ItemStack {
+        val stream = javaClass.getResourceAsStream("/testdata/item/$id.nbt")
+        return ItemStack.loadItemStackFromNBT(CompressedStreamTools.readCompressed(stream))
+    }
+
     @Test
     fun testUpgradeLevelMasterStars() {
-        val itemStack = TestExportTools.getTestData(TestExportTools.Item, "10starnecronhead")
-        assert(!itemStack.isRecombobulated())
-        assert(itemStack.getReforgeName() == "ancient")
-        assert(itemStack.getItemUuid() == "2810b7fe-33af-4dab-bb41-b4815f5847af")
+        val itemStack = getTestItem("shiny-heroic-hyperion")
+        assert(itemStack.isRecombobulated())
+        assert(itemStack.getReforgeName() == "heroic")
+        assert(itemStack.getItemUuid() == "2c28ffde-739b-4de0-8abd-91bbf9f13dc8")
         assert(itemStack.isEnchanted())
         assert(itemStack.getHotPotatoCount() == 15)
-        assert(itemStack.getEnchantments()?.size == 11)
-        assert(itemStack.hasArtOfPeace())
-//        assert(itemStack.getDungeonStarCount() == 10)
+        assert(itemStack.getEnchantments()?.size == 21)
+        assert(itemStack.hasArtOfWar())
+        assert(itemStack.getDungeonStarCount() == 5)
     }
 }

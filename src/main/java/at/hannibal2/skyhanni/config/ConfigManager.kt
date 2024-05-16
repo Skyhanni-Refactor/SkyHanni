@@ -14,13 +14,11 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.IdentityCharacteristics
-import at.hannibal2.skyhanni.utils.KotlinTypeAdapterFactory
 import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.LorenzRarity
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 import at.hannibal2.skyhanni.utils.json.SkyHanniTypeAdapters
@@ -66,7 +64,6 @@ class ConfigManager {
             .excludeFieldsWithoutExposeAnnotation()
             .serializeSpecialFloatingPointValues()
             .registerTypeAdapterFactory(PropertyTypeAdapterFactory())
-            .registerTypeAdapterFactory(KotlinTypeAdapterFactory())
             .registerTypeAdapter(UUID::class.java, SkyHanniTypeAdapters.UUID.nullSafe())
             .registerTypeAdapter(LorenzVec::class.java, SkyHanniTypeAdapters.VEC_STRING.nullSafe())
             .registerTypeAdapter(TrophyRarity::class.java, SkyHanniTypeAdapters.TROPHY_RARITY.nullSafe())
