@@ -25,6 +25,10 @@ enum class SkyhanniItems(private var id: String? = null, private var tier: Int? 
     CONJURING_SWORD,
     CROPIE_TALISMAN,
     CRYPT_DREADLORD_SWORD,
+    CULTIVATING,
+    DCTR_SPACE_HELM,
+    DEDICATION,
+    DELICATE,
     DYE_WILD_STRAWBERRY,
     EARTH_SHARD,
     EGGLOCATOR,
@@ -57,12 +61,14 @@ enum class SkyhanniItems(private var id: String? = null, private var tier: Int? 
     FIFTH_MASTER_STAR,
     FIRE_VEIL_WAND,
     FIRST_MASTER_STAR,
+    FLOWERING_BOUQUET,
     FOURTH_MASTER_STAR,
     FUMING_POTATO_BOOK,
     GOLDEN_CARROT,
     GOLDEN_DRAGON,
     GOLD_PICKAXE,
     GRAND_EXP_BOTTLE,
+    GREEN_BANDANA,
     GREEN_THUMB,
     HEAVY_PEARL,
     HELIX,
@@ -89,12 +95,14 @@ enum class SkyhanniItems(private var id: String? = null, private var tier: Int? 
     MAP,
     MISSING_ITEM,
     MITE_GEL,
+    MUSIC_RUNE,
     NETHER_STALK,
     NEW_BOTTLE_OF_JYRRE,
     NEW_YEAR_CAKE,
     NONE,
     OIL_BARREL,
     ORANGE_STAINED_GLASS("STAINED_GLASS-1"),
+    OVERGROWN_GRASS,
     PAPER,
     PEST_BEETLE_MONSTER,
     PEST_CRICKET_MONSTER,
@@ -118,6 +126,7 @@ enum class SkyhanniItems(private var id: String? = null, private var tier: Int? 
     RED_MUSHROOM,
     RED_STAINED_GLASS("STAINED_GLASS-14"),
     REFINED_BOTTLE_OF_JYRRE,
+    REPLENISH,
     REVENANT_GENERATOR_1,
     ROUGH_AMBER_GEM,
     ROUGH_AMETHYST_GEM,
@@ -183,6 +192,7 @@ enum class SkyhanniItems(private var id: String? = null, private var tier: Int? 
     private val internalName get() = "$name;$tier"
     private val item get() = internalName.asInternalName()
 
+    // todo rework this so it isnt like this. Can do like RARE_ENDERMAN etc. but need to work out how to do books & runes
     operator fun invoke(tier: Int): NEUInternalName {
         this.tier = tier
         return item
