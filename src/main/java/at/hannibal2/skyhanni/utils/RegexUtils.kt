@@ -35,4 +35,12 @@ object RegexUtils {
         }
         return null
     }
+
+    /**
+     * Get the group, otherwise, return null
+     * @param groupName The group name in the pattern
+     */
+    fun Matcher.groupOrNull(groupName: String): String? = runCatching { this.group(groupName) }.getOrNull()
+
+    fun Matcher.hasGroup(groupName: String): Boolean = groupOrNull(groupName) != null
 }

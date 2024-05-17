@@ -27,7 +27,6 @@ import net.minecraft.util.ChatComponentText
 import net.minecraftforge.fml.common.FMLCommonHandler
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.util.regex.Matcher
 
 object LorenzUtils {
 
@@ -253,14 +252,6 @@ object LorenzUtils {
         }
         FMLCommonHandler.instance().handleExit(-1)
     }
-
-    /**
-     * Get the group, otherwise, return null
-     * @param groupName The group name in the pattern
-     */
-    fun Matcher.groupOrNull(groupName: String): String? = runCatching { this.group(groupName) }.getOrNull()
-
-    fun Matcher.hasGroup(groupName: String): Boolean = groupOrNull(groupName) != null
 
     fun inAdvancedMiningIsland() =
         IslandType.DWARVEN_MINES.isInIsland() || IslandType.CRYSTAL_HOLLOWS.isInIsland() || IslandType.MINESHAFT.isInIsland()
