@@ -27,10 +27,12 @@ object McWorld {
     fun getBlock(pos: LorenzVec): Block = getBlockState(pos).block
     fun getBlockState(pos: LorenzVec): BlockState = world!!.getBlockState(pos.toBlockPos())
     fun getBlockEntity(pos: LorenzVec): BlockEntity? = world?.getTileEntity(pos.toBlockPos())
+    fun isBlockLoaded(pos: LorenzVec): Boolean = world?.chunkProvider?.provideChunk(pos.toBlockPos())?.isLoaded == true
 
     fun LorenzVec.getBlockAt(): Block = getBlock(this)
     fun LorenzVec.getBlockStateAt(): BlockState = getBlockState(this)
     fun LorenzVec.getBlockEntityAt(): BlockEntity? = getBlockEntity(this)
+    fun LorenzVec.isBlockLoadedAt(): Boolean = isBlockLoaded(this)
 
     inline fun <T : Comparable<T>, reified P : IProperty<T>> BlockState.checkProperty(name: String, value: (T) -> Boolean): Boolean {
         val property = block.blockState.properties.find { it.name == name } ?: return false

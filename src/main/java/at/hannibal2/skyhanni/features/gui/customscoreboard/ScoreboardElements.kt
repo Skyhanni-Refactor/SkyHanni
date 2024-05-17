@@ -13,7 +13,6 @@ import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.data.PurseAPI
 import at.hannibal2.skyhanni.data.QuiverAPI
 import at.hannibal2.skyhanni.data.QuiverAPI.NONE_ARROW_TYPE
-import at.hannibal2.skyhanni.data.QuiverAPI.asArrowPercentage
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
@@ -668,7 +667,7 @@ private fun getQuiverDisplayPair(): List<ScoreboardElementType> {
     } else {
         when (arrowConfig.arrowAmountDisplay) {
             ArrowAmountDisplay.NUMBER -> QuiverAPI.currentAmount.addSeparators()
-            ArrowAmountDisplay.PERCENTAGE -> "${QuiverAPI.currentAmount.asArrowPercentage()}%"
+            ArrowAmountDisplay.PERCENTAGE -> "${QuiverAPI.asArrowPercentage(QuiverAPI.currentAmount)}%"
             else -> QuiverAPI.currentAmount.addSeparators()
         }
     }

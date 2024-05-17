@@ -17,7 +17,6 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.features.event.diana.DianaAPI.isDianaSpade
-import at.hannibal2.skyhanni.utils.BlockUtils.isInLoadedChunk
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.DelayedRun
@@ -35,6 +34,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
+import at.hannibal2.skyhanni.utils.mc.McWorld.isBlockLoadedAt
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
@@ -211,7 +211,7 @@ object GriffinBurrowHelper {
     }
 
     private fun findBlock(point: LorenzVec): LorenzVec {
-        if (!point.isInLoadedChunk()) {
+        if (!point.isBlockLoadedAt()) {
             return point.copy(y = LocationUtils.playerLocation().y)
         }
         findGround(point)?.let {

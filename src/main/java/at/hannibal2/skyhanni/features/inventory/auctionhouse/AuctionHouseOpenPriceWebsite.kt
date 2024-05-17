@@ -7,10 +7,10 @@ import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
-import at.hannibal2.skyhanni.utils.OSUtils
+import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import at.hannibal2.skyhanni.utils.system.OS
 import io.github.moulberry.notenoughupdates.events.ReplaceItemEvent
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.entity.player.InventoryPlayer
@@ -79,8 +79,7 @@ class AuctionHouseOpenPriceWebsite {
         if (event.slotId != 8) return
         event.isCanceled = true
         if (lastClick.passedSince() > 0.3.seconds) {
-            val url = "https://sky.coflnet.com/api/mod/open/$searchTerm"
-            OSUtils.openBrowser(url)
+            OS.openUrl("https://sky.coflnet.com/api/mod/open/$searchTerm")
             lastClick = SimpleTimeMark.now()
         }
     }

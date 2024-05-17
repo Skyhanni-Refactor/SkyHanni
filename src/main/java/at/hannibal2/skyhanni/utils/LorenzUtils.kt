@@ -4,7 +4,6 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.Perk
-import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
 import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
@@ -29,7 +28,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.regex.Matcher
-import kotlin.time.Duration
 
 object LorenzUtils {
 
@@ -230,10 +228,6 @@ object LorenzUtils {
     fun Int.derpy() = if (Perk.DOUBLE_MOBS_HP.isActive) this / 2 else this
 
     fun Int.ignoreDerpy() = if (Perk.DOUBLE_MOBS_HP.isActive) this * 2 else this
-
-    fun sendTitle(text: String, duration: Duration, height: Double = 1.8, fontSize: Float = 4f) {
-        TitleManager.sendTitle(text, duration, height, fontSize)
-    }
 
     inline fun <reified T : Enum<T>> enumValueOfOrNull(name: String): T? {
         val enums = enumValues<T>()

@@ -25,7 +25,6 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.mc.McSound
-import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.mc.McSound.playOnRepeat
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.regex.Matcher
@@ -204,7 +203,7 @@ object HoppityEggsManager {
                 "§eClick to /warp ${config.warpDestination}!"
             )
         } else ChatUtils.chat(message)
-        LorenzUtils.sendTitle("§e$amount Hoppity Eggs!", 5.seconds)
+        TitleManager.sendTitle("§e$amount Hoppity Eggs!", 5.seconds)
         McSound.PLING.playOnRepeat(100, 10)
     }
 

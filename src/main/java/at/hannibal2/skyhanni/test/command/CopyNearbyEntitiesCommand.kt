@@ -5,7 +5,7 @@ import at.hannibal2.skyhanni.data.mob.MobData
 import at.hannibal2.skyhanni.data.mob.MobFilter.isDisplayNPC
 import at.hannibal2.skyhanni.data.mob.MobFilter.isRealPlayer
 import at.hannibal2.skyhanni.data.mob.MobFilter.isSkyBlockMob
-import at.hannibal2.skyhanni.utils.*
+import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.cleanName
 import at.hannibal2.skyhanni.utils.EntityUtils.getBlockInHand
 import at.hannibal2.skyhanni.utils.EntityUtils.getSkinTexture
@@ -14,11 +14,13 @@ import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
 import at.hannibal2.skyhanni.utils.ItemUtils.isEnchanted
 import at.hannibal2.skyhanni.utils.ItemUtils.name
+import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.math.toBox
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.system.OS
+import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
