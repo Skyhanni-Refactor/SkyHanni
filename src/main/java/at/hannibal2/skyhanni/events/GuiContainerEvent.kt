@@ -1,6 +1,8 @@
 package at.hannibal2.skyhanni.events
 
 import at.hannibal2.skyhanni.utils.GuiRenderUtils
+import at.hannibal2.skyhanni.utils.ItemCategory
+import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.inventory.Container
@@ -79,6 +81,16 @@ abstract class GuiContainerEvent(open val gui: GuiContainer, open val container:
             slot?.slotNumber?.let { slotNumber ->
                 Minecraft.getMinecraft().playerController.windowClick(
                     container.windowId, slotNumber, 2, 3, Minecraft.getMinecraft().thePlayer
+                )
+                isCanceled = true
+            }
+        }
+
+        fun makeShiftClick() {
+            if (this.clickedButton == 1 && slot?.stack?.getItemCategoryOrNull() == ItemCategory.SACK) return
+            slot?.slotNumber?.let { slotNumber ->
+                Minecraft.getMinecraft().playerController.windowClick(
+                    container.windowId, slotNumber, 0, 1, Minecraft.getMinecraft().thePlayer
                 )
                 isCanceled = true
             }

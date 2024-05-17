@@ -4,13 +4,11 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.Perk
-import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
 import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiEditSign
 import at.hannibal2.skyhanni.test.TestBingo
 import at.hannibal2.skyhanni.utils.ChatUtils.lastButtonClicked
-import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.StringUtils.capAtMinecraftLength
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
@@ -213,16 +211,6 @@ object LorenzUtils {
     fun IslandType.isInIsland() = inSkyBlock && skyBlockIsland == this
 
     fun inAnyIsland(vararg islandTypes: IslandType) = inSkyBlock && islandTypes.any { it.isInIsland() }
-
-    fun GuiContainerEvent.SlotClickEvent.makeShiftClick() {
-        if (this.clickedButton == 1 && slot?.stack?.getItemCategoryOrNull() == ItemCategory.SACK) return
-        slot?.slotNumber?.let { slotNumber ->
-            Minecraft.getMinecraft().playerController.windowClick(
-                container.windowId, slotNumber, 0, 1, Minecraft.getMinecraft().thePlayer
-            )
-            isCanceled = true
-        }
-    }
 
     fun Int.derpy() = if (Perk.DOUBLE_MOBS_HP.isActive) this / 2 else this
 
