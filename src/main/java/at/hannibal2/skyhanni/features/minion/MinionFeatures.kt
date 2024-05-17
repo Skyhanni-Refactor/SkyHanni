@@ -205,10 +205,12 @@ object MinionFeatures {
     }
 
     private fun removeBuggedMinions() {
+        if (!IslandType.PRIVATE_ISLAND.isInIsland()) return
         val minions = minions ?: return
 
         val removedEntities = mutableListOf<LorenzVec>()
         for (location in minions.keys) {
+            if (location.distanceToPlayer() > 30) continue
             val entitiesNearby = McWorld.getEntitiesOf<EntityArmorStand>().map { it.distanceTo(location) }
             if (!entitiesNearby.any { it == 0.0 }) {
                 removedEntities.add(location)

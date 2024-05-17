@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
+import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed
@@ -81,6 +82,10 @@ object TrevorFeatures {
         "clickoption",
         "Click an option: §r§a§l\\[YES]§r§7 - §r§c§l\\[NO]"
     )
+    private val areaTrappersDenPattern by patternGroup.pattern(
+        "area.trappersden",
+        "Trapper's Den"
+    )
 
     private const val TRAPPER_ID: Int = 56
     private const val BACKUP_TRAPPER_ID: Int = 17
@@ -96,6 +101,7 @@ object TrevorFeatures {
 
     var questActive = false
     var inBetweenQuests = false
+    var inTrapperDen = false
 
     private val config get() = SkyHanniMod.feature.misc.trevorTheTrapper
 
@@ -300,7 +306,7 @@ object TrevorFeatures {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
-        if (!inTrapperDen()) return
+        if (!inTrapperDen) return
         if (!config.trapperTalkCooldown) return
         val entity = event.entity
         if (entity is EntityArmorStand && entity.name == "§e§lCLICK") {
@@ -319,6 +325,11 @@ object TrevorFeatures {
     @SubscribeEvent
     fun onWorldChange(event: LorenzWorldChangeEvent) {
         resetTrapper()
+    }
+
+    @SubscribeEvent
+    fun onTick(event: LorenzTickEvent) {
+        inTrapperDen = areaTrappersDenPattern.matches(LorenzUtils.skyBlockArea)
     }
 
     enum class TrapperStatus(baseColor: LorenzColor) {
