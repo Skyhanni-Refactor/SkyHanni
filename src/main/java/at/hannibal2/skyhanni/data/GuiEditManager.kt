@@ -7,9 +7,9 @@ import at.hannibal2.skyhanni.events.GuiPositionMovedEvent
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.features.garden.GardenOptimalSpeed
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isRancherSign
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.ReflectionUtils.getPropertiesWithType
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -45,7 +45,7 @@ object GuiEditManager {
 
         Minecraft.getMinecraft().currentScreen?.let {
             if (it !is GuiInventory && it !is GuiChest && it !is GuiEditSign && !(it is GuiProfileViewer && !it.anyTextBoxFocused())) return
-            if (it is GuiEditSign && !it.isRancherSign()) return
+            if (it is GuiEditSign && !GardenOptimalSpeed.isRancherSign(it)) return
         }
 
         if (lastHotkeyPressed.passedSince() < 500.milliseconds) return

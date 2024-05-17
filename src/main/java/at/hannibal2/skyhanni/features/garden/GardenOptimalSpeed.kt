@@ -8,10 +8,11 @@ import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isRancherSign
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McScreen.text
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import io.github.notenoughupdates.moulconfig.observer.Property
 import net.minecraft.client.Minecraft
@@ -68,7 +69,7 @@ object GardenOptimalSpeed {
         if (!isRancherOverlayEnabled()) return
         val gui = event.gui
         if (gui !is GuiEditSign) return
-        if (!gui.isRancherSign()) return
+        if (!isRancherSign(gui)) return
         rancherOverlayList = CropType.entries.map { crop ->
             listOf(crop.icon, Renderable.link("${crop.cropName} - ${crop.getOptimalSpeed()}") {
                 LorenzUtils.setTextIntoSign("${crop.getOptimalSpeed()}")
@@ -81,7 +82,7 @@ object GardenOptimalSpeed {
         if (!isRancherOverlayEnabled()) return
         val gui = event.gui
         if (gui !is GuiEditSign) return
-        if (!gui.isRancherSign()) return
+        if (!isRancherSign(gui)) return
         config.signPosition.renderStringsAndItems(
             rancherOverlayList,
             posLabel = "Optimal Speed Rancher Overlay"
@@ -163,6 +164,11 @@ object GardenOptimalSpeed {
 
             ChatUtils.chat(text)
         }
+    }
+
+    fun isRancherSign(sign: GuiEditSign): Boolean {
+        val text = sign.text ?: return false
+        return text[1].removeColor() == "^^^^^^" && text[2].removeColor() == "Set your" && text[3].removeColor() == "speed cap!"
     }
 
     private fun isRancherOverlayEnabled() = GardenAPI.inGarden() && config.signEnabled
