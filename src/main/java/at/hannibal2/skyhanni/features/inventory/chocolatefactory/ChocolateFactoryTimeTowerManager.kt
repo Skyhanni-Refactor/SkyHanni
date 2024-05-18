@@ -119,7 +119,7 @@ object ChocolateFactoryTimeTowerManager {
                     HypixelCommands.chocolateFactory()
                 }
             )
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
             lastTimeTowerReminder = SimpleTimeMark.now()
         }
     }
