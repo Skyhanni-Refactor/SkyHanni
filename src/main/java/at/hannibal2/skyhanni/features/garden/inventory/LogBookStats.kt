@@ -90,7 +90,7 @@ object LogBookStats {
     }
 
     @SubscribeEvent
-    fun onProfileChange(event: ProfileJoinEvent) {
+    fun onProfileJoin(event: ProfileJoinEvent) {
         display = emptyList()
         loggedVisitors.clear()
         currentPage = 0

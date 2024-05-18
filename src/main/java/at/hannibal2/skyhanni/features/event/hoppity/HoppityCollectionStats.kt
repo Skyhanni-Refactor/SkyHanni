@@ -65,7 +65,7 @@ object HoppityCollectionStats {
     }
 
     @SubscribeEvent
-    fun onProfileChange(event: ProfileJoinEvent) {
+    fun onProfileJoin(event: ProfileJoinEvent) {
         display = emptyList()
         loggedRabbits.clear()
         currentPage = 0

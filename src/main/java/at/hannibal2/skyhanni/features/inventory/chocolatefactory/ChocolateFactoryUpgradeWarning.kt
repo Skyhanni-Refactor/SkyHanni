@@ -52,7 +52,7 @@ object ChocolateFactoryUpgradeWarning {
     }
 
     @SubscribeEvent
-    fun onProfileChange(event: ProfileJoinEvent) {
+    fun onProfileJoin(event: ProfileJoinEvent) {
         lastUpgradeWarning = SimpleTimeMark.farPast()
     }
 

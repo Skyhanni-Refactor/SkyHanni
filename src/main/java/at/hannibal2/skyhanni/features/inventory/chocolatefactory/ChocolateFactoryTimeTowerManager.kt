@@ -144,7 +144,7 @@ object ChocolateFactoryTimeTowerManager {
     }
 
     @SubscribeEvent
-    fun onProfileChange(event: ProfileJoinEvent) {
+    fun onProfileJoin(event: ProfileJoinEvent) {
         lastTimeTowerWarning = SimpleTimeMark.farPast()
     }
 }
