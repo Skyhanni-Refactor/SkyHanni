@@ -4,7 +4,7 @@ import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.RawScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.ScoreboardUpdateEvent
-import at.hannibal2.skyhanni.utils.StringUtils.matches
+import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.network.play.server.S3BPacketScoreboardObjective
 import net.minecraft.scoreboard.Score

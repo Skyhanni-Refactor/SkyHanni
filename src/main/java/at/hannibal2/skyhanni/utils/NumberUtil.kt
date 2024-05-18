@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.utils
 
-import at.hannibal2.skyhanni.utils.StringUtils.matches
+import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import java.text.NumberFormat
 import java.util.TreeMap
 import kotlin.math.pow

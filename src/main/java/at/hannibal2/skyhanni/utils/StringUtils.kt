@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.data.hypixel.chat.event.SystemMessageEvent
 import at.hannibal2.skyhanni.mixins.transformers.AccessorChatComponentText
 import at.hannibal2.skyhanni.utils.GuiRenderUtils.darkenColor
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
+import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiUtilRenderComponents
 import net.minecraft.event.ClickEvent
@@ -16,7 +17,6 @@ import net.minecraft.util.IChatComponent
 import java.util.UUID
 import java.util.function.Predicate
 import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 object StringUtils {
     private val whiteSpaceResetPattern = "^(?:\\s|§r)*|(?:\\s|§r)*$".toPattern()
@@ -274,12 +274,6 @@ object StringUtils {
     }
 
     fun String.convertToFormatted(): String = this.replace("&&", "§")
-
-    fun Pattern.matches(string: String?): Boolean = string?.let { matcher(it).matches() } ?: false
-    fun Pattern.anyMatches(list: List<String>?): Boolean = list?.any { this.matches(it) } ?: false
-    fun Pattern.anyMatches(list: Sequence<String>?): Boolean = anyMatches(list?.toList())
-
-    fun Pattern.find(string: String?) = string?.let { matcher(it).find() } ?: false
 
     fun String.allLettersFirstUppercase() = split("_").joinToString(" ") { it.firstLetterUppercase() }
 

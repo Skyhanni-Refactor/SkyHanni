@@ -36,6 +36,12 @@ object RegexUtils {
         return null
     }
 
+    fun Pattern.matches(string: String?): Boolean = string?.let { matcher(it).matches() } ?: false
+    fun Pattern.find(string: String?) = string?.let { matcher(it).find() } ?: false
+
+    fun Pattern.anyMatches(list: List<String>?): Boolean = list?.any { this.matches(it) } ?: false
+    fun Pattern.anyMatches(list: Sequence<String>?): Boolean = anyMatches(list?.toList())
+
     /**
      * Get the group, otherwise, return null
      * @param groupName The group name in the pattern
