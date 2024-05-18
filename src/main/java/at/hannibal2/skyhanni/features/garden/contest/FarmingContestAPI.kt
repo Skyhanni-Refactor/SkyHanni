@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.contest
 
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.events.FarmingContestEvent
 import at.hannibal2.skyhanni.events.InventoryCloseEvent
@@ -12,6 +13,7 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.LorenzUtils.isAnyOf
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -39,7 +41,13 @@ object FarmingContestAPI {
     )
 
     private val contests = mutableMapOf<Long, FarmingContest>()
-    var inContest = false
+    private var internalContest = false
+    val inContest
+        get() = internalContest && LorenzUtils.skyBlockIsland.isAnyOf(
+            IslandType.GARDEN,
+            IslandType.HUB,
+            IslandType.THE_FARMING_ISLANDS
+        )
     var contestCrop: CropType? = null
     private var startTime = SimpleTimeMark.farPast()
     var inInventory = false
@@ -51,17 +59,18 @@ object FarmingContestAPI {
     @SubscribeEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!LorenzUtils.inSkyBlock) return
+
+        if (internalContest && startTime.passedSince() > 20.minutes) {
+            FarmingContestEvent(contestCrop!!, FarmingContestPhase.STOP).postAndCatch()
+            internalContest = false
+        }
+
         if (!GardenAPI.inGarden()) return
 
         checkActiveContest()
     }
 
     private fun checkActiveContest() {
-        if (inContest && startTime.passedSince() > 20.minutes) {
-            FarmingContestEvent(contestCrop!!, FarmingContestPhase.STOP).postAndCatch()
-            inContest = false
-        }
-
         val currentCrop = readCurrentCrop()
         val currentContest = currentCrop != null
 
@@ -74,7 +83,7 @@ object FarmingContestAPI {
                     FarmingContestEvent(contestCrop!!, FarmingContestPhase.STOP).postAndCatch()
                 }
             }
-            inContest = currentContest
+            internalContest = currentContest
         } else {
             if (currentCrop != contestCrop && currentCrop != null) {
                 FarmingContestEvent(currentCrop, FarmingContestPhase.CHANGE).postAndCatch()

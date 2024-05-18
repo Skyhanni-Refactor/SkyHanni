@@ -18,6 +18,7 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
+import at.hannibal2.skyhanni.utils.RegexUtils.groupOrNull
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -51,8 +52,8 @@ object FarmingFortuneDisplay {
         "§7You have §6\\+(?<ff>\\d{1,3})☘ .*"
     )
     private val tooltipFortunePattern by patternGroup.pattern(
-        "tooltip",
-        "^§7Farming Fortune: §a\\+([\\d.]+)(?: §2\\(\\+\\d\\))?(?: §9\\(\\+(\\d+)\\))?(?: §d\\(\\+(\\d+)\\))?\$"
+        "tooltip.new",
+        "^§7Farming Fortune: §a\\+(?<display>[\\d.]+)(?: §2\\(\\+\\d\\))?(?: §9\\(\\+(?<reforge>\\d+)\\))?(?: §d\\(\\+(?<gemstone>\\d+)\\))?\$"
     )
     private val armorAbilityPattern by patternGroup.pattern(
         "armorability",
@@ -62,6 +63,7 @@ object FarmingFortuneDisplay {
         "lotusability",
         "§7Piece Bonus: §6+(?<bonus>.*)☘"
     )
+
     // todo make pattern work on Melon and Cropie armor
     private val armorAbilityFortunePattern by patternGroup.pattern(
         "armorabilityfortune",
@@ -344,9 +346,9 @@ object FarmingFortuneDisplay {
 
         for (line in tool?.getLore()!!) {
             tooltipFortunePattern.matchMatcher(line) {
-                displayedFortune = group(1)!!.toDouble()
-                reforgeFortune = group(2)?.toDouble() ?: 0.0
-                gemstoneFortune = group(3)?.toDouble() ?: 0.0
+                displayedFortune = group("display")?.toDouble() ?: 0.0
+                reforgeFortune = groupOrNull("reforge")?.toDouble() ?: 0.0
+                gemstoneFortune = groupOrNull("gemstone")?.toDouble() ?: 0.0
             } ?: continue
 
             itemBaseFortune = if (tool.getInternalName().contains("LOTUS")) {

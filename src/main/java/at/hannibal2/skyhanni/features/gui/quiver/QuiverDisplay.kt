@@ -64,7 +64,7 @@ object QuiverDisplay {
     fun onQuiverUpdate(event: QuiverUpdateEvent) {
         arrow = event.currentArrow
         amount = event.currentAmount
-        hideAmount = event.hideAmount
+        hideAmount = QuiverAPI.wearingSkeletonMasterChestplate
 
         updateDisplay()
     }
