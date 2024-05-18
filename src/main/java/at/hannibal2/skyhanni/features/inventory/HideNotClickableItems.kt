@@ -132,7 +132,7 @@ object HideNotClickableItems {
                 ErrorManager.skyHanniError("No hide reason for not clickable item!")
             } else {
                 event.toolTip.add("§c$hideReason")
-                if (config.itemsBypass) {
+                if (config.itemsBypass && !hideReason.contains("SkyBlock Menu")) {
                     event.toolTip.add("  §7(Bypass by holding the ${KeyboardManager.getModifierKeyName()} key)")
                 }
             }
@@ -431,7 +431,7 @@ object HideNotClickableItems {
             return true
         }
 
-        if (stack.cleanName() == "Green Candy" || stack.cleanName() == "Purple Candy") return false
+        if (stack.cleanName() == "Green Candy" || stack.cleanName() == "Purple Candy" || stack.cleanName() == "Dark Candy") return false
 
         hideReason = "This item is not a spooky candy!"
         return true

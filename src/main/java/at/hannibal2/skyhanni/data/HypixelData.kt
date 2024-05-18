@@ -160,12 +160,14 @@ object HypixelData {
             return group("maxamount").toInt()
         }
 
-        return when (skyBlockIsland) {
-            IslandType.MINESHAFT -> 4
-            IslandType.CRYSTAL_HOLLOWS -> 24
-            else -> if (serverId?.startsWith("mega") == true) 80 else 26
+            return when (skyBlockIsland) {
+                IslandType.MINESHAFT -> 4
+                IslandType.CATACOMBS -> 5
+                IslandType.CRYSTAL_HOLLOWS -> 24
+                IslandType.CRIMSON_ISLE -> 24
+                else -> if (serverId?.startsWith("mega") == true) 80 else 26
+            }
         }
-    }
 
     fun checkForLocraw(message: String) {
         try {
