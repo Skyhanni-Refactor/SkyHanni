@@ -22,7 +22,7 @@ class ItemModifierTest {
 
     @Test
     fun testUpgradeLevelMasterStars() {
-        val itemStack = getTestItem("shiny-heroic-hyperion")
+        val itemStack = getTestItem("shinyheroichyperion")
         assert(itemStack.isRecombobulated())
         assert(itemStack.getReforgeName() == "heroic")
         assert(itemStack.getItemUuid() == "2c28ffde-739b-4de0-8abd-91bbf9f13dc8")
