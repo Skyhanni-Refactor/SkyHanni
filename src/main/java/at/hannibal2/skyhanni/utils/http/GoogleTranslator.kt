@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.utils.http
 
-import at.hannibal2.skyhanni.utils.types.Either
 import com.google.gson.Gson
 
 object GoogleTranslator {
@@ -14,14 +13,14 @@ object GoogleTranslator {
         val text: String get() = sentences.joinToString(" ") { it.trans }
     }
 
-    open class Error(val error: String, val message: String) {
+    open class TranslationError(val error: String, override val message: String) : Error(message) {
         override fun toString(): String = "$error: $message"
     }
 
     class SameLanguageError(val lang: String) :
-        Error("SameLanguage", "The source and target languages are the same ($lang)")
+        TranslationError("SameLanguage", "The source and target languages are the same ($lang)")
 
-    suspend fun translate(text: String, from: String, to: String): Either<Error, Translation> {
+    suspend fun translate(text: String, from: String, to: String): Result<Translation> {
         val queries = mapOf(
             "client" to "gtx",
             "sl" to from,
@@ -36,15 +35,15 @@ object GoogleTranslator {
                 try {
                     val translation = this.asJson<Translation>(GSON)
                     if (translation.src == from) {
-                        Either.Left(SameLanguageError(from))
+                        Result.failure(SameLanguageError(from))
                     } else {
-                        Either.Right(translation)
+                        Result.success(translation)
                     }
                 } catch (e: Exception) {
-                    Either.Left(Error("UnknownError", e.message ?: "Unknown error"))
+                    Result.failure(TranslationError("UnknownError", e.message ?: "Unknown error"))
                 }
             } else {
-                Either.Left(Error(this.status, this.asText()))
+                Result.failure(TranslationError(this.status, this.asText()))
             }
         }
     }

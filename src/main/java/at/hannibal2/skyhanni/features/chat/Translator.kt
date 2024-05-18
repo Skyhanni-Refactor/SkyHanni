@@ -53,7 +53,8 @@ object Translator {
         val message = args.joinToString(" ").removeColor()
 
         coroutineScope.launch {
-            GoogleTranslator.translate(message, "auto", "en").run(
+            GoogleTranslator.translate(message, "auto", "en").fold(
+                { ChatUtils.chat("Found translation: §f${it.text}") },
                 {
                     if (it is GoogleTranslator.SameLanguageError) {
                         ChatUtils.userError("The source and target languages are the same (${it.lang})")
@@ -61,7 +62,6 @@ object Translator {
                         ChatUtils.userError("Unable to translate message, an error occurred: ${it.message}")
                     }
                 },
-                { ChatUtils.chat("Found translation: §f${it.text}") }
             )
         }
     }
@@ -75,7 +75,11 @@ object Translator {
         val message = args.drop(1).joinToString(" ")
 
         coroutineScope.launch {
-            GoogleTranslator.translate(message, "en", language).run(
+            GoogleTranslator.translate(message, "en", language).fold(
+                {
+                    ChatUtils.chat("Copied translation to clipboard: §f${it.text}")
+                    OS.copyToClipboard(it.text)
+                },
                 {
                     if (it is GoogleTranslator.SameLanguageError) {
                         ChatUtils.userError("Could not translate message, the source and target languages are the same (${it.lang})")
@@ -83,10 +87,6 @@ object Translator {
                         ChatUtils.userError("Unable to translate message, an error occurred: ${it.message}")
                     }
                 },
-                {
-                    ChatUtils.chat("Copied translation to clipboard: §f${it.text}")
-                    OS.copyToClipboard(it.text)
-                }
             )
         }
     }
