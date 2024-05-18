@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
@@ -88,7 +89,7 @@ object TpsCounter {
         config.tpsDisplayPosition.renderString(display, posLabel = "Tps Display")
     }
 
-    private fun isEnabled() = LorenzUtils.onHypixel && config.tpsDisplay &&
+    private fun isEnabled() = HypixelAPI.onHypixel && config.tpsDisplay &&
         (LorenzUtils.inSkyBlock || OutsideSbFeature.TPS_DISPLAY.isSelected())
 
     private fun getColor(tps: Double) = when {

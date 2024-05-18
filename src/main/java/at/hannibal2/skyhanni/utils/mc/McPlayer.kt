@@ -8,6 +8,7 @@ import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.client.Minecraft
+import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import java.util.UUID
@@ -16,7 +17,7 @@ typealias Player = EntityPlayer
 
 object McPlayer {
 
-    val player: Player? get() = Minecraft.getMinecraft().thePlayer
+    val player: EntityPlayerSP? get() = Minecraft.getMinecraft().thePlayer
     val name: String get() = player?.name ?: McClient.profileName
     val uuid: UUID get() = player?.uniqueID ?: McClient.profileUUID
 

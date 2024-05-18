@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils.formatCurrentTime
 import kotlinx.coroutines.launch
 import java.io.File
@@ -63,7 +64,7 @@ class LorenzLogger(filePath: String) {
             e.printStackTrace()
         }
 
-        if (!hasDone && LorenzUtils.onHypixel) {
+        if (!hasDone && HypixelAPI.onHypixel) {
             hasDone = true
             val directoryFiles = LOG_DIRECTORY.listFiles() ?: run {
                 println("log directory has no files")

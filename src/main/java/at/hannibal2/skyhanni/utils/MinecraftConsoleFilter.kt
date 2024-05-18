@@ -192,14 +192,14 @@ class MinecraftConsoleFilter(private val loggerConfigName: String) : Filter {
         if (config.logUnfilteredFile) {
             loggerUnfiltered.log(text)
         } else {
-            LorenzUtils.consoleLog(text)
+            SkyHanniMod.logger.info(text)
         }
     }
 
     private fun filterConsole(message: String) {
         loggerFiltered.log(message)
         if (config.printFilteredReason) {
-            LorenzUtils.consoleLog("filtered console: $message")
+            SkyHanniMod.logger.info("filtered console: $message")
         }
     }
 

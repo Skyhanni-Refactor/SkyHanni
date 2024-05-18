@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.utils.shader
 
+import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.resources.IReloadableResourceManager
@@ -79,7 +79,7 @@ abstract class Shader(val vertex: String, val fragment: String) {
                     "Link Error:\n" to errorLog
                 )
             } else {
-                LorenzUtils.consoleLog("$errorMessage $errorLog")
+                SkyHanniMod.logger.info("$errorMessage $errorLog")
             }
             return
         }

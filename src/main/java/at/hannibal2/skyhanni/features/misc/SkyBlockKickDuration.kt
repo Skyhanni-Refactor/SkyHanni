@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
@@ -29,7 +30,7 @@ object SkyBlockKickDuration {
         if (!isEnabled()) return
         if (event.message == "§cYou were kicked while joining that server!") {
 
-            if (LorenzUtils.onHypixel && !LorenzUtils.inSkyBlock) {
+            if (HypixelAPI.onHypixel && !LorenzUtils.inSkyBlock) {
                 kickMessage = false
                 showTime = true
                 lastKickTime = SimpleTimeMark.now()
@@ -59,7 +60,7 @@ object SkyBlockKickDuration {
     @SubscribeEvent
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
         if (!isEnabled()) return
-        if (!LorenzUtils.onHypixel) return
+        if (!HypixelAPI.onHypixel) return
         if (!showTime) return
 
         if (LorenzUtils.inSkyBlock) {

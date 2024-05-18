@@ -1,12 +1,14 @@
 package at.hannibal2.skyhanni.utils
 
+import at.hannibal2.skyhanni.SkyHanniMod
+
 object LorenzDebug {
 
     private val logger = LorenzLogger("debug")
 
     fun log(text: String) {
         logger.log(text)
-        LorenzUtils.consoleLog("debug logger: $text")
+        SkyHanniMod.logger.info("debug logger: $text")
     }
 
     fun chatAndLog(text: String) {

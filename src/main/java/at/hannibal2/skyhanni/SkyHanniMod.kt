@@ -19,7 +19,6 @@ import at.hannibal2.skyhanni.data.ActionBarStatsData
 import at.hannibal2.skyhanni.data.ChatManager
 import at.hannibal2.skyhanni.data.CropAccessoryData
 import at.hannibal2.skyhanni.data.EntityMovementData
-import at.hannibal2.skyhanni.data.EventCounter
 import at.hannibal2.skyhanni.data.FameRanks
 import at.hannibal2.skyhanni.data.FixedRateTimerManager
 import at.hannibal2.skyhanni.data.FriendAPI
@@ -518,7 +517,6 @@ class SkyHanniMod {
         loadModule(EntityMovementData)
         loadModule(EntityOutlineRenderer)
         loadModule(EntityUtils)
-        loadModule(EventCounter)
         loadModule(FixedRateTimerManager)
         loadModule(GardenBestCropTime)
         loadModule(GardenComposterUpgradesData)
@@ -1023,9 +1021,6 @@ class SkyHanniMod {
         lateinit var repo: RepoManager
         lateinit var configManager: ConfigManager
         val logger: Logger = LogManager.getLogger("SkyHanni")
-        fun getLogger(name: String): Logger {
-            return LogManager.getLogger("SkyHanni.$name")
-        }
 
         val modules: MutableList<Any> = ArrayList()
         private val globalJob: Job = Job(null)
@@ -1034,9 +1029,6 @@ class SkyHanniMod {
         )
         var screenToOpen: GuiScreen? = null
         private var screenTicks = 0
-        fun consoleLog(message: String) {
-            logger.log(Level.INFO, message)
-        }
 
         fun launchCoroutine(function: suspend () -> Unit) {
             coroutineScope.launch {

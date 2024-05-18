@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.data.bazaar
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarData
@@ -98,5 +99,5 @@ object HypixelBazaarFetcher {
         ChatUtils.chat("Manually updating the bazaar prices right now..")
     }
 
-    private fun canFetch() = LorenzUtils.onHypixel && nextFetchTime.isInPast()
+    private fun canFetch() = HypixelAPI.onHypixel && nextFetchTime.isInPast()
 }

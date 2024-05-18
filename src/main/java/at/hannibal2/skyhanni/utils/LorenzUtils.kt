@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.Perk
@@ -26,17 +27,11 @@ import java.text.SimpleDateFormat
 
 object LorenzUtils {
 
-    val connectedToHypixel get() = HypixelData.hypixelLive || HypixelData.hypixelAlpha
+    val inSkyBlock get() = HypixelAPI.onHypixel && HypixelData.skyBlock
 
-    val onHypixel get() = connectedToHypixel && Minecraft.getMinecraft().thePlayer != null
+    val inHypixelLobby get() = HypixelAPI.onHypixel && HypixelData.inLobby
 
-    val isOnAlphaServer get() = onHypixel && HypixelData.hypixelAlpha
-
-    val inSkyBlock get() = onHypixel && HypixelData.skyBlock
-
-    val inHypixelLobby get() = onHypixel && HypixelData.inLobby
-
-    val inLimbo get() = onHypixel && HypixelData.inLimbo
+    val inLimbo get() = HypixelAPI.onHypixel && HypixelData.inLimbo
 
     /**
      * Consider using [IslandType.isInIsland] instead
@@ -57,7 +52,7 @@ object LorenzUtils {
 
     val lastWorldSwitch get() = HypixelData.joinedWorld
 
-    val debug: Boolean = onHypixel && SkyHanniMod.feature.dev.debug.enabled
+    val debug: Boolean = HypixelAPI.onHypixel && SkyHanniMod.feature.dev.debug.enabled
 
     fun SimpleDateFormat.formatCurrentTime(): String = this.format(System.currentTimeMillis())
 
@@ -70,10 +65,6 @@ object LorenzUtils {
 
     fun formatPercentage(percentage: Double, format: String?): String =
         DecimalFormat(format).format(percentage * 100).replace(',', '.') + "%"
-
-    fun consoleLog(text: String) {
-        SkyHanniMod.consoleLog(text)
-    }
 
     fun getSBMonthByName(month: String): Int {
         var monthNr = 0

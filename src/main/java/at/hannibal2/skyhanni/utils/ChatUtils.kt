@@ -44,7 +44,7 @@ object ChatUtils {
      */
     fun debug(message: String) {
         if (SkyHanniMod.feature.dev.debug.enabled && internalChat(DEBUG_PREFIX + message)) {
-            LorenzUtils.consoleLog("[Debug] $message")
+            SkyHanniMod.logger.info("[Debug] $message")
         }
     }
 
@@ -86,13 +86,13 @@ object ChatUtils {
 
         val minecraft = Minecraft.getMinecraft()
         if (minecraft == null) {
-            LorenzUtils.consoleLog(formattedMessage.removeColor())
+            SkyHanniMod.logger.info(formattedMessage.removeColor())
             return false
         }
 
         val thePlayer = minecraft.thePlayer
         if (thePlayer == null) {
-            LorenzUtils.consoleLog(formattedMessage.removeColor())
+            SkyHanniMod.logger.info(formattedMessage.removeColor())
             return false
         }
 

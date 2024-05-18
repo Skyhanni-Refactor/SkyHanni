@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.misc.visualwords
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.HypixelJoinEvent
@@ -19,7 +20,7 @@ object ModifyVisualWords {
 
     fun modifyText(originalText: String?): String? {
         var modifiedText = originalText ?: return null
-        if (!LorenzUtils.onHypixel) return originalText
+        if (!HypixelAPI.onHypixel) return originalText
         if (!config.enabled) return originalText
         if (!LorenzUtils.inSkyBlock && !OutsideSbFeature.MODIFY_VISUAL_WORDS.isSelected()) return originalText
 

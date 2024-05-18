@@ -1,11 +1,11 @@
 package at.hannibal2.skyhanni.utils.shader
 
+import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.features.chroma.StandardChromaShader
 import at.hannibal2.skyhanni.features.chroma.TexturedChromaShader
 import at.hannibal2.skyhanni.features.misc.RoundedRectangleOutlineShader
 import at.hannibal2.skyhanni.features.misc.RoundedRectangleShader
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ResourceLocation
 import org.apache.commons.lang3.StringUtils
@@ -99,7 +99,7 @@ object ShaderManager {
                     "GLSL Compilation Error:\n" to errorLog
                 )
             } else {
-                LorenzUtils.consoleLog("$errorMessage $errorLog")
+                SkyHanniMod.logger.info("$errorMessage $errorLog")
             }
 
             return -1

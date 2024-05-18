@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.data.Mayor.Companion.setAssumeMayor
 import at.hannibal2.skyhanni.data.Mayor.Companion.setAssumeMayorJson
@@ -70,7 +71,7 @@ object MayorAPI {
 
     @SubscribeEvent
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!LorenzUtils.onHypixel) return
+        if (!HypixelAPI.onHypixel) return
         if (event.repeatSeconds(2)) {
             checkHypixelAPI()
             getTimeTillNextMayor()
@@ -79,7 +80,7 @@ object MayorAPI {
 
     @SubscribeEvent
     fun onChat(event: LorenzChatEvent) {
-        if (!LorenzUtils.onHypixel) return
+        if (!HypixelAPI.onHypixel) return
 
         if (electionOver.matches(event.message)) {
             lastMayor = currentMayor

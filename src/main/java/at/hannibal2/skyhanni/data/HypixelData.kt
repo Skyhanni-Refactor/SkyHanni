@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.config.ConfigManager.Companion.gson
 import at.hannibal2.skyhanni.data.jsonobjects.other.LocrawJson
 import at.hannibal2.skyhanni.events.HypixelJoinEvent
@@ -204,7 +205,7 @@ object HypixelData {
 
     @SubscribeEvent
     fun onChat(event: LorenzChatEvent) {
-        if (!LorenzUtils.onHypixel) return
+        if (!HypixelAPI.onHypixel) return
 
         val message = event.message.removeColor().lowercase()
         if (message.startsWith("your profile was changed to:")) {
@@ -243,7 +244,7 @@ object HypixelData {
             // So, as requested by Hannibal, use locraw from
             // NEU and have NEU send it.
             // Remove this when NEU dependency is removed
-            if (LorenzUtils.onHypixel && locrawData == LocrawJson() && lastLocRaw.passedSince() > 15.seconds) {
+            if (HypixelAPI.onHypixel && locrawData == LocrawJson() && lastLocRaw.passedSince() > 15.seconds) {
                 lastLocRaw = SimpleTimeMark.now()
                 SkyHanniMod.coroutineScope.launch {
                     delay(1000)
@@ -256,7 +257,7 @@ object HypixelData {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         if (event.scoreboard.isEmpty()) return
-        if (!LorenzUtils.onHypixel) {
+        if (!HypixelAPI.onHypixel) {
             if (checkHypixel(event.scoreboard.last())) {
                 HypixelJoinEvent().postAndCatch()
                 SkyHanniMod.repo.displayRepoStatus(true)
@@ -293,7 +294,7 @@ object HypixelData {
     private fun checkHypixel(lastLine: String): Boolean {
         hypixelLive = lastLine == "§ewww.hypixel.net"
         hypixelAlpha = lastLine == "§ealpha.hypixel.net"
-        return LorenzUtils.connectedToHypixel
+        return HypixelAPI.connected
     }
 
     private fun checkSidebar(scoreboard: List<String>) {

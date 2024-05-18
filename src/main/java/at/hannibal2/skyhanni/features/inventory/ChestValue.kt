@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.compat.neu.NEUCompat
 import at.hannibal2.skyhanni.config.features.inventory.ChestValueConfig.NumberFormatEntry
 import at.hannibal2.skyhanni.config.features.inventory.ChestValueConfig.SortingTypeEntry
 import at.hannibal2.skyhanni.data.IslandType
@@ -227,7 +228,7 @@ object ChestValue {
         if (Minecraft.getMinecraft().currentScreen !is GuiChest) return false
 
         if ((name.contains("Backpack") && name.contains("Slot #") || name.startsWith("Ender Chest (")) &&
-            !InventoryUtils.isNeuStorageEnabled.getValue()
+            !NEUCompat.isNeuStorageEnabled.getValue()
         ) {
             return true
         }

@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
@@ -96,7 +97,7 @@ object DebugCommand {
 
     private fun skyblockStatus(event: DebugDataCollectEvent) {
         event.title("SkyBlock Status")
-        if (!LorenzUtils.onHypixel) {
+        if (!HypixelAPI.onHypixel) {
             event.addData("not on Hypixel")
             return
         }

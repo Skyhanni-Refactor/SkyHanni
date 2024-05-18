@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.GuiRenderEvent
 import at.hannibal2.skyhanni.utils.LocationUtils
@@ -35,7 +36,7 @@ object MovementSpeedDisplay {
     }
 
     private fun checkSpeed() {
-        if (!LorenzUtils.onHypixel) return
+        if (!HypixelAPI.onHypixel) return
 
         speed = with(Minecraft.getMinecraft().thePlayer) {
             val oldPos = LorenzVec(prevPosX, prevPosY, prevPosZ)
@@ -67,7 +68,7 @@ object MovementSpeedDisplay {
         config.playerMovementSpeedPos.renderString(display, posLabel = "Movement Speed")
     }
 
-    fun isEnabled() = LorenzUtils.onHypixel &&
+    fun isEnabled() = HypixelAPI.onHypixel &&
         (LorenzUtils.inSkyBlock || OutsideSbFeature.MOVEMENT_SPEED.isSelected()) &&
         config.playerMovementSpeed
 }

@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.utils
 
+import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.data.mob.MobFilter.isRealPlayer
 import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
@@ -66,12 +67,12 @@ object EntityUtils {
         return found.filter {
             val result = it.name.contains(contains)
             if (debugWrongEntity && !result) {
-                LorenzUtils.consoleLog("wrong entity in aabb: '" + it.name + "'")
+                SkyHanniMod.logger.info("wrong entity in aabb: '" + it.name + "'")
             }
             if (debugRightEntity && result) {
-                LorenzUtils.consoleLog("mob: " + center.printWithAccuracy(2))
-                LorenzUtils.consoleLog("nametag: " + it.getLorenzVec().printWithAccuracy(2))
-                LorenzUtils.consoleLog("accuracy: " + (it.getLorenzVec() - center).printWithAccuracy(3))
+                SkyHanniMod.logger.info("mob: " + center.printWithAccuracy(2))
+                SkyHanniMod.logger.info("nametag: " + it.getLorenzVec().printWithAccuracy(2))
+                SkyHanniMod.logger.info("accuracy: " + (it.getLorenzVec() - center).printWithAccuracy(3))
             }
             result
         }

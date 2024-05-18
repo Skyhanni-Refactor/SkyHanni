@@ -1,12 +1,11 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
+import at.hannibal2.skyhanni.utils.RecalculatingValue
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 object EventCounter {
@@ -14,23 +13,16 @@ object EventCounter {
     private val config get() = SkyHanniMod.feature.dev.debug
 
     private var map = mutableMapOf<String, Int>()
-    private var lastUpdate = SimpleTimeMark.farPast()
+    private var lastUpdate = SimpleTimeMark.now()
 
-    private var enabled = false
-
-    @SubscribeEvent
-    fun onSecondPassed(event: SecondPassedEvent) {
-        enabled = LorenzUtils.onHypixel && config.eventCounter
+    private val enabled = RecalculatingValue(1.seconds) {
+        HypixelAPI.onHypixel && config.eventCounter
     }
 
     fun count(eventName: String) {
-        if (!enabled) return
+        if (!enabled.getValue()) return
 
         map.addOrPut(eventName, 1)
-
-        if (lastUpdate == SimpleTimeMark.farPast()) {
-            lastUpdate = SimpleTimeMark.now()
-        }
 
         if (lastUpdate.passedSince() > 1.seconds) {
             lastUpdate = SimpleTimeMark.now()

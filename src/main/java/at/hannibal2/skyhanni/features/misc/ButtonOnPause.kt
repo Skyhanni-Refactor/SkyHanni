@@ -1,8 +1,8 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.config.ConfigGuiManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiIngameMenu
 import net.minecraftforge.client.event.GuiScreenEvent
@@ -15,7 +15,7 @@ object ButtonOnPause {
 
     @SubscribeEvent
     fun onGuiAction(event: GuiScreenEvent.ActionPerformedEvent.Post) {
-        if (!LorenzUtils.onHypixel) return
+        if (!HypixelAPI.onHypixel) return
 
         if (config.configButtonOnPause && event.gui is GuiIngameMenu && event.button.id == buttonId) {
             ConfigGuiManager.openConfigGui()
@@ -24,7 +24,7 @@ object ButtonOnPause {
 
     @SubscribeEvent
     fun onGuiInitPost(event: GuiScreenEvent.InitGuiEvent.Post) {
-        if (!LorenzUtils.onHypixel) return
+        if (!HypixelAPI.onHypixel) return
 
         if (config.configButtonOnPause && event.gui is GuiIngameMenu) {
             val x = event.gui.width - 105
