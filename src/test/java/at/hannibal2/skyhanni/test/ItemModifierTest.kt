@@ -15,8 +15,9 @@ import org.junit.jupiter.api.Test
 class ItemModifierTest {
 
     private fun getTestItem(id: String): ItemStack {
+        val resources = Thread.currentThread().contextClassLoader.getResources("/").toList()
         val stream = javaClass.getResourceAsStream("/testdata/item/$id.nbt")
-        require(stream != null) { "Test item $id not found" }
+        require(stream != null) { "Test item $id not found, $resources" }
         return ItemStack.loadItemStackFromNBT(CompressedStreamTools.readCompressed(stream))
     }
 
