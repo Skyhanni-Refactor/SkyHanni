@@ -16,6 +16,7 @@ class ItemModifierTest {
 
     private fun getTestItem(id: String): ItemStack {
         val stream = javaClass.getResourceAsStream("/testdata/item/$id.nbt")
+        require(stream != null) { "Test item $id not found" }
         return ItemStack.loadItemStackFromNBT(CompressedStreamTools.readCompressed(stream))
     }
 
