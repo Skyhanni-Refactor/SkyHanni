@@ -11,6 +11,8 @@ enum class SkyhanniItems(private var id: String? = null, private var tier: Int? 
     ARCHITECT_FIRST_DRAFT,
     ARROW,
     ASCENSION_ROPE,
+    ASPECT_OF_THE_END,
+    ASPECT_OF_THE_VOID,
     BLUE_STAINED_GLASS("STAINED_GLASS-11"),
     BONZO_MASK,
     BOOKWORM_BOOK,

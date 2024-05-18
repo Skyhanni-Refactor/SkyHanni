@@ -18,8 +18,9 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.createCommaSeparatedList
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.playOnRepeat
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
@@ -59,7 +60,7 @@ object QuiverWarning {
         }.createCommaSeparatedList()
         TitleManager.sendTitle("§cLow on arrows!", 5.seconds, 3.6, 7f)
         ChatUtils.chat("Low on $arrowsText!")
-        SoundUtils.repeatSound(100, 30, SoundUtils.plingSound)
+        McSound.PLING.playOnRepeat(100, 30)
     }
 
     private fun lowQuiverAlert(amount: Int) {
