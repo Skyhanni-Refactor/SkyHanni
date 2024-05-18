@@ -4,11 +4,13 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.data.hypixel.chat.event.SystemMessageEvent
 import at.hannibal2.skyhanni.events.ChatHoverEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.features.inventory.patternGroup
 import at.hannibal2.skyhanni.mixins.hooks.GuiChatHook
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.StringUtils.applyIfPossible
 import at.hannibal2.skyhanni.utils.StringUtils.isRoman
+import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
@@ -19,6 +21,16 @@ object ReplaceRomanNumerals {
     // Using toRegex here since toPattern doesn't seem to provide the necessary functionality
     private val splitRegex = "((§\\w)|(\\s+)|(\\W))+|(\\w*)".toRegex()
 
+    //
+    /**
+     * REGEX-TEST: §eSelect an option: §r§a[§aOk, then what?§a]
+     */
+    private val isSelectOptionPattern by patternGroup.pattern(
+        "string.isselectoption",
+        "§eSelect an option: .*"
+    )
+
+    // TODO: Remove after pr 1717 is ready and switch to ItemHoverEvent
     @SubscribeEvent(priority = EventPriority.LOWEST)
     fun onTooltip(event: LorenzToolTipEvent) {
         if (!isEnabled()) return
@@ -42,12 +54,14 @@ object ReplaceRomanNumerals {
 
     @SubscribeEvent
     fun onSystemMessage(event: SystemMessageEvent) {
-        if (!isEnabled()) return
+        if (!isEnabled() || event.message.isSelectOption()) return
         event.applyIfPossible { it.transformLine() }
     }
 
+    private fun String.isSelectOption(): Boolean = isSelectOptionPattern.matches(this)
+
     private fun String.transformLine() = splitRegex.findAll(this).map { it.value }.joinToString("") {
-        it.takeIf { it.isValidRomanNumeral() }?.coloredRomanToDecimal() ?: it
+        it.takeIf { it.isValidRomanNumeral() && it.removeFormatting().romanToDecimal() != 2000 }?.coloredRomanToDecimal() ?: it
     }
 
     private fun String.removeFormatting() = removeColor().replace(",", "")
