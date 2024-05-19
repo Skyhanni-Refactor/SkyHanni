@@ -16,7 +16,6 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.util.BlockPos
 import net.minecraftforge.client.MinecraftForgeClient
-import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
@@ -355,7 +354,7 @@ object EntityOutlineRenderer {
      */
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
-        if (!(event.phase == EventPriority.NORMAL && isEnabled())) return
+        if (!isEnabled()) return
 
         val renderGlobal = try {
             mc.renderGlobal as CustomRenderGlobal
