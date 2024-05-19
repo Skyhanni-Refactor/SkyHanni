@@ -131,6 +131,11 @@ public class DebugConfig {
     @ConfigEditorBoolean
     public boolean neverFunnyTime = false;
 
+    @Expose
+    @ConfigOption(name = "Log Custom Packets", desc = "Logs a hex dump of custom payload packets.")
+    @ConfigEditorBoolean
+    public boolean logCustomPackets = false;
+
     // Does not have a config element!
     @Expose
     public Position trackSoundPosition = new Position(0, 0);

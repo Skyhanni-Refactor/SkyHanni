@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.api.DataWatcherAPI
 import at.hannibal2.skyhanni.api.EntityAttributeAPI
 import at.hannibal2.skyhanni.api.GetFromSackAPI
 import at.hannibal2.skyhanni.api.GuildAPI
+import at.hannibal2.skyhanni.api.HypixelPacketAPI
 import at.hannibal2.skyhanni.api.SkillAPI
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.ConfigManager
@@ -477,7 +478,6 @@ import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
@@ -532,6 +532,7 @@ class SkyHanniMod {
         loadModule(HighlightVisitorsOutsideOfGarden)
         loadModule(HypixelBazaarFetcher)
         loadModule(HypixelData)
+        loadModule(HypixelPacketAPI)
         loadModule(ItemAddManager)
         loadModule(ItemClickData)
         loadModule(ItemTipHelper)
