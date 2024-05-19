@@ -29,6 +29,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils
+import at.hannibal2.skyhanni.utils.mc.McScreen.setTextIntoSign
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
@@ -155,8 +156,9 @@ object CityProjectFeatures {
             list.add(stack)
 
             list.add(Renderable.optionalLink("$name §ex${amount.addSeparators()}", {
-                if (Minecraft.getMinecraft().currentScreen is GuiEditSign) {
-                    LorenzUtils.setTextIntoSign("$amount")
+                val gui = Minecraft.getMinecraft().currentScreen
+                if (gui is GuiEditSign) {
+                    gui.setTextIntoSign("$amount")
                 } else {
                     BazaarApi.searchForBazaarItem(name, amount)
                 }

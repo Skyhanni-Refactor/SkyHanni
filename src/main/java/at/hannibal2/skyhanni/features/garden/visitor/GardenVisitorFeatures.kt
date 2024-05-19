@@ -53,6 +53,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen.setTextIntoSign
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -188,8 +189,9 @@ object GardenVisitorFeatures {
                 list.add(itemStack)
 
                 list.add(Renderable.optionalLink("$name §ex${amount.addSeparators()}", {
-                    if (Minecraft.getMinecraft().currentScreen is GuiEditSign) {
-                        LorenzUtils.setTextIntoSign("$amount")
+                    val gui = Minecraft.getMinecraft().currentScreen
+                    if (gui is GuiEditSign) {
+                        gui.setTextIntoSign("$amount")
                     } else {
                         BazaarApi.searchForBazaarItem(name, amount)
                     }

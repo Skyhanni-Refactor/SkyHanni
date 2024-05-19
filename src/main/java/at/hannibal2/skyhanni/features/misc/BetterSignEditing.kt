@@ -5,7 +5,8 @@ import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiEditSign
 import at.hannibal2.skyhanni.utils.KeyboardManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.mc.McScreen.addTextIntoSign
+import at.hannibal2.skyhanni.utils.mc.McScreen.setTextIntoSign
 import at.hannibal2.skyhanni.utils.system.OS
 import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
@@ -40,7 +41,7 @@ object BetterSignEditing {
                     val lastSpaceIndex = currentLine.trimEnd().lastIndexOf(' ')
                     if (lastSpaceIndex >= 0) currentLine.substring(0, lastSpaceIndex + 2) else ""
                 } else return@launch
-                LorenzUtils.setTextIntoSign(newLine, gui.editLine)
+                gui.setTextIntoSign(newLine, gui.editLine)
             }
         }
         deleteLastClicked = deleteClicked
@@ -59,7 +60,8 @@ object BetterSignEditing {
     private fun checkPaste() {
         val pasteClicked = KeyboardManager.isPastingKeysDown()
         if (!pasteLastClicked && pasteClicked) {
-            LorenzUtils.addTextIntoSign(OS.readFromClipboard())
+            val gui = Minecraft.getMinecraft().currentScreen
+            gui.addTextIntoSign(OS.readFromClipboard())
         }
         pasteLastClicked = pasteClicked
     }

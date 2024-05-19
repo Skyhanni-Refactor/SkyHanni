@@ -7,20 +7,16 @@ import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
 import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
-import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiEditSign
 import at.hannibal2.skyhanni.test.TestBingo
 import at.hannibal2.skyhanni.utils.ChatUtils.lastButtonClicked
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
-import at.hannibal2.skyhanni.utils.StringUtils.capAtMinecraftLength
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.launchwrapper.Launch
-import net.minecraft.util.ChatComponentText
 import net.minecraftforge.fml.common.FMLCommonHandler
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -98,21 +94,6 @@ object LorenzUtils {
             outerList.add(listOf(item, left, right))
         }
         return Renderable.table(outerList, xPadding = 5, yPadding = padding)
-    }
-
-    fun setTextIntoSign(text: String, line: Int = 0) {
-        val gui = Minecraft.getMinecraft().currentScreen
-        if (gui !is AccessorGuiEditSign) return
-        gui.tileSign.signText[line] = ChatComponentText(text)
-    }
-
-    fun addTextIntoSign(addedText: String) {
-        val gui = Minecraft.getMinecraft().currentScreen
-        if (gui !is AccessorGuiEditSign) return
-        val lines = gui.tileSign.signText
-        val index = gui.editLine
-        val text = lines[index].unformattedText + addedText
-        lines[index] = ChatComponentText(text.capAtMinecraftLength(91))
     }
 
     fun colorCodeToRarity(colorCode: Char): String {
