@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.utils.network.ByteBufUtils.readString
 import at.hannibal2.skyhanni.utils.network.ByteBufUtils.readVarInt
 import at.hannibal2.skyhanni.utils.network.HexDumper
 import io.netty.buffer.Unpooled
+import net.minecraft.client.network.NetHandlerPlayClient
 import net.minecraft.network.PacketBuffer
 import net.minecraft.network.play.client.C17PacketCustomPayload
 import net.minecraft.network.play.server.S3FPacketCustomPayload
@@ -54,7 +55,9 @@ object HypixelPacketAPI {
                 }
             }
             "hypixel:hello" -> {
-                registerLocation()
+                DelayedRun.runDelayed(2.5.seconds) {
+                    registerLocation(McClient.network)
+                }
                 connected = true
                 data.use {
                     envrionemnt = when (data.readVarInt()) {
@@ -86,7 +89,8 @@ object HypixelPacketAPI {
                     }
 
                     if (events["hyevent:location"] == null) {
-                        registerLocation()
+                        event.cancel()
+                        registerLocation(event.network)
                     }
                 }
             }
@@ -98,18 +102,16 @@ object HypixelPacketAPI {
         connected = false
     }
 
-    private fun registerLocation() {
-        DelayedRun.runDelayed(2.5.seconds) {
-            val buffer = PacketBuffer(Unpooled.buffer())
-            buffer.writeByte(1)
-            val copy = events.editCopy { this["hyevent:location"] = 1 }
-            buffer.writeVarIntToBuffer(copy.size)
-            copy.forEach { (key, value) ->
-                buffer.writeString(key)
-                buffer.writeVarIntToBuffer(value)
-            }
-            McClient.network.addToSendQueue(C17PacketCustomPayload("hypixel:register", buffer))
+    private fun registerLocation(network: NetHandlerPlayClient) {
+        val buffer = PacketBuffer(Unpooled.buffer())
+        buffer.writeByte(1)
+        val copy = events.editCopy { this["hyevent:location"] = 1 }
+        buffer.writeVarIntToBuffer(copy.size)
+        copy.forEach { (key, value) ->
+            buffer.writeString(key)
+            buffer.writeVarIntToBuffer(value)
         }
+        network.addToSendQueue(C17PacketCustomPayload("hypixel:register", buffer))
     }
 
     private fun PacketBuffer.use(block: PacketBuffer.() -> Unit) {

@@ -1,8 +1,8 @@
 package at.hannibal2.skyhanni.mixins.transformers;
 
 import at.hannibal2.skyhanni.events.EntityEquipmentChangeEvent;
+import at.hannibal2.skyhanni.events.PacketEvent;
 import at.hannibal2.skyhanni.events.entity.EntityAttributeUpdateEvent;
-import at.hannibal2.skyhanni.mixins.hooks.NetHandlerPlayClientHookKt;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
@@ -20,7 +20,10 @@ public abstract class MixinNetHandlerPlayClient implements INetHandlerPlayClient
 
     @Inject(method = "addToSendQueue", at = @At("HEAD"), cancellable = true)
     private void onSendPacket(Packet<?> packet, CallbackInfo ci) {
-        NetHandlerPlayClientHookKt.onSendPacket(packet, ci);
+        NetHandlerPlayClient client = (NetHandlerPlayClient) (Object) this;
+        if (new PacketEvent.SendEvent(client, packet).postAndCatch()) {
+            ci.cancel();
+        }
     }
 
     @Inject(method = "handleEntityEquipment", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setCurrentItemOrArmor(ILnet/minecraft/item/ItemStack;)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD)

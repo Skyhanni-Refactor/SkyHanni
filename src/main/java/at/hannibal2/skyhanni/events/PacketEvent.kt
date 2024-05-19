@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.events
 
+import net.minecraft.client.network.NetHandlerPlayClient
 import net.minecraft.network.Packet
 import net.minecraftforge.fml.common.eventhandler.Cancelable
 
@@ -23,7 +24,8 @@ abstract class PacketEvent : LorenzEvent() {
     /**
      * Note: This event is async and may not be executed on the main minecraft thread.
      */
-    data class SendEvent(override val packet: Packet<*>) : PacketEvent() {
+    @Cancelable
+    data class SendEvent(val network: NetHandlerPlayClient, override val packet: Packet<*>) : PacketEvent() {
 
         override val direction = Direction.OUTBOUND
 
