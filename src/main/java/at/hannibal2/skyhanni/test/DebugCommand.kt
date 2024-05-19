@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.data.repo.RepoManager
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -39,6 +40,7 @@ object DebugCommand {
         // calling default debug stuff
         player(event)
         repoAutoUpdate(event)
+        repoLocation(event)
         globalRender(event)
         skyblockStatus(event)
         profileName(event)
@@ -130,11 +132,16 @@ object DebugCommand {
 
     private fun repoAutoUpdate(event: DebugDataCollectEvent) {
         event.title("Repo Auto Update")
-        if (SkyHanniMod.feature.dev.repoAutoUpdate) {
+        if (SkyHanniMod.feature.dev.repo.repoAutoUpdate) {
             event.addIrrelevant("normal enabled")
         } else {
             event.addData("The repo does not auto update because auto update is disabled!")
         }
+    }
+
+    private fun repoLocation(event: DebugDataCollectEvent) {
+        event.title("Repo Location")
+        event.addIrrelevant("repo location: '${RepoManager.getRepoLocation()}'")
     }
 
     private fun player(event: DebugDataCollectEvent) {
