@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.api
 
-import at.hannibal2.skyhanni.events.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -25,7 +25,7 @@ object ActionBarAPI {
         actionBar = event.message.formattedText.stripHypixelMessage()
 
         val actionBarEvent = ActionBarUpdateEvent(actionBar, event.message)
-        actionBarEvent.postAndCatch()
+        actionBarEvent.post()
 
         if (event.message.formattedText != actionBarEvent.chatComponent.formattedText) {
             event.message = actionBarEvent.chatComponent

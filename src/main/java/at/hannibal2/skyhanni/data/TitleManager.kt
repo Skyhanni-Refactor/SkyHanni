@@ -59,7 +59,7 @@ object TitleManager {
         if (packet !is S45PacketTitle) return
         val message = packet.message ?: return
         val formattedText = message.formattedText
-        if (TitleReceivedEvent(formattedText).postAndCatch()) {
+        if (TitleReceivedEvent(formattedText).post()) {
             event.cancel()
         }
     }

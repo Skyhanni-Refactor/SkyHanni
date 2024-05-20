@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.BlockClickEvent
-import at.hannibal2.skyhanni.events.EntityClickEvent
-import at.hannibal2.skyhanni.events.ItemClickEvent
 import at.hannibal2.skyhanni.events.PacketEvent
+import at.hannibal2.skyhanni.events.minecraft.click.BlockClickEvent
+import at.hannibal2.skyhanni.events.minecraft.click.EntityClickEvent
+import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
@@ -22,23 +22,23 @@ object ItemClickData {
             packet is C08PacketPlayerBlockPlacement -> {
                 if (packet.placedBlockDirection != 255) {
                     val position = packet.position.toLorenzVec()
-                    BlockClickEvent(ClickType.RIGHT_CLICK, position, packet.stack).postAndCatch()
+                    BlockClickEvent(ClickType.RIGHT_CLICK, position, packet.stack).post()
                 } else {
-                    ItemClickEvent(McPlayer.heldItem, ClickType.RIGHT_CLICK).postAndCatch()
+                    ItemClickEvent(McPlayer.heldItem, ClickType.RIGHT_CLICK).post()
                 }
             }
 
             packet is C07PacketPlayerDigging && packet.status == C07PacketPlayerDigging.Action.START_DESTROY_BLOCK -> {
                 val position = packet.position.toLorenzVec()
                 val blockClickCancelled =
-                    BlockClickEvent(ClickType.LEFT_CLICK, position, McPlayer.heldItem).postAndCatch()
+                    BlockClickEvent(ClickType.LEFT_CLICK, position, McPlayer.heldItem).post()
                 ItemClickEvent(McPlayer.heldItem, ClickType.LEFT_CLICK).also {
-                    it.isCanceled = blockClickCancelled
-                }.postAndCatch()
+                    if (blockClickCancelled) it.cancel()
+                }.post()
             }
 
             packet is C0APacketAnimation -> {
-                ItemClickEvent(McPlayer.heldItem, ClickType.LEFT_CLICK).postAndCatch()
+                ItemClickEvent(McPlayer.heldItem, ClickType.LEFT_CLICK).post()
             }
 
             packet is C02PacketUseEntity -> {
@@ -49,7 +49,7 @@ object ItemClickData {
                     else -> return
                 }
                 val clickedEntity = packet.getEntityFromWorld(McWorld.world) ?: return
-                EntityClickEvent(clickType, clickedEntity, McPlayer.heldItem).postAndCatch()
+                EntityClickEvent(clickType, clickedEntity, McPlayer.heldItem).post()
             }
 
             else -> {

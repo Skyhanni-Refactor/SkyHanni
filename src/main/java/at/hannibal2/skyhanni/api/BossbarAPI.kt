@@ -1,8 +1,8 @@
 package at.hannibal2.skyhanni.api
 
-import at.hannibal2.skyhanni.events.BossbarUpdateEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.BossbarUpdateEvent
 import net.minecraft.entity.boss.BossStatus
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -28,6 +28,6 @@ object BossbarAPI {
         if (previousServerBossbar.isNotEmpty()) previousServerBossbar = ""
 
         bossbar = bossbarLine
-        BossbarUpdateEvent(bossbarLine).postAndCatch()
+        BossbarUpdateEvent(bossbarLine).post()
     }
 }

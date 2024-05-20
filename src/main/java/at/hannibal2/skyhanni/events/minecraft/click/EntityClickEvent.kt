@@ -1,4 +1,4 @@
-package at.hannibal2.skyhanni.events
+package at.hannibal2.skyhanni.events.minecraft.click
 
 import at.hannibal2.skyhanni.data.ClickType
 import net.minecraft.entity.Entity
