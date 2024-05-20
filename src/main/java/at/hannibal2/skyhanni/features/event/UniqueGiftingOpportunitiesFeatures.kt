@@ -1,11 +1,12 @@
 package at.hannibal2.skyhanni.features.event
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.events.EntityCustomNameUpdateEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.entity.EntityCustomNameUpdateEvent
 import at.hannibal2.skyhanni.features.event.winter.UniqueGiftCounter
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
@@ -65,7 +66,7 @@ object UniqueGiftingOpportunitiesFeatures {
         addGiftedPlayer(matchedPlayer.name)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onEntityChangeName(event: EntityCustomNameUpdateEvent) {
         val entity = event.entity as? EntityArmorStand ?: return
         analyzeArmorStand(entity)

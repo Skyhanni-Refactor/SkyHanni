@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.EntityMoveEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWarpEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.entity.EntityMoveEvent
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -43,7 +43,7 @@ object EntityMovementData {
             val distance = newLocation.distance(oldLocation)
             if (distance > 0.01) {
                 entityLocation[entity] = newLocation
-                EntityMoveEvent(entity, oldLocation, newLocation, distance).postAndCatch()
+                EntityMoveEvent(entity, oldLocation, newLocation, distance).post()
             }
         }
     }

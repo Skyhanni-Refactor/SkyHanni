@@ -1,8 +1,8 @@
 package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.events.DataWatcherUpdatedEvent
-import at.hannibal2.skyhanni.events.EntityCustomNameUpdateEvent
-import at.hannibal2.skyhanni.events.EntityHealthUpdateEvent
+import at.hannibal2.skyhanni.events.entity.EntityCustomNameUpdateEvent
+import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils.derpy
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.entity.EntityPlayerSP
@@ -32,7 +32,7 @@ object DataWatcherAPI {
     }
 
     private fun onCustomNameUpdate(entity: Entity) {
-        EntityCustomNameUpdateEvent(entity.customNameTag, entity).postAndCatch()
+        EntityCustomNameUpdateEvent(entity.customNameTag, entity).post()
     }
 
     private fun onHealthUpdate(entity: Entity, entry: DataWatcher.WatchableObject) {
@@ -48,6 +48,6 @@ object DataWatcherAPI {
 
         if (entity is EntityWither && health == 300 && entity.entityId < 0) return
 
-        EntityHealthUpdateEvent(entity, health.derpy()).postAndCatch()
+        EntityHealthUpdateEvent(entity, health.derpy()).post()
     }
 }

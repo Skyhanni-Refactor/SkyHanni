@@ -2,8 +2,8 @@ package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.Perk
-import at.hannibal2.skyhanni.events.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.events.entity.EntityAttributeUpdateEvent
+import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.entity.item.EntityArmorStand
@@ -24,7 +24,7 @@ object EntityAttributeAPI {
                 entity,
                 normalizeHealth(maxHealth),
                 maxHealth.toInt()
-            ).postAndCatch()
+            ).post()
         }
     }
 
