@@ -1,10 +1,11 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.data.jsonobjects.local.FriendsJson
 import at.hannibal2.skyhanni.data.jsonobjects.local.FriendsJson.PlayerFriends.Friend
-import at.hannibal2.skyhanni.events.HypixelJoinEvent
+import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -53,7 +54,7 @@ object FriendAPI {
         FriendsJson.PlayerFriends().also { it.friends = mutableMapOf() }
     }.friends
 
-    @SubscribeEvent
+    @HandleEvent
     fun onHypixelJoin(event: HypixelJoinEvent) {
         if (SkyHanniMod.friendsData.players == null) {
             SkyHanniMod.friendsData.players = mutableMapOf()

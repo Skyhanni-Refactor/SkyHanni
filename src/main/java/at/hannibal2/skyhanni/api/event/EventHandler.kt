@@ -40,8 +40,9 @@ class EventHandler<T : SkyHanniEvent> private constructor(private val name: Stri
     }
 
     fun post(event: T, onError: ((Throwable) -> Unit)? = null) {
-        if (!isFrozen) error("Cannot invoke event on unfrozen event handler")
         invokeCount++
+        if (this.listeners.isEmpty()) return
+        if (!isFrozen) error("Cannot invoke event on unfrozen event handler")
 
         if (SkyHanniEvents.isDisabledHandler(name)) return
 

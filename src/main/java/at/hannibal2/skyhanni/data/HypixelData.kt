@@ -4,7 +4,6 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.config.ConfigManager.Companion.gson
 import at.hannibal2.skyhanni.data.jsonobjects.other.LocrawJson
-import at.hannibal2.skyhanni.events.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
@@ -258,10 +257,7 @@ object HypixelData {
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         if (event.scoreboard.isEmpty()) return
         if (!HypixelAPI.onHypixel) {
-            if (checkHypixel(event.scoreboard.last())) {
-                HypixelJoinEvent().postAndCatch()
-                SkyHanniMod.repo.displayRepoStatus(true)
-            } else return
+            if (!checkHypixel(event.scoreboard.last())) return
         }
 
         val inSkyblock = scoreboardTitlePattern.matches(ScoreboardData.objectiveTitle.removeColor())

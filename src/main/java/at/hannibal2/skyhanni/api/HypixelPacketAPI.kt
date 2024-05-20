@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.events.PacketEvent
+import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.hypixel.HypixelLocationEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.DelayedRun
@@ -66,6 +67,11 @@ object HypixelPacketAPI {
                         2 -> Environment.TEST
                         else -> Environment.PROD
                     }
+                }
+
+                DelayedRun.runNextTick {
+                    HypixelJoinEvent().post()
+                    SkyHanniMod.repo.displayRepoStatus(true)
                 }
             }
         }
