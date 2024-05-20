@@ -24,8 +24,9 @@ class EventHandler<T : SkyHanniEvent> private constructor(private val name: Stri
         val name = "${method.declaringClass.name}.${method.name}${
             method.parameterTypes.joinTo(
                 StringBuilder(),
-                "(",
-                ")",
+                prefix = "(",
+                postfix = ")",
+                separator = ", ",
                 transform = Class<*>::getTypeName
             )
         }"
@@ -42,10 +43,13 @@ class EventHandler<T : SkyHanniEvent> private constructor(private val name: Stri
         if (!isFrozen) error("Cannot invoke event on unfrozen event handler")
         invokeCount++
 
+        if (SkyHanniEvents.isDisabledHandler(name)) return
+
         var errors = 0
 
         for (listener in listeners) {
             if (event.isCancelled && !listener.options.receiveCancelled) continue
+            if (SkyHanniEvents.isDisabledInvoker(listener.name)) continue
             try {
                 listener.invoker(event)
             } catch (throwable: Throwable) {
@@ -62,9 +66,11 @@ class EventHandler<T : SkyHanniEvent> private constructor(private val name: Stri
 
         if (errors > 3) {
             val hiddenErrors = errors - 3
-            ChatUtils.chat(Text.text(
-                "§c[SkyHanni/${SkyHanniMod.version}] $hiddenErrors more errors in $name are hidden!"
-            ))
+            ChatUtils.chat(
+                Text.text(
+                    "§c[SkyHanni/${SkyHanniMod.version}] $hiddenErrors more errors in $name are hidden!"
+                )
+            )
         }
     }
 

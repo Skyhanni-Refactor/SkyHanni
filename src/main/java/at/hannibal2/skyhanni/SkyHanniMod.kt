@@ -959,6 +959,8 @@ class SkyHanniMod {
 
         loadModule(MobDebug)
 
+        loadModule(SkyHanniEvents)
+
         SkyHanniEvents.init(modules)
 
         Commands.init()
