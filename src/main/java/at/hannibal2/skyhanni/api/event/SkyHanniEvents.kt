@@ -4,7 +4,7 @@ import java.lang.reflect.Method
 
 internal object SkyHanniEvents {
 
-    private val eventHolders: MutableMap<Class<*>, EventHandler<*>> = mutableMapOf()
+    private val handlers: MutableMap<Class<*>, EventHandler<*>> = mutableMapOf()
 
     fun init(instances: List<Any>) {
         instances.forEach { instance ->
@@ -12,12 +12,12 @@ internal object SkyHanniEvents {
                 registerMethod(it, instance)
             }
         }
-        eventHolders.values.forEach { it.freeze() }
+        handlers.values.forEach { it.freeze() }
     }
 
     @Suppress("UNCHECKED_CAST")
     fun <T : SkyHanniEvent> getEventHandler(event: Class<T>): EventHandler<T> {
-        return eventHolders.getOrPut(event) { EventHandler(event) } as EventHandler<T>
+        return handlers.getOrPut(event) { EventHandler(event) } as EventHandler<T>
     }
 
     @Suppress("UNCHECKED_CAST")
