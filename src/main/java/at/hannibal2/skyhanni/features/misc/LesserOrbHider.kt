@@ -3,8 +3,8 @@ package at.hannibal2.skyhanni.features.misc
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.entity.EntityEquipmentChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
@@ -40,7 +40,7 @@ object LesserOrbHider {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
         if (event.type != EnumParticleTypes.REDSTONE) return
@@ -48,7 +48,7 @@ object LesserOrbHider {
         for (armorStand in hiddenEntities) {
             val distance = armorStand.distanceTo(event.location)
             if (distance < 4) {
-                event.isCanceled = true
+                event.cancel()
             }
         }
     }

@@ -1,7 +1,8 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.util.EnumParticleTypes
@@ -22,7 +23,7 @@ object MiscFeatures {
         event.isCanceled = true
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!SkyHanniMod.feature.misc.hideExplosions) return
@@ -31,7 +32,7 @@ object MiscFeatures {
             EnumParticleTypes.EXPLOSION_LARGE,
             EnumParticleTypes.EXPLOSION_HUGE,
             EnumParticleTypes.EXPLOSION_NORMAL,
-            -> event.isCanceled = true
+            -> event.cancel()
 
             else -> {}
         }

@@ -6,7 +6,7 @@ import at.hannibal2.skyhanni.config.features.itemability.FireVeilWandConfig.Disp
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
 import at.hannibal2.skyhanni.features.nether.ashfang.AshfangFreezeCooldown
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
@@ -25,13 +25,13 @@ object FireVeilWandParticles {
 
     private var lastClick = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (config.display == DisplayEntry.PARTICLES) return
         if (lastClick.passedSince() > 5.5.seconds) return
         if (event.type == EnumParticleTypes.FLAME && event.speed == 0.55f) {
-            event.isCanceled = true
+            event.cancel()
         }
     }
 

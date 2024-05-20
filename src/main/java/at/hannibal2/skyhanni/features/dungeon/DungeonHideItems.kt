@@ -5,8 +5,8 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.EntityMovementData
 import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.entity.EntityMoveEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
@@ -164,7 +164,7 @@ object DungeonHideItems {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!DungeonAPI.inDungeon()) return
         if (!config.hideSuperboomTNT && !config.hideReviveStone) return
@@ -174,10 +174,10 @@ object DungeonHideItems {
             val distance = packetLocation.distance(armorStand.getLorenzVec())
             if (distance < 2) {
                 if (event.type == EnumParticleTypes.FIREWORKS_SPARK) {
-                    event.isCanceled = true
+                    event.cancel()
                 }
                 if (event.type == EnumParticleTypes.REDSTONE) {
-                    event.isCanceled = true
+                    event.cancel()
                 }
             }
         }

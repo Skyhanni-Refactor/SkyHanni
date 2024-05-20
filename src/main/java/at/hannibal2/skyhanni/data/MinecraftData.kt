@@ -4,9 +4,9 @@ import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.PacketEvent
-import at.hannibal2.skyhanni.events.PlaySoundEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.inventory.ItemInHandChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.PlaySoundEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -34,7 +34,7 @@ object MinecraftData {
                 LorenzVec(packet.x, packet.y, packet.z),
                 packet.pitch,
                 packet.volume
-            ).postAndCatch()
+            ).post()
         ) {
             event.isCanceled = true
         }
@@ -60,7 +60,7 @@ object MinecraftData {
                 LorenzVec(packet.xOffset, packet.yOffset, packet.zOffset),
                 packet.isLongDistance,
                 packet.particleArgs,
-            ).postAndCatch()
+            ).post()
         ) {
             event.isCanceled = true
         }

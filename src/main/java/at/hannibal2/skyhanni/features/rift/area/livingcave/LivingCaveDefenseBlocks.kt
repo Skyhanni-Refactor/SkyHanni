@@ -1,9 +1,10 @@
 package at.hannibal2.skyhanni.features.rift.area.livingcave
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.ServerBlockChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
@@ -35,7 +36,7 @@ object LivingCaveDefenseBlocks {
         staticBlocks = staticBlocks.editCopy { removeIf { it.entity.isDead } }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
 
@@ -49,12 +50,12 @@ object LivingCaveDefenseBlocks {
         // Ignore particles around blocks
         if (staticBlocks.any { it.location.distance(location) < 3 }) {
             if (config.hideParticles) {
-                event.isCanceled = true
+                event.cancel()
             }
             return
         }
         if (config.hideParticles && movingBlocks.keys.any { it.location.distance(location) < 3 }) {
-            event.isCanceled = true
+            event.cancel()
         }
 
         if (event.type == EnumParticleTypes.CRIT_MAGIC) {
@@ -83,7 +84,7 @@ object LivingCaveDefenseBlocks {
 
             movingBlocks = movingBlocks.editCopy { this[defenseBlock] = System.currentTimeMillis() + 250 }
             if (config.hideParticles) {
-                event.isCanceled = true
+                event.cancel()
             }
         }
     }

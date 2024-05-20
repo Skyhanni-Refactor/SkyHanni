@@ -1,9 +1,10 @@
 package at.hannibal2.skyhanni.features.rift.area.dreadfarm
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -60,7 +61,7 @@ object RiftWiltedBerberisHelper {
             .minByOrNull { it.currentParticles.distanceSq(location) }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
         if (!hasFarmingToolInHand) return
@@ -70,13 +71,13 @@ object RiftWiltedBerberisHelper {
 
         if (event.type != EnumParticleTypes.FIREWORKS_SPARK) {
             if (config.hideparticles && berberis != null) {
-                event.isCanceled = true
+                event.cancel()
             }
             return
         }
 
         if (config.hideparticles) {
-            event.isCanceled = true
+            event.cancel()
         }
 
         if (berberis == null) {

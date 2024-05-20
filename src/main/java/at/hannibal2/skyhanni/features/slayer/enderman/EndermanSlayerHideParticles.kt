@@ -1,9 +1,10 @@
 package at.hannibal2.skyhanni.features.slayer.enderman
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.getLorenzVec
@@ -23,7 +24,7 @@ object EndermanSlayerHideParticles {
         endermanLocations = McWorld.getEntitiesOf<EntityEnderman>().map { it.getLorenzVec() }.toList()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
 
@@ -39,7 +40,7 @@ object EndermanSlayerHideParticles {
 
         val distance = event.location.distanceToNearestEnderman() ?: return
         if (distance < 9) {
-            event.isCanceled = true
+            event.cancel()
         }
     }
 

@@ -1,8 +1,9 @@
 package at.hannibal2.skyhanni.features.rift.everywhere.motes
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
@@ -36,7 +37,7 @@ object RiftMotesOrb {
         var pickedUp: Boolean = false,
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
         val location = event.location.add(-0.5, 0.0, -0.5)
@@ -52,7 +53,7 @@ object RiftMotesOrb {
             orb.counter++
             orb.pickedUp = false
             if (config.hideParticles && orb.isOrb) {
-                event.isCanceled = true
+                event.cancel()
             }
         }
     }
