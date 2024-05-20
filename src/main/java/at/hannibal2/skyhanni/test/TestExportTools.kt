@@ -1,7 +1,8 @@
 package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.GuiKeyPressEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
 import at.hannibal2.skyhanni.test.command.CopyItemCommand.copyItemToClipboard
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.utils.chat.Text.hover
 import at.hannibal2.skyhanni.utils.chat.Text.onClick
 import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.nbt.CompressedStreamTools
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.nio.file.Files
@@ -22,7 +22,7 @@ object TestExportTools {
 
     private val config get() = SkyHanniMod.feature.dev.debug
 
-    @SubscribeEvent
+    @HandleEvent
     fun onKeybind(event: GuiKeyPressEvent) {
         if (config.copyItemData.isKeyHeld()) {
             copyItemToClipboard(event.guiContainer.slotUnderMouse?.stack ?: return)

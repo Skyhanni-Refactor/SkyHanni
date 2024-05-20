@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.garden.contest
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ClickType
-import at.hannibal2.skyhanni.events.FarmingContestEvent
+import at.hannibal2.skyhanni.events.garden.FarmingContestEvent
 import at.hannibal2.skyhanni.events.minecraft.click.CropClickEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -10,7 +10,6 @@ import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object JacobContestStatsSummary {
 
@@ -28,11 +27,11 @@ object JacobContestStatsSummary {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onFarmingContest(event: FarmingContestEvent) {
         if (!isEnabled()) return
 
-        when (event.phase) {
+        when (event.contestPhase) {
             FarmingContestPhase.START -> {
                 ChatUtils.chat("Started tracking your Jacob Contest Blocks Per Second!")
                 startTime = SimpleTimeMark.now()

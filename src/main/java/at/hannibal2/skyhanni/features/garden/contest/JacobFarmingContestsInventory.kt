@@ -194,7 +194,7 @@ object JacobFarmingContestsInventory {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemOverlayPost(event: GuiRenderItemEvent.RenderOverlayEvent.GuiRenderItemPost) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.medalIcon) return

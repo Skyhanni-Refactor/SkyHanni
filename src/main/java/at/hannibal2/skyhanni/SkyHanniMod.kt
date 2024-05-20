@@ -984,7 +984,6 @@ class SkyHanniMod {
         } catch (e: Exception) {
             Exception("Error reading repo data", e).printStackTrace()
         }
-        // TODO rework
         loadedClasses.clear()
     }
 
@@ -992,9 +991,7 @@ class SkyHanniMod {
 
     fun loadModule(obj: Any) {
         modules.add(obj)
-        if (!loadedClasses.add(obj.javaClass.name)) {
-            println("Loading module twice: ${obj.javaClass.name}")
-        }
+        if (!loadedClasses.add(obj.javaClass.name)) error("Module ${obj.javaClass.name} is already loaded")
 
         MinecraftForge.EVENT_BUS.register(obj)
     }

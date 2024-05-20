@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.mixins.hooks
 
 import at.hannibal2.skyhanni.data.GuiData
-import at.hannibal2.skyhanni.events.DrawScreenAfterEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent.CloseWindowEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent.SlotClickEvent
+import at.hannibal2.skyhanni.events.render.gui.DrawScreenAfterEvent
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import io.github.moulberry.notenoughupdates.NEUApi
 import net.minecraft.client.gui.inventory.GuiContainer
@@ -64,7 +64,7 @@ class GuiContainerHook(guiAny: Any) {
         mouseY: Int,
         ci: CallbackInfo,
     ) {
-        if (DrawScreenAfterEvent(mouseX, mouseY, ci).postAndCatch()) ci.cancel()
+        if (DrawScreenAfterEvent(mouseX, mouseY).post()) ci.cancel()
     }
 
 }
