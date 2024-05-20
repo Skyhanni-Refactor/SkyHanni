@@ -25,7 +25,7 @@ internal object SkyHanniEvents {
         if (method.parameterCount != 1) return
         val options = method.getAnnotation(HandleEvent::class.java) ?: return
         val event = method.parameterTypes[0]
-        if (!event.isInstance(SkyHanniEvent::class.java)) return
+        if (!SkyHanniEvent::class.java.isAssignableFrom(event)) return
         val handler = getEventHandler(event as Class<SkyHanniEvent>)
         handler.addListener(method, instance, options)
     }
