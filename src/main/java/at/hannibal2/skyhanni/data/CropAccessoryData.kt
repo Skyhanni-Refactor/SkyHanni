@@ -1,8 +1,9 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.InventoryUpdatedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
 import at.hannibal2.skyhanni.features.garden.CropAccessory
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -29,7 +30,7 @@ object CropAccessoryData {
         accessoryInInventory = CropAccessory.NONE
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryUpdatedEvent) {
         if (!accessoryBagNamePattern.matches(event.inventoryName)) return
 

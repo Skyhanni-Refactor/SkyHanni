@@ -12,7 +12,7 @@ annotation class HandleEvent(
     val priority: Int = 0,
 
     /**
-     * If the event is cancelled & if receiveCancelled is true then the method will still invoke.
+     * If the event is cancelled & receiveCancelled is true, then the method will still invoke.
      */
     val receiveCancelled: Boolean = false,
 )

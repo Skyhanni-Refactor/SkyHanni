@@ -1,10 +1,11 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -82,8 +83,10 @@ class SkyblockGuideHighlightFeature private constructor(
             activeObject = null
         }
 
-        @SubscribeEvent
-        fun onInventoryClose(event: InventoryCloseEvent) = close()
+        @HandleEvent
+        fun onInventoryClose(event: InventoryCloseEvent) {
+            close()
+        }
 
         @SubscribeEvent
         fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
@@ -110,7 +113,7 @@ class SkyblockGuideHighlightFeature private constructor(
             current.onTooltip.invoke(event)
         }
 
-        @SubscribeEvent
+        @HandleEvent
         fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
             if (!isEnabled()) return
             val current =

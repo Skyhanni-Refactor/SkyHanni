@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.mixins.transformers;
 
-import at.hannibal2.skyhanni.events.NEURenderEvent;
+import at.hannibal2.skyhanni.events.NeuRenderEvent;
 import io.github.moulberry.notenoughupdates.NEUOverlay;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -12,7 +12,7 @@ public class MixinNEUOverlay {
 
     @Inject(method = "render", at = @At("HEAD"), cancellable = true, remap = false)
     private void render(boolean hoverInv, CallbackInfo ci) {
-        if (new NEURenderEvent().postAndCatch()) {
+        if (new NeuRenderEvent().postAndCatch()) {
             ci.cancel();
         }
     }

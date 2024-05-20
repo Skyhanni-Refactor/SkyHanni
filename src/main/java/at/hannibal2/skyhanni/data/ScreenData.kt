@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -14,7 +14,7 @@ object ScreenData {
         if (wasOpen == isOpen) return
         wasOpen = isOpen
         if (!wasOpen) {
-            InventoryCloseEvent(false).postAndCatch()
+            InventoryCloseEvent(false).post()
         }
     }
 }

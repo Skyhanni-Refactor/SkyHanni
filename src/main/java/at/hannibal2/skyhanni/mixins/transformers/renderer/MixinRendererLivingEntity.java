@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.mixins.transformers.renderer;
 
-import at.hannibal2.skyhanni.events.render.world.EntityRenderLayersEvent;
+import at.hannibal2.skyhanni.events.EntityRenderLayersEvent;
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;

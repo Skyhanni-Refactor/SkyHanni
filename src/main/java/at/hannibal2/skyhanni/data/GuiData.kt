@@ -1,9 +1,10 @@
 package at.hannibal2.skyhanni.data
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.NEURenderEvent
+import at.hannibal2.skyhanni.events.NeuRenderEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import io.github.moulberry.notenoughupdates.NEUApi
@@ -21,7 +22,7 @@ object GuiData {
     var preDrawEventCanceled = false
 
     @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onNeuRenderEvent(event: NEURenderEvent) {
+    fun onNeuRenderEvent(event: NeuRenderEvent) {
         if (preDrawEventCanceled) event.cancel()
     }
 
@@ -44,7 +45,7 @@ object GuiData {
         if (preDrawEventCanceled) event.isCanceled = true
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         DelayedRun.runNextTick {
             if (Minecraft.getMinecraft().currentScreen !is GuiChest) {

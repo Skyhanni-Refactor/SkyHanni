@@ -1,11 +1,11 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.InventoryUpdatedEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.PacketEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
 import net.minecraft.item.ItemStack
 import net.minecraft.network.play.server.S2DPacketOpenWindow
 import net.minecraft.network.play.server.S2EPacketCloseWindow
@@ -24,14 +24,14 @@ object OtherInventoryData {
     }
 
     fun close(reopenSameName: Boolean = false) {
-        InventoryCloseEvent(reopenSameName).postAndCatch()
+        InventoryCloseEvent(reopenSameName).post()
         currentInventory = null
     }
 
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
         lateEvent?.let {
-            it.postAndCatch()
+            it.post()
             lateEvent = null
         }
     }
@@ -92,9 +92,9 @@ object OtherInventoryData {
     }
 
     private fun done(inventory: Inventory) {
-        InventoryFullyOpenedEvent(inventory).postAndCatch()
+        InventoryFullyOpenedEvent(inventory).post()
         inventory.fullyOpenedOnce = true
-        InventoryUpdatedEvent(inventory).postAndCatch()
+        InventoryUpdatedEvent(inventory).post()
         acceptItems = false
     }
 

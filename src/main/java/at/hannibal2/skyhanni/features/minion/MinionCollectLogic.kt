@@ -1,7 +1,8 @@
 package at.hannibal2.skyhanni.features.minion
 
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.MinionOpenEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddInInventoryEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName
@@ -30,7 +31,7 @@ object MinionCollectLogic {
         return map
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         closeMinion()
     }

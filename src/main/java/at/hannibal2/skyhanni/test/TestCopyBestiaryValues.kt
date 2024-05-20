@@ -1,7 +1,8 @@
 package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.InventoryUpdatedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullOwner
@@ -16,8 +17,6 @@ import at.hannibal2.skyhanni.utils.system.OS
 import com.google.gson.GsonBuilder
 import com.google.gson.annotations.Expose
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object TestCopyBestiaryValues {
 
@@ -47,7 +46,7 @@ object TestCopyBestiaryValues {
         "\\[Lv(?<lvl>.*)] (?<text>.*)"
     )
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @HandleEvent(priority = 1)
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
         if (!SkyHanniMod.feature.dev.debug.copyBestiaryData) return
         SkyHanniDebugsAndTests.displayLine = ""
