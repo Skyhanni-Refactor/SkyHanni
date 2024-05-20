@@ -1,13 +1,9 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.config.ConfigManager.Companion.gson
-import at.hannibal2.skyhanni.data.jsonobjects.other.LocrawJson
 import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.TabListUpdateEvent
@@ -24,24 +20,18 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.UtilsPatterns
-import at.hannibal2.skyhanni.utils.json.fromJson
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import io.github.moulberry.notenoughupdates.NotEnoughUpdates
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.network.FMLNetworkEvent
 import kotlin.time.Duration.Companion.seconds
 
 object HypixelData {
 
-    private val patternGroup = RepoPattern.group("data.hypixeldata")
+    val patternGroup = RepoPattern.group("data.hypixeldata")
     private val islandNamePattern by patternGroup.pattern(
         "islandname",
         "(?:§.)*(Area|Dungeon): (?:§.)*(?<island>.*)"
     )
-
-    private var lastLocRaw = SimpleTimeMark.farPast()
 
     private val serverIdScoreboardPattern by patternGroup.pattern(
         "serverid.scoreboard",
@@ -71,7 +61,7 @@ object HypixelData {
         "scoreboard.visiting.amount",
         "\\s+§.✌ §.\\(§.(?<currentamount>\\d+)§./(?<maxamount>\\d+)\\)"
     )
-    private val guestPattern by patternGroup.pattern(
+    val guestPattern by patternGroup.pattern(
         "guesting.scoreboard",
         "SKYBLOCK GUEST"
     )
@@ -109,8 +99,6 @@ object HypixelData {
 
     var skyBlockArea: String? = null
     var skyBlockAreaWithSymbol: String? = null
-
-    var locrawData = LocrawJson()
 
     private fun checkCurrentServerId(scoreboard: List<String>) {
         if (!LorenzUtils.inSkyBlock) return
@@ -169,19 +157,10 @@ object HypixelData {
             }
         }
 
-    fun checkForLocraw(message: String) {
-        try {
-            locrawData = gson.fromJson<LocrawJson>(message)
-        } catch (e: Exception) {
-            ErrorManager.logErrorWithData(e, "Failed to parse locraw data")
-        }
-    }
-
     private var loggerIslandChange = LorenzLogger("debug/island_change")
 
     @SubscribeEvent
     fun onWorldChange(event: LorenzWorldChangeEvent) {
-        locrawData = LocrawJson()
         skyBlock = false
         inLimbo = false
         inLobby = false
@@ -197,7 +176,6 @@ object HypixelData {
         hypixelAlpha = false
         skyBlock = false
         inLobby = false
-        locrawData = LocrawJson()
         skyBlockArea = null
         skyBlockAreaWithSymbol = null
     }
@@ -231,25 +209,6 @@ object HypixelData {
             if (profileName == newProfile) return
             profileName = newProfile
             ProfileJoinEvent(newProfile).postAndCatch()
-        }
-    }
-
-
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!LorenzUtils.inSkyBlock) {
-            // Modified from NEU.
-            // NEU does not send locraw when not in SkyBlock.
-            // So, as requested by Hannibal, use locraw from
-            // NEU and have NEU send it.
-            // Remove this when NEU dependency is removed
-            if (HypixelAPI.onHypixel && locrawData == LocrawJson() && lastLocRaw.passedSince() > 15.seconds) {
-                lastLocRaw = SimpleTimeMark.now()
-                SkyHanniMod.coroutineScope.launch {
-                    delay(1000)
-                    NotEnoughUpdates.INSTANCE.sendChatMessage("/locraw")
-                }
-            }
         }
     }
 

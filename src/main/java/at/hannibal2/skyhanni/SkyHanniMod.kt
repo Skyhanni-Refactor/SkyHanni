@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.api.GuildAPI
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.HypixelPacketAPI
 import at.hannibal2.skyhanni.api.SkillAPI
+import at.hannibal2.skyhanni.api.SkyBlockAPI
 import at.hannibal2.skyhanni.api.event.SkyHanniEvents
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.ConfigManager
@@ -601,6 +602,7 @@ class SkyHanniMod {
         loadModule(RiftAPI)
         loadModule(SackAPI)
         loadModule(SkillAPI)
+        loadModule(SkyBlockAPI)
         loadModule(SlayerAPI)
         loadModule(VisitorAPI)
 

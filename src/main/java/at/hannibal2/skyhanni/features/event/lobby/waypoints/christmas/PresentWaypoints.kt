@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.features.event.lobby.waypoints.christmas
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.data.HypixelData
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.EventWaypointsJson
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
@@ -29,8 +29,8 @@ object PresentWaypoints {
     private var presentEntranceLocations = mapOf<String, MutableSet<EventWaypoint>>()
     private var closest: EventWaypoint? = null
 
-    private val presentSet get() = presentLocations[HypixelData.locrawData.lobbyType]
-    private val presentEntranceSet get() = presentEntranceLocations[HypixelData.locrawData.lobbyType]
+    private val presentSet get() = presentLocations[HypixelAPI.lobbyType]
+    private val presentEntranceSet get() = presentEntranceLocations[HypixelAPI.lobbyType]
 
     private val patternGroup = RepoPattern.group("event.lobby.waypoint.presents")
     private val presentAlreadyFoundPattern by patternGroup.pattern(
@@ -89,7 +89,7 @@ object PresentWaypoints {
 
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
-        if (!isEnabled() && config.onlyClosest && HypixelData.locrawData != null && closest == null) return
+        if (!isEnabled() && config.onlyClosest && closest == null) return
         val notFoundPresents = presentSet?.filterNot { it.isFound }
         if (notFoundPresents?.isEmpty() == true) return
         closest = notFoundPresents?.minByOrNull { it.position.distanceSqToPlayer() } ?: return

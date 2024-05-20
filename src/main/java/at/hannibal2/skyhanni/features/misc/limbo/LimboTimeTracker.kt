@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.misc.limbo
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.HypixelData
@@ -70,8 +71,7 @@ object LimboTimeTracker {
             ChatUtils.chat("§d§lPERSONAL BEST§f! You've surpassed your previous record of §e$oldPB§f!")
             ChatUtils.chat("§fKeep it up!")
         }
-        val lobbyName: String? = HypixelData.locrawData.lobbyName
-        if (lobbyName.toString().startsWith("bedwarslobby")) {
+        if (HypixelAPI.lobbyName?.startsWith("bedwarslobby") == true) {
             if (bedwarsLobbyLimbo.contains(McPlayer.pos)) {
                 if (inFakeLimbo) return
                 limboJoinTime = SimpleTimeMark.now()
