@@ -51,7 +51,7 @@ object HypixelPacketAPI {
                     val mode = data.readNullable { data.readString() }
                     val map = data.readNullable { data.readString() }
 
-                    HypixelLocationEvent(server, type, lobby, mode, map).postAndCatch()
+                    HypixelLocationEvent(server, type, lobby, mode, map).post()
                 }
             }
             "hypixel:hello" -> {
