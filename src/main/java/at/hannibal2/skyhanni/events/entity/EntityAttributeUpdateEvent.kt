@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.events.entity
 
-import at.hannibal2.skyhanni.events.LorenzEvent
+import at.hannibal2.skyhanni.api.event.SkyHanniEvent
 import net.minecraft.entity.Entity
 import net.minecraft.entity.ai.attributes.IAttribute
 import net.minecraft.network.play.server.S20PacketEntityProperties
@@ -8,8 +8,7 @@ import net.minecraft.network.play.server.S20PacketEntityProperties
 data class EntityAttributeUpdateEvent(
     val entity: Entity,
     val attributes: Map<String, Double>,
-) : LorenzEvent() {
-
+) : SkyHanniEvent() {
 
     internal constructor(entity: Entity, snapshots: List<S20PacketEntityProperties.Snapshot>) : this(
         entity,

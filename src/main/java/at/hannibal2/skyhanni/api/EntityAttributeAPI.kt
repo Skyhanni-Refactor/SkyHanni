@@ -1,18 +1,18 @@
 package at.hannibal2.skyhanni.api
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.events.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.events.entity.EntityAttributeUpdateEvent
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object EntityAttributeAPI {
 
     private val HEALTH_ATTRIBUTE = SharedMonsterAttributes.maxHealth
 
-    @SubscribeEvent
+    @HandleEvent
     fun onEntityMaxHealthUpdate(event: EntityAttributeUpdateEvent) {
         val entity = event.entity
         if (entity !is EntityLivingBase) return

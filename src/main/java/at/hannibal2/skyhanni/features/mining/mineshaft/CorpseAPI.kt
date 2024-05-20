@@ -58,7 +58,7 @@ object CorpseAPI {
 
         if (endPattern.matches(message)) {
             corpeType?.let {
-                CorpseLootedEvent(it, loot.toList()).postAndCatch()
+                CorpseLootedEvent(it, loot.toList()).post()
             }
             corpeType = null
             loot.clear()

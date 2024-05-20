@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.mining.mineshaft
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.mining.CorpseLootedEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
@@ -9,12 +10,11 @@ import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getPrice
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object MineshaftCorpseProfitPer {
     private val config get() = SkyHanniMod.feature.mining.mineshaft
 
-    @SubscribeEvent
+    @HandleEvent
     fun onFossilExcavation(event: CorpseLootedEvent) {
         if (!config.profitPerCorpseLoot) return
         val loot = event.loot

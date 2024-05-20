@@ -43,7 +43,7 @@ object MinionCollectLogic {
             val diff = amount - old
 
             if (diff > 0) {
-                ItemAddInInventoryEvent(internalId, diff).postAndCatch()
+                ItemAddInInventoryEvent(internalId, diff).post()
             }
         }
 

@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.api.event
 
-abstract class CancellableEvent : SkyHanniEvent() {
+abstract class CancellableSkyHanniEvent : SkyHanniEvent() {
 
     fun cancel() {
         isCancelled = true

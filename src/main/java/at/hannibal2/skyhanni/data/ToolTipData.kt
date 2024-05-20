@@ -17,7 +17,7 @@ object ToolTipData {
     }
 
     private fun onHover(stack: ItemStack, toolTip: MutableList<String>) {
-        ItemHoverEvent(stack, toolTip).postAndCatch()
+        ItemHoverEvent(stack, toolTip).post()
     }
 
     fun onTooltip(toolTip: MutableList<String>): List<String> {

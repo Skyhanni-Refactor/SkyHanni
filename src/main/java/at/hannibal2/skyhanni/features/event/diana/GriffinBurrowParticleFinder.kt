@@ -2,12 +2,12 @@ package at.hannibal2.skyhanni.features.event.diana
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.events.BlockClickEvent
-import at.hannibal2.skyhanni.events.BurrowDetectEvent
 import at.hannibal2.skyhanni.events.BurrowDugEvent
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.PacketEvent
+import at.hannibal2.skyhanni.events.diana.BurrowDetectEvent
 import at.hannibal2.skyhanni.features.event.diana.DianaAPI.isDianaSpade
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -80,7 +80,7 @@ object GriffinBurrowParticleFinder {
 
                 if (burrow.hasEnchant && burrow.hasFootstep && burrow.type != -1) {
                     if (!burrow.found) {
-                        BurrowDetectEvent(burrow.location, burrow.getType()).postAndCatch()
+                        BurrowDetectEvent(burrow.location, burrow.getType()).post()
                         burrow.found = true
                     }
                 }

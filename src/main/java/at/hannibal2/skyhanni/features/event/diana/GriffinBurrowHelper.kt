@@ -1,13 +1,13 @@
 package at.hannibal2.skyhanni.features.event.diana
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.EntityMovementData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.Mayor
 import at.hannibal2.skyhanni.data.MayorAPI.currentMayor
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.BlockClickEvent
-import at.hannibal2.skyhanni.events.BurrowDetectEvent
 import at.hannibal2.skyhanni.events.BurrowDugEvent
 import at.hannibal2.skyhanni.events.BurrowGuessEvent
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
@@ -16,6 +16,7 @@ import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.events.diana.BurrowDetectEvent
 import at.hannibal2.skyhanni.features.event.diana.DianaAPI.isDianaSpade
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
@@ -149,7 +150,7 @@ object GriffinBurrowHelper {
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onBurrowDetect(event: BurrowDetectEvent) {
         EntityMovementData.addToTrack(Minecraft.getMinecraft().thePlayer)
         particleBurrows = particleBurrows.editCopy { this[event.burrowLocation] = event.type }

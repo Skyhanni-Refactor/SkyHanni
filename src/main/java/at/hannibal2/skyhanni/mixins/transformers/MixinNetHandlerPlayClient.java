@@ -40,7 +40,7 @@ public abstract class MixinNetHandlerPlayClient implements INetHandlerPlayClient
         locals = LocalCapture.CAPTURE_FAILHARD
     )
     public void onEntityProperties(S20PacketEntityProperties packetIn, CallbackInfo ci, Entity entity) {
-        new EntityAttributeUpdateEvent(entity, packetIn.func_149441_d()).postAndCatch();
+        new EntityAttributeUpdateEvent(entity, packetIn.func_149441_d()).post();
     }
 
 }

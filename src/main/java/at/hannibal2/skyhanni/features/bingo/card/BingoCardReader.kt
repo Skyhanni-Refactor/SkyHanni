@@ -94,7 +94,7 @@ object BingoCardReader {
         }
         BingoAPI.lastBingoCardOpenTime = SimpleTimeMark.now()
 
-        BingoCardUpdateEvent().postAndCatch()
+        BingoCardUpdateEvent().post()
     }
 
     private fun bingoGoalDifference(bingoGoal: BingoGoal, new: Double) {
@@ -160,8 +160,8 @@ object BingoCardReader {
 
         val goal = BingoAPI.personalGoals.firstOrNull { it.displayName == name } ?: return
         goal.done = true
-        BingoGoalReachedEvent(goal).postAndCatch()
-        BingoCardUpdateEvent().postAndCatch()
+        BingoGoalReachedEvent(goal).post()
+        BingoCardUpdateEvent().post()
     }
 
     private fun BingoData.getDescriptionLine() = "§7" + note.joinToString(" ")
