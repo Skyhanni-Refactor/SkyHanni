@@ -3,12 +3,14 @@ package at.hannibal2.skyhanni.api.event
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
+import at.hannibal2.skyhanni.utils.ReflectionUtils
 import at.hannibal2.skyhanni.utils.chat.Text
 import java.lang.reflect.Method
+import java.util.function.Consumer
 
 class EventHandler<T : SkyHanniEvent> private constructor(private val name: String) {
 
-    private val listeners: MutableList<Listener<T>> = mutableListOf()
+    private val listeners: MutableList<Listener> = mutableListOf()
 
     private var isFrozen = false
     private var canReceiveCancelled = false
@@ -30,7 +32,9 @@ class EventHandler<T : SkyHanniEvent> private constructor(private val name: Stri
                 transform = Class<*>::getTypeName
             )
         }"
-        listeners.add(Listener(name, { e -> method.invoke(instance, e) }, options))
+        val invoker = ReflectionUtils.createConsumer(instance, method)
+            ?: throw IllegalArgumentException("Method $name is not a valid consumer")
+        listeners.add(Listener(name, invoker, options))
     }
 
     fun freeze() {
@@ -52,7 +56,7 @@ class EventHandler<T : SkyHanniEvent> private constructor(private val name: Stri
             if (event.isCancelled && !listener.options.receiveCancelled) continue
             if (SkyHanniEvents.isDisabledInvoker(listener.name)) continue
             try {
-                listener.invoker(event)
+                listener.invoker.accept(event)
             } catch (throwable: Throwable) {
                 errors++
                 if (errors <= 3) {
@@ -76,5 +80,5 @@ class EventHandler<T : SkyHanniEvent> private constructor(private val name: Stri
         return event.isCancelled
     }
 
-    private class Listener<T : SkyHanniEvent>(val name: String, val invoker: (T) -> Unit, val options: HandleEvent)
+    private class Listener(val name: String, val invoker: Consumer<Any>, val options: HandleEvent)
 }
