@@ -4,9 +4,9 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ArrowTypeJson
 import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.QuiverUpdateEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.inventory.OwnInventoryItemUpdateEvent
+import at.hannibal2.skyhanni.events.skyblock.QuiverUpdateEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -268,7 +268,7 @@ object QuiverAPI {
     }
 
     private fun postUpdateEvent(arrowType: ArrowType? = currentArrow) {
-        QuiverUpdateEvent(arrowType, currentAmount).postAndCatch()
+        QuiverUpdateEvent(arrowType, currentAmount).post()
     }
 
     @HandleEvent

@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.PurseChangeCause
-import at.hannibal2.skyhanni.events.PurseChangeEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
+import at.hannibal2.skyhanni.events.skyblock.PurseChangeCause
+import at.hannibal2.skyhanni.events.skyblock.PurseChangeEvent
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.million
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
@@ -41,7 +41,7 @@ object PurseAPI {
             if (diff == 0.0) return
             currentPurse = newPurse
 
-            PurseChangeEvent(diff, getCause(diff)).postAndCatch()
+            PurseChangeEvent(diff, getCause(diff)).post()
         }
     }
 

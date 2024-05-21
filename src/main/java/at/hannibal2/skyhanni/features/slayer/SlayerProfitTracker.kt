@@ -6,10 +6,10 @@ import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SlayerProfitTrackerItemsJson
 import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.PurseChangeCause
-import at.hannibal2.skyhanni.events.PurseChangeEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.PurseChangeCause
+import at.hannibal2.skyhanni.events.skyblock.PurseChangeEvent
 import at.hannibal2.skyhanni.events.slayer.SlayerChangeEvent
 import at.hannibal2.skyhanni.events.slayer.SlayerQuestCompleteEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
@@ -95,7 +95,7 @@ object SlayerProfitTracker {
         allowedItems = event.getConstant<SlayerProfitTrackerItemsJson>("SlayerProfitTrackerItems").slayers
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPurseChange(event: PurseChangeEvent) {
         if (!isEnabled()) return
         val coins = event.coins

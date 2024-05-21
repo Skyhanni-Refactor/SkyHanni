@@ -2,9 +2,9 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.SystemMessageEvent
-import at.hannibal2.skyhanni.events.chat.ChatHoverEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.events.chat.ChatHoverEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.SystemMessageEvent
 import at.hannibal2.skyhanni.features.inventory.patternGroup
 import at.hannibal2.skyhanni.mixins.hooks.GuiChatHook
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -53,7 +53,7 @@ object ReplaceRomanNumerals {
         GuiChatHook.replaceOnlyHoverEvent(hoverEvent)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSystemMessage(event: SystemMessageEvent) {
         if (!isEnabled() || event.message.isSelectOption()) return
         event.applyIfPossible { it.transformLine() }

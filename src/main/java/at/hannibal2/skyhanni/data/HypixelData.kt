@@ -2,11 +2,11 @@ package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -239,7 +239,7 @@ object HypixelData {
         val guesting = guestPattern.matches(ScoreboardData.objectiveTitle.removeColor())
         val islandType = getIslandType(foundIsland, guesting)
         if (skyBlockIsland != islandType) {
-            IslandChangeEvent(islandType, skyBlockIsland).postAndCatch()
+            IslandChangeEvent(islandType, skyBlockIsland).post()
             if (islandType == IslandType.UNKNOWN) {
                 ChatUtils.debug("Unknown island detected: '$foundIsland'")
                 loggerIslandChange.log("Unknown: '$foundIsland'")

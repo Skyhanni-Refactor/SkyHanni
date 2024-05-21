@@ -1,6 +1,7 @@
-package at.hannibal2.skyhanni.events
+package at.hannibal2.skyhanni.events.entity
 
+import at.hannibal2.skyhanni.api.event.SkyHanniEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.EntityData
 
 class BossHealthChangeEvent(val entityData: EntityData, val lastHealth: Long, val health: Long, val maxHealth: Long) :
-    LorenzEvent()
+    SkyHanniEvent()

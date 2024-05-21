@@ -3,11 +3,11 @@ package at.hannibal2.skyhanni.features.garden.pests
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.PurseChangeCause
-import at.hannibal2.skyhanni.events.PurseChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
+import at.hannibal2.skyhanni.events.skyblock.PurseChangeCause
+import at.hannibal2.skyhanni.events.skyblock.PurseChangeEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -124,7 +124,7 @@ object PestProfitTracker {
         tracker.renderDisplay(config.position)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPurseChange(event: PurseChangeEvent) {
         if (!isEnabled()) return
         val coins = event.coins
@@ -134,7 +134,7 @@ object PestProfitTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         if (event.newIsland == IslandType.GARDEN) {
             tracker.firstUpdate()

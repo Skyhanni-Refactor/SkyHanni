@@ -4,11 +4,11 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.data.jsonobjects.repo.MinionXPJson
-import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
-import at.hannibal2.skyhanni.events.MinionCloseEvent
-import at.hannibal2.skyhanni.events.MinionOpenEvent
-import at.hannibal2.skyhanni.events.MinionStorageOpenEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionCloseEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionOpenEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionStorageOpenEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.skillprogress.SkillType
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -49,7 +49,7 @@ object MinionXp {
     private fun toPrimitiveItemStack(itemStack: ItemStack) =
         PrimitiveItemStack(itemStack.getInternalName(), itemStack.stackSize)
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMinionOpen(event: MinionOpenEvent) {
         if (!config.xpDisplay) return
 
@@ -114,7 +114,7 @@ object MinionXp {
         return xpTotal
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMinionStorageOpen(event: MinionStorageOpenEvent) {
         if (!config.xpDisplay) return
 
@@ -164,14 +164,14 @@ object MinionXp {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         minionStorages.clear()
         xpItemMap.clear()
         collectItemXpList.clear()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMinionClose(event: MinionCloseEvent) {
         xpItemMap.clear()
         collectItemXpList.clear()

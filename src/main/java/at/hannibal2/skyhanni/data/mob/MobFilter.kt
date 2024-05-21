@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.data.mob
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.mob.MobData.MobResult
 import at.hannibal2.skyhanni.data.mob.MobData.MobResult.Companion.makeMobResult
-import at.hannibal2.skyhanni.events.MobEvent
+import at.hannibal2.skyhanni.events.entity.MobEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.takeWhileInclusive
 import at.hannibal2.skyhanni.utils.EntityUtils.cleanName
@@ -161,7 +161,7 @@ object MobFilter {
             listOfClickArmorStand.contains(armorStand.name)
         } ?: return false
         val armorStand = MobUtils.getArmorStand(clickArmorStand, -1) ?: return false
-        MobEvent.Spawn.DisplayNPC(MobFactories.displayNPC(entity, armorStand, clickArmorStand)).postAndCatch()
+        MobEvent.Spawn.DisplayNPC(MobFactories.displayNPC(entity, armorStand, clickArmorStand)).post()
         return true
     }
 

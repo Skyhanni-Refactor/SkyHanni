@@ -1,16 +1,16 @@
 package at.hannibal2.skyhanni.features.commands
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.misc.PartyCommandsConfig
 import at.hannibal2.skyhanni.data.FriendAPI
 import at.hannibal2.skyhanni.data.PartyAPI
-import at.hannibal2.skyhanni.data.hypixel.chat.event.PartyChatEvent
-import at.hannibal2.skyhanni.events.TabCompletionEvent
+import at.hannibal2.skyhanni.events.chat.TabCompletionEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.PartyChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McPlayer
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 object PartyChatCommands {
@@ -81,8 +81,8 @@ object PartyChatCommands {
         return storage.blacklistedUsers.any { it.equals(name, ignoreCase = true) }
     }
 
-    @SubscribeEvent
-    fun onPartyCommand(event: PartyChatEvent) {
+    @HandleEvent
+    fun onPartyChat(event: PartyChatEvent) {
         if (event.message.firstOrNull() !in commandPrefixes) return
         val commandLabel = event.message.substring(1).substringBefore(' ')
         val command = indexedPartyChatCommands[commandLabel.lowercase()] ?: return
@@ -111,7 +111,7 @@ object PartyChatCommands {
         command.executable(event)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onTabComplete(event: TabCompletionEvent) {
         if (PartyAPI.partyLeader == null) return
         val prefix = event.fullText.firstOrNull() ?: return

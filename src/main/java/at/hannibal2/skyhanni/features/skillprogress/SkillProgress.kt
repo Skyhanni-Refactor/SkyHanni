@@ -9,11 +9,11 @@ import at.hannibal2.skyhanni.api.SkillAPI.showDisplay
 import at.hannibal2.skyhanni.api.SkillAPI.skillXPInfoMap
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.skillprogress.SkillProgressConfig
-import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.SkillOverflowLevelupEvent
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.skill.SkillOverflowLevelupEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.skillprogress.SkillUtil.XP_NEEDED_FOR_60
 import at.hannibal2.skyhanni.utils.ChatUtils.chat
@@ -34,7 +34,6 @@ import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.renderables.Renderable.Companion.horizontalContainer
 import at.hannibal2.skyhanni.utils.types.Quad
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 import kotlin.math.ceil
 import kotlin.time.Duration.Companion.milliseconds
@@ -152,7 +151,7 @@ object SkillProgress {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onLevelUp(event: SkillOverflowLevelupEvent) {
         if (!isEnabled()) return
         if (!config.overflowConfig.enableInChat) return

@@ -1,14 +1,15 @@
 package at.hannibal2.skyhanni.data.hypixel.chat
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.chat.PlayerMessagesConfig
-import at.hannibal2.skyhanni.data.hypixel.chat.event.CoopChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.GuildChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.PartyChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.PlayerAllChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.PlayerShowItemChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.PrivateMessageChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.CoopChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.GuildChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.PartyChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.PlayerAllChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.PlayerShowItemChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.PrivateMessageChatEvent
 import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.chat.playerchat.PlayerChatFilter
 import at.hannibal2.skyhanni.features.misc.MarkedPlayerManager
@@ -52,7 +53,7 @@ class PlayerNameFormatter {
         "(?<emblem>(?:§.){0,2}.) (?<author>.*)"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPlayerAllChat(event: PlayerAllChatEvent) {
         if (!isEnabled()) return
         val levelColor = event.levelColor
@@ -80,7 +81,7 @@ class PlayerNameFormatter {
         event.chatComponent = StringUtils.replaceIfNeeded(event.chatComponent, all) ?: return
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCoopChat(event: CoopChatEvent) {
         if (!isEnabled()) return
         event.chatComponent = StringUtils.replaceIfNeeded(
@@ -93,7 +94,7 @@ class PlayerNameFormatter {
         ) ?: return
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onGuildChat(event: GuildChatEvent) {
         if (!isEnabled()) return
         event.chatComponent = StringUtils.replaceIfNeeded(
@@ -106,7 +107,7 @@ class PlayerNameFormatter {
         ) ?: return
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPartyChat(event: PartyChatEvent) {
         if (!isEnabled()) return
         event.chatComponent = StringUtils.replaceIfNeeded(
@@ -119,7 +120,7 @@ class PlayerNameFormatter {
         ) ?: return
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPrivateChat(event: PrivateMessageChatEvent) {
         if (!isEnabled()) return
         event.chatComponent =
@@ -131,7 +132,7 @@ class PlayerNameFormatter {
             }) ?: return
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPlayerShowItemChat(event: PlayerShowItemChatEvent) {
         if (!isEnabled()) return
         event.chatComponent = StringUtils.replaceIfNeeded(event.chatComponent, Text.text("") {

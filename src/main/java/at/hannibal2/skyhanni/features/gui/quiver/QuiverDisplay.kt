@@ -6,10 +6,10 @@ import at.hannibal2.skyhanni.config.features.combat.QuiverDisplayConfig.ShowWhen
 import at.hannibal2.skyhanni.data.ArrowType
 import at.hannibal2.skyhanni.data.QuiverAPI
 import at.hannibal2.skyhanni.data.QuiverAPI.NONE_ARROW_TYPE
-import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.QuiverUpdateEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.QuiverUpdateEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -21,7 +21,6 @@ import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object QuiverDisplay {
 
@@ -61,7 +60,7 @@ object QuiverDisplay {
         add(Renderable.string(" $rarity$arrowDisplayName"))
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onQuiverUpdate(event: QuiverUpdateEvent) {
         arrow = event.currentArrow
         amount = event.currentAmount

@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.data.hypixel.chat.event.SystemMessageEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.SystemMessageEvent
 import at.hannibal2.skyhanni.mixins.transformers.AccessorChatComponentText
 import at.hannibal2.skyhanni.utils.GuiRenderUtils.darkenColor
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators

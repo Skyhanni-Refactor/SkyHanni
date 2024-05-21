@@ -7,10 +7,10 @@ import at.hannibal2.skyhanni.data.FameRank
 import at.hannibal2.skyhanni.data.FameRanks
 import at.hannibal2.skyhanni.data.FameRanks.getFameRankByNameOrNull
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.events.BitsUpdateEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
+import at.hannibal2.skyhanni.events.skyblock.BitsUpdateEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -310,9 +310,9 @@ object BitsAPI {
 
     fun hasCookieBuff() = cookieBuffTime?.isInFuture() ?: false
 
-    private fun sendBitsGainEvent(difference: Int) = BitsUpdateEvent.BitsGain(bits, bitsAvailable, difference).postAndCatch()
-    private fun sendBitsSpentEvent() = BitsUpdateEvent.BitsSpent(bits, bitsAvailable).postAndCatch()
-    private fun sendBitsAvailableGainedEvent() = BitsUpdateEvent.BitsAvailableGained(bits, bitsAvailable).postAndCatch()
+    private fun sendBitsGainEvent(difference: Int) = BitsUpdateEvent.BitsGain(bits, bitsAvailable, difference).post()
+    private fun sendBitsSpentEvent() = BitsUpdateEvent.BitsSpent(bits, bitsAvailable).post()
+    private fun sendBitsAvailableGainedEvent() = BitsUpdateEvent.BitsAvailableGained(bits, bitsAvailable).post()
 
     fun isEnabled() = LorenzUtils.inSkyBlock && profileStorage != null
 

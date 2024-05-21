@@ -11,9 +11,6 @@ import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.MinionCloseEvent
-import at.hannibal2.skyhanni.events.MinionOpenEvent
-import at.hannibal2.skyhanni.events.MinionStorageOpenEvent
 import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
@@ -21,6 +18,9 @@ import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
 import at.hannibal2.skyhanni.events.minecraft.click.BlockClickEvent
 import at.hannibal2.skyhanni.events.minecraft.click.EntityClickEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionCloseEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionOpenEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionStorageOpenEvent
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
@@ -159,12 +159,12 @@ object MinionFeatures {
 
         event.inventoryItems[48]?.let {
             if (minionCollectItemPattern.matches(it.name)) {
-                MinionOpenEvent(event.inventoryName, event.inventoryItems).postAndCatch()
+                MinionOpenEvent(event.inventoryName, event.inventoryItems).post()
                 return
             }
         }
 
-        MinionStorageOpenEvent(lastStorage, event.inventoryItems).postAndCatch()
+        MinionStorageOpenEvent(lastStorage, event.inventoryItems).post()
         minionStorageInventoryOpen = true
     }
 
@@ -172,11 +172,11 @@ object MinionFeatures {
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
         if (!enableWithHub()) return
         if (minionInventoryOpen) {
-            MinionOpenEvent(event.inventoryName, event.inventoryItems).postAndCatch()
+            MinionOpenEvent(event.inventoryName, event.inventoryItems).post()
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMinionOpen(event: MinionOpenEvent) {
         removeBuggedMinions()
         val minions = minions ?: return
@@ -248,7 +248,7 @@ object MinionFeatures {
                 minions[location]?.lastClicked = 0
             }
         }
-        MinionCloseEvent().postAndCatch()
+        MinionCloseEvent().post()
     }
 
     @SubscribeEvent

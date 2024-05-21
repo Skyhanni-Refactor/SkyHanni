@@ -5,11 +5,11 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.bazaar.HypixelBazaarFetcher
-import at.hannibal2.skyhanni.events.BazaarOpenedProductEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.skyblock.BazaarOpenedProductEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.HypixelCommands
@@ -67,7 +67,7 @@ object BazaarApi {
         if (inBazaarInventory) {
             val openedProduct = getOpenedProduct(event.inventoryItems) ?: return
             currentlyOpenedProduct = openedProduct
-            BazaarOpenedProductEvent(openedProduct).postAndCatch()
+            BazaarOpenedProductEvent(openedProduct).post()
         }
     }
 

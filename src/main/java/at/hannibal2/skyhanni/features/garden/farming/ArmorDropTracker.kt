@@ -4,9 +4,9 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ArmorDropInfo
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ArmorDropsJson
-import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
@@ -98,7 +98,7 @@ object ArmorDropTracker {
         tracker.renderDisplay(config.pos)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         if (event.newIsland == IslandType.GARDEN) {
             tracker.firstUpdate()

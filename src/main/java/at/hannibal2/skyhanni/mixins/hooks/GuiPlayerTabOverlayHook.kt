@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.mixins.hooks
 
-import at.hannibal2.skyhanni.events.TabListLineRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.TabListLineRenderEvent
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 import kotlin.reflect.KProperty
 
@@ -22,7 +22,7 @@ fun getPlayerName(original: String, cir: CallbackInfoReturnable<String>) {
     if (tabListGuard) return
 
     val event = TabListLineRenderEvent(original)
-    event.postAndCatch()
+    event.post()
     val newText = event.text
     if (original != newText) {
         cir.returnValue = newText

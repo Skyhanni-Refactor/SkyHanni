@@ -1,4 +1,4 @@
-package at.hannibal2.skyhanni.data.hypixel.chat.event
+package at.hannibal2.skyhanni.events.chat.hypixel
 
 import at.hannibal2.skyhanni.utils.ComponentSpan
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName

@@ -1,20 +1,19 @@
 package at.hannibal2.skyhanni.features.minion
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.MinionOpenEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddInInventoryEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionOpenEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.mc.McPlayer
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object MinionCollectLogic {
 
     private var oldMap = mapOf<NEUInternalName, Int>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMinionOpen(event: MinionOpenEvent) {
         if (oldMap.isNotEmpty()) return
         oldMap = count()

@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.data.mob
 
 import at.hannibal2.skyhanni.data.mob.Mob.Type
 import at.hannibal2.skyhanni.data.mob.MobFilter.summonOwnerPattern
-import at.hannibal2.skyhanni.events.MobEvent
+import at.hannibal2.skyhanni.events.entity.MobEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.CollectionUtils.toSingletonListOrEmpty
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha

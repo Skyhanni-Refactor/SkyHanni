@@ -8,9 +8,9 @@ import at.hannibal2.skyhanni.data.mob.MobFilter.isDisplayNPC
 import at.hannibal2.skyhanni.data.mob.MobFilter.isRealPlayer
 import at.hannibal2.skyhanni.data.mob.MobFilter.isSkyBlockMob
 import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.MobEvent
 import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
+import at.hannibal2.skyhanni.events.entity.MobEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.drainForEach
 import at.hannibal2.skyhanni.utils.CollectionUtils.drainTo
@@ -76,7 +76,7 @@ class MobDetection {
     private fun mobDetectionReset() {
         MobData.currentMobs.map {
             it.createDeSpawnEvent()
-        }.forEach { it.postAndCatch() }
+        }.forEach { it.post() }
     }
 
     @SubscribeEvent
@@ -135,7 +135,7 @@ class MobDetection {
     /**@return a false means that it should try again (later)*/
     private fun entitySpawn(entity: EntityLivingBase, roughType: Mob.Type): Boolean {
         when (roughType) {
-            Mob.Type.PLAYER -> MobEvent.Spawn.Player(MobFactories.player(entity)).postAndCatch()
+            Mob.Type.PLAYER -> MobEvent.Spawn.Player(MobFactories.player(entity)).post()
 
             Mob.Type.DISPLAY_NPC -> return MobFilter.createDisplayNPC(entity)
             Mob.Type.BASIC -> {
@@ -157,7 +157,7 @@ class MobDetection {
                             Mob.Type.PROJECTILE -> MobEvent.Spawn.Projectile(mob)
                             Mob.Type.DISPLAY_NPC -> MobEvent.Spawn.DisplayNPC(mob) // Needed for some special cases
                             Mob.Type.PLAYER -> return mobDetectionError("An Player Ended Here. How?")
-                        }.postAndCatch()
+                        }.post()
                     }
                 }
             }
@@ -183,7 +183,7 @@ class MobDetection {
                 val entity = McWorld.getEntity(id) as? EntityBat ?: return@drainForEach
                 if (MobData.entityToMob[entity] != null) return@drainForEach
                 removeRetry(entity)
-                MobEvent.Spawn.Projectile(MobFactories.projectile(entity, "Spirit Scepter Bat")).postAndCatch()
+                MobEvent.Spawn.Projectile(MobFactories.projectile(entity, "Spirit Scepter Bat")).post()
             }
 
             EntityPacketType.VILLAGER -> {
@@ -207,7 +207,7 @@ class MobDetection {
                 if (MobData.entityToMob[entity] != null) return@drainForEach
                 if (!entity.powered) return@drainForEach
                 removeRetry(entity)
-                MobEvent.Spawn.Special(MobFactories.special(entity, "Creeper Veil")).postAndCatch()
+                MobEvent.Spawn.Special(MobFactories.special(entity, "Creeper Veil")).post()
             }
         }
     }
@@ -236,7 +236,7 @@ class MobDetection {
     }
 
     private fun entityDeSpawn(entity: EntityLivingBase) {
-        MobData.entityToMob[entity]?.createDeSpawnEvent()?.postAndCatch() ?: removeRetry(entity)
+        MobData.entityToMob[entity]?.createDeSpawnEvent()?.post() ?: removeRetry(entity)
         allEntitiesViaPacketId.remove(entity.entityId)
     }
 

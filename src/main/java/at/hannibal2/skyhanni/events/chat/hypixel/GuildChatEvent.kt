@@ -1,14 +1,13 @@
-package at.hannibal2.skyhanni.data.hypixel.chat.event
+package at.hannibal2.skyhanni.events.chat.hypixel
 
 import at.hannibal2.skyhanni.utils.ComponentSpan
 import net.minecraft.util.IChatComponent
 
-class PlayerShowItemChatEvent(
-    val levelComponent: ComponentSpan?,
-    val action: ComponentSpan,
+
+class GuildChatEvent(
     author: ComponentSpan,
-    val item: ComponentSpan,
     message: ComponentSpan,
+    val guildRank: ComponentSpan?,
     chatComponent: IChatComponent,
     blockedReason: String? = null,
 ) : AbstractChatEvent(author, message, chatComponent, blockedReason)

@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.api
 
-import at.hannibal2.skyhanni.events.DataWatcherUpdatedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.entity.DataWatcherUpdatedEvent
 import at.hannibal2.skyhanni.events.entity.EntityCustomNameUpdateEvent
 import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils.derpy
@@ -14,14 +15,13 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.item.EntityItem
 import net.minecraft.entity.item.EntityItemFrame
 import net.minecraft.entity.item.EntityXPOrb
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object DataWatcherAPI {
 
     private const val DATA_VALUE_CUSTOM_NAME = 2
     private const val DATA_VALUE_HEALTH = 6
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDataWatcherUpdate(event: DataWatcherUpdatedEvent) {
         for (updatedEntry in event.updatedEntries) {
             when (updatedEntry.dataValueId) {

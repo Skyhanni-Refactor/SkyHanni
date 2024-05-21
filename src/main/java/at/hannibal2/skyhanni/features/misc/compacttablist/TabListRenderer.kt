@@ -4,7 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
-import at.hannibal2.skyhanni.events.SkipTabListLineEvent
+import at.hannibal2.skyhanni.events.render.gui.SkipTabListLineEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.filterToMutable
 import at.hannibal2.skyhanni.utils.KeyboardManager.isActive
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -139,7 +139,7 @@ object TabListRenderer {
                 if (tabLine.type == TabStringType.SUB_TITLE) {
                     lastSubTitle = tabLine
                 }
-                !SkipTabListLineEvent(tabLine, lastSubTitle, lastTitle).postAndCatch()
+                !SkipTabListLineEvent(tabLine, lastSubTitle, lastTitle).post()
             }.let(::RenderColumn)
 
             Gui.drawRect(
@@ -212,7 +212,7 @@ object TabListRenderer {
         "§.§lFire Sales: §r§f\\([0-9]+\\)"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSkipTablistLine(event: SkipTabListLineEvent) {
         if (config.hideFiresales && event.lastSubTitle != null && fireSalePattern.matches(event.lastSubTitle.text)) {
             event.cancel()

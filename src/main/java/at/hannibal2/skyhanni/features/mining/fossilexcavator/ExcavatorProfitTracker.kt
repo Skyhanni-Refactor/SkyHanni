@@ -3,9 +3,9 @@ package at.hannibal2.skyhanni.features.mining.fossilexcavator
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.mining.FossilExcavationEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
@@ -22,7 +22,6 @@ import at.hannibal2.skyhanni.utils.tracker.SkyHanniItemTracker
 import com.google.gson.annotations.Expose
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object ExcavatorProfitTracker {
 
@@ -204,7 +203,7 @@ object ExcavatorProfitTracker {
         tracker.renderDisplay(config.position)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         if (event.newIsland == IslandType.DWARVEN_MINES) {
             tracker.firstUpdate()

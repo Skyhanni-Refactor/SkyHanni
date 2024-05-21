@@ -2,9 +2,9 @@ package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
-import at.hannibal2.skyhanni.events.CollectionUpdateEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
+import at.hannibal2.skyhanni.events.skyblock.CollectionUpdateEvent
 import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
@@ -57,7 +57,7 @@ object CollectionAPI {
                 val internalName = incorrectCollectionNames[name] ?: NEUInternalName.fromItemName(name)
                 collectionValue[internalName] = counter
             }
-            CollectionUpdateEvent().postAndCatch()
+            CollectionUpdateEvent().post()
         }
 
         if (inventoryName.endsWith(" Collections")) {
@@ -80,7 +80,7 @@ object CollectionAPI {
                     collectionValue[internalName] = counter
                 }
             }
-            CollectionUpdateEvent().postAndCatch()
+            CollectionUpdateEvent().post()
         }
     }
 

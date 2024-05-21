@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.SkillExpGainEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
+import at.hannibal2.skyhanni.events.skyblock.skill.SkillExpGainEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -110,11 +110,11 @@ object SkillExperience {
             val baseExp = getExpForLevel(nextLevel - 1)
             val totalExp = baseExp + overflow
             skillExp[skill] = totalExp
-            SkillExpGainEvent(skill).postAndCatch()
+            SkillExpGainEvent(skill).post()
         }
         actionBarLowLevelPattern.matchMatcher(event.actionBar) {
             val skill = group("skill").lowercase()
-            SkillExpGainEvent(skill).postAndCatch()
+            SkillExpGainEvent(skill).post()
         }
     }
 

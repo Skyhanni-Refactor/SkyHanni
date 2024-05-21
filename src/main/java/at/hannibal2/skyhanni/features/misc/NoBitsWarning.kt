@@ -1,9 +1,10 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.TitleManager
-import at.hannibal2.skyhanni.events.BitsUpdateEvent
+import at.hannibal2.skyhanni.events.skyblock.BitsUpdateEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -16,7 +17,7 @@ object NoBitsWarning {
 
     private val config get() = SkyHanniMod.feature.misc.bits
 
-    @SubscribeEvent
+    @HandleEvent
     fun onBitsGain(event: BitsUpdateEvent.BitsGain) {
         if (isWarningEnabled() && event.bitsAvailable == 0) {
 

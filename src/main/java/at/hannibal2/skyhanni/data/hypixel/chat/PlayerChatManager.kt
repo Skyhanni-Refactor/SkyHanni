@@ -1,16 +1,16 @@
 package at.hannibal2.skyhanni.data.hypixel.chat
 
 import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.data.hypixel.chat.event.AbstractChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.CoopChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.GuildChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.NpcChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.PartyChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.PlayerAllChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.PlayerShowItemChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.PrivateMessageChatEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.SystemMessageEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.AbstractChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.CoopChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.GuildChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.NpcChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.PartyChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.PlayerAllChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.PlayerShowItemChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.PrivateMessageChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.SystemMessageEvent
 import at.hannibal2.skyhanni.utils.ComponentMatcher
 import at.hannibal2.skyhanni.utils.ComponentMatcherUtils.intoSpan
 import at.hannibal2.skyhanni.utils.ComponentMatcherUtils.matchStyledMatcher
@@ -201,13 +201,13 @@ class PlayerChatManager {
 
     private fun sendSystemMessage(event: LorenzChatEvent) {
         with(SystemMessageEvent(event.message, event.chatComponent)) {
-            val cancelled = postAndCatch()
+            val cancelled = post()
             event.handleChat(cancelled, blockedReason, chatComponent)
         }
     }
 
     private fun AbstractChatEvent.postChat(event: LorenzChatEvent) {
-        val cancelled = postAndCatch()
+        val cancelled = post()
         event.handleChat(cancelled, blockedReason, chatComponent)
     }
 

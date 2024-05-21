@@ -3,12 +3,12 @@ package at.hannibal2.skyhanni.api
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.neu.NeuSkillLevelJson
-import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
-import at.hannibal2.skyhanni.events.SkillOverflowLevelupEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
+import at.hannibal2.skyhanni.events.skyblock.skill.SkillOverflowLevelupEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
 import at.hannibal2.skyhanni.features.skillprogress.SkillProgress
 import at.hannibal2.skyhanni.features.skillprogress.SkillType
 import at.hannibal2.skyhanni.features.skillprogress.SkillUtil.SPACE_SPLITTER
@@ -255,7 +255,7 @@ object SkillAPI {
             currentXp
         )
         if (skillInfo.overflowLevel > 60 && levelOverflow == skillInfo.overflowLevel + 1)
-            SkillOverflowLevelupEvent(skillType, skillInfo.overflowLevel, levelOverflow).postAndCatch()
+            SkillOverflowLevelupEvent(skillType, skillInfo.overflowLevel, levelOverflow).post()
 
         skillInfo.apply {
             this.level = level

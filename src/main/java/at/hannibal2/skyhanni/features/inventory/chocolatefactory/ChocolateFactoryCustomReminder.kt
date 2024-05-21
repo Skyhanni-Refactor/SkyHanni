@@ -1,8 +1,8 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.hypixel.chat.event.SystemMessageEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.SystemMessageEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
@@ -43,8 +43,8 @@ object ChocolateFactoryCustomReminder {
 
     private var lastUpgradeWarning = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
-    fun onChat(event: SystemMessageEvent) {
+    @HandleEvent
+    fun onSystemMessage(event: SystemMessageEvent) {
         if (!isEnabled()) return
         if (configReminder.hideChat) {
             if (event.message == "§cYou don't have enough Chocolate!") {

@@ -5,7 +5,6 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.combat.damageindicator.DamageIndicatorConfig.NameVisibility
 import at.hannibal2.skyhanni.data.ScoreboardData
-import at.hannibal2.skyhanni.events.BossHealthChangeEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
@@ -14,6 +13,7 @@ import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.events.damageindicator.DamageIndicatorDeathEvent
 import at.hannibal2.skyhanni.events.damageindicator.DamageIndicatorDetectedEvent
 import at.hannibal2.skyhanni.events.damageindicator.DamageIndicatorFinalBossEvent
+import at.hannibal2.skyhanni.events.entity.BossHealthChangeEvent
 import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.slayer.blaze.HellionShield
@@ -365,7 +365,7 @@ class DamageIndicatorManager {
                 checkDamage(entityData, health, lastHealth)
                 tickDamage(entityData.damageCounter)
 
-                BossHealthChangeEvent(entityData, lastHealth, health, maxHealth).postAndCatch()
+                BossHealthChangeEvent(entityData, lastHealth, health, maxHealth).post()
             }
             entityData.lastHealth = health
 

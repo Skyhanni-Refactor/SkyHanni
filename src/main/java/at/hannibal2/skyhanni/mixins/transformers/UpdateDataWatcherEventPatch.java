@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.mixins.transformers;
 
-import at.hannibal2.skyhanni.events.DataWatcherUpdatedEvent;
+import at.hannibal2.skyhanni.events.entity.DataWatcherUpdatedEvent;
 import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import org.spongepowered.asm.mixin.Final;
@@ -20,6 +20,6 @@ public class UpdateDataWatcherEventPatch {
 
     @Inject(method = "updateWatchedObjectsFromList", at = @At("TAIL"))
     public void onWhatever(List<DataWatcher.WatchableObject> list, CallbackInfo ci) {
-        new DataWatcherUpdatedEvent(owner, list).postAndCatch();
+        new DataWatcherUpdatedEvent(owner, list).post();
     }
 }
