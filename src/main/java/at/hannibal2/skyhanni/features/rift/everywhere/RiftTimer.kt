@@ -1,8 +1,8 @@
 package at.hannibal2.skyhanni.features.rift.everywhere
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -69,8 +70,7 @@ object RiftTimer {
         }
 
         val currentFormat = currentTime.format()
-        val percentage =
-            LorenzUtils.formatPercentage(currentTime.inWholeMilliseconds.toDouble() / maxTime.inWholeMilliseconds)
+        val percentage = (currentTime.inWholeMilliseconds.toDouble() / maxTime.inWholeMilliseconds).formatPercentage()
         val percentageFormat = if (config.percentage.get()) " §7($percentage)" else ""
         val maxTimeFormat = if (config.maxTime.get()) "§7/§b" + maxTime.format() else ""
         val color = if (currentTime <= 1.minutes) "§c" else if (currentTime <= 5.minutes) "§e" else "§b"

@@ -29,6 +29,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderSingleLineWithItems
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
@@ -342,7 +343,7 @@ object GardenNextJacobContest {
         if (inCalendar) {
             val size = contests.size
             val percentage = size.toDouble() / MAX_CONTESTS_PER_YEAR
-            val formatted = LorenzUtils.formatPercentage(percentage)
+            val formatted = percentage.formatPercentage()
             list.add("§eDetected $formatted of farming contests this year")
 
             return list

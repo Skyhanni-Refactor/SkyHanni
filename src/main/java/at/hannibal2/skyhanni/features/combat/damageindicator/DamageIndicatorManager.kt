@@ -37,6 +37,7 @@ import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.ticks
@@ -702,7 +703,7 @@ class DamageIndicatorManager {
         val config = config.vampireSlayer
 
         if (config.percentage) {
-            val percentage = LorenzUtils.formatPercentage(health.toDouble() / maxHealth)
+            val percentage = (health.toDouble() / maxHealth).formatPercentage()
             entityData.nameSuffix = " §e$percentage"
         }
 

@@ -17,7 +17,6 @@ import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.launchwrapper.Launch
 import net.minecraftforge.fml.common.FMLCommonHandler
-import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 
 object LorenzUtils {
@@ -44,12 +43,6 @@ object LorenzUtils {
     // TODO use derpy() on every use case
     val EntityLivingBase.baseMaxHealth: Int
         get() = this.getEntityAttribute(SharedMonsterAttributes.maxHealth).baseValue.toInt()
-
-    // TODO create extension function
-    fun formatPercentage(percentage: Double): String = formatPercentage(percentage, "0.00")
-
-    fun formatPercentage(percentage: Double, format: String?): String =
-        DecimalFormat(format).format(percentage * 100).replace(',', '.') + "%"
 
     fun getSBMonthByName(month: String): Int {
         var monthNr = 0

@@ -8,11 +8,11 @@ import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.jsonobjects.repo.neu.NeuRNGScore
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
-import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.slayer.SlayerChangeEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
@@ -28,6 +28,7 @@ import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.StringUtils.removeWordsAtEnd
 import at.hannibal2.skyhanni.utils.renderables.Renderable
@@ -121,7 +122,7 @@ object SlayerRngMeterDisplay {
 
                 var rawPercentage = old.toDouble() / storage.goalNeeded
                 if (rawPercentage > 1) rawPercentage = 1.0
-                val percentage = LorenzUtils.formatPercentage(rawPercentage)
+                val percentage = rawPercentage.formatPercentage()
                 ChatUtils.chat("§dRNG Meter §7dropped at §e$percentage §7XP ($from/${to}§7)")
                 lastItemDroppedTime = SimpleTimeMark.now()
             }

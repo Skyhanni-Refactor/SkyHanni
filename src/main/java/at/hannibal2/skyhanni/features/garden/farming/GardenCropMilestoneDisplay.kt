@@ -23,12 +23,12 @@ import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed.setSpeed
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.addString
 import at.hannibal2.skyhanni.utils.ConditionalUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.datetime.TimeUnit
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.mc.McSound
@@ -225,7 +225,7 @@ object GardenCropMilestoneDisplay {
             lineMap[MilestoneTextEntry.BLOCKS_PER_SECOND] = Renderable.string("§7Blocks/Second§8: §e$formatBps")
         }
 
-        val percentageFormat = LorenzUtils.formatPercentage(have.toDouble() / need.toDouble())
+        val percentageFormat = (have.toDouble() / need.toDouble()).formatPercentage()
         lineMap[MilestoneTextEntry.PERCENTAGE] = if (crop.isMaxed(overflowDisplay) && !overflowDisplay) {
             Renderable.string("§7Percentage: §e100%")
         } else {
@@ -331,7 +331,7 @@ object GardenCropMilestoneDisplay {
             lineMap[MushroomTextEntry.TIME] = Renderable.string("§7In §b$duration")
         }
 
-        val percentageFormat = LorenzUtils.formatPercentage(have.toDouble() / need.toDouble())
+        val percentageFormat = (have.toDouble() / need.toDouble()).formatPercentage()
         lineMap[MushroomTextEntry.PERCENTAGE] = Renderable.string("§7Percentage: §e$percentageFormat")
 
         if (currentTier >= 46 && currentTier == previousMushNext && nextTier == currentTier + 1 && lastMushWarnedLevel != currentTier) {

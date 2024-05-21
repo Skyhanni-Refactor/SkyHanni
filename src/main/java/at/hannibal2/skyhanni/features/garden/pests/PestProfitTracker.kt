@@ -10,12 +10,12 @@ import at.hannibal2.skyhanni.events.skyblock.PurseChangeCause
 import at.hannibal2.skyhanni.events.skyblock.PurseChangeEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.ItemTrackerData
@@ -51,7 +51,7 @@ object PestProfitTracker {
 
         override fun getDescription(timesGained: Long): List<String> {
             val percentage = timesGained.toDouble() / totalPestsKills
-            val dropRate = LorenzUtils.formatPercentage(percentage.coerceAtMost(1.0))
+            val dropRate = percentage.formatPercentage()
             return listOf(
                 "§7Dropped §e${timesGained.addSeparators()} §7times.",
                 "§7Your drop rate: §c$dropRate."

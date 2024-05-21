@@ -24,6 +24,7 @@ import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -493,12 +494,12 @@ object BestiaryData {
 
         fun percentToMax() = actualRealTotalKill.toDouble() / killToMax
 
-        fun percentToMaxFormatted() = LorenzUtils.formatPercentage(percentToMax())
+        fun percentToMaxFormatted() = percentToMax().formatPercentage()
 
         fun percentToTier() =
             if (killNeededForNextLevel == 0L) 1.0 else currentKillToNextLevel.toDouble() / killNeededForNextLevel
 
-        fun percentToTierFormatted() = LorenzUtils.formatPercentage(percentToTier())
+        fun percentToTierFormatted() = percentToTier().formatPercentage()
 
         fun getNextLevel() = level.getNextLevel()
     }

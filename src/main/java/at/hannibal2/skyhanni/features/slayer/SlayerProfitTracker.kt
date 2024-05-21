@@ -21,6 +21,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -59,7 +60,7 @@ object SlayerProfitTracker {
 
         override fun getDescription(timesDropped: Long): List<String> {
             val percentage = timesDropped.toDouble() / slayerCompletedCount
-            val perBoss = LorenzUtils.formatPercentage(percentage.coerceAtMost(1.0))
+            val perBoss = percentage.formatPercentage()
 
             return listOf(
                 "§7Dropped §e${timesDropped.addSeparators()} §7times.",

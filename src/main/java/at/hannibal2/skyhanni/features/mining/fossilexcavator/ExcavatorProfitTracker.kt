@@ -16,6 +16,7 @@ import at.hannibal2.skyhanni.utils.NEUItems.getPrice
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.StringUtils
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.tracker.ItemTrackerData
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniItemTracker
@@ -41,7 +42,7 @@ object ExcavatorProfitTracker {
 
         override fun getDescription(timesGained: Long): List<String> {
             val percentage = timesGained.toDouble() / timesExcavated
-            val dropRate = LorenzUtils.formatPercentage(percentage.coerceAtMost(1.0))
+            val dropRate = percentage.formatPercentage()
             return listOf(
                 "§7Dropped §e${timesGained.addSeparators()} §7times.",
                 "§7Your drop rate: §c$dropRate."

@@ -12,9 +12,9 @@ import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.bingo.card.goals.BingoGoal
 import at.hannibal2.skyhanni.features.bingo.card.goals.GoalType
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.datetime.DateUtils
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import java.time.LocalTime
@@ -108,7 +108,7 @@ object BingoAPI {
         percentage < 0.25 -> "§6"
 
         else -> "§c"
-    } + LorenzUtils.formatPercentage(percentage)
+    } + percentage.formatPercentage()
 
     fun getBingoIcon(rank: Int): String {
         val rankIcon = getIcon(rank) ?: ""

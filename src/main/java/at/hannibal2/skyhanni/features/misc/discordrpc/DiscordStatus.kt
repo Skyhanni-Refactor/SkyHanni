@@ -23,6 +23,7 @@ import at.hannibal2.skyhanni.utils.LorenzUtils.colorCodeToRarity
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.firstLetterUppercase
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
@@ -70,8 +71,8 @@ private fun getCropMilestoneDisplay(): String {
     val allowOverflow = GardenAPI.config.cropMilestones.overflow.discordRPC
     val tier = cropCounter?.let { getTierForCropCount(it, crop, allowOverflow) }
     val progress = tier?.let {
-        LorenzUtils.formatPercentage(crop.progressToNextLevel(allowOverflow))
-    } ?: 100 // percentage to next milestone
+        crop.progressToNextLevel(allowOverflow).formatPercentage()
+    } ?: "100%" // percentage to next milestone
 
     if (tier == null) return AutoStatus.CROP_MILESTONES.placeholderText
 
@@ -275,7 +276,7 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
                 percent = if (amount.toDouble() == 0.0) {
                     ""
                 } else {
-                    LorenzUtils.formatPercentage((amount.toDouble() - levels[level - 1]) / (levels[level] - levels[level - 1]))
+                    ((amount.toDouble() - levels[level - 1]) / (levels[level] - levels[level - 1])).formatPercentage()
                 }
                 break
             }

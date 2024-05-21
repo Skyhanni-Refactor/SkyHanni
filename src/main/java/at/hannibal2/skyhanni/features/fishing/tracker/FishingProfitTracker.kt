@@ -24,6 +24,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.ItemTrackerData
@@ -58,7 +59,7 @@ object FishingProfitTracker {
 
         override fun getDescription(timesCaught: Long): List<String> {
             val percentage = timesCaught.toDouble() / totalCatchAmount
-            val catchRate = LorenzUtils.formatPercentage(percentage.coerceAtMost(1.0))
+            val catchRate = percentage.formatPercentage()
 
             return listOf(
                 "§7Caught §e${timesCaught.addSeparators()} §7times.",

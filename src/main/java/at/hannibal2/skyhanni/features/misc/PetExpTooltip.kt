@@ -14,6 +14,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getPetExp
 import at.hannibal2.skyhanni.utils.StringUtils
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates
 import net.minecraftforge.event.entity.player.ItemTooltipEvent
 import net.minecraftforge.fml.common.eventhandler.EventPriority
@@ -42,7 +43,7 @@ object PetExpTooltip {
             val (maxLevel, maxXp) = getMaxValues(name, petExperience)
 
             val percentage = petExperience / maxXp
-            val percentageFormat = LorenzUtils.formatPercentage(percentage)
+            val percentageFormat = percentage.formatPercentage()
 
             if (percentage < 1) {
                 event.toolTip.add(index, " ")

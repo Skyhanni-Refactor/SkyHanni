@@ -14,6 +14,7 @@ import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
 import net.minecraft.util.EnumChatFormatting
 import net.minecraft.util.IChatComponent
+import java.text.DecimalFormat
 import java.util.UUID
 import java.util.function.Predicate
 import java.util.regex.Matcher
@@ -181,6 +182,11 @@ object StringUtils {
         if (withNumber) str = "${number.addSeparators()} $str"
         return str
     }
+
+    fun Double.formatPercentage(): String = formatPercentage(this, "0.00")
+
+    private fun formatPercentage(percentage: Double, format: String): String =
+        DecimalFormat(format).format(percentage.coerceIn(0.0, 1.0) * 100).replace(',', '.') + "%"
 
     fun progressBar(percentage: Double, steps: Int = 24): Any {
         //'§5§o§2§l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §f§l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §r §e348,144.3§6/§e936k'

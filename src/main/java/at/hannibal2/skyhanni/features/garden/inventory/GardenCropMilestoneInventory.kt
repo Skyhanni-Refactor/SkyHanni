@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.StringUtils
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 
 object GardenCropMilestoneInventory {
 
@@ -70,7 +71,7 @@ object GardenCropMilestoneInventory {
 
         val counter = crop.getCounter().toDouble()
         val percentage = counter / maxCounter
-        val percentageFormat = LorenzUtils.formatPercentage(percentage)
+        val percentageFormat = percentage.formatPercentage()
 
         event.toolTip.add(index, " ")
         val progressBar = StringUtils.progressBar(percentage, 19)

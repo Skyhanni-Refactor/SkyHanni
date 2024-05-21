@@ -5,10 +5,10 @@ import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getLivingMetalProgress
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.item.ItemStack
 
@@ -38,7 +38,7 @@ object LivingMetalSuitProgress {
         if (progressMap.isEmpty()) return@buildList
 
         val totalProgress = progressMap.values.map { it ?: 1.0 }.average().roundTo(1)
-        val formatPercentage = LorenzUtils.formatPercentage(totalProgress)
+        val formatPercentage = totalProgress.formatPercentage()
         addAsSingletonList("§7Living Metal Suit Progress: ${if (isMaxed) "§a§lMAXED!" else "§a$formatPercentage"}")
 
         if (config.compactWhenMaxed && isMaxed) return@buildList
@@ -49,7 +49,7 @@ object LivingMetalSuitProgress {
                 add(stack)
                 add("${stack.displayName}: ")
                 add(progress?.let {
-                    drawProgressBar(progress) + " §b${LorenzUtils.formatPercentage(progress)}"
+                    drawProgressBar(progress) + " §b${progress.formatPercentage()}"
                 } ?: "§cStart upgrading it!")
             })
         }
