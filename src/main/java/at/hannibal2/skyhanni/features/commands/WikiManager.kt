@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.features.commands
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
-import at.hannibal2.skyhanni.events.MessageSendToServerEvent
+import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
@@ -13,7 +13,6 @@ import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.net.URLEncoder
 
 object WikiManager {
@@ -24,14 +23,14 @@ object WikiManager {
 
     private val config get() = SkyHanniMod.feature.misc.commands.betterWiki
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!isEnabled()) return
         val message = event.message.lowercase()
         if (!(message.startsWith("/wiki"))) return
 
-        event.isCanceled = true
+        event.cancel()
         if (message == "/wiki") {
             sendWikiMessage()
             return

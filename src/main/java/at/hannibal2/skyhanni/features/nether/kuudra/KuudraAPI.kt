@@ -1,11 +1,11 @@
 package at.hannibal2.skyhanni.features.nether.kuudra
 
 import at.hannibal2.skyhanni.data.ScoreboardData
-import at.hannibal2.skyhanni.events.KuudraCompleteEvent
-import at.hannibal2.skyhanni.events.KuudraEnterEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.kuudra.KuudraCompleteEvent
+import at.hannibal2.skyhanni.events.kuudra.KuudraEnterEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -35,7 +35,7 @@ object KuudraAPI {
             tierPattern.matchMatcher(line) {
                 val tier = group("tier").toInt()
                 kuudraTier = tier
-                KuudraEnterEvent(tier).postAndCatch()
+                KuudraEnterEvent(tier).post()
             }
         }
     }
@@ -50,7 +50,7 @@ object KuudraAPI {
         val message = event.message
         completePattern.matchMatcher(message) {
             val tier = kuudraTier ?: return
-            KuudraCompleteEvent(tier).postAndCatch()
+            KuudraCompleteEvent(tier).post()
         }
     }
 

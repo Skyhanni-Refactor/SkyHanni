@@ -1,16 +1,16 @@
 package at.hannibal2.skyhanni.features.commands
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.MessageSendToServerEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.NEUItems
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object ViewRecipeCommand {
 
     private val config get() = SkyHanniMod.feature.misc.commands
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
         if (!config.viewRecipeLowerCase) return
         val message = event.message
@@ -19,7 +19,7 @@ object ViewRecipeCommand {
         if (message == message.uppercase()) return
         val item = message.uppercase().substringAfter("viewrecipe").trim()
         if (item.isEmpty()) return
-        event.isCanceled = true
+        event.cancel()
         HypixelCommands.viewRecipe(item)
     }
 

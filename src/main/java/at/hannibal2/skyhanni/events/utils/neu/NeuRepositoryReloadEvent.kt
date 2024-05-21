@@ -1,5 +1,6 @@
-package at.hannibal2.skyhanni.events
+package at.hannibal2.skyhanni.events.utils.neu
 
+import at.hannibal2.skyhanni.api.event.SkyHanniEvent
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.NEUItems.manager
@@ -8,7 +9,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonSyntaxException
 import java.io.File
 
-class NeuRepositoryReloadEvent : LorenzEvent() {
+class NeuRepositoryReloadEvent : SkyHanniEvent() {
     fun getConstant(file: String): JsonObject? {
         return manager.getJsonFromFile(File(manager.repoLocation, "constants/$file.json"))
     }

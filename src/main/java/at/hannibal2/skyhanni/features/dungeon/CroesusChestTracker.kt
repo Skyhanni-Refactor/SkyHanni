@@ -6,10 +6,10 @@ import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage.DungeonStorag
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.RenderInventoryItemTipEvent
 import at.hannibal2.skyhanni.events.dungeon.DungeonCompleteEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI.DungeonChest
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -211,7 +211,7 @@ object CroesusChestTracker {
         event.stackTip = "§a$kismetAmountCache"
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTipIsKismetable(event: RenderInventoryItemTipEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.showUsedKismets) return

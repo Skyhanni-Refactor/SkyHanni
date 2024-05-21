@@ -4,9 +4,9 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.core.config.Position
 import at.hannibal2.skyhanni.config.core.config.gui.GuiPositionEditor
-import at.hannibal2.skyhanni.events.GuiPositionMovedEvent
 import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiPositionMovedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.features.garden.GardenOptimalSpeed
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
@@ -65,7 +65,7 @@ object GuiEditManager {
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
         lastMovedGui?.let {
-            GuiPositionMovedEvent(it).postAndCatch()
+            GuiPositionMovedEvent(it).post()
             lastMovedGui = null
         }
     }

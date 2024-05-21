@@ -1,11 +1,10 @@
-package at.hannibal2.skyhanni.events
+package at.hannibal2.skyhanni.events.chat
 
+import at.hannibal2.skyhanni.api.event.CancellableSkyHanniEvent
 import net.minecraftforge.fml.common.ModContainer
-import net.minecraftforge.fml.common.eventhandler.Cancelable
 
-@Cancelable
 class MessageSendToServerEvent(
     val message: String,
     val splitMessage: List<String>,
     val originatingModContainer: ModContainer?
-) : LorenzEvent()
+) : CancellableSkyHanniEvent()

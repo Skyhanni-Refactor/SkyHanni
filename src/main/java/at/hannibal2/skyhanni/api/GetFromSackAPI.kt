@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
-import at.hannibal2.skyhanni.events.MessageSendToServerEvent
+import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.features.commands.tabcomplete.GetFromSacksTabComplete
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -118,7 +118,7 @@ object GetFromSackAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMessageToServer(event: MessageSendToServerEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.queuedGFS && !config.bazaarGFS) return
@@ -126,12 +126,12 @@ object GetFromSackAPI {
         val replacedEvent = GetFromSacksTabComplete.handleUnderlineReplace(event)
         queuedHandler(replacedEvent)
         bazaarHandler(replacedEvent)
-        if (replacedEvent.isCanceled) {
-            event.isCanceled = true
+        if (replacedEvent.isCancelled) {
+            event.cancel()
             return
         }
         if (replacedEvent !== event) {
-            event.isCanceled = true
+            event.cancel()
             ChatUtils.sendMessageToServer(replacedEvent.message)
         }
     }
@@ -149,11 +149,11 @@ object GetFromSackAPI {
             CommandResult.WRONG_AMOUNT -> ChatUtils.userError("Invalid amount!")
             CommandResult.INTERNAL_ERROR -> {}
         }
-        event.isCanceled = true
+        event.cancel()
     }
 
     private fun bazaarHandler(event: MessageSendToServerEvent) {
-        if (event.isCanceled) return
+        if (event.isCancelled) return
         if (!config.bazaarGFS || SkyBlockAPI.gamemode.noTrade) return
         lastItemStack = commandValidator(event.splitMessage.drop(1)).second
     }

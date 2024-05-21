@@ -5,9 +5,9 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -174,13 +174,13 @@ object HypixelData {
             val newProfile = message.replace("your profile was changed to:", "").replace("(co-op)", "").trim()
             if (profileName == newProfile) return
             profileName = newProfile
-            ProfileJoinEvent(newProfile).postAndCatch()
+            ProfileJoinEvent(newProfile).post()
         }
         if (message.startsWith("you are playing on profile:")) {
             val newProfile = message.replace("you are playing on profile:", "").replace("(co-op)", "").trim()
             if (profileName == newProfile) return
             profileName = newProfile
-            ProfileJoinEvent(newProfile).postAndCatch()
+            ProfileJoinEvent(newProfile).post()
         }
     }
 
@@ -193,7 +193,7 @@ object HypixelData {
             if (RiftAPI.inRift()) newProfile = newProfile.reversed()
             if (profileName == newProfile) return
             profileName = newProfile
-            ProfileJoinEvent(newProfile).postAndCatch()
+            ProfileJoinEvent(newProfile).post()
         }
     }
 
@@ -223,7 +223,7 @@ object HypixelData {
 
         TabListData.getTabList().matchFirst(UtilsPatterns.tabListProfilePattern) {
             profileName = group("profile").lowercase()
-            ProfileJoinEvent(profileName).postAndCatch()
+            ProfileJoinEvent(profileName).post()
         }
     }
 

@@ -7,7 +7,7 @@ import at.hannibal2.skyhanni.data.ArrowType
 import at.hannibal2.skyhanni.data.QuiverAPI
 import at.hannibal2.skyhanni.data.QuiverAPI.amount
 import at.hannibal2.skyhanni.data.TitleManager
-import at.hannibal2.skyhanni.events.KuudraCompleteEvent
+import at.hannibal2.skyhanni.events.kuudra.KuudraCompleteEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.QuiverUpdateEvent
 import at.hannibal2.skyhanni.events.dungeon.DungeonCompleteEvent
@@ -37,7 +37,7 @@ object QuiverWarning {
         onInstanceComplete()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onKuudraComplete(event: KuudraCompleteEvent) {
         onInstanceComplete()
     }

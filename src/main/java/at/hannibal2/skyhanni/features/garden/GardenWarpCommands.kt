@@ -1,7 +1,8 @@
 package at.hannibal2.skyhanni.features.garden
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
-import at.hannibal2.skyhanni.events.MessageSendToServerEvent
+import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
 import at.hannibal2.skyhanni.features.misc.LockMouseLook
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
@@ -24,7 +25,7 @@ object GardenWarpCommands {
 
     private var lastWarpTime = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
         if (!config.warpCommands) return
         if (!GardenAPI.inGarden()) return
@@ -32,19 +33,19 @@ object GardenWarpCommands {
         val message = event.message.lowercase()
 
         if (message == "/home") {
-            event.isCanceled = true
+            event.cancel()
             HypixelCommands.warp("garden")
             ChatUtils.chat("§aTeleported you to the spawn location!", prefix = false)
         }
 
         if (message == "/barn") {
-            event.isCanceled = true
+            event.cancel()
             HypixelCommands.teleportToPlot("barn")
             LockMouseLook.autoDisable()
         }
 
         tpPlotPattern.matchMatcher(event.message) {
-            event.isCanceled = true
+            event.cancel()
             val plotName = group("plot")
             HypixelCommands.teleportToPlot(plotName)
             LockMouseLook.autoDisable()

@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.rift.area.stillgorechateau
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.RiftEffigiesJson
-import at.hannibal2.skyhanni.events.DebugDataCollectEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.RawScoreboardUpdateEvent
@@ -51,7 +51,7 @@ object RiftBloodEffigies {
 
     private fun cleanMap() = (0..5).associateWith { SimpleTimeMark.farPast() }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Rift Blood Effigies")
 

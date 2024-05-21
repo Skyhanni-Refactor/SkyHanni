@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.RenderInventoryItemTipEvent
 import at.hannibal2.skyhanni.events.render.gui.DrawScreenAfterEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
 import at.hannibal2.skyhanni.mixins.transformers.gui.AccessorGuiContainer
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
@@ -57,7 +57,7 @@ object ItemTipHelper {
             val stack = slot.stack ?: continue
 
             val itemTipEvent = RenderInventoryItemTipEvent(inventoryName, slot, stack)
-            itemTipEvent.postAndCatch()
+            itemTipEvent.post()
             val stackTip = itemTipEvent.stackTip
             if (stackTip.isEmpty()) continue
 

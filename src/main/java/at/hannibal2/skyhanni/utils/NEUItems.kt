@@ -7,8 +7,8 @@ import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.other.HypixelApiTrophyFish
 import at.hannibal2.skyhanni.data.jsonobjects.other.HypixelPlayerApiJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.MultiFilterJson
-import at.hannibal2.skyhanni.events.NeuProfileDataLoadedEvent
-import at.hannibal2.skyhanni.events.NeuRepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuProfileDataLoadedEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.getBazaarData
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarDataHolder
@@ -105,7 +105,7 @@ object NEUItems {
         ignoreItemsFilter.load(ignoredItems)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onNeuRepoReload(event: NeuRepositoryReloadEvent) {
         allItemsCache = readAllNeuItems()
     }
@@ -115,7 +115,7 @@ object NEUItems {
         val apiData = event.data ?: return
         try {
             val playerData = hypixelApiGson.fromJson<HypixelPlayerApiJson>(apiData)
-            NeuProfileDataLoadedEvent(playerData).postAndCatch()
+            NeuProfileDataLoadedEvent(playerData).post()
 
         } catch (e: Exception) {
             ErrorManager.logErrorWithData(
