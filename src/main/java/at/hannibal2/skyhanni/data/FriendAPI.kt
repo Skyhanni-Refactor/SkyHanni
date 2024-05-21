@@ -5,15 +5,14 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.data.jsonobjects.local.FriendsJson
 import at.hannibal2.skyhanni.data.jsonobjects.local.FriendsJson.PlayerFriends.Friend
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.util.ChatStyle
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.UUID
 
 object FriendAPI {
@@ -73,8 +72,8 @@ object FriendAPI {
         SkyHanniMod.configManager.saveConfig(ConfigFileType.FRIENDS, "Save file")
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         readFriendsList(event)
 
         removedFriendPattern.matchMatcher(event.message) {
@@ -113,7 +112,7 @@ object FriendAPI {
         saveConfig()
     }
 
-    private fun readFriendsList(event: LorenzChatEvent) {
+    private fun readFriendsList(event: SkyHanniChatEvent) {
         if (!event.message.contains("Friends")) return
 
         for (sibling in event.chatComponent.siblings) {

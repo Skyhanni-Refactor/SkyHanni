@@ -4,7 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.data.jsonobjects.repo.MinionXPJson
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.events.skyblock.minion.MinionCloseEvent
 import at.hannibal2.skyhanni.events.skyblock.minion.MinionOpenEvent
@@ -24,7 +24,6 @@ import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.block.BlockChest
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.EnumMap
 
 object MinionXp {
@@ -137,8 +136,8 @@ object MinionXp {
         return positionsToCheck.any { pos -> McWorld.getBlock(minionPosition + pos) is BlockChest }
     }
 
-    @SubscribeEvent
-    fun onTooltip(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.xpDisplay) return
         when {
@@ -157,7 +156,7 @@ object MinionXp {
         }
     }
 
-    private fun addXpInfoToTooltip(event: LorenzToolTipEvent) {
+    private fun addXpInfoToTooltip(event: SkyHanniToolTipEvent) {
         xpItemMap[toPrimitiveItemStack(event.itemStack)]?.let {
             event.toolTip.add("")
             event.toolTip.add(it)

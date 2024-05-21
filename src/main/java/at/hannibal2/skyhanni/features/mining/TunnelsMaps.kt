@@ -10,11 +10,11 @@ import at.hannibal2.skyhanni.data.model.findShortestPathAsGraphWithDistance
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
-import at.hannibal2.skyhanni.events.LorenzWarpEvent
+import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.skyblock.WarpEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -176,8 +176,8 @@ object TunnelsMaps {
         }
     }
 
-    @SubscribeEvent
-    fun onRenderItemTooltip(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!isEnabled()) return
         clickTranslate[event.slot.slotIndex]?.let {
             event.toolTip.add("§e§lRight Click §r§eto for Tunnel Maps.")
@@ -329,8 +329,8 @@ object TunnelsMaps {
         setActiveAndGoal(it)
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
         if (checkGoalReached()) return
         val prevClosed = closedNote
@@ -382,8 +382,8 @@ object TunnelsMaps {
         goal = null
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         val path = path?.takeIf { it.first.isNotEmpty() } ?: return
         event.draw3DPathWithWaypoint(
@@ -412,14 +412,14 @@ object TunnelsMaps {
         null
     } ?: config.pathColour.toChromaColour()
 
-    @SubscribeEvent
-    fun onKeyPress(event: LorenzKeyPressEvent) {
+    @HandleEvent
+    fun onKeyPress(event: KeyPressEvent) {
         if (!isEnabled()) return
         campfireKey(event)
         nextSpotKey(event)
     }
 
-    private fun campfireKey(event: LorenzKeyPressEvent) {
+    private fun campfireKey(event: KeyPressEvent) {
         if (event.keyCode != config.campfireKey) return
         if (config.travelScroll) {
             HypixelCommands.warp("basecamp")
@@ -428,8 +428,8 @@ object TunnelsMaps {
         }
     }
 
-    @SubscribeEvent
-    fun onLorenzWarp(event: LorenzWarpEvent) {
+    @HandleEvent
+    fun onLorenzWarp(event: WarpEvent) {
         if (!isEnabled()) return
         if (goal != null) {
             DelayedRun.runNextTick {
@@ -440,7 +440,7 @@ object TunnelsMaps {
 
     private var nextSpotDelay = SimpleTimeMark.farPast()
 
-    private fun nextSpotKey(event: LorenzKeyPressEvent) {
+    private fun nextSpotKey(event: KeyPressEvent) {
         if (event.keyCode != config.nextSpotHotkey) return
         if (!nextSpotDelay.isInPast()) return
         nextSpotDelay = 0.5.seconds.fromNow()

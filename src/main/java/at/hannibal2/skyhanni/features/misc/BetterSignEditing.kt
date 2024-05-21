@@ -2,7 +2,8 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
-import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiEditSign
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.mc.McScreen.addTextIntoSign
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.utils.system.OS
 import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object BetterSignEditing {
 
@@ -19,8 +19,8 @@ object BetterSignEditing {
     private var copyLastClicked = false
     private var deleteLastClicked = false
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!HypixelAPI.onHypixel) return
         if (!SkyHanniMod.feature.misc.betterSignEditing) return
 

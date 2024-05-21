@@ -15,7 +15,7 @@ object PestSpawnTimer {
 
     var lastSpawnTime = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPestSpawn(event: PestSpawnEvent) {
         lastSpawnTime = SimpleTimeMark.now()
     }

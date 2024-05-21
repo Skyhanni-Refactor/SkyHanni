@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.features.chat.ChatFilterGui
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.IdentityCharacteristics
@@ -119,8 +119,8 @@ object ChatManager {
         val message = original.formattedText.stripHypixelMessage()
 
         val key = IdentityCharacteristics(original)
-        val chatEvent = LorenzChatEvent(message, original)
-        chatEvent.postAndCatch()
+        val chatEvent = SkyHanniChatEvent(message, original)
+        chatEvent.post()
 
         val blockReason = chatEvent.blockedReason.uppercase()
         if (blockReason != "") {

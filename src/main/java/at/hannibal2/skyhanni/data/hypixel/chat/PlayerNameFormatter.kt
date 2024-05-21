@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.events.chat.hypixel.PartyChatEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.PlayerAllChatEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.PlayerShowItemChatEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.PrivateMessageChatEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.chat.playerchat.PlayerChatFilter
 import at.hannibal2.skyhanni.features.misc.MarkedPlayerManager
@@ -239,8 +240,8 @@ class PlayerNameFormatter {
 
     fun isEnabled() = LorenzUtils.inSkyBlock && config.enable
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.transform(41, "chat.PlayerMessagesConfig.partsOrder") { element ->
             val newList = JsonArray()
             for (entry in element.asJsonArray) {

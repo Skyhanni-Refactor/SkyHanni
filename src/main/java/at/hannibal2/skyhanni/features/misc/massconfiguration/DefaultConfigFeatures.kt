@@ -1,20 +1,20 @@
 package at.hannibal2.skyhanni.features.misc.massconfiguration
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigFileType
-import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import io.github.notenoughupdates.moulconfig.processor.ConfigProcessorDriver
 import net.minecraft.client.Minecraft
 import net.minecraft.command.CommandBase
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object DefaultConfigFeatures {
 
     private var didNotifyOnce = false
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (didNotifyOnce) return
         Minecraft.getMinecraft().thePlayer ?: return
         didNotifyOnce = true

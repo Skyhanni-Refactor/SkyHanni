@@ -2,8 +2,8 @@ package at.hannibal2.skyhanni.features.garden.pests
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.garden.pests.PestFinderConfig.VisibilityType
-import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
+import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.garden.pests.PestUpdateEvent
 import at.hannibal2.skyhanni.events.inventory.ItemInHandChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
@@ -29,7 +29,6 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.client.Minecraft
-import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
@@ -40,7 +39,7 @@ object PestFinder {
     private var display = emptyList<Renderable>()
     private var lastTimeVacuumHold = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPestUpdate(event: PestUpdateEvent) {
         update()
     }
@@ -109,8 +108,8 @@ object PestFinder {
     }
 
     // priority to low so that this happens after other renderPlot calls.
-    @SubscribeEvent(priority = EventPriority.LOW)
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent(priority = 1)
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         if (!config.showPlotInWorld) return
         if (config.onlyWithVacuum && !PestAPI.hasVacuumInHand() && (lastTimeVacuumHold.passedSince() > config.showBorderForSeconds.seconds)) return
@@ -138,7 +137,7 @@ object PestFinder {
     private fun drawName(
         plot: GardenPlotAPI.Plot,
         playerLocation: LorenzVec,
-        event: LorenzRenderWorldEvent,
+        event: SkyHanniRenderWorldEvent,
     ) {
         val pests = plot.pests
         val pestsName = StringUtils.pluralize(pests, "pest")
@@ -157,8 +156,8 @@ object PestFinder {
 
     private var lastKeyPress = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
-    fun onKeyClick(event: LorenzKeyPressEvent) {
+    @HandleEvent
+    fun onKeyClick(event: KeyPressEvent) {
         if (!GardenAPI.inGarden()) return
         if (Minecraft.getMinecraft().currentScreen != null) return
         if (NEUItems.neuHasFocus()) return

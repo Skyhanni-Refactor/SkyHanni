@@ -4,9 +4,10 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.TitleManager
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI
@@ -68,14 +69,14 @@ object HoppityEggsManager {
     private var warningActive = false
     private var lastWarnTime = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         lastMeal = null
         lastNote = null
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!LorenzUtils.inSkyBlock) return
 
         hoppityEventNotOn.matchMatcher(event.message) {
@@ -128,7 +129,7 @@ object HoppityEggsManager {
         }
     }
 
-    internal fun Matcher.getEggType(event: LorenzChatEvent): HoppityEggType =
+    internal fun Matcher.getEggType(event: SkyHanniChatEvent): HoppityEggType =
         HoppityEggType.getMealByName(group("meal")) ?: run {
             ErrorManager.skyHanniError(
                 "Unknown meal: ${group("meal")}",
@@ -210,8 +211,8 @@ object HoppityEggsManager {
 
     private fun isBusy() = ReminderUtils.isBusy(config.showDuringContest)
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(
             44,
             "event.chocolateFactory.highlightHoppityShop",

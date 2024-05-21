@@ -8,9 +8,9 @@ import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.core.config.Position
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
@@ -61,7 +61,6 @@ import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.MinecraftForge
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.io.File
 import kotlin.time.Duration.Companion.seconds
 
@@ -96,8 +95,8 @@ class SkyHanniDebugsAndTests {
 
         private var testLocation: LorenzVec? = null
 
-        @SubscribeEvent
-        fun onRenderWorld(event: LorenzRenderWorldEvent) {
+        @HandleEvent
+        fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
             testLocation?.let {
                 event.drawWaypointFilled(it, LorenzColor.WHITE.toColor())
                 event.drawDynamicText(it, "Test", 1.5)
@@ -424,8 +423,8 @@ class SkyHanniDebugsAndTests {
         ChatUtils.chat("§eCopied internal name §7$rawInternalName §eto the clipboard!")
     }
 
-    @SubscribeEvent
-    fun onShowInternalName(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun onShowInternalName(event: SkyHanniToolTipEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!debugConfig.showInternalName) return
         val itemStack = event.itemStack
@@ -434,8 +433,8 @@ class SkyHanniDebugsAndTests {
         event.toolTip.add("Internal Name: '${internalName.asString()}'")
     }
 
-    @SubscribeEvent
-    fun showItemRarity(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun showItemRarity(event: SkyHanniToolTipEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!debugConfig.showItemRarity) return
         val itemStack = event.itemStack
@@ -444,8 +443,8 @@ class SkyHanniDebugsAndTests {
         event.toolTip.add("Item rarity: $rarity")
     }
 
-    @SubscribeEvent
-    fun showItemCategory(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun showItemCategory(event: SkyHanniToolTipEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!debugConfig.showItemCategory) return
         val itemStack = event.itemStack
@@ -454,8 +453,8 @@ class SkyHanniDebugsAndTests {
         event.toolTip.add("Item category: $category")
     }
 
-    @SubscribeEvent
-    fun onShowNpcPrice(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun onShowNpcPrice(event: SkyHanniToolTipEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!debugConfig.showNpcPrice) return
         val internalName = event.itemStack.getInternalNameOrNull() ?: return
@@ -464,8 +463,8 @@ class SkyHanniDebugsAndTests {
         event.toolTip.add("§7NPC price: ${npcPrice.addSeparators()}")
     }
 
-    @SubscribeEvent
-    fun onShowBzPrice(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun onShowBzPrice(event: SkyHanniToolTipEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!debugConfig.showBZPrice) return
         val internalName = event.itemStack.getInternalNameOrNull() ?: return
@@ -478,8 +477,8 @@ class SkyHanniDebugsAndTests {
         event.toolTip.add("§7BZ sellOfferPrice: ${sellOfferPrice.addSeparators()}")
     }
 
-    @SubscribeEvent
-    fun onShowItemName(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun onShowItemName(event: SkyHanniToolTipEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!debugConfig.showItemName) return
         val itemStack = event.itemStack
@@ -492,8 +491,8 @@ class SkyHanniDebugsAndTests {
         event.toolTip.add("Item name: '$name§7'")
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
     }
 
     @HandleEvent

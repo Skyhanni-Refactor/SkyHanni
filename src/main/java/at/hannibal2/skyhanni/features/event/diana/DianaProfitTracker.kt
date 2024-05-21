@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.features.event.diana
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.DianaDropsJson
-import at.hannibal2.skyhanni.events.LorenzChatEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
@@ -22,7 +22,6 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.ItemTrackerData
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniItemTracker
 import com.google.gson.annotations.Expose
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object DianaProfitTracker {
 
@@ -106,8 +105,8 @@ object DianaProfitTracker {
         tracker.addItem(internalName, event.amount)
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         val message = event.message
         if (chatDugOutPattern.matches(message)) {
             BurrowAPI.lastBurrowRelatedChatMessage = SimpleTimeMark.now()
@@ -130,7 +129,7 @@ object DianaProfitTracker {
         }
     }
 
-    private fun tryHide(event: LorenzChatEvent) {
+    private fun tryHide(event: SkyHanniChatEvent) {
         if (SkyHanniMod.feature.chat.filterType.diana) {
             event.blockedReason = "diana_chain_or_drops"
         }

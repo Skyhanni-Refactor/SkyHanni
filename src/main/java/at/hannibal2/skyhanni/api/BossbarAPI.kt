@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.api
 
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.minecraft.BossbarUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import net.minecraft.entity.boss.BossStatus
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object BossbarAPI {
 
@@ -13,14 +13,14 @@ object BossbarAPI {
 
     fun getBossbar() = bossbar ?: ""
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         previousServerBossbar = bossbar ?: return
         bossbar = null
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         val bossbarLine = BossStatus.bossName ?: return
         if (bossbarLine.isBlank()) return
         if (bossbarLine == bossbar) return

@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.features.inventory
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.utils.HypixelCommands
@@ -29,7 +29,7 @@ class SkyblockGuideHighlightFeature private constructor(
     inventory: RepoPattern,
     loreCondition: RepoPattern,
     private val onSlotClicked: (GuiContainerEvent.SlotClickEvent) -> Unit = {},
-    private val onTooltip: (LorenzToolTipEvent) -> Unit = {},
+    private val onTooltip: (SkyHanniToolTipEvent) -> Unit = {},
 ) {
 
     private val inventoryPattern by inventory
@@ -41,7 +41,7 @@ class SkyblockGuideHighlightFeature private constructor(
         @Language("RegExp") inventory: String,
         @Language("RegExp") loreCondition: String,
         onSlotClicked: (GuiContainerEvent.SlotClickEvent) -> Unit = {},
-        onTooltip: (LorenzToolTipEvent) -> Unit = {},
+        onTooltip: (SkyHanniToolTipEvent) -> Unit = {},
     ) : this(
         config,
         patternGroup.pattern("$key.$keyPrefixInventory", inventory),
@@ -56,7 +56,7 @@ class SkyblockGuideHighlightFeature private constructor(
         @Language("RegExp") inventory: String,
         loreCondition: RepoPattern,
         onSlotClicked: (GuiContainerEvent.SlotClickEvent) -> Unit = {},
-        onTooltip: (LorenzToolTipEvent) -> Unit = {},
+        onTooltip: (SkyHanniToolTipEvent) -> Unit = {},
     ) : this(
         config,
         patternGroup.pattern("$key.$keyPrefixInventory", inventory),
@@ -105,8 +105,8 @@ class SkyblockGuideHighlightFeature private constructor(
                 .forEach { it highlight LorenzColor.RED }
         }
 
-        @SubscribeEvent
-        fun onTooltip(event: LorenzToolTipEvent) {
+        @HandleEvent
+        fun onTooltip(event: SkyHanniToolTipEvent) {
             if (!isEnabled()) return
             val current = activeObject ?: return
             if (!missing.contains(event.slot.slotNumber)) return
@@ -149,7 +149,7 @@ class SkyblockGuideHighlightFeature private constructor(
             }
         }
 
-        private val openWikiTooltip: (LorenzToolTipEvent) -> Unit = { event ->
+        private val openWikiTooltip: (SkyHanniToolTipEvent) -> Unit = { event ->
             event.toolTip.add("")
             event.toolTip.add("§7§eClick to view on the SkyBlock Wiki!")
         }

@@ -1,7 +1,8 @@
 package at.hannibal2.skyhanni.data.hypixel.chat
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.LorenzChatEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.AbstractChatEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.CoopChatEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.GuildChatEvent
@@ -18,7 +19,6 @@ import at.hannibal2.skyhanni.utils.ComponentSpan
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.util.IChatComponent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 /**
  * Reading normal chat events, and splitting them up into many different player chat events, with all available extra information
@@ -109,8 +109,8 @@ class PlayerChatManager {
         "(?<prefix>.*)(?<guest>§a\\[✌] )(?<suffix>.*)"
     )
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         val chatComponent = event.chatComponent.intoSpan().stripHypixelMessage()
         coopPattern.matchStyledMatcher(chatComponent) {
             val author = groupOrThrow("author")
@@ -162,7 +162,7 @@ class PlayerChatManager {
         sendSystemMessage(event)
     }
 
-    private fun ComponentMatcher.isGlobalChat(event: LorenzChatEvent): Boolean {
+    private fun ComponentMatcher.isGlobalChat(event: SkyHanniChatEvent): Boolean {
         var author = groupOrThrow("author")
         val message = groupOrThrow("message").removePrefix("§f")
         if (author.getText().contains("[NPC]")) {
@@ -199,26 +199,21 @@ class PlayerChatManager {
         return true
     }
 
-    private fun sendSystemMessage(event: LorenzChatEvent) {
+    private fun sendSystemMessage(event: SkyHanniChatEvent) {
         with(SystemMessageEvent(event.message, event.chatComponent)) {
-            val cancelled = post()
-            event.handleChat(cancelled, blockedReason, chatComponent)
+            event.handleChat(blockedReason, chatComponent)
         }
     }
 
-    private fun AbstractChatEvent.postChat(event: LorenzChatEvent) {
-        val cancelled = post()
-        event.handleChat(cancelled, blockedReason, chatComponent)
+    private fun AbstractChatEvent.postChat(event: SkyHanniChatEvent) {
+        post()
+        event.handleChat(blockedReason, chatComponent)
     }
 
-    private fun LorenzChatEvent.handleChat(
-        cancelled: Boolean,
+    private fun SkyHanniChatEvent.handleChat(
         blockedReason: String?,
         chatComponent: IChatComponent,
     ) {
-        if (cancelled) {
-            this.cancel()
-        }
         blockedReason?.let {
             this.blockedReason = it
         }

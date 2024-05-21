@@ -1,8 +1,9 @@
 package at.hannibal2.skyhanni.data
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.inventory.ItemInHandChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.PlaySoundEvent
@@ -42,7 +43,7 @@ object MinecraftData {
 
     @SubscribeEvent
     fun onWorldChange(event: WorldEvent.Load) {
-        LorenzWorldChangeEvent().postAndCatch()
+        WorldChangeEvent().post()
     }
 
     @SubscribeEvent(receiveCanceled = true)
@@ -75,11 +76,11 @@ object MinecraftData {
 
         DelayedRun.checkRuns()
         totalTicks++
-        LorenzTickEvent(totalTicks).postAndCatch()
+        ClientTickEvent(totalTicks).post()
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!LorenzUtils.inSkyBlock) return
         val hand = McPlayer.heldItem
         val newItem = hand?.getInternalName() ?: SkyhanniItems.NONE()
@@ -96,8 +97,8 @@ object MinecraftData {
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         InventoryUtils.itemInHandId = SkyhanniItems.NONE()
         InventoryUtils.recentItemsInHand.clear()
     }

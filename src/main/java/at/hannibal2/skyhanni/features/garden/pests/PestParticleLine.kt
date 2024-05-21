@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.features.garden.pests
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ClickType
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
@@ -19,8 +19,6 @@ import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine_nea
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraft.util.EnumParticleTypes
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 // TODO remove this workaround once PestParticleWaypoint does work again
@@ -77,8 +75,8 @@ object PestParticleLine {
         return newList
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent(priority = 1)
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         // TODO time in config
         if (lastPestTrackerUse.passedSince() > 10.seconds) {
@@ -92,7 +90,7 @@ object PestParticleLine {
         showMiddle(event)
     }
 
-    private fun showMiddle(event: LorenzRenderWorldEvent) {
+    private fun showMiddle(event: SkyHanniRenderWorldEvent) {
         if (locations.size <= 0) return
         val plot = GardenPlotAPI.getCurrentPlot() ?: return
         val middle = plot.middle.copy(y = LocationUtils.playerLocation().y)
@@ -102,7 +100,7 @@ object PestParticleLine {
         event.drawDynamicText(middle, "Middle", 1.0)
     }
 
-    private fun draw(event: LorenzRenderWorldEvent, list: List<ParticleLocation>) {
+    private fun draw(event: SkyHanniRenderWorldEvent, list: List<ParticleLocation>) {
         val color = LorenzColor.YELLOW.toColor()
         for ((prev, next) in list.asSequence().zipWithNext()) {
             // TODO time in config

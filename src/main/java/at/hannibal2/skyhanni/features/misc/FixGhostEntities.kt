@@ -1,8 +1,9 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.PacketEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.network.play.server.S0CPacketSpawnPlayer
 import net.minecraft.network.play.server.S0FPacketSpawnMob
@@ -20,8 +21,8 @@ object FixGhostEntities {
     private var recentlyRemovedEntities = ArrayDeque<Int>()
     private var recentlySpawnedEntities = ArrayDeque<Int>()
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         recentlyRemovedEntities = ArrayDeque()
         recentlySpawnedEntities = ArrayDeque()
     }

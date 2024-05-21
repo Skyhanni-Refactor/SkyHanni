@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.test
 
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils
 import at.hannibal2.skyhanni.utils.math.BoundingBox
@@ -9,7 +9,7 @@ import java.awt.Color
 
 object GriffinUtils {
 
-    fun LorenzRenderWorldEvent.drawWaypointFilled(
+    fun SkyHanniRenderWorldEvent.drawWaypointFilled(
         location: LorenzVec,
         color: Color,
         seeThroughBlocks: Boolean = false,

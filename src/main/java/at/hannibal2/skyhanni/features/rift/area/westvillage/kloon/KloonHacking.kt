@@ -3,9 +3,9 @@ package at.hannibal2.skyhanni.features.rift.area.westvillage.kloon
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
@@ -113,8 +113,8 @@ object KloonHacking {
         event.makePickblock()
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!RiftAPI.inRift()) return
         if (!config.waypoints) return
         if (!wearingHelmet) return
@@ -126,8 +126,8 @@ object KloonHacking {
         }
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!RiftAPI.inRift()) return
         if (!wearingHelmet) return
         colourPattern.matchMatcher(event.message.removeColor()) {
@@ -139,8 +139,8 @@ object KloonHacking {
         }
     }
 
-    @SubscribeEvent
-    fun onTooltip(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!RiftAPI.inRift()) return
         if (!inTerminalInventory) return
         if (!config.solver) return

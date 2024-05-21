@@ -3,9 +3,9 @@ package at.hannibal2.skyhanni.features.dungeon
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ClickType
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.click.BlockClickEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawColor
@@ -15,7 +15,6 @@ import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockEntityAt
 import net.minecraft.init.Blocks
 import net.minecraft.tileentity.TileEntitySkull
 import net.minecraftforge.common.util.Constants
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object DungeonHighlightClickedBlocks {
 
@@ -34,8 +33,8 @@ object DungeonHighlightClickedBlocks {
         return colors[colorIndex]
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!SkyHanniMod.feature.dungeon.highlightClickedBlocks) return
         if (!DungeonAPI.inDungeon()) return
 
@@ -81,8 +80,8 @@ object DungeonHighlightClickedBlocks {
         blocks.add(ClickedBlock(position, displayText, color, System.currentTimeMillis()))
     }
 
-    @SubscribeEvent
-    fun onWorldRender(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!SkyHanniMod.feature.dungeon.highlightClickedBlocks) return
         if (!DungeonAPI.inDungeon()) return
 
