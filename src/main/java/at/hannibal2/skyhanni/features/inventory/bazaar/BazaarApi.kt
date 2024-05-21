@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.inventory.bazaar
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.bazaar.HypixelBazaarFetcher
 import at.hannibal2.skyhanni.events.BazaarOpenedProductEvent
@@ -53,7 +54,7 @@ object BazaarApi {
     fun searchForBazaarItem(displayName: String, amount: Int = -1) {
         if (!LorenzUtils.inSkyBlock) return
         if (NEUItems.neuHasFocus()) return
-        if (LorenzUtils.noTradeMode) return
+        if (SkyBlockAPI.gamemode.noTrade) return
         if (DungeonAPI.inDungeon() || LorenzUtils.inKuudraFight) return
         HypixelCommands.bazaar(displayName.removeColor())
         if (amount != -1) OS.copyToClipboard(amount.toString())

@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.repo.RepoManager
@@ -67,20 +68,7 @@ object DebugCommand {
             return
         }
 
-        val classic = !LorenzUtils.noTradeMode
-        if (classic) {
-            event.addIrrelevant("on classic")
-        } else {
-            if (HypixelData.ironman) {
-                event.addData("on ironman")
-            }
-            if (HypixelData.stranded) {
-                event.addData("on stranded")
-            }
-            if (HypixelData.bingo) {
-                event.addData("on bingo")
-            }
-        }
+        event.addData("on ${SkyBlockAPI.gamemode.name.lowercase()}")
     }
 
     private fun profileName(event: DebugDataCollectEvent) {

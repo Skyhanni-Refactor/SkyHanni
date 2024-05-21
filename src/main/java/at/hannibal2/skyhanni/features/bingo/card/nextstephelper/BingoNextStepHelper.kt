@@ -2,6 +2,8 @@ package at.hannibal2.skyhanni.features.bingo.card.nextstephelper
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.CollectionAPI
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.SkillExperience
 import at.hannibal2.skyhanni.events.LorenzChatEvent
@@ -132,7 +134,7 @@ object BingoNextStepHelper {
 
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
         if (!config.enabled) return
 
         if (event.repeatSeconds(1)) {
@@ -148,7 +150,7 @@ object BingoNextStepHelper {
 
     @SubscribeEvent
     fun onChat(event: LorenzChatEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
         if (!config.enabled) return
 
         for (currentStep in currentSteps) {

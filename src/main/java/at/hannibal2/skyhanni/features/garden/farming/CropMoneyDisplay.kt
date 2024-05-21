@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.garden.farming
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.garden.MoneyPerHourConfig.CustomFormatEntry
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
@@ -24,7 +25,6 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.moveEntryToTop
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.itemNameWithoutColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
@@ -129,7 +129,7 @@ object CropMoneyDisplay {
             if (GardenAPI.mushroomCowPet && it != CropType.MUSHROOM && config.mooshroom) {
                 val redMushroom = SkyhanniItems.ENCHANTED_RED_MUSHROOM()
                 val brownMushroom = SkyhanniItems.ENCHANTED_BROWN_MUSHROOM()
-                val (redPrice, brownPrice) = if (LorenzUtils.noTradeMode) {
+                val (redPrice, brownPrice) = if (SkyBlockAPI.gamemode.noTrade) {
                     val redPrice = (redMushroom.getNpcPriceOrNull() ?: 160.0) / 160
                     val brownPrice = (brownMushroom.getNpcPriceOrNull() ?: 160.0) / 160
                     redPrice to brownPrice
@@ -158,7 +158,7 @@ object CropMoneyDisplay {
                 }
                 val bazaarData = internalName.getBazaarData()
                 val price =
-                    if (LorenzUtils.noTradeMode || bazaarData == null) internalName.getNpcPrice() / 160 else (bazaarData.instantBuyPrice + bazaarData.sellOfferPrice) / 320
+                    if (SkyBlockAPI.gamemode.noTrade || bazaarData == null) internalName.getNpcPrice() / 160 else (bazaarData.instantBuyPrice + bazaarData.sellOfferPrice) / 320
                 extraDicerCoins = 60 * 60 * GardenCropSpeed.getRecentBPS() * dicerDrops * price
             }
 
@@ -273,7 +273,7 @@ object CropMoneyDisplay {
             nameList.removeLast()
             titleText = nameList.joinToString("")
         } else {
-            titleText = if (LorenzUtils.noTradeMode) "§eNPC Price" else "§eSell Offer"
+            titleText = if (SkyBlockAPI.gamemode.noTrade) "§eNPC Price" else "§eSell Offer"
         }
         return "$title §7($titleText§7)"
     }
@@ -291,7 +291,7 @@ object CropMoneyDisplay {
         var seedsPerHour = 0.0
 
         val onlyNpcPrice =
-            (!config.useCustomFormat && LorenzUtils.noTradeMode) ||
+            (!config.useCustomFormat && SkyBlockAPI.gamemode.noTrade) ||
                 (config.useCustomFormat && config.customFormat.singleOrNull() == CustomFormatEntry.NPC_PRICE)
 
         for ((internalName, amount) in multipliers.moveEntryToTop { isSeeds(it.key) }) {
@@ -398,7 +398,7 @@ object CropMoneyDisplay {
             }
             newList.toTypedArray()
         } else {
-            if (LorenzUtils.noTradeMode) {
+            if (SkyBlockAPI.gamemode.noTrade) {
                 arrayOf(npcPrice)
             } else {
                 arrayOf(sellOffer)

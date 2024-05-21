@@ -2,6 +2,8 @@ package at.hannibal2.skyhanni.features.stranded
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
@@ -71,7 +73,7 @@ object HighlightPlaceableNpcs {
         return lore.none { locationPattern.matches(it) }
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && LorenzUtils.isStrandedProfile && config.highlightPlaceableNpcs
+    private fun isEnabled() = LorenzUtils.inSkyBlock && SkyBlockAPI.gamemode == Gamemode.STRANDED && config.highlightPlaceableNpcs
 
     @SubscribeEvent
     fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {

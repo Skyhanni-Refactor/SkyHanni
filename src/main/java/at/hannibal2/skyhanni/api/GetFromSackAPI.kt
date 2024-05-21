@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.compat.neu.NEUCompat
 import at.hannibal2.skyhanni.data.SackAPI
 import at.hannibal2.skyhanni.events.GuiContainerEvent
@@ -153,7 +154,7 @@ object GetFromSackAPI {
 
     private fun bazaarHandler(event: MessageSendToServerEvent) {
         if (event.isCanceled) return
-        if (!config.bazaarGFS || LorenzUtils.noTradeMode) return
+        if (!config.bazaarGFS || SkyBlockAPI.gamemode.noTrade) return
         lastItemStack = commandValidator(event.splitMessage.drop(1)).second
     }
 
@@ -194,7 +195,7 @@ object GetFromSackAPI {
     @SubscribeEvent
     fun onChat(event: LorenzChatEvent) {
         if (!LorenzUtils.inSkyBlock) return
-        if (!config.bazaarGFS || LorenzUtils.noTradeMode) return
+        if (!config.bazaarGFS || SkyBlockAPI.gamemode.noTrade) return
         val stack = lastItemStack ?: return
         val message = event.message
         fromSacksChatPattern.matchMatcher(message) {

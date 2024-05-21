@@ -2,6 +2,8 @@ package at.hannibal2.skyhanni.features.event
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
@@ -92,10 +94,10 @@ object UniqueGiftingOpportunitiesFeatures {
     }
 
     private fun isBingo(entity: EntityLivingBase) =
-        !LorenzUtils.isBingoProfile && entity.displayName.formattedText.endsWith("Ⓑ§r")
+        SkyBlockAPI.gamemode != Gamemode.BINGO && entity.displayName.formattedText.endsWith("Ⓑ§r")
 
     private fun isIronman(entity: EntityLivingBase) =
-        !LorenzUtils.noTradeMode && entity.displayName.formattedText.endsWith("♲§r")
+        !SkyBlockAPI.gamemode.noTrade && entity.displayName.formattedText.endsWith("♲§r")
 
     @SubscribeEvent
     fun onChat(event: LorenzChatEvent) {

@@ -1,5 +1,7 @@
 package at.hannibal2.skyhanni.features.bingo
 
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.storage.PlayerSpecificStorage.BingoSession
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.BingoData
@@ -38,7 +40,7 @@ object BingoAPI {
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Bingo Card")
 
-        if (!LorenzUtils.isBingoProfile) {
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) {
             event.addIrrelevant("not on bingo")
             return
         }

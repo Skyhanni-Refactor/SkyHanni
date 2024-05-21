@@ -2,7 +2,9 @@ package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.HypixelData
+import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.hypixel.HypixelLocationEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
 import at.hannibal2.skyhanni.utils.RegexUtils.groupOrNull
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.mc.McPlayer
@@ -15,8 +17,13 @@ object HypixelAPI {
         "(?<lobbyType>.*lobby)\\d+"
     )
 
-    val connected: Boolean get() = HypixelData.hypixelLive || HypixelData.hypixelAlpha
+    var connected: Boolean = false
+        private set
+
     val onHypixel get() = connected && McPlayer.player != null
+
+    var gametype: String? = null
+        private set
 
     var lobbyName: String? = null
         private set
@@ -25,7 +32,18 @@ object HypixelAPI {
         private set
 
     @HandleEvent
+    fun onHypixelJoin(event: HypixelJoinEvent) {
+        connected = true
+    }
+
+    @HandleEvent
+    fun onDisconnect(event: ClientDisconnectEvent) {
+        connected = false
+    }
+
+    @HandleEvent
     fun onLocationChange(event: HypixelLocationEvent) {
+        gametype = event.type
         lobbyName = event.lobby
         lobbyType = event.lobby?.let { lobbyTypePattern.matchMatcher(it) { groupOrNull("lobbyType") } }
     }

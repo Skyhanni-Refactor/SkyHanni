@@ -1,5 +1,7 @@
 package at.hannibal2.skyhanni.data
 
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
@@ -123,7 +125,7 @@ object SlayerAPI {
         }
 
         if (event.isMod(5)) {
-            isInCorrectArea = if (LorenzUtils.isStrandedProfile) {
+            isInCorrectArea = if (SkyBlockAPI.gamemode == Gamemode.STRANDED) {
                 isInAnyArea = true
                 true
             } else {
