@@ -3,8 +3,8 @@ package at.hannibal2.skyhanni.data
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.MaxwellPowersJson
 import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryOpenEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard
 import at.hannibal2.skyhanni.features.gui.customscoreboard.ScoreboardElement
@@ -286,8 +286,7 @@ object MaxwellAPI {
 
     private fun isEnabled() = LorenzUtils.inSkyBlock && storage != null
 
-    // Load powers from repo
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<MaxwellPowersJson>("MaxwellPowers")
         powers = data.powers

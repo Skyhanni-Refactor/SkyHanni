@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.inventory
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.CollectionAPI
 import at.hannibal2.skyhanni.api.SkillAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry.BINGO_GOAL_RANK
@@ -23,7 +24,7 @@ import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumbe
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry.VACUUM_GARDEN
 import at.hannibal2.skyhanni.data.PetAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.pests.PestAPI
 import at.hannibal2.skyhanni.features.skillprogress.SkillProgress
@@ -80,7 +81,7 @@ object ItemDisplayOverlayFeatures {
         "(§.)*You were the (§.)*(?<rank>[\\w]+)(?<ordinal>(st|nd|rd|th)) (§.)*to"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
         event.stackTip = getStackTip(event.stack) ?: return
     }

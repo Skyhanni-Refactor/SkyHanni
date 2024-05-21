@@ -5,18 +5,19 @@ package at.hannibal2.skyhanni.features.misc.discordrpc
 import at.hannibal2.skyhanni.SkyHanniMod.Companion.coroutineScope
 import at.hannibal2.skyhanni.SkyHanniMod.Companion.feature
 import at.hannibal2.skyhanni.SkyHanniMod.Companion.logger
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.config.features.misc.DiscordRPCConfig.LineEntry
 import at.hannibal2.skyhanni.config.features.misc.DiscordRPCConfig.PriorityEntry
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.StackingEnchantData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.StackingEnchantsJson
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils
@@ -96,7 +97,7 @@ object DiscordRPCManager : IPCListener {
 
     private fun isConnected() = client?.status == PipeStatus.CONNECTED
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         ConditionalUtils.onToggle(config.firstLine, config.secondLine, config.customText) {
             if (isConnected()) {
@@ -110,7 +111,7 @@ object DiscordRPCManager : IPCListener {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         stackingEnchants = event.getConstant<StackingEnchantsJson>("StackingEnchants").enchants
     }
@@ -139,7 +140,7 @@ object DiscordRPCManager : IPCListener {
         logger.info("Discord RPC Ready.")
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isConnected()) return
         if (event.repeatSeconds(5)) {

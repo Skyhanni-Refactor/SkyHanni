@@ -1,8 +1,8 @@
 package at.hannibal2.skyhanni.features.rift.area.livingcave
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -11,7 +11,6 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getLivingMetalProgress
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object LivingMetalSuitProgress {
 
@@ -56,7 +55,7 @@ object LivingMetalSuitProgress {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         val old = progressMap

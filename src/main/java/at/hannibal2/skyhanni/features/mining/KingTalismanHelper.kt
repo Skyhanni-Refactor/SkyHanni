@@ -4,9 +4,9 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.sorted
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
@@ -21,7 +21,6 @@ import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.Collections
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -70,7 +69,7 @@ object KingTalismanHelper {
     private fun isNearby() = IslandType.DWARVEN_MINES.isInIsland() && LorenzUtils.skyBlockArea == "Royal Palace" &&
         kingLocation.distanceToPlayer() < 10
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         val storage = storage ?: return

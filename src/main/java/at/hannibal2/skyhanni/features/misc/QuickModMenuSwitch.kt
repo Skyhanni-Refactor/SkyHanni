@@ -1,10 +1,11 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ModGuiSwitcherJson
 import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -28,7 +29,7 @@ object QuickModMenuSwitch {
     private var currentlyOpeningMod = ""
     private var lastGuiOpen = 0L
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val modsJar = event.getConstant<ModGuiSwitcherJson>("ModGuiSwitcher")
         mods = buildList {

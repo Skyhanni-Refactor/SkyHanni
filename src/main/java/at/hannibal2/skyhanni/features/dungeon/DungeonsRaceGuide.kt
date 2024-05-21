@@ -4,11 +4,11 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.jsonobjects.repo.DungeonHubRacesJson
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
@@ -35,7 +35,7 @@ object DungeonsRaceGuide {
         currentRace = null
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<DungeonHubRacesJson>("DungeonHubRaces")
         data.data.forEach {
@@ -51,7 +51,7 @@ object DungeonsRaceGuide {
         updateConfig()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         ConditionalUtils.onToggle(config.rainbowColor, config.monochromeColor, config.lookAhead) {
             updateConfig()

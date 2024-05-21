@@ -9,13 +9,13 @@ import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.config.features.garden.NextJacobContestConfig.ShareContestsEntry
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.jsonobjects.other.EliteContests
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI.addCropIcon
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -175,7 +175,7 @@ object GardenNextJacobContest {
         return diffA < 30.minutes || diffB < 30.minutes
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
 
@@ -281,7 +281,7 @@ object GardenNextJacobContest {
         SkyHanniMod.configManager.saveConfig(ConfigFileType.JACOB_CONTESTS, "Save contests")
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         val savedContests = SkyHanniMod.jacobContestsData.contestTimes
         val year = savedContests.firstNotNullOfOrNull {

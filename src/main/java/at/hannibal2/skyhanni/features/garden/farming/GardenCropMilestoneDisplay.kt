@@ -9,11 +9,11 @@ import at.hannibal2.skyhanni.data.GardenCropMilestones.isMaxed
 import at.hannibal2.skyhanni.data.GardenCropMilestones.setCounter
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.TitleManager
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.garden.CropMilestoneUpdateEvent
 import at.hannibal2.skyhanni.events.inventory.OwnInventoryItemUpdateEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.FarmingFortuneDisplay
 import at.hannibal2.skyhanni.features.garden.GardenAPI
@@ -57,7 +57,7 @@ object GardenCropMilestoneDisplay {
     private var lastMushWarnedLevel = -1
     private var previousMushNext = 0
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         ConditionalUtils.onToggle(
             config.bestShowMaxedNeeded,

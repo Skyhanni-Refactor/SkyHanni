@@ -5,11 +5,11 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.SackData
 import at.hannibal2.skyhanni.config.storage.PlayerSpecificStorage
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
@@ -46,7 +46,7 @@ object ProfileStorageData {
 
         val profileName = event.name
         loadProfileSpecific(playerSpecific, sackPlayers, profileName)
-        ConfigLoadEvent().postAndCatch()
+        ConfigLoadEvent().post()
     }
 
     @HandleEvent
@@ -95,13 +95,13 @@ object ProfileStorageData {
         profileSpecific = playerSpecific.profiles.getOrPut(profileName) { ProfileSpecificStorage() }
         sackProfiles = sackProfile.profiles.getOrPut(profileName) { SackData.ProfileSpecific() }
         loaded = true
-        ConfigLoadEvent().postAndCatch()
+        ConfigLoadEvent().post()
     }
 
     @HandleEvent
     fun onHypixelJoin(event: HypixelJoinEvent) {
         playerSpecific = SkyHanniMod.feature.storage.players.getOrPut(McPlayer.uuid) { PlayerSpecificStorage() }
         sackPlayers = SkyHanniMod.sackData.players.getOrPut(McPlayer.uuid) { SackData.PlayerSpecific() }
-        ConfigLoadEvent().postAndCatch()
+        ConfigLoadEvent().post()
     }
 }

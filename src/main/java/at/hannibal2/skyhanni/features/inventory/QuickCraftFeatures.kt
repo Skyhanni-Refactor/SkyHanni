@@ -1,9 +1,10 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils.getAllItems
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -35,7 +36,7 @@ object QuickCraftFeatures {
         InventoryType.MORE_QUICK_CRAFT_OPTIONS -> slotNumber !in 10..44
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         quickCraftableItems = event.getConstant<List<String>>("QuickCraftableItems")
     }

@@ -58,7 +58,7 @@ class EventHandler<T : SkyHanniEvent> private constructor(private val name: Stri
                 if (errors <= 3) {
                     val errorName = throwable::class.simpleName ?: "error"
                     val message = "Caught an $errorName in ${listener.name} at $name: ${throwable.message}"
-                    ErrorManager.logErrorWithData(throwable, message, ignoreErrorCache = onError == null)
+                    ErrorManager.logErrorWithData(throwable, message, ignoreErrorCache = onError != null)
                 }
                 onError?.invoke(throwable)
             }

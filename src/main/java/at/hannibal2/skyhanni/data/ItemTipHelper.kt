@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.GuiRenderItemEvent
 import at.hannibal2.skyhanni.events.RenderInventoryItemTipEvent
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
 import at.hannibal2.skyhanni.events.render.gui.DrawScreenAfterEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
 import at.hannibal2.skyhanni.mixins.transformers.gui.AccessorGuiContainer
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import at.hannibal2.skyhanni.utils.InventoryUtils.getInventoryName
@@ -23,7 +23,7 @@ object ItemTipHelper {
         if (!LorenzUtils.inSkyBlock || stack.stackSize != 1) return
 
         val itemTipEvent = RenderItemTipEvent(stack, mutableListOf())
-        itemTipEvent.postAndCatch()
+        itemTipEvent.post()
 
         if (itemTipEvent.renderObjects.isEmpty()) return
 

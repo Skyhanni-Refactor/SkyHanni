@@ -4,12 +4,12 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.fishing.TotemOfCorruptionConfig.OutlineType
 import at.hannibal2.skyhanni.data.TitleManager
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
@@ -60,7 +60,7 @@ object TotemOfCorruption {
         config.position.renderStrings(display, posLabel = "Totem of Corruption")
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!event.repeatSeconds(2)) return
         if (!isOverlayEnabled()) return
@@ -104,7 +104,7 @@ object TotemOfCorruption {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         config.showOverlay.onToggle {
             display = emptyList()

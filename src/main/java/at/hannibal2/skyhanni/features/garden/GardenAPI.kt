@@ -6,15 +6,15 @@ import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.PetAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenJson
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.PacketEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.minecraft.click.BlockClickEvent
 import at.hannibal2.skyhanni.events.minecraft.click.CropClickEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.event.hoppity.HoppityCollectionStats
 import at.hannibal2.skyhanni.features.garden.CropType.Companion.getCropType
 import at.hannibal2.skyhanni.features.garden.composter.ComposterOverlay
@@ -201,7 +201,7 @@ object GardenAPI {
         ChatUtils.chat("Manually reset all crop speed data!")
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         GardenBestCropTime.reset()
     }
@@ -274,7 +274,7 @@ object GardenAPI {
         return tier
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<GardenJson>("Garden")
         gardenExperience = data.gardenExp

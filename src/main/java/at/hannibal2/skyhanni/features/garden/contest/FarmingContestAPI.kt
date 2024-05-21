@@ -3,10 +3,10 @@ package at.hannibal2.skyhanni.features.garden.contest
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ScoreboardData
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.garden.FarmingContestEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
@@ -22,7 +22,6 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.minutes
 
 object FarmingContestAPI {
@@ -57,7 +56,7 @@ object FarmingContestAPI {
         ContestBracket.entries.forEach { it.bracketPattern }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!LorenzUtils.inSkyBlock) return
 

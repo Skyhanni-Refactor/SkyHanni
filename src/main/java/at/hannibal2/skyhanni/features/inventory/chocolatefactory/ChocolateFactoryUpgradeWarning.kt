@@ -1,7 +1,8 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
@@ -21,7 +22,7 @@ object ChocolateFactoryUpgradeWarning {
     private var lastUpgradeSlot = -1
     private var lastUpgradeLevel = 0
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!LorenzUtils.inSkyBlock) return
         val profileStorage = profileStorage ?: return

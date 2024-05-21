@@ -1,12 +1,13 @@
 package at.hannibal2.skyhanni.features.misc.items.enchants
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.inventory.EnchantParsingConfig
 import at.hannibal2.skyhanni.config.features.inventory.EnchantParsingConfig.CommaFormat
 import at.hannibal2.skyhanni.events.ChatHoverEvent
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.chroma.ChromaManager
 import at.hannibal2.skyhanni.mixins.hooks.GuiChatHook
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -65,12 +66,12 @@ object EnchantParser {
     // Maps for all enchants
     private var enchants: EnchantsJson = EnchantsJson()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         this.enchants = event.getConstant<EnchantsJson>("Enchants")
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         // Add observers to config options that would need us to mark cache dirty
         ConditionalUtils.onToggle(

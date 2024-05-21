@@ -1,7 +1,8 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
@@ -24,7 +25,7 @@ object ChocolateFactoryTimeTowerManager {
     private var lastTimeTowerWarning = SimpleTimeMark.farPast()
     private var lastTimeTowerReminder = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!LorenzUtils.inSkyBlock) return
         val profileStorage = profileStorage ?: return

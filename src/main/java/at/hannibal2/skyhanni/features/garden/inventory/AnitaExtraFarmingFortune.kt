@@ -1,10 +1,11 @@
 package at.hannibal2.skyhanni.features.garden.inventory
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.AnitaUpgradeCostsJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.AnitaUpgradePrice
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.indexOfFirst
 import at.hannibal2.skyhanni.utils.InventoryUtils
@@ -74,7 +75,7 @@ object AnitaExtraFarmingFortune {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<AnitaUpgradeCostsJson>("AnitaUpgradeCosts")
         levelPrice = data.levelPrice

@@ -8,11 +8,11 @@ import at.hannibal2.skyhanni.data.jsonobjects.repo.SlayerProfitTrackerItemsJson
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.PurseChangeCause
 import at.hannibal2.skyhanni.events.PurseChangeEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.slayer.SlayerChangeEvent
 import at.hannibal2.skyhanni.events.slayer.SlayerQuestCompleteEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -90,7 +90,7 @@ object SlayerProfitTracker {
 
     private var allowedItems = mapOf<String, List<NEUInternalName>>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         allowedItems = event.getConstant<SlayerProfitTrackerItemsJson>("SlayerProfitTrackerItems").slayers
     }

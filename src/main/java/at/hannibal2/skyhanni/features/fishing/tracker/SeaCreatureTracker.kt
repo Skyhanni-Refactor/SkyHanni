@@ -2,11 +2,11 @@ package at.hannibal2.skyhanni.features.fishing.tracker
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.fishing.SeaCreatureFishEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI
 import at.hannibal2.skyhanni.features.fishing.SeaCreatureManager
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -148,7 +148,7 @@ object SeaCreatureTracker {
         return { it in items }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         ConditionalUtils.onToggle(config.showPercentage) {
             tracker.update()

@@ -1,11 +1,12 @@
 package at.hannibal2.skyhanni.features.rift.area.mirrorverse
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ParkourJson
 import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ConditionalUtils
@@ -18,7 +19,7 @@ object RiftLavaMazeParkour {
     private val config get() = RiftAPI.config.area.mirrorverse.lavaMazeConfig
     private var parkourHelper: ParkourHelper? = null
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<ParkourJson>("RiftLavaMazeParkour")
         parkourHelper = ParkourHelper(
@@ -51,7 +52,7 @@ object RiftLavaMazeParkour {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         ConditionalUtils.onToggle(config.rainbowColor, config.monochromeColor, config.lookAhead) {
             updateConfig()

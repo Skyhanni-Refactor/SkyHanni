@@ -6,13 +6,13 @@ import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ParkourJson
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ConditionalUtils
@@ -53,7 +53,7 @@ object DeepCavernsGuide {
         show = false
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<ParkourJson>("DeepCavernsParkour")
         parkourHelper = ParkourHelper(
@@ -69,7 +69,7 @@ object DeepCavernsGuide {
         updateConfig()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         ConditionalUtils.onToggle(config.rainbowColor, config.monochromeColor, config.lookAhead) {
             updateConfig()

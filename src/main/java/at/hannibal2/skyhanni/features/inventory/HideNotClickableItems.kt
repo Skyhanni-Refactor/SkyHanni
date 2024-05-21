@@ -1,12 +1,13 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.HideNotClickableItemsJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SalvageFilter
 import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.garden.composter.ComposterOverlay
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi
@@ -69,7 +70,7 @@ object HideNotClickableItems {
         "SEEDS|CARROT_ITEM|POTATO_ITEM|PUMPKIN_SEEDS|SUGAR_CANE|MELON_SEEDS|CACTUS|INK_SACK-3"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val hideNotClickable = event.getConstant<HideNotClickableItemsJson>("HideNotClickableItems")
         hideNpcSellFilter.load(hideNotClickable.hideNpcSell)

@@ -7,10 +7,10 @@ import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.RenderInventoryItemTipEvent
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
 import at.hannibal2.skyhanni.events.dungeon.DungeonCompleteEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI.DungeonChest
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -201,7 +201,7 @@ object CroesusChestTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.kismetStackSize) return

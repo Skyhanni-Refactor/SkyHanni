@@ -2,20 +2,20 @@ package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.data.Mayor.Companion.setAssumeMayor
 import at.hannibal2.skyhanni.data.Mayor.Companion.setAssumeMayorJson
 import at.hannibal2.skyhanni.data.jsonobjects.other.MayorCandidate
 import at.hannibal2.skyhanni.data.jsonobjects.other.MayorElection
 import at.hannibal2.skyhanni.data.jsonobjects.other.MayorJson
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.CollectionUtils.put
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
@@ -69,7 +69,7 @@ object MayorAPI {
      */
     fun mayorNameWithColorCode(input: String) = mayorNameToColorCode(input) + input
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!HypixelAPI.onHypixel) return
         if (event.repeatSeconds(2)) {
@@ -140,7 +140,7 @@ object MayorAPI {
 
     private fun List<MayorCandidate>.bestCandidate() = maxBy { it.votes }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigReload(event: ConfigLoadEvent) {
         SkyHanniMod.feature.dev.debug.assumeMayor.onToggle {
             val mayor = SkyHanniMod.feature.dev.debug.assumeMayor.get()

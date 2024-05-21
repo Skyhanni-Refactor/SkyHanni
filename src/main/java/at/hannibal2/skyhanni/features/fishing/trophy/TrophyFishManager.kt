@@ -1,11 +1,12 @@
 package at.hannibal2.skyhanni.features.fishing.trophy
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.TrophyFishInfo
 import at.hannibal2.skyhanni.data.jsonobjects.repo.TrophyFishJson
 import at.hannibal2.skyhanni.events.NeuProfileDataLoadedEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.StringUtils.splitLines
@@ -17,7 +18,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 object TrophyFishManager {
     private val config get() = SkyHanniMod.feature.fishing.trophyFishing
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<TrophyFishJson>("TrophyFish")
         trophyFishInfo = data.trophyFish

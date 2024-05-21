@@ -1,12 +1,13 @@
 package at.hannibal2.skyhanni.utils.repopatterns
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.features.dev.RepoPatternConfig
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.LorenzEvent
 import at.hannibal2.skyhanni.events.PreInitFinishedEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -86,7 +87,7 @@ object RepoPatternManager {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         loadPatternsFromDump(event.getConstant<RepoPatternDump>("regexes"))
     }
@@ -97,7 +98,7 @@ object RepoPatternManager {
         reloadPatterns()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         config.forceLocal.afterChange { reloadPatterns() }
     }

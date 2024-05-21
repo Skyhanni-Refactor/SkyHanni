@@ -7,7 +7,7 @@ import at.hannibal2.skyhanni.data.model.Graph
 import at.hannibal2.skyhanni.data.model.GraphNode
 import at.hannibal2.skyhanni.data.model.findShortestDistance
 import at.hannibal2.skyhanni.data.model.findShortestPathAsGraphWithDistance
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
@@ -15,7 +15,7 @@ import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
 import at.hannibal2.skyhanni.events.LorenzWarpEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.filterNotNullKeys
@@ -193,7 +193,7 @@ object TunnelsMaps {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         graph = event.getConstant<Graph>("TunnelsGraph", gson = Graph.gson)
         possibleLocations = graph.groupBy { it.name }.filterNotNullKeys().mapValues { (_, value) ->
@@ -222,7 +222,7 @@ object TunnelsMaps {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         onToggle(
             config.compactGemstone,

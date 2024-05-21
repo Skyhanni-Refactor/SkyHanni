@@ -6,10 +6,10 @@ import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.FishingProfitItemsJson
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -96,7 +96,7 @@ object FishingProfitTracker {
 
     private var itemCategories = mapOf<String, List<NEUInternalName>>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         itemCategories = event.getConstant<FishingProfitItemsJson>("FishingProfitItems").categories
     }

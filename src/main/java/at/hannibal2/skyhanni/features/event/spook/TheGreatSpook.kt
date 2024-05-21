@@ -3,13 +3,12 @@ package at.hannibal2.skyhanni.features.event.spook
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object TheGreatSpook {
 
@@ -20,7 +19,7 @@ object TheGreatSpook {
     private var displayTimeLeft = ""
     private var notificationSeconds = 0
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (isAllDisabled()) return
 

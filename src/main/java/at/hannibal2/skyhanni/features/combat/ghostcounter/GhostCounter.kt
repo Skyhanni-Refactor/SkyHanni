@@ -6,15 +6,15 @@ import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.SkillExperience
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.PurseChangeCause
 import at.hannibal2.skyhanni.events.PurseChangeEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostData.Option
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostData.Option.KILLS
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostData.bestiaryData
@@ -287,7 +287,7 @@ object GhostCounter {
         addAsSingletonList(moneyMadeWithClickableTips)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
 
@@ -500,7 +500,7 @@ object GhostCounter {
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         if (storage?.configUpdateVersion == 0) {
             config.textFormatting.bestiaryFormatting.base = "  &6Bestiary %display%: &b%value%"

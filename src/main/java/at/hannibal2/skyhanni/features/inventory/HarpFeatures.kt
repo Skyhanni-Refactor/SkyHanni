@@ -4,10 +4,10 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.LorenzToolTipEvent
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -183,7 +183,7 @@ object HarpFeatures {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.showNumbers) return

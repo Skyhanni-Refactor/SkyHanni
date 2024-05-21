@@ -10,8 +10,8 @@ import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.IslandChangeEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.minecraft.BossbarUpdateEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -100,7 +100,7 @@ object MiningEventTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!config.enabled) return
         if (!LorenzUtils.inSkyBlock || (!config.outsideMining && !LorenzUtils.inAdvancedMiningIsland())) return

@@ -4,12 +4,11 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.datetime.SkyblockSeason
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object AtmosphericFilterDisplay {
 
@@ -17,7 +16,7 @@ object AtmosphericFilterDisplay {
 
     private var display = ""
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         if (!GardenAPI.inGarden() && !config.outsideGarden) return

@@ -5,9 +5,9 @@ import at.hannibal2.skyhanni.data.jsonobjects.repo.RiftEffigiesJson
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.minecraft.RawScoreboardUpdateEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -67,7 +67,7 @@ object RiftBloodEffigies {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val newLocations = event.getConstant<RiftEffigiesJson>("RiftEffigies").locations
         if (newLocations.size != 6) {
@@ -106,7 +106,7 @@ object RiftBloodEffigies {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
 

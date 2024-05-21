@@ -8,9 +8,9 @@ import at.hannibal2.skyhanni.data.GuiEditManager.getDummySize
 import at.hannibal2.skyhanni.data.model.Graph
 import at.hannibal2.skyhanni.data.model.toPositionsList
 import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.GuiRenderItemEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.RenderGuiItemOverlayEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderGuiItemOverlayEvent
 import at.hannibal2.skyhanni.features.misc.RoundedRectangleOutlineShader
 import at.hannibal2.skyhanni.features.misc.RoundedRectangleShader
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled

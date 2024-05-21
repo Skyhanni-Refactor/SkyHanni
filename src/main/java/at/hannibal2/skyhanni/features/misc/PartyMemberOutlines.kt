@@ -1,21 +1,21 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.data.PartyAPI
-import at.hannibal2.skyhanni.events.RenderEntityOutlineEvent
+import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColourInt
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.Entity
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object PartyMemberOutlines {
 
     private val config get() = SkyHanniMod.feature.misc.highlightPartyMembers
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderEntityOutlines(event: RenderEntityOutlineEvent) {
         if (isEnabled() && event.type === RenderEntityOutlineEvent.Type.NO_XRAY) {
             event.queueEntitiesToOutline { entity -> getEntityOutlineColor(entity) }

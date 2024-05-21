@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.bingo
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.Gamemode
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.storage.PlayerSpecificStorage.BingoSession
@@ -8,7 +9,7 @@ import at.hannibal2.skyhanni.data.jsonobjects.repo.BingoData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.BingoJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.BingoRanksJson
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.bingo.card.goals.BingoGoal
 import at.hannibal2.skyhanni.features.bingo.card.goals.GoalType
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -67,7 +68,7 @@ object BingoAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         ranks = event.getConstant<BingoRanksJson>("BingoRanks").ranks
         data = event.getConstant<BingoJson>("Bingo").bingoTips

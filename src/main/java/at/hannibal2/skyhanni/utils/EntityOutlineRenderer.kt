@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.utils
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.RenderEntityOutlineEvent
+import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
 import at.hannibal2.skyhanni.mixins.transformers.CustomRenderGlobal
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import net.minecraft.client.Minecraft
@@ -368,13 +368,13 @@ object EntityOutlineRenderer {
             // These events need to be called in this specific order for the xray to have priority over the no xray
             // Get all entities to render xray outlines
             val xrayOutlineEvent = RenderEntityOutlineEvent(RenderEntityOutlineEvent.Type.XRAY, null)
-            xrayOutlineEvent.postAndCatch()
+            xrayOutlineEvent.post()
             // Get all entities to render no xray outlines, using pre-filtered entities (no need to test xray outlined entities)
             val noxrayOutlineEvent = RenderEntityOutlineEvent(
                 RenderEntityOutlineEvent.Type.NO_XRAY,
                 xrayOutlineEvent.entitiesToChooseFrom
             )
-            noxrayOutlineEvent.postAndCatch()
+            noxrayOutlineEvent.post()
             // Cache the entities for future use
             entityRenderCache.xrayCache = xrayOutlineEvent.entitiesToOutline
             entityRenderCache.noXrayCache = noxrayOutlineEvent.entitiesToOutline

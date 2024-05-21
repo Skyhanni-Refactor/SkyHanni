@@ -5,10 +5,10 @@ import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ArrowTypeJson
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.QuiverUpdateEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.inventory.OwnInventoryItemUpdateEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -271,7 +271,7 @@ object QuiverAPI {
         QuiverUpdateEvent(arrowType, currentAmount).postAndCatch()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         if (event.repeatSeconds(2)) {
@@ -280,8 +280,7 @@ object QuiverAPI {
         }
     }
 
-    // Load arrows from repo
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val arrowData = event.getConstant<ArrowTypeJson>("ArrowTypes")
         arrows = arrowData.arrows.map { ArrowType(it.value.arrow, it.key.asInternalName()) }

@@ -5,10 +5,10 @@ import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.neu.NeuSkillLevelJson
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.NeuRepositoryReloadEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.SkillOverflowLevelupEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.skillprogress.SkillProgress
 import at.hannibal2.skyhanni.features.skillprogress.SkillType
 import at.hannibal2.skyhanni.features.skillprogress.SkillUtil.SPACE_SPLITTER
@@ -79,7 +79,7 @@ object SkillAPI {
     var showDisplay = false
     var lastUpdate = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         val activeSkill = activeSkill ?: return
         val info = skillXPInfoMap[activeSkill] ?: return
@@ -132,7 +132,7 @@ object SkillAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onNEURepoReload(event: NeuRepositoryReloadEvent) {
         levelArray = event.readConstant<NeuSkillLevelJson>("leveling").levelingXp
         levelingMap = levelArray.withIndex().associate { (index, xp) -> index to xp }

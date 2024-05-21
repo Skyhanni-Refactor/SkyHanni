@@ -4,10 +4,10 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.Gamemode
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.bingo.BingoCardUpdateEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.bingo.card.goals.BingoGoal
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.BingoNextStepHelper
@@ -26,7 +26,6 @@ import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiChat
 import net.minecraft.client.gui.inventory.GuiInventory
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.days
 
 object BingoCardDisplay {
@@ -67,7 +66,7 @@ object BingoCardDisplay {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (hasHiddenPersonalGoals) {
             update()
@@ -252,7 +251,7 @@ object BingoCardDisplay {
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         config.hideCommunityGoals.onToggle { update() }
         config.nextTipDuration.onToggle { update() }

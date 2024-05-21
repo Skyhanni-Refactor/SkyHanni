@@ -4,14 +4,13 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.mining.MiningEventConfig
 import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object MiningEventDisplay {
     private val config get() = SkyHanniMod.feature.mining.miningEvent
@@ -19,7 +18,7 @@ object MiningEventDisplay {
 
     private val islandEventData: MutableMap<IslandType, MiningIslandEventInfo> = mutableMapOf()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         updateDisplay()
     }

@@ -1,5 +1,6 @@
-package at.hannibal2.skyhanni.events
+package at.hannibal2.skyhanni.events.render.entity
 
+import at.hannibal2.skyhanni.api.event.SkyHanniEvent
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.Entity
 import net.minecraft.entity.item.EntityArmorStand
@@ -7,7 +8,7 @@ import net.minecraft.entity.item.EntityItemFrame
 import java.util.function.Consumer
 
 class RenderEntityOutlineEvent(theType: Type?, potentialEntities: HashSet<Entity>?) :
-    LorenzEvent() {
+    SkyHanniEvent() {
 
     /**
      * The phase of the event (see [Type]

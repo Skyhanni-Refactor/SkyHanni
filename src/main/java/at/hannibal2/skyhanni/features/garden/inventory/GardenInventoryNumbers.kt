@@ -1,9 +1,10 @@
 package at.hannibal2.skyhanni.features.garden.inventory
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.GardenCropMilestones
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.data.model.ComposterUpgrade
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -12,7 +13,6 @@ import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimalIfNecessary
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object GardenInventoryNumbers {
 
@@ -23,7 +23,7 @@ object GardenInventoryNumbers {
         "§7Current Tier: §[ea](?<tier>.*)§7/§a.*"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
         if (!GardenAPI.inGarden()) return
 

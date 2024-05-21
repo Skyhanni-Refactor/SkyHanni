@@ -6,9 +6,9 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.garden.MoneyPerHourConfig.CustomFormatEntry
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.CropType.Companion.getByNameOrNull
 import at.hannibal2.skyhanni.features.garden.GardenAPI
@@ -79,7 +79,7 @@ object CropMoneyDisplay {
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         if (!event.repeatSeconds(5)) return

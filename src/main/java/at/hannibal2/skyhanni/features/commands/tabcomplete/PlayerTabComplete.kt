@@ -1,19 +1,19 @@
 package at.hannibal2.skyhanni.features.commands.tabcomplete
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.FriendAPI
 import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.VipVisitsJson
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.mc.McWorld
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object PlayerTabComplete {
 
     private val config get() = SkyHanniMod.feature.misc.commands.tabComplete
     private var vipVisits = listOf<String>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<VipVisitsJson>("VipVisits")
         vipVisits = data.vipVisits

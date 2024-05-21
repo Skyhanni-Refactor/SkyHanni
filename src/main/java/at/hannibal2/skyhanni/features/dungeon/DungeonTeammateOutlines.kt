@@ -1,20 +1,20 @@
 package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.RenderEntityOutlineEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.entity.Entity
 import net.minecraft.scoreboard.ScorePlayerTeam
 import net.minecraft.scoreboard.Team
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object DungeonTeammateOutlines {
 
     private val config get() = SkyHanniMod.feature.dungeon
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderEntityOutlines(event: RenderEntityOutlineEvent) {
         if (isEnabled() && event.type === RenderEntityOutlineEvent.Type.XRAY) {
             event.queueEntitiesToOutline { entity -> getEntityOutlineColor(entity) }

@@ -1,10 +1,11 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry.CRIMSON_ARMOR
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ItemsJson
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.inventory.ItemDisplayOverlayFeatures.isSelected
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -46,7 +47,7 @@ object ItemStars {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<ItemsJson>("Items")
         armorNames.clear()
@@ -57,7 +58,7 @@ object ItemStars {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
         if (!CRIMSON_ARMOR.isSelected()) return
         val stack = event.stack

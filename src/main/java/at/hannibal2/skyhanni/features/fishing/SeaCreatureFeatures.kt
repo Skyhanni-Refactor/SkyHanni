@@ -4,9 +4,9 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.RenderEntityOutlineEvent
 import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.events.fishing.SeaCreatureFishEvent
+import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
@@ -83,7 +83,7 @@ object SeaCreatureFeatures {
         rareSeaCreatures = emptyList()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderEntityOutlines(event: RenderEntityOutlineEvent) {
         if (isEnabled() && config.highlight && event.type === RenderEntityOutlineEvent.Type.XRAY) {
             event.queueEntitiesToOutline(getEntityOutlineColor)

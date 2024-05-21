@@ -6,10 +6,10 @@ import at.hannibal2.skyhanni.config.features.crimsonisle.ReputationHelperConfig.
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.CrimsonIsleReputationJson
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.nether.reputationhelper.dailyquest.DailyQuestHelper
 import at.hannibal2.skyhanni.features.nether.reputationhelper.dailyquest.QuestLoader
 import at.hannibal2.skyhanni.features.nether.reputationhelper.kuudra.DailyKuudraBossHelper
@@ -58,7 +58,7 @@ class CrimsonIsleReputationHelper(skyHanniMod: SkyHanniMod) {
         skyHanniMod.loadModule(kuudraBossHelper)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<CrimsonIsleReputationJson>("CrimsonIsleReputation")
         miniBossHelper.onRepoReload(data.MINIBOSS)
@@ -73,12 +73,15 @@ class CrimsonIsleReputationHelper(skyHanniMod: SkyHanniMod) {
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         ProfileStorageData.profileSpecific?.crimsonIsle?.let {
             miniBossHelper.loadData(it)
             kuudraBossHelper.loadData(it)
             questHelper.load(it)
+        }
+        config.hideComplete.afterChange {
+            updateRender()
         }
     }
 
@@ -106,13 +109,6 @@ class CrimsonIsleReputationHelper(skyHanniMod: SkyHanniMod) {
                         FactionType.NONE
                     }
                 }
-        }
-    }
-
-    @SubscribeEvent
-    fun onConfigInit(event: ConfigLoadEvent) {
-        config.hideComplete.afterChange {
-            updateRender()
         }
     }
 

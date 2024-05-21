@@ -1,17 +1,17 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ContributorJsonEntry
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ContributorsJson
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 
 object ContributorManager {
     private val config get() = SkyHanniMod.feature.dev
 
     private var contributors: Map<String, ContributorJsonEntry> = emptyMap()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         contributors = event.getConstant<ContributorsJson>("Contributors").contributors.mapKeys { it.key.lowercase() }
     }

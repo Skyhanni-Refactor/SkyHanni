@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.features.garden.contest
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.RenderItemTooltipEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTooltipEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.FarmingFortuneDisplay.getLatestTrueFarmingFortune
 import at.hannibal2.skyhanni.features.garden.GardenAPI
@@ -17,7 +17,6 @@ import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.ceil
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -28,7 +27,7 @@ object JacobContestFFNeededDisplay {
     private var lastToolTipTime = SimpleTimeMark.farPast()
     private val cache = mutableMapOf<ItemStack, List<List<Any>>>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTooltip(event: RenderItemTooltipEvent) {
         if (!isEnabled()) return
 

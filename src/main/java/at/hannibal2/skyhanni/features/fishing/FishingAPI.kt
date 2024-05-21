@@ -4,10 +4,10 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ItemsJson
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.fishing.FishingBobberInWaterEvent
 import at.hannibal2.skyhanni.events.inventory.ItemInHandChangeEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyFishManager
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyFishManager.getFilletValue
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
@@ -101,7 +101,7 @@ object FishingAPI {
         holdingWaterRod = event.newItem.isWaterRod()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<ItemsJson>("Items")
         lavaRods = data.lavaFishingRods

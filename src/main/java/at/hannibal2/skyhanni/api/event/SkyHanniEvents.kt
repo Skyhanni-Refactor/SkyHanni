@@ -1,8 +1,7 @@
 package at.hannibal2.skyhanni.api.event
 
 import at.hannibal2.skyhanni.data.jsonobjects.repo.DisabledEventsJson
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import java.lang.reflect.Method
 
 object SkyHanniEvents {
@@ -43,7 +42,7 @@ object SkyHanniEvents {
         handler.addListener(method, instance, options)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoLoad(event: RepositoryReloadEvent) {
         val data = event.getConstant<DisabledEventsJson>("DisabledEvents")
         disabledHandlers = data.disabledHandlers

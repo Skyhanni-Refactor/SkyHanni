@@ -8,9 +8,9 @@ import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacksOrNull
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.nether.kuudra.KuudraTier
 import at.hannibal2.skyhanni.features.nether.reputationhelper.CrimsonIsleReputationHelper
 import at.hannibal2.skyhanni.features.nether.reputationhelper.FactionType
@@ -82,7 +82,7 @@ class DailyQuestHelper(val reputationHelper: CrimsonIsleReputationHelper) {
         questLoader.loadFromTabList()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
 

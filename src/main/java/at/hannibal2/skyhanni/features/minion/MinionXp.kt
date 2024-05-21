@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.minion
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.data.jsonobjects.repo.MinionXPJson
 import at.hannibal2.skyhanni.events.IslandChangeEvent
@@ -8,7 +9,7 @@ import at.hannibal2.skyhanni.events.LorenzToolTipEvent
 import at.hannibal2.skyhanni.events.MinionCloseEvent
 import at.hannibal2.skyhanni.events.MinionOpenEvent
 import at.hannibal2.skyhanni.events.MinionStorageOpenEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.skillprogress.SkillType
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -176,7 +177,7 @@ object MinionXp {
         collectItemXpList.clear()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         xpInfoMap = event.getConstant<MinionXPJson>("MinionXP").minionXp.mapNotNull { xpType ->
             xpType.value.mapNotNull { it.key.asInternalName() to XpInfo(SkillType.getByName(xpType.key), it.value) }

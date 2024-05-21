@@ -7,12 +7,12 @@ import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.RenderGuiItemOverlayEvent
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
-import at.hannibal2.skyhanni.events.RenderObject
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.PlaySoundEvent
 import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderGuiItemOverlayEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderObject
 import at.hannibal2.skyhanni.features.itemabilities.abilitycooldown.ItemAbility.Companion.getMultiplier
 import at.hannibal2.skyhanni.features.nether.ashfang.AshfangFreezeCooldown
 import at.hannibal2.skyhanni.utils.CollectionUtils.equalsOneOf
@@ -296,7 +296,7 @@ object ItemAbilityCooldown {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
         if (!isEnabled()) return
 
@@ -318,7 +318,7 @@ object ItemAbilityCooldown {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItem(event: RenderGuiItemOverlayEvent) {
         if (!isEnabled()) return
         if (!config.itemAbilityCooldownBackground) return

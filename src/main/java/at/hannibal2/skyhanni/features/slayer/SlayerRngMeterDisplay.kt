@@ -9,10 +9,10 @@ import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.jsonobjects.repo.neu.NeuRNGScore
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.NeuRepositoryReloadEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.slayer.SlayerChangeEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
@@ -70,7 +70,7 @@ object SlayerRngMeterDisplay {
 
     var rngScore = mapOf<String, Map<NEUInternalName, Long>>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
 

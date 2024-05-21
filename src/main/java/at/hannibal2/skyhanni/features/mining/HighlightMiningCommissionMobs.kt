@@ -3,9 +3,9 @@ package at.hannibal2.skyhanni.features.mining
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils.hasMaxHealth
@@ -18,7 +18,6 @@ import net.minecraft.entity.monster.EntityEndermite
 import net.minecraft.entity.monster.EntityIronGolem
 import net.minecraft.entity.monster.EntityMagmaCube
 import net.minecraft.entity.monster.EntitySlime
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object HighlightMiningCommissionMobs {
 
@@ -50,7 +49,7 @@ object HighlightMiningCommissionMobs {
         ;
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         if (!event.repeatSeconds(2)) return

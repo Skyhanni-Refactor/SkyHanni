@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.utils
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.compat.neu.NEUCompat
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
@@ -8,7 +9,7 @@ import at.hannibal2.skyhanni.data.jsonobjects.other.HypixelPlayerApiJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.MultiFilterJson
 import at.hannibal2.skyhanni.events.NeuProfileDataLoadedEvent
 import at.hannibal2.skyhanni.events.NeuRepositoryReloadEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.getBazaarData
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarDataHolder
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -98,7 +99,7 @@ object NEUItems {
         )
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val ignoredItems = event.getConstant<MultiFilterJson>("IgnoredItems")
         ignoreItemsFilter.load(ignoredItems)

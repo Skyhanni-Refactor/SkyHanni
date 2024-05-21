@@ -6,10 +6,10 @@ import at.hannibal2.skyhanni.config.features.combat.QuiverDisplayConfig.ShowWhen
 import at.hannibal2.skyhanni.data.ArrowType
 import at.hannibal2.skyhanni.data.QuiverAPI
 import at.hannibal2.skyhanni.data.QuiverAPI.NONE_ARROW_TYPE
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.QuiverUpdateEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -85,7 +85,7 @@ object QuiverDisplay {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         ConditionalUtils.onToggle(
             config.whenToShow,

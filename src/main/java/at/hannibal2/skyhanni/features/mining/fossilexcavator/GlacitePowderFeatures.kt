@@ -1,13 +1,13 @@
 package at.hannibal2.skyhanni.features.mining.fossilexcavator
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object GlacitePowderFeatures {
     private val config get() = SkyHanniMod.feature.mining.fossilExcavator
@@ -19,7 +19,7 @@ object GlacitePowderFeatures {
         "Glacite Powder x(?<amount>.*)"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
         if (!isEnabled()) return
 
