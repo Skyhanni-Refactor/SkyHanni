@@ -49,7 +49,7 @@ object GardenVisitorSupercraft {
     }
 
     // needs to run later than onVisitorOpen at GardenVisitorFeatures
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @HandleEvent(priority = 1)
     fun onVisitorOpen(event: VisitorOpenEvent) {
         val visitor = event.visitor
         visitor.offer?.offerItem ?: return

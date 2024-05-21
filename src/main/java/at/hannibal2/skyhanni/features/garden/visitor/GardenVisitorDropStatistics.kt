@@ -85,7 +85,7 @@ object GardenVisitorDropStatistics {
         display = emptyList()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onVisitorAccept(event: VisitorAcceptEvent) {
         if (!GardenAPI.onBarnPlot) return
         if (!ProfileStorageData.loaded) return

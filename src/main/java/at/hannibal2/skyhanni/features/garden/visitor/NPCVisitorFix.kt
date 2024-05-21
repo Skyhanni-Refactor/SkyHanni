@@ -59,7 +59,7 @@ object NPCVisitorFix {
 
     private var lastVisitorOpen = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onVisitorOpen(event: VisitorOpenEvent) {
         lastVisitorOpen = SimpleTimeMark.now()
     }

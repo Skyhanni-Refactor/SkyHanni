@@ -4,10 +4,10 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.FishingProfitItemsJson
-import at.hannibal2.skyhanni.events.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI
@@ -231,7 +231,7 @@ object FishingProfitTracker {
 
     private fun isAllowedItem(internalName: NEUInternalName) = itemCategories.any { internalName in it.value }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onBobberThrow(event: FishingBobberCastEvent) {
         tracker.firstUpdate()
     }

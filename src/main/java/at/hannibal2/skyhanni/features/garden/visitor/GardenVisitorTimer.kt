@@ -59,7 +59,7 @@ object GardenVisitorTimer {
             }
         }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onVisitorArrival(event: VisitorArrivalEvent) {
         visitorJustArrived = true
     }

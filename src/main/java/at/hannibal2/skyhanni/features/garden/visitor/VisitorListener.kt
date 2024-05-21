@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.features.garden.visitor
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.garden.visitor.VisitorConfig
 import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
-import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
@@ -12,6 +11,7 @@ import at.hannibal2.skyhanni.events.garden.visitor.VisitorRenderEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.ACCEPT_SLOT
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.INFO_SLOT
@@ -114,7 +114,7 @@ object VisitorListener {
         visitor.offersAccepted = offersAcceptedPattern.matchMatcher(lore[3]) { group("offersAccepted").toInt() }
         visitor.entityId = lastClickedNpc
         visitor.offer = visitorOffer
-        VisitorOpenEvent(visitor).postAndCatch()
+        VisitorOpenEvent(visitor).post()
     }
 
     @HandleEvent
@@ -161,7 +161,7 @@ object VisitorListener {
         for (visitor in VisitorAPI.getVisitors()) {
             visitor.getNameTagEntity()?.let {
                 if (it.distanceToPlayer() > 15) return@let
-                VisitorRenderEvent(visitor, event.exactLocation(it), event).postAndCatch()
+                VisitorRenderEvent(visitor, event.exactLocation(it), event).post()
             }
         }
     }

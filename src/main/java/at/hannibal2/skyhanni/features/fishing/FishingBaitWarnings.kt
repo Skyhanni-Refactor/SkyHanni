@@ -1,9 +1,10 @@
 package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.TitleManager
-import at.hannibal2.skyhanni.events.FishingBobberInWaterEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.fishing.FishingBobberInWaterEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI.isBait
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
@@ -33,7 +34,7 @@ object FishingBaitWarnings {
         wasUsingBait = true
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onBobberInWater(event: FishingBobberInWaterEvent) {
         DelayedRun.runDelayed(500.milliseconds) {
             checkBobber()

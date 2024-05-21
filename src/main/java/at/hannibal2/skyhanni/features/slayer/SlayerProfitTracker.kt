@@ -5,14 +5,14 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SlayerProfitTrackerItemsJson
-import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.PurseChangeCause
 import at.hannibal2.skyhanni.events.PurseChangeEvent
 import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import at.hannibal2.skyhanni.events.SlayerChangeEvent
-import at.hannibal2.skyhanni.events.SlayerQuestCompleteEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.slayer.SlayerChangeEvent
+import at.hannibal2.skyhanni.events.slayer.SlayerQuestCompleteEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -115,7 +115,7 @@ object SlayerProfitTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSlayerChange(event: SlayerChangeEvent) {
         val newSlayer = event.newSlayer
         itemLogCategory = newSlayer.removeColor()
@@ -136,7 +136,7 @@ object SlayerProfitTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onQuestComplete(event: SlayerQuestCompleteEvent) {
         getTracker()?.modify {
             it.slayerCompletedCount++

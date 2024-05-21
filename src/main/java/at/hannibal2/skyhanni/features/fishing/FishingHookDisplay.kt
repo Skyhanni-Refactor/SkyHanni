@@ -3,9 +3,9 @@ package at.hannibal2.skyhanni.features.fishing
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
-import at.hannibal2.skyhanni.events.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
@@ -26,7 +26,7 @@ object FishingHookDisplay {
         reset()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onBobberThrow(event: FishingBobberCastEvent) {
         reset()
     }

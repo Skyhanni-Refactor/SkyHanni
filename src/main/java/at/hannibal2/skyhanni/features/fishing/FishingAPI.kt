@@ -2,11 +2,11 @@ package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ItemsJson
-import at.hannibal2.skyhanni.events.FishingBobberCastEvent
-import at.hannibal2.skyhanni.events.FishingBobberInWaterEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
 import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
+import at.hannibal2.skyhanni.events.fishing.FishingBobberInWaterEvent
 import at.hannibal2.skyhanni.events.inventory.ItemInHandChangeEvent
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyFishManager
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyFishManager.getFilletValue
@@ -54,7 +54,7 @@ object FishingAPI {
         lastCastTime = SimpleTimeMark.now()
         bobber = entity
         bobberHasTouchedWater = false
-        FishingBobberCastEvent().postAndCatch()
+        FishingBobberCastEvent().post()
     }
 
     private fun resetBobber() {
@@ -78,7 +78,7 @@ object FishingAPI {
                 val block = bobber.getLorenzVec().getBlockAt()
                 if (block in getAllowedBlocks()) {
                     bobberHasTouchedWater = true
-                    FishingBobberInWaterEvent().postAndCatch()
+                    FishingBobberInWaterEvent().post()
                 }
             }
         }

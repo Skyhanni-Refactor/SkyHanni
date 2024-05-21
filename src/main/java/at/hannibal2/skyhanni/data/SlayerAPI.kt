@@ -5,9 +5,9 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.SlayerChangeEvent
-import at.hannibal2.skyhanni.events.SlayerProgressChangeEvent
-import at.hannibal2.skyhanni.events.SlayerQuestCompleteEvent
+import at.hannibal2.skyhanni.events.slayer.SlayerChangeEvent
+import at.hannibal2.skyhanni.events.slayer.SlayerProgressChangeEvent
+import at.hannibal2.skyhanni.events.slayer.SlayerQuestCompleteEvent
 import at.hannibal2.skyhanni.features.slayer.SlayerType
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
@@ -84,7 +84,7 @@ object SlayerAPI {
         }
 
         if (event.message == "  §r§a§lSLAYER QUEST COMPLETE!") {
-            SlayerQuestCompleteEvent().postAndCatch()
+            SlayerQuestCompleteEvent().post()
         }
     }
 
@@ -115,12 +115,12 @@ object SlayerAPI {
         if (slayerQuest != latestSlayerCategory) {
             val old = latestSlayerCategory
             latestSlayerCategory = slayerQuest
-            SlayerChangeEvent(old, latestSlayerCategory).postAndCatch()
+            SlayerChangeEvent(old, latestSlayerCategory).post()
         }
 
         val slayerProgress = ScoreboardData.sidebarLinesFormatted.nextAfter("Slayer Quest", 2) ?: ""
         if (latestSlayerProgress != slayerProgress) {
-            SlayerProgressChangeEvent(latestSlayerProgress, slayerProgress).postAndCatch()
+            SlayerProgressChangeEvent(latestSlayerProgress, slayerProgress).post()
             latestSlayerProgress = slayerProgress
         }
 
