@@ -2,6 +2,8 @@ package at.hannibal2.skyhanni.features.misc.discordrpc
 
 // SkyblockAddons code, adapted for SkyHanni with some additions and fixes
 
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ActionBarStatsData
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getTierForCropCount
@@ -175,11 +177,10 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
         val sbLevel = AdvancedPlayerList.tabPlayerData[McPlayer.name]?.sbLevel?.toString() ?: "?"
         var profile = "SkyBlock Level: [$sbLevel] on "
 
-        profile += when {
-
-            LorenzUtils.isIronmanProfile -> "♲"
-            LorenzUtils.isBingoProfile -> "Ⓑ"
-            LorenzUtils.isStrandedProfile -> "☀"
+        profile += when(SkyBlockAPI.gamemode) {
+            Gamemode.IRONMAN -> "♲"
+            Gamemode.BINGO -> "Ⓑ"
+            Gamemode.STRANDED -> "☀"
             else -> ""
         }
 

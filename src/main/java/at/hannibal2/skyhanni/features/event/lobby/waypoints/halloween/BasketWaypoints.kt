@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.features.event.lobby.waypoints.halloween
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.data.HypixelData
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
@@ -93,5 +93,5 @@ object BasketWaypoints {
         return a && b && c
     }
 
-    private fun isEnabled() = HypixelData.hypixelLive && !LorenzUtils.inSkyBlock
+    private fun isEnabled() = HypixelAPI.onHypixel && !LorenzUtils.inSkyBlock
 }

@@ -7,13 +7,14 @@ import at.hannibal2.skyhanni.api.BossbarAPI
 import at.hannibal2.skyhanni.api.CollectionAPI
 import at.hannibal2.skyhanni.api.DataWatcherAPI
 import at.hannibal2.skyhanni.api.EntityAttributeAPI
+import at.hannibal2.skyhanni.api.FmlEventAPI
 import at.hannibal2.skyhanni.api.GetFromSackAPI
 import at.hannibal2.skyhanni.api.GuildAPI
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.HypixelPacketAPI
 import at.hannibal2.skyhanni.api.SkillAPI
-import at.hannibal2.skyhanni.api.SkyBlockAPI
 import at.hannibal2.skyhanni.api.event.SkyHanniEvents
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.Features
@@ -962,6 +963,7 @@ class SkyHanniMod {
         loadModule(MobDebug)
 
         loadModule(SkyHanniEvents)
+        loadModule(FmlEventAPI)
 
         SkyHanniEvents.init(modules)
 

@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.combat.endernodetracker
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.ConfigLoadEvent
@@ -16,7 +17,6 @@ import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemCategory.Companion.containsItem
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUItems.getNpcPriceOrNull
 import at.hannibal2.skyhanni.utils.NEUItems.getPriceOrNull
@@ -163,7 +163,7 @@ object EnderNodeTracker {
             val price = if (isEnderArmor(item)) {
                 10_000.0
             } else {
-                (if (!LorenzUtils.noTradeMode) item.internalName.getPriceOrNull() else 0.0)
+                (if (!SkyBlockAPI.gamemode.noTrade) item.internalName.getPriceOrNull() else 0.0)
                     ?.coerceAtLeast(item.internalName.getNpcPriceOrNull() ?: 0.0)
                     ?.coerceAtLeast(georgePrice(item) ?: 0.0)
                     ?: 0.0

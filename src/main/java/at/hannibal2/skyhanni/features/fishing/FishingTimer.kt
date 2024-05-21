@@ -2,6 +2,8 @@ package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.LorenzTickEvent
@@ -86,7 +88,7 @@ object FishingTimer {
     private fun isRightLocation(): Boolean {
         inHollows = false
 
-        if (config.forStranded && LorenzUtils.isStrandedProfile) return true
+        if (config.forStranded && SkyBlockAPI.gamemode == Gamemode.STRANDED) return true
 
         if (config.crystalHollows && IslandType.CRYSTAL_HOLLOWS.isInIsland()) {
             inHollows = true

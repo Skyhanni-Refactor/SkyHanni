@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.HideNotClickableItemsJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SalvageFilter
@@ -482,7 +483,7 @@ object HideNotClickableItems {
         }
 
         if (!ItemUtils.isRecombobulated(stack)) {
-            if (LorenzUtils.noTradeMode && BazaarApi.isBazaarItem(stack)) {
+            if (SkyBlockAPI.gamemode.noTrade && BazaarApi.isBazaarItem(stack)) {
                 return false
             }
 

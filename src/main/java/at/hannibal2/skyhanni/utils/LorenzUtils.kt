@@ -7,7 +7,6 @@ import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
 import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
-import at.hannibal2.skyhanni.test.TestBingo
 import at.hannibal2.skyhanni.utils.ChatUtils.lastButtonClicked
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
@@ -25,8 +24,6 @@ object LorenzUtils {
 
     val inSkyBlock get() = HypixelAPI.onHypixel && HypixelData.skyBlock
 
-    val inHypixelLobby get() = HypixelAPI.onHypixel && HypixelData.inLobby
-
     val inLimbo get() = HypixelAPI.onHypixel && HypixelData.inLimbo
 
     /**
@@ -37,14 +34,6 @@ object LorenzUtils {
     val skyBlockArea get() = if (inSkyBlock) HypixelData.skyBlockArea else null
 
     val inKuudraFight get() = inSkyBlock && KuudraAPI.inKuudra()
-
-    val noTradeMode get() = HypixelData.noTrade
-
-    val isStrandedProfile get() = inSkyBlock && HypixelData.stranded
-
-    val isBingoProfile get() = inSkyBlock && (HypixelData.bingo || TestBingo.testBingo)
-
-    val isIronmanProfile get() = inSkyBlock && HypixelData.ironman
 
     val lastWorldSwitch get() = HypixelData.joinedWorld
 

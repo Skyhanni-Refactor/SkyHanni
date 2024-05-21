@@ -1,9 +1,10 @@
 package at.hannibal2.skyhanni.features.bingo
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.LorenzChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -36,7 +37,7 @@ object CompactBingoChat {
     @SubscribeEvent
     fun onChat(event: LorenzChatEvent) {
         if (!config.enabled) return
-        if (!LorenzUtils.isBingoProfile && !config.outsideBingo) return
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO && !config.outsideBingo) return
 
         val message = event.message
         borderPattern.matchMatcher(message) {

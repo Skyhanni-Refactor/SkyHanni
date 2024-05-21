@@ -2,6 +2,8 @@ package at.hannibal2.skyhanni.features.bingo
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
@@ -56,7 +58,7 @@ object MinionCraftHelper {
 
     @SubscribeEvent
     fun onTick(event: LorenzTickEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
         if (!config.minionCraftHelperEnabled) return
 
         if (event.isMod(10)) {
@@ -242,7 +244,7 @@ object MinionCraftHelper {
 
     @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
         if (!config.minionCraftHelperEnabled) return
 
         config.minionCraftHelperPos.renderStrings(display, posLabel = "Minion Craft Helper")
@@ -265,7 +267,7 @@ object MinionCraftHelper {
 
     @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
         if (event.inventoryName != "Crafted Minions") return
 
         for ((_, b) in event.inventoryItems) {

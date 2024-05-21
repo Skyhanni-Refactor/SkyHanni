@@ -8,7 +8,6 @@ import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
 import at.hannibal2.skyhanni.events.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
-import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -79,20 +78,10 @@ object HypixelData {
         "\\s*§(?<symbol>7⏣|5ф) §(?<color>.)(?<area>.*)"
     )
 
-    var hypixelLive = false
-    var hypixelAlpha = false
-    var inLobby = false
     var inLimbo = false
     var skyBlock = false
     var skyBlockIsland = IslandType.UNKNOWN
     var serverId: String? = null
-
-    // Ironman, Stranded and Bingo
-    var noTrade = false
-
-    var ironman = false
-    var stranded = false
-    var bingo = false
 
     var profileName = ""
     var joinedWorld = SimpleTimeMark.farPast()
@@ -163,7 +152,6 @@ object HypixelData {
     fun onWorldChange(event: LorenzWorldChangeEvent) {
         skyBlock = false
         inLimbo = false
-        inLobby = false
         joinedWorld = SimpleTimeMark.now()
         serverId = null
         skyBlockArea = null
@@ -172,10 +160,7 @@ object HypixelData {
 
     @SubscribeEvent
     fun onDisconnect(event: FMLNetworkEvent.ClientDisconnectionFromServerEvent) {
-        hypixelLive = false
-        hypixelAlpha = false
         skyBlock = false
-        inLobby = false
         skyBlockArea = null
         skyBlockAreaWithSymbol = null
     }
@@ -215,15 +200,11 @@ object HypixelData {
     @HandleEvent(priority = -2)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         if (event.scoreboard.isEmpty()) return
-        if (!HypixelAPI.onHypixel) {
-            if (!checkHypixel(event.scoreboard.last())) return
-        }
 
         val inSkyblock = scoreboardTitlePattern.matches(ScoreboardData.objectiveTitle.removeColor())
 
         if (inSkyblock) {
             checkIsland()
-            checkSidebar(event.scoreboard)
             checkCurrentServerId(event.scoreboard)
         }
         skyBlock = inSkyblock
@@ -244,35 +225,6 @@ object HypixelData {
             profileName = group("profile").lowercase()
             ProfileJoinEvent(profileName).postAndCatch()
         }
-    }
-
-    private fun checkHypixel(lastLine: String): Boolean {
-        hypixelLive = lastLine == "§ewww.hypixel.net"
-        hypixelAlpha = lastLine == "§ealpha.hypixel.net"
-        return HypixelAPI.connected
-    }
-
-    private fun checkSidebar(scoreboard: List<String>) {
-        ironman = false
-        stranded = false
-        bingo = false
-
-        for (line in scoreboard) {
-            if (BingoAPI.getRankFromScoreboard(line) != null) {
-                bingo = true
-            }
-            when (line) {
-                " §7♲ §7Ironman" -> {
-                    ironman = true
-                }
-
-                " §a☀ §aStranded" -> {
-                    stranded = true
-                }
-            }
-        }
-
-        noTrade = ironman || stranded || bingo
     }
 
     private fun checkIsland() {

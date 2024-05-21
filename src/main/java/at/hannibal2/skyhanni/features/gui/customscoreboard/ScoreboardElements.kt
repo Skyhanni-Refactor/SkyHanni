@@ -1,6 +1,8 @@
 package at.hannibal2.skyhanni.features.gui.customscoreboard
 
 import at.hannibal2.skyhanni.api.BitsAPI
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.gui.customscoreboard.ArrowConfig.ArrowAmountDisplay
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.HypixelData.getMaxPlayersForCurrentServer
@@ -424,7 +426,8 @@ private fun getBitsDisplayPair(): List<ScoreboardElementType> {
     )
 }
 
-private fun getBitsShowWhen() = !HypixelData.bingo && !inAnyIsland(IslandType.CATACOMBS, IslandType.KUUDRA_ARENA)
+private fun getBitsShowWhen() =
+    SkyBlockAPI.gamemode != Gamemode.BINGO && !inAnyIsland(IslandType.CATACOMBS, IslandType.KUUDRA_ARENA)
 
 private fun getCopperDisplayPair(): List<ScoreboardElementType> {
     val copper = getGroupFromPattern(ScoreboardData.sidebarLinesFormatted, ScoreboardPattern.copperPattern, "copper")
@@ -618,7 +621,7 @@ private fun getCookieDisplayPair() = listOf(
 )
 
 private fun getCookieShowWhen(): Boolean {
-    if (HypixelData.bingo) return false
+    if (SkyBlockAPI.gamemode == Gamemode.BINGO) return false
     return informationFilteringConfig.hideEmptyLines && BitsAPI.hasCookieBuff()
 }
 

@@ -2,6 +2,8 @@ package at.hannibal2.skyhanni.features.bingo.card
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.SecondPassedEvent
 import at.hannibal2.skyhanni.events.bingo.BingoCardUpdateEvent
@@ -14,7 +16,6 @@ import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.StringUtils
@@ -48,7 +49,7 @@ object BingoCardDisplay {
     }
 
     fun toggleCommand() {
-        if (!LorenzUtils.isBingoProfile) {
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) {
             ChatUtils.userError("This command only works on a bingo profile!")
             return
         }
@@ -211,7 +212,7 @@ object BingoCardDisplay {
 
     @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
         if (!config.enabled) return
 
         val currentlyOpen = canEditDisplay()
@@ -247,7 +248,7 @@ object BingoCardDisplay {
     @HandleEvent
     fun onBingoCardUpdate(event: BingoCardUpdateEvent) {
         if (!config.enabled) return
-        if (!LorenzUtils.isBingoProfile) return
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
         update()
     }
 
