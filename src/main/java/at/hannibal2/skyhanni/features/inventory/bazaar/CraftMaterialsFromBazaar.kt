@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.isBazaarItem
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
+import at.hannibal2.skyhanni.utils.CollectionUtils.addString
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.itemNameWithoutColor
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -126,18 +127,24 @@ object CraftMaterialsFromBazaar {
 
     private fun MutableList<Renderable>.addMultipliers() {
         for (m in listOf(1, 5, 16, 32, 64, 512)) {
-            val nameColor = if (m == multiplier) "§amount" else "§e"
-            val priceColor = if (m == multiplier) "§6" else "§7"
+            val isThisMultiply = m == multiplier
+            val nameColor = if (isThisMultiply) "§a" else "§e"
+            val priceColor = if (isThisMultiply) "§6" else "§7"
             val price = priceColor + NumberUtil.format(calculateTotalPrice(neededMaterials, m))
-            add(
-                Renderable.clickAndHover(
-                    "${nameColor}Mulitply x$m $price",
-                    listOf("§eClick here to multiply the items needed times $m!"),
-                    onClick = {
-                        multiplier = m
-                        updateBazaarDisplay()
-                    })
-            )
+            val text = "${nameColor}Mulitply x$m $price"
+            if (!isThisMultiply) {
+                add(
+                    Renderable.clickAndHover(
+                        text,
+                        listOf("§eClick here to multiply the items needed times $m!"),
+                        onClick = {
+                            multiplier = m
+                            updateBazaarDisplay()
+                        })
+                )
+            } else {
+                addString(text)
+            }
         }
     }
 

@@ -9,6 +9,11 @@ import net.minecraft.entity.EntityLiving
 object HellionShieldHelper {
     val hellionShieldMobs = mutableMapOf<EntityLiving, HellionShield>()
 
+    @SubscribeEvent
+    fun onWorldChange(event: LorenzWorldChangeEvent) {
+        hellionShieldMobs.clear()
+    }
+
     fun EntityLiving.setHellionShield(shield: HellionShield?) {
         if (shield != null) {
             hellionShieldMobs[this] = shield
@@ -22,5 +27,3 @@ object HellionShieldHelper {
         }
     }
 }
-
-
