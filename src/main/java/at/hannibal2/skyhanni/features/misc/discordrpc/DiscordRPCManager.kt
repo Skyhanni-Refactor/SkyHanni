@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.config.features.misc.DiscordRPCConfig.PriorityEntry
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.StackingEnchantData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.StackingEnchantsJson
+import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -32,8 +33,6 @@ import com.jagrosh.discordipc.entities.RichPresence
 import com.jagrosh.discordipc.entities.RichPresenceButton
 import com.jagrosh.discordipc.entities.pipe.PipeStatus
 import kotlinx.coroutines.launch
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.network.FMLNetworkEvent
 import kotlin.time.Duration.Companion.seconds
 
 object DiscordRPCManager : IPCListener {
@@ -185,8 +184,8 @@ object DiscordRPCManager : IPCListener {
         }
     }
 
-    @SubscribeEvent
-    fun onDisconnect(event: FMLNetworkEvent.ClientDisconnectionFromServerEvent) {
+    @HandleEvent
+    fun onDisconnect(event: ClientDisconnectEvent) {
         stop()
     }
 

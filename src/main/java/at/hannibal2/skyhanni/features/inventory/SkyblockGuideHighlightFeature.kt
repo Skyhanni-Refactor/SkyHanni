@@ -2,10 +2,11 @@ package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -16,7 +17,6 @@ import at.hannibal2.skyhanni.utils.RegexUtils.anyMatches
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.intellij.lang.annotations.Language
 
 val patternGroup = RepoPattern.group("skyblockguide.highlight")
@@ -28,7 +28,7 @@ class SkyblockGuideHighlightFeature private constructor(
     private val config: () -> Boolean,
     inventory: RepoPattern,
     loreCondition: RepoPattern,
-    private val onSlotClicked: (GuiContainerEvent.SlotClickEvent) -> Unit = {},
+    private val onSlotClicked: (SlotClickEvent) -> Unit = {},
     private val onTooltip: (SkyHanniToolTipEvent) -> Unit = {},
 ) {
 
@@ -40,7 +40,7 @@ class SkyblockGuideHighlightFeature private constructor(
         key: String,
         @Language("RegExp") inventory: String,
         @Language("RegExp") loreCondition: String,
-        onSlotClicked: (GuiContainerEvent.SlotClickEvent) -> Unit = {},
+        onSlotClicked: (SlotClickEvent) -> Unit = {},
         onTooltip: (SkyHanniToolTipEvent) -> Unit = {},
     ) : this(
         config,
@@ -55,7 +55,7 @@ class SkyblockGuideHighlightFeature private constructor(
         key: String,
         @Language("RegExp") inventory: String,
         loreCondition: RepoPattern,
-        onSlotClicked: (GuiContainerEvent.SlotClickEvent) -> Unit = {},
+        onSlotClicked: (SlotClickEvent) -> Unit = {},
         onTooltip: (SkyHanniToolTipEvent) -> Unit = {},
     ) : this(
         config,
@@ -88,16 +88,16 @@ class SkyblockGuideHighlightFeature private constructor(
             close()
         }
 
-        @SubscribeEvent
-        fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+        @HandleEvent
+        fun onSlotClick(event: SlotClickEvent) {
             if (!isEnabled()) return
             val current = activeObject ?: return
             if (!missing.contains(event.slotId)) return
             current.onSlotClicked.invoke(event)
         }
 
-        @SubscribeEvent
-        fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
+        @HandleEvent
+        fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
             if (!isEnabled()) return
             if (activeObject == null) return
 
@@ -142,7 +142,7 @@ class SkyblockGuideHighlightFeature private constructor(
                 "§7Progress to Complete Category: §6\\d{1,2}(?:\\.\\d)?%"
             )
 
-        private val openWikiOnClick: (GuiContainerEvent.SlotClickEvent) -> Unit = { event ->
+        private val openWikiOnClick: (SlotClickEvent) -> Unit = { event ->
             val internalName = event.item?.getInternalName()
             if (internalName != null) {
                 HypixelCommands.wiki(internalName.asString())

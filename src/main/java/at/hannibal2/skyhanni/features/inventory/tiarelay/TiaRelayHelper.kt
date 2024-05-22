@@ -2,9 +2,9 @@ package at.hannibal2.skyhanni.features.inventory.tiarelay
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
 import at.hannibal2.skyhanni.events.minecraft.PlaySoundEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.sorted
@@ -13,7 +13,6 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.minutes
 
 object TiaRelayHelper {
@@ -126,8 +125,8 @@ object TiaRelayHelper {
         }
     }
 
-    @SubscribeEvent
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent
+    fun onSlotClick(event: SlotClickEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.soundHelper) return
         if (!inInventory) return

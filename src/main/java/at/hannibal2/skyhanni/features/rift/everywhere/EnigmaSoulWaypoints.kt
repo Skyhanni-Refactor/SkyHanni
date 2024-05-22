@@ -3,10 +3,11 @@ package at.hannibal2.skyhanni.features.rift.everywhere
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.EnigmaSoulsJson
-import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
@@ -26,7 +27,6 @@ import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.client.player.inventory.ContainerLocalMenu
 import net.minecraft.inventory.ContainerChest
-import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object EnigmaSoulWaypoints {
@@ -80,8 +80,8 @@ object EnigmaSoulWaypoints {
         adding = true
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onSlotClick(event: SlotClickEvent) {
         if (!inInventory || !isEnabled()) return
 
         if (event.slotId == 31 && inventoryUnfound.isNotEmpty()) {
@@ -112,8 +112,8 @@ object EnigmaSoulWaypoints {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
+    @HandleEvent(priority = HandleEvent.LOWEST)
+    fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         if (!isEnabled() || !inInventory) return
 
         if (event.gui !is GuiChest) return

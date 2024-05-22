@@ -3,9 +3,9 @@ package at.hannibal2.skyhanni.features.inventory
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
-import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -14,7 +14,6 @@ import at.hannibal2.skyhanni.utils.RenderUtils.interpolate
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
@@ -42,8 +41,8 @@ object HighlightBonzoMasks {
     private val greenHue = Color.RGBtoHSB(0, 255, 0, null)[0].toDouble()
     private val redHue = Color.RGBtoHSB(255, 0, 0, null)[0].toDouble()
 
-    @SubscribeEvent
-    fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
+    @HandleEvent
+    fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         if (!config.depletedBonzosMasks) return
         for (slot in event.gui.inventorySlots.inventorySlots) {
             val item = slot.stack ?: continue

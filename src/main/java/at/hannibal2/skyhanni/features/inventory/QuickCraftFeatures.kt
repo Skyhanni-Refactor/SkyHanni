@@ -2,8 +2,9 @@ package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.render.gui.ForegroundDrawnEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils.getAllItems
@@ -16,8 +17,6 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.inventory.ContainerChest
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object QuickCraftFeatures {
 
@@ -56,8 +55,8 @@ object QuickCraftFeatures {
         }
     }
 
-    @SubscribeEvent
-    fun onForegroundDrawn(event: GuiContainerEvent.ForegroundDrawnEvent) {
+    @HandleEvent
+    fun onForegroundDrawn(event: ForegroundDrawnEvent) {
         val inventoryType = getInventoryType() ?: return
         if (KeyboardManager.isModifierKeyDown()) return
         if (event.gui !is GuiChest) return
@@ -72,14 +71,14 @@ object QuickCraftFeatures {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onSlotClick(event: SlotClickEvent) {
         val inventoryType = getInventoryType() ?: return
         if (inventoryType.ignoreSlot(event.slot?.slotNumber)) return
 
         val clickedItem = event.slot?.stack ?: return
         if (!KeyboardManager.isModifierKeyDown() && needsQuickCraftConfirmation(clickedItem)) {
-            event.isCanceled = true
+            event.cancel()
         }
     }
 

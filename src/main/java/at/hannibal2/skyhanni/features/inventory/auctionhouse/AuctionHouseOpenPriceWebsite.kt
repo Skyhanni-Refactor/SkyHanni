@@ -2,9 +2,9 @@ package at.hannibal2.skyhanni.features.inventory.auctionhouse
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
@@ -16,7 +16,6 @@ import io.github.moulberry.notenoughupdates.events.ReplaceItemEvent
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.entity.player.InventoryPlayer
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
@@ -73,12 +72,12 @@ class AuctionHouseOpenPriceWebsite {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onSlotClick(event: SlotClickEvent) {
         if (!isEnabled()) return
         displayItem ?: return
         if (event.slotId != 8) return
-        event.isCanceled = true
+        event.cancel()
         if (lastClick.passedSince() > 0.3.seconds) {
             OS.openUrl("https://sky.coflnet.com/api/mod/open/$searchTerm")
             lastClick = SimpleTimeMark.now()

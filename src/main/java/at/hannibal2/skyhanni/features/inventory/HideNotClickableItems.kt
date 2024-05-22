@@ -6,7 +6,8 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.HideNotClickableItemsJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SalvageFilter
-import at.hannibal2.skyhanni.events.GuiContainerEvent
+import at.hannibal2.skyhanni.events.render.gui.ForegroundDrawnEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.garden.composter.ComposterOverlay
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI
@@ -92,8 +93,8 @@ object HideNotClickableItems {
         }
     }
 
-    @SubscribeEvent
-    fun onForegroundDrawn(event: GuiContainerEvent.ForegroundDrawnEvent) {
+    @HandleEvent
+    fun onForegroundDrawn(event: ForegroundDrawnEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!isEnabled()) return
         if (bypassActive()) return
@@ -141,8 +142,8 @@ object HideNotClickableItems {
         }
     }
 
-    @SubscribeEvent
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent
+    fun onSlotClick(event: SlotClickEvent) {
         if (!isEnabled()) return
         if (!config.itemsBlockClicks) return
         if (bypassActive()) return
@@ -157,7 +158,7 @@ object HideNotClickableItems {
         val stack = slot.stack
 
         if (hide(chestName, stack)) {
-            event.isCanceled = true
+            event.cancel()
 
             if (lastClickTime.passedSince() > 5.seconds) {
                 lastClickTime = SimpleTimeMark.now()

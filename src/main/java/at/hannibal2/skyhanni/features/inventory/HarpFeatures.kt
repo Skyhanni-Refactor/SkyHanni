@@ -2,12 +2,13 @@ package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -23,8 +24,6 @@ import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.client.player.inventory.ContainerLocalMenu
 import net.minecraft.item.Item
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.network.FMLNetworkEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -128,8 +127,8 @@ object HarpFeatures {
         unSetGUIScale()
     }
 
-    @SubscribeEvent
-    fun onLeave(event: FMLNetworkEvent.ClientDisconnectionFromServerEvent) {
+    @HandleEvent
+    fun onDisconnect(event: ClientDisconnectEvent) {
         if (!config.guiScale) return
         unSetGUIScale()
     }
@@ -151,14 +150,14 @@ object HarpFeatures {
         isGUIScaled = false
     }
 
-    @SubscribeEvent
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent
+    fun onSlotClick(event: SlotClickEvent) {
         if (!LorenzUtils.inSkyBlock) return
 
         if (isHarpGui(InventoryUtils.openInventoryName())) {
             if (config.keybinds) {
                 // needed to not send duplicate clicks via keybind feature
-                if (event.clickTypeEnum == GuiContainerEvent.ClickType.HOTBAR) {
+                if (event.clickTypeEnum == SlotClickEvent.ClickType.HOTBAR) {
                     event.cancel()
                     return
                 }
@@ -172,7 +171,7 @@ object HarpFeatures {
         event.container.inventory.filterNotNull().indexOfFirst {
             songSelectedPattern.anyMatches(it.getLore())
         }.takeIf { it != -1 }?.let {
-            event.isCanceled = true
+            event.cancel()
             Minecraft.getMinecraft().playerController.windowClick(
                 event.container.windowId,
                 it,

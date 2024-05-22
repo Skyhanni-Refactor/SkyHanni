@@ -1,6 +1,8 @@
 package at.hannibal2.skyhanni.features.garden.visitor
 
-import at.hannibal2.skyhanni.events.GuiContainerEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.render.gui.ForegroundDrawnEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.ACCEPT_SLOT
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.REFUSE_SLOT
@@ -26,8 +28,8 @@ import kotlin.time.Duration.Companion.seconds
 object VisitorRewardWarning {
     private val config get() = VisitorAPI.config.rewardWarning
 
-    @SubscribeEvent
-    fun onForegroundDrawn(event: GuiContainerEvent.ForegroundDrawnEvent) {
+    @HandleEvent
+    fun onForegroundDrawn(event: ForegroundDrawnEvent) {
         if (!VisitorAPI.inInventory) return
 
         val visitor = VisitorAPI.getVisitor(lastClickedNpc) ?: return
@@ -51,8 +53,8 @@ object VisitorRewardWarning {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onSlotClick(event: SlotClickEvent) {
         if (!VisitorAPI.inInventory) return
         val stack = event.slot?.stack ?: return
 
@@ -64,12 +66,12 @@ object VisitorRewardWarning {
 
         val shouldBlock = blockReason?.run { blockRefusing && isRefuseSlot || !blockRefusing && isAcceptSlot } ?: false
         if (!config.bypassKey.isKeyHeld() && shouldBlock) {
-            event.isCanceled = true
+            event.cancel()
             return
         }
 
         // all but shift clicktypes work for accepting visitor
-        if (event.clickTypeEnum == GuiContainerEvent.ClickType.SHIFT) return
+        if (event.clickTypeEnum == SlotClickEvent.ClickType.SHIFT) return
         if (isRefuseSlot) {
             VisitorAPI.changeStatus(visitor, VisitorAPI.VisitorStatus.REFUSED, "refused")
             // fallback if tab list is disabled

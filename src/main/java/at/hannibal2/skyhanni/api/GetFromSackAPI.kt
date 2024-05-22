@@ -5,12 +5,12 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.compat.neu.NEUCompat
 import at.hannibal2.skyhanni.data.SackAPI
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
-import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
-import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.features.commands.tabcomplete.GetFromSacksTabComplete
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -28,7 +28,6 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.inventory.Slot
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.Deque
 import java.util.LinkedList
 import kotlin.time.Duration.Companion.seconds
@@ -98,13 +97,13 @@ object GetFromSackAPI {
         inventoryMap.clear()
     }
 
-    @SubscribeEvent
-    fun onSlotClicked(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent
+    fun onSlotClicked(event: SlotClickEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (event.clickedButton != 1) return // filter none right clicks
         addToQueue(inventoryMap[event.slotId] ?: return)
         inventoryMap.remove(event.slotId)
-        event.isCanceled = true
+        event.cancel()
     }
 
     @HandleEvent

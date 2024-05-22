@@ -1,21 +1,20 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.GuiContainerEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.features.commands.WikiManager
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object BetterWikiFromMenus {
 
     private val config get() = SkyHanniMod.feature.misc.commands.betterWiki
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onSlotClick(event: SlotClickEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!isEnabled()) return
 
@@ -43,7 +42,7 @@ object BetterWikiFromMenus {
         if (inSBGuideInventory && config.sbGuide) {
             val wikiSearch = itemClickedName.removeColor().replace("✔ ", "").replace("✖ ", "")
             WikiManager.sendWikiMessage(wikiSearch, autoOpen = config.menuOpenWiki)
-            event.isCanceled = true
+            event.cancel()
         }
     }
 

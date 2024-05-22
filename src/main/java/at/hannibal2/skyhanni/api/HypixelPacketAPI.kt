@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.hypixel.HypixelLocationEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
@@ -18,8 +19,6 @@ import net.minecraft.client.network.NetHandlerPlayClient
 import net.minecraft.network.PacketBuffer
 import net.minecraft.network.play.client.C17PacketCustomPayload
 import net.minecraft.network.play.server.S3FPacketCustomPayload
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.network.FMLNetworkEvent
 import kotlin.time.Duration.Companion.seconds
 
 object HypixelPacketAPI {
@@ -105,8 +104,8 @@ object HypixelPacketAPI {
         }
     }
 
-    @SubscribeEvent
-    fun onServerDisconnect(event: FMLNetworkEvent.ClientDisconnectionFromServerEvent) {
+    @HandleEvent
+    fun onDisconnect(event: ClientDisconnectEvent) {
         connected = false
     }
 

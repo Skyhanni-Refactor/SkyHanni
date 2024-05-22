@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.features.garden.inventory.plots
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -84,12 +84,12 @@ object GardenPlotIcon {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onSlotClick(event: SlotClickEvent) {
         if (!isEnabled()) return
         lastClickedSlotId = event.slotId
         if (event.slotId == 53) {
-            event.isCanceled = true
+            event.cancel()
             if (event.clickedButton == 0) {
                 if (editMode == 2)
                     editMode = 0
@@ -105,7 +105,7 @@ object GardenPlotIcon {
         }
         if (editMode != 0) {
             if (event.slotId in 54..89) {
-                event.isCanceled = true
+                event.cancel()
                 copyStack = event.slot?.stack?.copy()?.also {
                     it.stackSize = 1
                 } ?: return
@@ -116,7 +116,7 @@ object GardenPlotIcon {
 
             val plotList = plotList ?: return
             if (!whitelistedSlot.contains(event.slotId)) return
-            event.isCanceled = true
+            event.cancel()
             if (editMode == 2) {
                 plotList.remove(event.slotId)
                 return

@@ -7,10 +7,10 @@ import at.hannibal2.skyhanni.data.GuiEditManager.getAbsY
 import at.hannibal2.skyhanni.data.GuiEditManager.getDummySize
 import at.hannibal2.skyhanni.data.model.Graph
 import at.hannibal2.skyhanni.data.model.toPositionsList
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.render.gui.ForegroundDrawnEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderGuiItemOverlayEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.misc.RoundedRectangleOutlineShader
 import at.hannibal2.skyhanni.features.misc.RoundedRectangleShader
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
@@ -1585,7 +1585,7 @@ object RenderUtils {
         RenderUtils.drawSlotText(xPos, yPos, text, scale)
     }
 
-    fun GuiContainerEvent.ForegroundDrawnEvent.drawSlotText(
+    fun ForegroundDrawnEvent.drawSlotText(
         xPos: Int,
         yPos: Int,
         text: String,

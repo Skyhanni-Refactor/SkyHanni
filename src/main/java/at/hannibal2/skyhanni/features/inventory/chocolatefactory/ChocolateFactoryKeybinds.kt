@@ -1,14 +1,13 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyClicked
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 
 object ChocolateFactoryKeybinds {
@@ -42,14 +41,14 @@ object ChocolateFactoryKeybinds {
         }
     }
 
-    @SubscribeEvent
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent
+    fun onSlotClick(event: SlotClickEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.enabled) return
         if (!ChocolateFactoryAPI.inChocolateFactory) return
 
         // needed to not send duplicate clicks via keybind feature
-        if (event.clickTypeEnum == GuiContainerEvent.ClickType.HOTBAR) {
+        if (event.clickTypeEnum == SlotClickEvent.ClickType.HOTBAR) {
             event.cancel()
         }
     }

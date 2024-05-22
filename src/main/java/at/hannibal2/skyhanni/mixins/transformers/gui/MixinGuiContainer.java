@@ -41,16 +41,6 @@ public abstract class MixinGuiContainer extends GuiScreen {
         skyHanni$hook.foregroundDrawn(mouseX, mouseY, partialTicks);
     }
 
-    @Inject(method = "drawSlot", at = @At("HEAD"), cancellable = true)
-    private void onDrawSlot(Slot slot, CallbackInfo ci) {
-        skyHanni$hook.onDrawSlot(slot, ci);
-    }
-
-    @Inject(method = "drawSlot", at = @At("RETURN"))
-    private void onDrawSlotPost(Slot slot, CallbackInfo ci) {
-        skyHanni$hook.onDrawSlotPost(slot);
-    }
-
     @Inject(method = "handleMouseClick", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/PlayerControllerMP;windowClick(IIIILnet/minecraft/entity/player/EntityPlayer;)Lnet/minecraft/item/ItemStack;"), cancellable = true)
     private void onMouseClick(Slot slot, int slotId, int clickedButton, int clickType, CallbackInfo ci) {
         skyHanni$hook.onMouseClick(slot, slotId, clickedButton, clickType, ci);

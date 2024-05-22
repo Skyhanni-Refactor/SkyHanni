@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.SystemMessageEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -20,7 +20,6 @@ import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object ChocolateFactoryCustomReminder {
     private val configReminder get() = ChocolateFactoryAPI.config.customReminder
@@ -59,8 +58,8 @@ object ChocolateFactoryCustomReminder {
         update()
     }
 
-    @SubscribeEvent(receiveCanceled = true)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(receiveCancelled = true)
+    fun onSlotClick(event: SlotClickEvent) {
         if (!isEnabled()) return
         val item = event.item ?: return
         // TODO add support for prestige and for Chocolate Milestone
