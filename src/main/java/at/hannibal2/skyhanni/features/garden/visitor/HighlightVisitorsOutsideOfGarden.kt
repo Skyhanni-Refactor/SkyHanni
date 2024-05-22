@@ -6,7 +6,7 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.garden.visitor.VisitorConfig.VisitorBlockBehaviour
 import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenVisitor
-import at.hannibal2.skyhanni.events.PacketEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
@@ -24,7 +24,6 @@ import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.network.play.client.C02PacketUseEntity
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object HighlightVisitorsOutsideOfGarden {
 
@@ -87,8 +86,8 @@ object HighlightVisitorsOutsideOfGarden {
     private fun isVisitorNearby(entity: Entity) =
         McWorld.getEntitiesNear<EntityLivingBase>(entity, 2.0).any(::isVisitor)
 
-    @SubscribeEvent
-    fun onClickEntity(event: PacketEvent.SendEvent) {
+    @HandleEvent
+    fun onClickEntity(event: SendPacketEvent) {
         if (!shouldBlock) return
         val world = Minecraft.getMinecraft().theWorld ?: return
         val player = Minecraft.getMinecraft().thePlayer ?: return
@@ -96,7 +95,7 @@ object HighlightVisitorsOutsideOfGarden {
         val packet = event.packet as? C02PacketUseEntity ?: return
         val entity = packet.getEntityFromWorld(world) ?: return
         if (isVisitor(entity) || (entity is EntityArmorStand && isVisitorNearby(entity))) {
-            event.isCanceled = true
+            event.cancel()
             if (packet.action == C02PacketUseEntity.Action.INTERACT) {
                 ChatUtils.chatAndOpenConfig("Blocked you from interacting with a visitor. Sneak to bypass or click here to change settings.",
                     GardenAPI.config.visitors::blockInteracting

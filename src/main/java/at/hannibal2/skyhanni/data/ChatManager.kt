@@ -1,9 +1,10 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.PacketEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
 import at.hannibal2.skyhanni.features.chat.ChatFilterGui
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.IdentityCharacteristics
@@ -74,8 +75,8 @@ object ChatManager {
         val hoverExtraInfo: List<String> = listOf(),
     )
 
-    @SubscribeEvent
-    fun onSendMessageToServerPacket(event: PacketEvent.SendEvent) {
+    @HandleEvent
+    fun onSendMessageToServerPacket(event: SendPacketEvent) {
         val packet = event.packet as? C01PacketChatMessage ?: return
 
         val message = packet.message
@@ -106,7 +107,7 @@ object ChatManager {
                 originatingModContainer
             ).post()
         ) {
-            event.isCanceled = true
+            event.cancel()
             messageHistory[IdentityCharacteristics(component)] = result.copy(actionKind = ActionKind.OUTGOING_BLOCKED)
         }
     }

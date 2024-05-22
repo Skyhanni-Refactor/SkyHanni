@@ -2,11 +2,11 @@ package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
-import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
 import net.minecraft.item.ItemStack
 import net.minecraft.network.play.server.S2DPacketOpenWindow
 import net.minecraft.network.play.server.S2EPacketCloseWindow
@@ -37,8 +37,8 @@ object OtherInventoryData {
         }
     }
 
-    @SubscribeEvent
-    fun onInventoryDataReceiveEvent(event: PacketEvent.ReceiveEvent) {
+    @HandleEvent
+    fun onInventoryDataReceiveEvent(event: ReceivePacketEvent) {
         val packet = event.packet
 
         if (packet is S2EPacketCloseWindow) {

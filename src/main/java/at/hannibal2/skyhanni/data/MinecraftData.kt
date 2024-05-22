@@ -2,12 +2,12 @@ package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
-import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
-import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
-import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.inventory.ItemInHandChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.PlaySoundEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -23,8 +23,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent
 
 object MinecraftData {
 
-    @SubscribeEvent(receiveCanceled = true)
-    fun onSoundPacket(event: PacketEvent.ReceiveEvent) {
+    @HandleEvent(receiveCancelled = true)
+    fun onSoundPacket(event: ReceivePacketEvent) {
         if (!LorenzUtils.inSkyBlock) return
 
         val packet = event.packet
@@ -37,7 +37,7 @@ object MinecraftData {
                 packet.volume
             ).post()
         ) {
-            event.isCanceled = true
+            event.cancel()
         }
     }
 
@@ -46,8 +46,8 @@ object MinecraftData {
         WorldChangeEvent().post()
     }
 
-    @SubscribeEvent(receiveCanceled = true)
-    fun onParticlePacketReceive(event: PacketEvent.ReceiveEvent) {
+    @HandleEvent(receiveCancelled = true)
+    fun onParticlePacketReceive(event: ReceivePacketEvent) {
         if (!LorenzUtils.inSkyBlock) return
 
         val packet = event.packet
@@ -63,7 +63,7 @@ object MinecraftData {
                 packet.particleArgs,
             ).post()
         ) {
-            event.isCanceled = true
+            event.cancel()
         }
     }
 

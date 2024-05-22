@@ -3,12 +3,13 @@ package at.hannibal2.skyhanni.data
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
-import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
-import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
-import at.hannibal2.skyhanni.events.PacketEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddInInventoryEvent
 import at.hannibal2.skyhanni.events.inventory.OwnInventoryItemUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
@@ -23,7 +24,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.network.play.client.C0EPacketClickWindow
 import net.minecraft.network.play.server.S0DPacketCollectItem
 import net.minecraft.network.play.server.S2FPacketSetSlot
-import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -38,8 +38,8 @@ object OwnInventoryData {
         "§aMoved §r§e\\d* (?<name>.*)§r§a from your Sacks to your inventory."
     )
 
-    @SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)
-    fun onItemPickupReceivePacket(event: PacketEvent.ReceiveEvent) {
+    @HandleEvent(priority = HandleEvent.LOW, receiveCancelled = true)
+    fun onItemPickupReceivePacket(event: ReceivePacketEvent) {
         if (!LorenzUtils.inSkyBlock) return
 
         val packet = event.packet
@@ -58,8 +58,8 @@ object OwnInventoryData {
         }
     }
 
-    @SubscribeEvent
-    fun onClickEntity(event: PacketEvent.SendEvent) {
+    @HandleEvent
+    fun onClickEntity(event: SendPacketEvent) {
         if (!LorenzUtils.inSkyBlock) return
         val packet = event.packet
 

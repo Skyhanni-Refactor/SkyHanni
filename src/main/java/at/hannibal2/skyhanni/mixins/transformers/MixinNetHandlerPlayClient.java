@@ -1,8 +1,8 @@
 package at.hannibal2.skyhanni.mixins.transformers;
 
-import at.hannibal2.skyhanni.events.PacketEvent;
 import at.hannibal2.skyhanni.events.entity.EntityAttributeUpdateEvent;
 import at.hannibal2.skyhanni.events.entity.EntityEquipmentChangeEvent;
+import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
@@ -21,7 +21,7 @@ public abstract class MixinNetHandlerPlayClient implements INetHandlerPlayClient
     @Inject(method = "addToSendQueue", at = @At("HEAD"), cancellable = true)
     private void onSendPacket(Packet<?> packet, CallbackInfo ci) {
         NetHandlerPlayClient client = (NetHandlerPlayClient) (Object) this;
-        if (new PacketEvent.SendEvent(client, packet).postAndCatch()) {
+        if (new SendPacketEvent(client, packet).post()) {
             ci.cancel();
         }
     }

@@ -1,9 +1,11 @@
 package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.PacketEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.hypixel.HypixelLocationEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.mc.McClient
@@ -28,8 +30,8 @@ object HypixelPacketAPI {
     var envrionemnt: Environment = Environment.PROD
         private set
 
-    @SubscribeEvent
-    fun onPacketReceive(event: PacketEvent.ReceiveEvent) {
+    @HandleEvent
+    fun onPacketReceive(event: ReceivePacketEvent) {
         if (event.packet !is S3FPacketCustomPayload) return
         
         val packet = event.packet
@@ -77,8 +79,8 @@ object HypixelPacketAPI {
         }
     }
 
-    @SubscribeEvent
-    fun onPacketSend(event: PacketEvent.SendEvent) {
+    @HandleEvent
+    fun onPacketSend(event: SendPacketEvent) {
         if (event.packet !is C17PacketCustomPayload) return
 
         val packet = event.packet
