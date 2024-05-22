@@ -1,5 +1,7 @@
 package at.hannibal2.skyhanni.utils.renderables
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.render.GameRenderEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.NEUItems
@@ -12,22 +14,20 @@ import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent
 import java.awt.Color
 
 object RenderableTooltips {
 
     private var tooltip: DeferredTooltip? = null
 
-    @SubscribeEvent
-    fun onPostRenderTick(event: RenderTickEvent) {
-        if (event.phase == TickEvent.Phase.START) {
-            tooltip = null
-        } else if (event.phase == TickEvent.Phase.END) {
-            drawHoveringText()
-        }
+    @HandleEvent
+    fun onStartRendering(event: GameRenderEvent.Start) {
+        tooltip = null
+    }
+
+    @HandleEvent
+    fun onEndRendering(event: GameRenderEvent.End) {
+        drawHoveringText()
     }
 
     fun setTooltipForRender(

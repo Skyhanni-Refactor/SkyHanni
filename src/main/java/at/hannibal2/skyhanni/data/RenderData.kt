@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.features.misc.visualwords.VisualWordGui
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
@@ -10,7 +9,6 @@ import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.client.event.RenderGameOverlayEvent
-import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object RenderData {
@@ -50,10 +48,4 @@ object RenderData {
     }
 
     private fun canRender(): Boolean = Minecraft.getMinecraft()?.renderManager?.fontRenderer != null
-
-    @SubscribeEvent
-    fun onRenderWorld(event: RenderWorldLastEvent) {
-        if (!SkyHanniDebugsAndTests.globalRender) return
-        SkyHanniRenderWorldEvent(event.partialTicks).post()
-    }
 }

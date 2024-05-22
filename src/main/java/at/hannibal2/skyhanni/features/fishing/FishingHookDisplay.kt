@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.fishing
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.entity.EntityEnterWorldEvent
 import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -10,8 +11,6 @@ import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.event.entity.EntityJoinWorldEvent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object FishingHookDisplay {
 
@@ -48,8 +47,8 @@ object FishingHookDisplay {
         armorStand = null
     }
 
-    @SubscribeEvent
-    fun onJoinWorld(event: EntityJoinWorldEvent) {
+    @HandleEvent
+    fun onJoinWorld(event: EntityEnterWorldEvent) {
         if (!isEnabled()) return
         val entity = event.entity ?: return
         if (entity !is EntityArmorStand) return

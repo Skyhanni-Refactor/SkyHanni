@@ -460,7 +460,6 @@ import at.hannibal2.skyhanni.test.command.TrackSoundsCommand
 import at.hannibal2.skyhanni.test.hotswap.HotswapSupport
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.EntityOutlineRenderer
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.MinecraftConsoleFilter.Companion.initLogging
@@ -520,7 +519,6 @@ class SkyHanniMod {
         loadModule(EntityAttributeAPI)
         loadModule(EntityMovementData)
         loadModule(EntityOutlineRenderer)
-        loadModule(EntityUtils)
         loadModule(FixedRateTimerManager)
         loadModule(GardenBestCropTime)
         loadModule(GardenComposterUpgradesData)

@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.mixins.transformers.renderer;
 
-import at.hannibal2.skyhanni.events.EntityRenderLayersEvent;
+import at.hannibal2.skyhanni.events.render.entity.EntityRenderLayersEvent;
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -33,7 +33,7 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> exte
 
     @Inject(method = "renderLayers", at = @At("HEAD"), cancellable = true)
     private void onRenderLayersPre(T entity, float p_177093_2_, float p_177093_3_, float partialTicks, float p_177093_5_, float p_177093_6_, float p_177093_7_, float p_177093_8_, CallbackInfo ci) {
-        if (new EntityRenderLayersEvent.Pre<>(entity).postAndCatch()) {
+        if (new EntityRenderLayersEvent.Pre<>(entity).post()) {
             ci.cancel();
         }
     }

@@ -1,5 +1,7 @@
 package at.hannibal2.skyhanni.api.event
 
+import kotlin.reflect.KClass
+
 annotation class HandleEvent(
     /**
      * The priority of when the event will be called, lower priority will be called first.
@@ -15,6 +17,11 @@ annotation class HandleEvent(
      * If the event is cancelled & receiveCancelled is true, then the method will still invoke.
      */
     val receiveCancelled: Boolean = false,
+
+    /**
+     * The base generic class that it can receive, ie. if it can receive Entity it will also receive LivingEntity.
+     */
+    val generic: KClass<*> = Nothing::class,
 ) {
 
     companion object {

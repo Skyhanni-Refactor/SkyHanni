@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ItemsJson
+import at.hannibal2.skyhanni.events.entity.EntityEnterWorldEvent
 import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.fishing.FishingBobberInWaterEvent
 import at.hannibal2.skyhanni.events.inventory.ItemInHandChangeEvent
@@ -25,8 +26,6 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.projectile.EntityFishHook
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
-import net.minecraftforge.event.entity.EntityJoinWorldEvent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object FishingAPI {
 
@@ -44,8 +43,8 @@ object FishingAPI {
     var bobber: EntityFishHook? = null
     var bobberHasTouchedWater = false
 
-    @SubscribeEvent
-    fun onJoinWorld(event: EntityJoinWorldEvent) {
+    @HandleEvent
+    fun onJoinWorld(event: EntityEnterWorldEvent) {
         if (!LorenzUtils.inSkyBlock || !holdingRod) return
         val entity = event.entity ?: return
         if (entity !is EntityFishHook) return

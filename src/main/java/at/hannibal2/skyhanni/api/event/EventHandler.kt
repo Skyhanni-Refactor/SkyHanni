@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.utils.chat.Text
 import java.lang.reflect.Method
 import java.util.function.Consumer
 
-class EventHandler<T : SkyHanniEvent> private constructor(private val name: String) {
+class EventHandler<T : SkyHanniEvent> private constructor(private val name: String, private val isGeneric: Boolean) {
 
     private val listeners: MutableList<Listener> = mutableListOf()
 
@@ -18,11 +18,15 @@ class EventHandler<T : SkyHanniEvent> private constructor(private val name: Stri
     private var invokeCount: Int = 0
 
     constructor(event: Class<T>) : this(
-        (event.name.split(".").lastOrNull() ?: event.name).replace("$", ".")
+        (event.name.split(".").lastOrNull() ?: event.name).replace("$", "."),
+        GenericSkyHanniEvent::class.java.isAssignableFrom(event)
     )
 
     fun addListener(method: Method, instance: Any, options: HandleEvent) {
         if (isFrozen) throw IllegalStateException("Cannot add listener to frozen event handler")
+        if (isGeneric && options.generic == Nothing::class) {
+            throw IllegalArgumentException("Generic event handler must have a generic type")
+        }
         val name = "${method.declaringClass.name}.${method.name}${
             method.parameterTypes.joinTo(
                 StringBuilder(),
@@ -53,8 +57,7 @@ class EventHandler<T : SkyHanniEvent> private constructor(private val name: Stri
         var errors = 0
 
         for (listener in listeners) {
-            if (event.isCancelled && !listener.options.receiveCancelled) continue
-            if (SkyHanniEvents.isDisabledInvoker(listener.name)) continue
+            if (!shouldInvoke(event, listener)) continue
             try {
                 listener.invoker.accept(event)
             } catch (throwable: Throwable) {
@@ -78,6 +81,13 @@ class EventHandler<T : SkyHanniEvent> private constructor(private val name: Stri
             )
         }
         return event.isCancelled
+    }
+
+    private fun shouldInvoke(event: SkyHanniEvent, listener: Listener): Boolean {
+        if (SkyHanniEvents.isDisabledInvoker(listener.name)) return false
+        if (event.isCancelled && !listener.options.receiveCancelled) return false
+        if (event is GenericSkyHanniEvent<*> && !listener.options.generic.java.isAssignableFrom(event.type)) return false
+        return true
     }
 
     private class Listener(val name: String, val invoker: Consumer<Any>, val options: HandleEvent)

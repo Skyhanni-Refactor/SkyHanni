@@ -1,19 +1,19 @@
 package at.hannibal2.skyhanni.features.event.diana
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.entity.EntityEnterWorldEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColourInt
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.entity.player.EntityPlayer
-import net.minecraftforge.event.entity.EntityJoinWorldEvent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object HighlightInquisitors {
 
     private val config get() = SkyHanniMod.feature.event.diana
 
-    @SubscribeEvent
-    fun onJoinWorld(event: EntityJoinWorldEvent) {
+    @HandleEvent
+    fun onJoinWorld(event: EntityEnterWorldEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.highlightInquisitors) return
 

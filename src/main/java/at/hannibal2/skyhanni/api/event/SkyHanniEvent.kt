@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.api.event
 abstract class SkyHanniEvent protected constructor() {
 
     var isCancelled: Boolean = false
-        protected set
+        private set
 
     fun post(): Boolean {
         return SkyHanniEvents.getEventHandler(javaClass).post(this)
@@ -11,5 +11,13 @@ abstract class SkyHanniEvent protected constructor() {
 
     fun post(onError: (Throwable) -> Unit = {}): Boolean {
         return SkyHanniEvents.getEventHandler(javaClass).post(this, onError)
+    }
+
+    interface Cancellable {
+
+        fun cancel() {
+            val event = this as SkyHanniEvent
+            event.isCancelled = true
+        }
     }
 }

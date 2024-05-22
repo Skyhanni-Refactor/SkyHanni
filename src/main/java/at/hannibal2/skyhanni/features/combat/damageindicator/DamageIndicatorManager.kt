@@ -4,15 +4,16 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.combat.damageindicator.DamageIndicatorConfig.NameVisibility
 import at.hannibal2.skyhanni.data.ScoreboardData
-import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.damageindicator.DamageIndicatorDeathEvent
 import at.hannibal2.skyhanni.events.damageindicator.DamageIndicatorDetectedEvent
 import at.hannibal2.skyhanni.events.damageindicator.DamageIndicatorFinalBossEvent
 import at.hannibal2.skyhanni.events.entity.BossHealthChangeEvent
+import at.hannibal2.skyhanni.events.entity.EntityEnterWorldEvent
 import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
@@ -54,9 +55,6 @@ import net.minecraft.entity.monster.EntityEnderman
 import net.minecraft.entity.monster.EntityMagmaCube
 import net.minecraft.entity.monster.EntityZombie
 import net.minecraft.entity.passive.EntityWolf
-import net.minecraftforge.event.entity.EntityJoinWorldEvent
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.UUID
 import kotlin.math.max
 import kotlin.time.Duration
@@ -849,14 +847,14 @@ class DamageIndicatorManager {
         return maxHealth.getOrDefault(entity.uniqueID!!, 0L)
     }
 
-    @SubscribeEvent
-    fun onEntityJoin(event: EntityJoinWorldEvent) {
+    @HandleEvent
+    fun onEntityJoin(event: EntityEnterWorldEvent) {
         mobFinder?.handleNewEntity(event.entity)
     }
 
     private val dummyDamageCache = mutableListOf<UUID>()
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @HandleEvent(priority = HandleEvent.HIGH, generic = EntityLivingBase::class)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityLivingBase>) {
         val entity = event.entity
 
@@ -870,7 +868,7 @@ class DamageIndicatorManager {
 
             if (entityData != null) {
                 if (config.hideDamageSplash) {
-                    event.isCanceled = true
+                    event.cancel()
                 }
                 if (entityData.bossType == BossType.DUMMY) {
                     val uuid = entity.uniqueID
@@ -887,7 +885,7 @@ class DamageIndicatorManager {
                 if (name.contains("Overflux")) return
                 if (name.contains("Mana Flux")) return
                 if (name.contains("Radiant")) return
-                event.isCanceled = true
+                event.cancel()
             }
         }
     }

@@ -8,20 +8,17 @@ import at.hannibal2.skyhanni.events.minecraft.PlaySoundEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
-import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.mc.McPlayer
-import net.minecraft.client.Minecraft
 import net.minecraft.network.play.server.S29PacketSoundEffect
 import net.minecraft.network.play.server.S2APacketParticles
-import net.minecraftforge.event.world.WorldEvent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
 
 object MinecraftData {
+
+    var totalTicks = 0
 
     @HandleEvent(receiveCancelled = true)
     fun onSoundPacket(event: ReceivePacketEvent) {
@@ -39,11 +36,6 @@ object MinecraftData {
         ) {
             event.cancel()
         }
-    }
-
-    @SubscribeEvent
-    fun onWorldChange(event: WorldEvent.Load) {
-        WorldChangeEvent().post()
     }
 
     @HandleEvent(receiveCancelled = true)
@@ -67,20 +59,9 @@ object MinecraftData {
         }
     }
 
-    var totalTicks = 0
-
-    @SubscribeEvent
-    fun onTick(event: TickEvent.ClientTickEvent) {
-        if (event.phase == TickEvent.Phase.START) return
-        Minecraft.getMinecraft().thePlayer ?: return
-
-        DelayedRun.checkRuns()
-        totalTicks++
-        ClientTickEvent(totalTicks).post()
-    }
-
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
+        totalTicks++
         if (!LorenzUtils.inSkyBlock) return
         val hand = McPlayer.heldItem
         val newItem = hand?.getInternalName() ?: SkyhanniItems.NONE()
