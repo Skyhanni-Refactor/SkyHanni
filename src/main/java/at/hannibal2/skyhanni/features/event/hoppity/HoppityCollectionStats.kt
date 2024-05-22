@@ -218,6 +218,7 @@ object HoppityCollectionStats {
         EPIC("§5Epic", 10, 0.005, SkyhanniItems.PURPLE_STAINED_GLASS()),
         LEGENDARY("§6Legendary", 0, 0.02, SkyhanniItems.ORANGE_STAINED_GLASS()),
         MYTHIC("§dMythic", 0, 0.0, SkyhanniItems.PINK_STAINED_GLASS()),
+        DIVINE("§bDivine", 0, 0.0, SkyhanniItems.AQUA_STAINED_GLASS()),
         TOTAL("§cTotal", 0, 0.0, SkyhanniItems.RED_STAINED_GLASS()),
         ;
 

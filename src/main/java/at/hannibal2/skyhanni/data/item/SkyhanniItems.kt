@@ -117,6 +117,7 @@ enum class SkyhanniItems(private var id: String? = null, private var tier: Int? 
     PEST_RAT_MONSTER,
     PEST_SLUG_MONSTER,
     PINK_STAINED_GLASS("STAINED_GLASS-6"),
+    AQUA_STAINED_GLASS("STAINED_GLASS-3"),
     PLASMA,
     POLARVOID_BOOK,
     PUMPKIN,
