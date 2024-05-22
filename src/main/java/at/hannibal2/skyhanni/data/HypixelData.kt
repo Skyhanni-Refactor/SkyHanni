@@ -3,9 +3,9 @@ package at.hannibal2.skyhanni.data
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
-import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
@@ -197,7 +197,7 @@ object HypixelData {
         }
     }
 
-    @HandleEvent(priority = -2)
+    @HandleEvent(HandleEvent.HIGHEST)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         if (event.scoreboard.isEmpty()) return
 

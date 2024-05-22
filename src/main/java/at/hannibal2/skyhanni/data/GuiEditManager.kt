@@ -4,8 +4,8 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.core.config.Position
 import at.hannibal2.skyhanni.config.core.config.gui.GuiPositionEditor
-import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiPositionMovedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.features.garden.GardenOptimalSpeed
@@ -54,7 +54,7 @@ object GuiEditManager {
         openGuiPositionEditor(hotkeyReminder = false)
     }
 
-    @HandleEvent(priority = 2)
+    @HandleEvent(HandleEvent.LOWEST)
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
         GlStateManager.color(1f, 1f, 1f, 1f)
         GlStateManager.enableBlend()

@@ -3,9 +3,9 @@ package at.hannibal2.skyhanni.features.fishing.trophy
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
-import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
@@ -25,7 +25,7 @@ object GeyserFishing {
     private var geyser: LorenzVec? = null
     private var geyserBox: BoundingBox? = null
 
-    @HandleEvent(priority = 1, receiveCancelled = true)
+    @HandleEvent(HandleEvent.LOW, receiveCancelled = true)
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!shouldProcessParticles()) return
         with(event) {

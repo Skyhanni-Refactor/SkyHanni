@@ -2,9 +2,9 @@ package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.damageindicator.DamageIndicatorFinalBossEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.PlaySoundEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
@@ -16,7 +16,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.monster.EntityGuardian
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object DungeonCleanEnd {
 
@@ -83,7 +82,7 @@ object DungeonCleanEnd {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
         if (!shouldBlock()) return
 
@@ -104,7 +103,7 @@ object DungeonCleanEnd {
             return
         }
 
-        event.isCanceled = true
+        event.cancel()
     }
 
     @HandleEvent

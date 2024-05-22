@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -57,13 +57,13 @@ object FishingHookDisplay {
         potentialArmorStands.add(entity)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
         if (!isEnabled()) return
         if (!config.hideArmorStand) return
 
         if (event.entity == armorStand) {
-            event.isCanceled = true
+            event.cancel()
         }
     }
 

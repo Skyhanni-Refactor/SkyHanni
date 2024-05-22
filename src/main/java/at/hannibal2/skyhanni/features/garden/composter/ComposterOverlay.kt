@@ -104,7 +104,7 @@ object ComposterOverlay {
         inInventory = false
     }
 
-    @HandleEvent(priority = 1)
+    @HandleEvent(HandleEvent.LOW)
     fun onTabListUpdate(event: TabListUpdateEvent) {
         if (!inInventory) return
 

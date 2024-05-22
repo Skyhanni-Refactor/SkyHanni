@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.nether.ashfang
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.BossType
@@ -10,8 +10,6 @@ import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorMana
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object AshfangHideParticles {
 
@@ -33,7 +31,7 @@ object AshfangHideParticles {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @HandleEvent(priority = HandleEvent.HIGH)
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
         if (!isEnabled()) return
 
@@ -44,7 +42,7 @@ object AshfangHideParticles {
                 val name = stack.name
                 if (name == "§aFairy Souls") continue
                 if (name == "Glowstone") {
-                    event.isCanceled = true
+                    event.cancel()
                 }
             }
         }

@@ -2,13 +2,12 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.mc.McWorld
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object HideFarEntities {
     private val config get() = SkyHanniMod.feature.misc.hideFarEntities
@@ -29,7 +28,7 @@ object HideFarEntities {
             .map { it.first }.toSet()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
         if (isEnabled() && event.entity.entityId in ignored) {
             event.cancel()

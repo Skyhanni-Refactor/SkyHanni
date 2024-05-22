@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.utils.ConditionalUtils
@@ -13,7 +13,6 @@ import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.entity.Entity
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 object ChumBucketHider {
@@ -27,7 +26,7 @@ object ChumBucketHider {
         reset()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
         if (!LorenzUtils.inSkyBlock) return
         if (!config.enabled.get()) return
@@ -36,7 +35,7 @@ object ChumBucketHider {
         if (entity !is EntityArmorStand) return
 
         if (entity in hiddenEntities) {
-            event.isCanceled = true
+            event.cancel()
             return
         }
 
@@ -47,7 +46,7 @@ object ChumBucketHider {
             if (name.contains(McPlayer.name) && !config.hideOwn.get()) return
             titleEntity.add(entity)
             hiddenEntities.add(entity)
-            event.isCanceled = true
+            event.cancel()
             return
         }
 
@@ -57,7 +56,7 @@ object ChumBucketHider {
             for (title in titleEntity.toSet()) {
                 if (entityLocation.equalsIgnoreY(title.getLorenzVec())) {
                     hiddenEntities.add(entity)
-                    event.isCanceled = true
+                    event.cancel()
                     return
                 }
             }
@@ -69,7 +68,7 @@ object ChumBucketHider {
             for (title in titleEntity.toSet()) {
                 if (entityLocation.equalsIgnoreY(title.getLorenzVec())) {
                     hiddenEntities.add(entity)
-                    event.isCanceled = true
+                    event.cancel()
                     return
                 }
             }

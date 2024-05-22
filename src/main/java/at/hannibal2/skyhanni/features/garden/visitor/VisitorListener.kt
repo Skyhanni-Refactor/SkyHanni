@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.garden.visitor
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.garden.visitor.VisitorConfig
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorOpenEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorRenderEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
@@ -140,7 +140,7 @@ object VisitorListener {
         GardenVisitorFeatures.onTooltip(visitor, event.itemStack, event.toolTip)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
         if (!GardenAPI.inGarden()) return
         if (!GardenAPI.onBarnPlot) return
@@ -148,7 +148,7 @@ object VisitorListener {
 
         val entity = event.entity
         if (entity is EntityArmorStand && entity.name == "§e§lCLICK") {
-            event.isCanceled = true
+            event.cancel()
         }
     }
 

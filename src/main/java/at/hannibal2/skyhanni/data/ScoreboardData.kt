@@ -81,7 +81,7 @@ object ScoreboardData {
         }
     }
 
-    @HandleEvent(priority = -2)
+    @HandleEvent(HandleEvent.HIGHEST)
     fun onTick(event: ClientTickEvent) {
         if (!dirty) return
         dirty = false

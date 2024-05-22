@@ -2,9 +2,9 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.chat.ChatHoverEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.SystemMessageEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.features.inventory.patternGroup
 import at.hannibal2.skyhanni.mixins.hooks.GuiChatHook
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -30,14 +30,14 @@ object ReplaceRomanNumerals {
     )
 
     // TODO: Remove after pr 1717 is ready and switch to ItemHoverEvent
-    @HandleEvent(priority = -2)
+    @HandleEvent(HandleEvent.HIGHEST)
     fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!isEnabled()) return
 
         event.toolTip.replaceAll { it.transformLine() }
     }
 
-    @HandleEvent(priority = 2)
+    @HandleEvent(HandleEvent.LOWEST)
     fun onChatHover(event: ChatHoverEvent) {
         if (event.getHoverEvent().action != HoverEvent.Action.SHOW_TEXT) return
         if (!isEnabled()) return

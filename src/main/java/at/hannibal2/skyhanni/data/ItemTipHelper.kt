@@ -36,7 +36,7 @@ object ItemTipHelper {
         }
     }
 
-    @HandleEvent(priority = -2)
+    @HandleEvent(HandleEvent.HIGHEST)
     fun onRenderInventoryItemOverlayPost(event: DrawScreenAfterEvent) {
         if (!LorenzUtils.inSkyBlock) return
         if (!SkyHanniDebugsAndTests.globalRender) return

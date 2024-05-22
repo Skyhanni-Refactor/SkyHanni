@@ -2,14 +2,13 @@ package at.hannibal2.skyhanni.features.slayer.blaze
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.BossType
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.entity.projectile.EntityFireball
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object BlazeSlayerClearView {
 
@@ -42,12 +41,12 @@ object BlazeSlayerClearView {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
         if (isEnabled()) {
             val entity = event.entity
             if (entity is EntityFireball) {
-                event.isCanceled = true
+                event.cancel()
             }
         }
     }

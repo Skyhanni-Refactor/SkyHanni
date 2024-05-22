@@ -26,7 +26,7 @@ object Translator {
 
     // Logic for listening for a user click on a chat message is from NotEnoughUpdates
 
-    @HandleEvent(priority = 2)
+    @HandleEvent(HandleEvent.LOWEST)
     fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
 

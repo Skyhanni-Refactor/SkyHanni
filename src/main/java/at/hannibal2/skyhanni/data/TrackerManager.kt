@@ -19,14 +19,14 @@ object TrackerManager {
         }
     }
 
-    @HandleEvent(priority = -2)
+    @HandleEvent(HandleEvent.HIGHEST)
     fun onRenderOverlayFirst(event: GuiRenderEvent) {
         if (hasChanged) {
             dirty = true
         }
     }
 
-    @HandleEvent(priority = 2)
+    @HandleEvent(HandleEvent.LOWEST)
     fun onRenderOverlayLast(event: GuiRenderEvent) {
         if (hasChanged) {
             dirty = false

@@ -27,7 +27,7 @@ object JacobContestTimeNeeded {
     private var display = emptyList<List<Any>>()
     private var currentBracket = ContestBracket.GOLD
 
-    @HandleEvent(priority = 1)
+    @HandleEvent(HandleEvent.LOW)
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
         if (FarmingContestAPI.inInventory) {
             update()

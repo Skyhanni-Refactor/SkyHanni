@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
@@ -26,7 +26,6 @@ import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.potion.Potion
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object DungeonLividFinder {
 
@@ -88,7 +87,7 @@ object DungeonLividFinder {
         if (!it.isDead && it.health > 0.5) it else null
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
         if (!inDungeon()) return
         if (!config.hideWrong) return
@@ -100,7 +99,7 @@ object DungeonLividFinder {
 
         if (entity != livid && entity != lividArmorStand) {
             if (entity.name.contains("Livid")) {
-                event.isCanceled = true
+                event.cancel()
             }
         }
     }

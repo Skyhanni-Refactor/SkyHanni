@@ -2,8 +2,8 @@ package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.utils.neu.NeuRenderEvent
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
@@ -21,7 +21,7 @@ object GuiData {
 
     var preDrawEventCanceled = false
 
-    @HandleEvent(priority = -1)
+    @HandleEvent(HandleEvent.HIGH)
     fun onNeuRenderEvent(event: NeuRenderEvent) {
         if (preDrawEventCanceled) event.cancel()
     }
