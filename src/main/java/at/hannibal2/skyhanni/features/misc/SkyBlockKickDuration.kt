@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -30,7 +31,7 @@ object SkyBlockKickDuration {
         if (!isEnabled()) return
         if (event.message == "§cYou were kicked while joining that server!") {
 
-            if (HypixelAPI.onHypixel && !LorenzUtils.inSkyBlock) {
+            if (HypixelAPI.onHypixel && !SkyBlockAPI.isConnected) {
                 kickMessage = false
                 showTime = true
                 lastKickTime = SimpleTimeMark.now()
@@ -63,7 +64,7 @@ object SkyBlockKickDuration {
         if (!HypixelAPI.onHypixel) return
         if (!showTime) return
 
-        if (LorenzUtils.inSkyBlock) {
+        if (SkyBlockAPI.isConnected) {
             showTime = false
         }
 

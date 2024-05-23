@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.contest
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderItemTooltipEvent
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed.getLatestBl
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
@@ -122,7 +122,7 @@ object JacobContestFFNeededDisplay {
         config.farmingFortuneForContestPos.renderStringsAndItems(display, posLabel = "Jacob Contest Crop Data")
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.farmingFortuneForContest
+    fun isEnabled() = SkyBlockAPI.isConnected && config.farmingFortuneForContest
 }
 
 private fun CropType.getRealBlocksPerSecond(): Double {

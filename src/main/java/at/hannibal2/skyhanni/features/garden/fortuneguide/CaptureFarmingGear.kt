@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.fortuneguide
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.PetAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
@@ -14,7 +15,6 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimalIfNecessary
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
@@ -148,7 +148,7 @@ object CaptureFarmingGear {
 
     @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         val storage = GardenAPI.storage?.fortune ?: return
         val farmingItems = farmingItems ?: return
         val outdatedItems = outdatedItems ?: return
@@ -321,7 +321,7 @@ object CaptureFarmingGear {
 
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         val storage = GardenAPI.storage?.fortune ?: return
         val outdatedItems = outdatedItems ?: return
         val msg = event.message.removeColor().trim()

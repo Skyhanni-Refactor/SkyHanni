@@ -89,7 +89,7 @@ object QuiverWarning {
         arrowsInInstance.clear()
     }
 
-    private fun inInstance() = DungeonAPI.inDungeon() || KuudraAPI.inKuudra()
+    private fun inInstance() = DungeonAPI.inDungeon() || KuudraAPI.inKuudra
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

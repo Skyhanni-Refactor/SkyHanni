@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.combat.mobs
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils.hasMaxHealth
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -32,7 +32,7 @@ object AreaMiniBossFeatures {
 
     @HandleEvent
     fun onEntityHealthUpdate(event: EntityMaxHealthUpdateEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         val entity = event.entity
         for (bossType in AreaMiniBossType.entries) {
@@ -59,7 +59,7 @@ object AreaMiniBossFeatures {
 
     @HandleEvent
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.areaBossRespawnTimer) return
 
         miniBossType?.apply {

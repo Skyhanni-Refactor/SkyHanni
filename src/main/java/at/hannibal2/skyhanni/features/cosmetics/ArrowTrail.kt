@@ -2,12 +2,12 @@ package at.hannibal2.skyhanni.features.cosmetics
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -65,7 +65,7 @@ object ArrowTrail {
         }
     }
 
-    private fun isEnabled() = config.enabled && (LorenzUtils.inSkyBlock || OutsideSbFeature.ARROW_TRAIL.isSelected())
+    private fun isEnabled() = config.enabled && (SkyBlockAPI.isConnected || OutsideSbFeature.ARROW_TRAIL.isSelected())
 
     @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {

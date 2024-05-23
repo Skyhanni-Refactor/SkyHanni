@@ -2,9 +2,9 @@ package at.hannibal2.skyhanni.features.garden.farming
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
-import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.jsonobjects.other.EliteLeaderboardJson
 import at.hannibal2.skyhanni.data.jsonobjects.other.ElitePlayerWeightJson
@@ -23,7 +23,6 @@ import at.hannibal2.skyhanni.features.garden.pests.PestType
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
@@ -151,7 +150,7 @@ object FarmingWeightDisplay {
 
         if (weight == -1.0) {
             if (!isLoadingWeight) {
-                val localProfile = HypixelData.profileName
+                val localProfile = SkyBlockAPI.profileName ?: ""
 
                 isLoadingWeight = true
                 if (display.isEmpty()) {
@@ -333,8 +332,8 @@ object FarmingWeightDisplay {
         )
     }
 
-    private fun isEnabled() = ((OutsideSbFeature.FARMING_WEIGHT.isSelected() && !LorenzUtils.inSkyBlock) ||
-        (LorenzUtils.inSkyBlock && (GardenAPI.inGarden() || config.showOutsideGarden))) && config.display
+    private fun isEnabled() = ((OutsideSbFeature.FARMING_WEIGHT.isSelected() && !SkyBlockAPI.isConnected) ||
+        (SkyBlockAPI.isConnected && (GardenAPI.inGarden() || config.showOutsideGarden))) && config.display
 
     private fun isEtaEnabled() = config.overtakeETA
 

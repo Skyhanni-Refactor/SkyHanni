@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.composter
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.TitleManager
@@ -12,7 +13,6 @@ import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
@@ -133,7 +133,7 @@ object ComposterDisplay {
 
     @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!LorenzUtils.inSkyBlock && !OutsideSbFeature.COMPOSTER_TIME.isSelected()) return
+        if (!SkyBlockAPI.isConnected && !OutsideSbFeature.COMPOSTER_TIME.isSelected()) return
 
         if (GardenAPI.inGarden() && config.displayEnabled) {
             config.displayPos.renderStringsAndItems(display, posLabel = "Composter Display")
@@ -159,8 +159,8 @@ object ComposterDisplay {
             } else "?"
         } ?: "§cJoin SkyBlock to show composter timer."
 
-        val inSb = LorenzUtils.inSkyBlock && config.displayOutsideGarden
-        val outsideSb = !LorenzUtils.inSkyBlock && OutsideSbFeature.COMPOSTER_TIME.isSelected()
+        val inSb = SkyBlockAPI.isConnected && config.displayOutsideGarden
+        val outsideSb = !SkyBlockAPI.isConnected && OutsideSbFeature.COMPOSTER_TIME.isSelected()
         if (!GardenAPI.inGarden() && (inSb || outsideSb)) {
             val list = Collections.singletonList(listOf(bucket, "§b$format"))
             config.outsideGardenPos.renderStringsAndItems(list, posLabel = "Composter Outside Garden Display")

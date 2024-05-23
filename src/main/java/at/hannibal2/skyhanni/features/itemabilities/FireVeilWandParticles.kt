@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.itemabilities
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.itemability.FireVeilWandConfig.DisplayEntry
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.nether.ashfang.AshfangFreezeCooldown
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraft.client.Minecraft
@@ -26,7 +26,7 @@ object FireVeilWandParticles {
 
     @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (config.display == DisplayEntry.PARTICLES) return
         if (lastClick.passedSince() > 5.5.seconds) return
         if (event.type == EnumParticleTypes.FLAME && event.speed == 0.55f) {
@@ -36,7 +36,7 @@ object FireVeilWandParticles {
 
     @HandleEvent
     fun onItemClick(event: ItemClickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (event.clickType != ClickType.RIGHT_CLICK) return
         val internalName = event.itemInHand?.getInternalName()
 
@@ -49,7 +49,7 @@ object FireVeilWandParticles {
 
     @HandleEvent
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (config.display != DisplayEntry.LINE) return
         if (lastClick.passedSince() > 5.5.seconds) return
 

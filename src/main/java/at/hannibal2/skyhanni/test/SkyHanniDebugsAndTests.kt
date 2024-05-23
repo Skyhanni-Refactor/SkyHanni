@@ -32,6 +32,7 @@ import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzDebug
 import at.hannibal2.skyhanni.utils.LorenzLogger
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
@@ -307,7 +308,7 @@ class SkyHanniDebugsAndTests {
         }
 
         fun whereAmI() {
-            if (LorenzUtils.inSkyBlock) {
+            if (SkyBlockAPI.isConnected) {
                 ChatUtils.chat("§eYou are currently in ${LorenzUtils.skyBlockIsland}.")
                 return
             }
@@ -425,7 +426,7 @@ class SkyHanniDebugsAndTests {
 
     @HandleEvent
     fun onShowInternalName(event: SkyHanniToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!debugConfig.showInternalName) return
         val itemStack = event.itemStack
         val internalName = itemStack.getInternalName()
@@ -435,7 +436,7 @@ class SkyHanniDebugsAndTests {
 
     @HandleEvent
     fun showItemRarity(event: SkyHanniToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!debugConfig.showItemRarity) return
         val itemStack = event.itemStack
 
@@ -445,7 +446,7 @@ class SkyHanniDebugsAndTests {
 
     @HandleEvent
     fun showItemCategory(event: SkyHanniToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!debugConfig.showItemCategory) return
         val itemStack = event.itemStack
 
@@ -455,7 +456,7 @@ class SkyHanniDebugsAndTests {
 
     @HandleEvent
     fun onShowNpcPrice(event: SkyHanniToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!debugConfig.showNpcPrice) return
         val internalName = event.itemStack.getInternalNameOrNull() ?: return
 
@@ -465,7 +466,7 @@ class SkyHanniDebugsAndTests {
 
     @HandleEvent
     fun onShowBzPrice(event: SkyHanniToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!debugConfig.showBZPrice) return
         val internalName = event.itemStack.getInternalNameOrNull() ?: return
 
@@ -479,7 +480,7 @@ class SkyHanniDebugsAndTests {
 
     @HandleEvent
     fun onShowItemName(event: SkyHanniToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!debugConfig.showItemName) return
         val itemStack = event.itemStack
         val internalName = itemStack.getInternalName()
@@ -497,7 +498,7 @@ class SkyHanniDebugsAndTests {
 
     @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         @Suppress("ConstantConditionIf")
         if (false) {

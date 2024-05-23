@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.data.mob
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.mob.MobData.Companion.logger
 import at.hannibal2.skyhanni.data.mob.MobFilter.isDisplayNPC
@@ -84,7 +85,7 @@ class MobDetection {
             mobDetectionReset()
             shouldClear.set(false)
         }
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (event.isMod(2)) return
 
         makeEntityReferenceUpdate()

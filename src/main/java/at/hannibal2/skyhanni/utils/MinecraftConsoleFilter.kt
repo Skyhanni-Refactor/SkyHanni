@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import org.apache.logging.log4j.Level
 import org.apache.logging.log4j.LogManager
@@ -151,7 +152,7 @@ class MinecraftConsoleFilter(private val loggerConfigName: String) : Filter {
         }
 
         if (!config.printUnfilteredDebugs) return Filter.Result.ACCEPT
-        if (!config.printUnfilteredDebugsOutsideSkyBlock && !LorenzUtils.inSkyBlock) return Filter.Result.ACCEPT
+        if (!config.printUnfilteredDebugsOutsideSkyBlock && !SkyBlockAPI.isConnected) return Filter.Result.ACCEPT
         if (formattedMessage == "filtered console: ") return Filter.Result.ACCEPT
 
         debug(" ")

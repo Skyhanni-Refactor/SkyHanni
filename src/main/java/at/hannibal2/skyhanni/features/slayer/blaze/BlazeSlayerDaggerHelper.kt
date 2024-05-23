@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.slayer.blaze
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.core.config.gui.GuiPositionEditor
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
@@ -12,7 +13,6 @@ import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LocationUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -42,7 +42,7 @@ object BlazeSlayerDaggerHelper {
 
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.hideDaggerWarning) return
 
         val message = event.message
@@ -194,7 +194,7 @@ object BlazeSlayerDaggerHelper {
     }
 
     private fun isEnabled(): Boolean {
-        return LorenzUtils.inSkyBlock && config.daggers
+        return SkyBlockAPI.isConnected && config.daggers
     }
 
     @HandleEvent

@@ -3,10 +3,10 @@ package at.hannibal2.skyhanni.features.misc.visualwords
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils.convertToFormatted
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
 import kotlin.time.Duration.Companion.minutes
@@ -22,7 +22,7 @@ object ModifyVisualWords {
         var modifiedText = originalText ?: return null
         if (!HypixelAPI.onHypixel) return originalText
         if (!config.enabled) return originalText
-        if (!LorenzUtils.inSkyBlock && !OutsideSbFeature.MODIFY_VISUAL_WORDS.isSelected()) return originalText
+        if (!SkyBlockAPI.isConnected && !OutsideSbFeature.MODIFY_VISUAL_WORDS.isSelected()) return originalText
 
         if (modifiedWords.isEmpty()) {
             modifiedWords.addAll(SkyHanniMod.visualWordsData.modifiedWords)

@@ -17,7 +17,6 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ChatUtils.isCommand
 import at.hannibal2.skyhanni.utils.ChatUtils.senderIsSkyhanni
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.isDouble
@@ -84,7 +83,7 @@ object GetFromSackAPI {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (queue.isNotEmpty() && lastTimeOfCommand.passedSince() >= minimumDelay) {
             val item = queue.poll()
             HypixelCommands.getFromSacks(item.internalName.asString().replace('-', ':'), item.amount)
@@ -99,7 +98,7 @@ object GetFromSackAPI {
 
     @HandleEvent
     fun onSlotClicked(event: SlotClickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (event.clickedButton != 1) return // filter none right clicks
         addToQueue(inventoryMap[event.slotId] ?: return)
         inventoryMap.remove(event.slotId)
@@ -108,7 +107,7 @@ object GetFromSackAPI {
 
     @HandleEvent
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         val list = inventoryMap[event.slot.slotIndex] ?: return
         event.toolTip.let { tip ->
             tip.add("")
@@ -119,7 +118,7 @@ object GetFromSackAPI {
 
     @HandleEvent
     fun onMessageToServer(event: MessageSendToServerEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.queuedGFS && !config.bazaarGFS) return
         if (!event.isCommand(commandsWithSlash)) return
         val replacedEvent = GetFromSacksTabComplete.handleUnderlineReplace(event)
@@ -193,7 +192,7 @@ object GetFromSackAPI {
 
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.bazaarGFS || SkyBlockAPI.gamemode.noTrade) return
         val stack = lastItemStack ?: return
         val message = event.message

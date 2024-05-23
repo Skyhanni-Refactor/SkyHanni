@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage.DungeonStorage.DungeonRunInfo
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
@@ -19,7 +20,6 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.RegexUtils.anyMatches
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -70,7 +70,7 @@ object CroesusChestTracker {
 
     @HandleEvent(priority = HandleEvent.LOW)
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.dungeon.croesusUnopenedChestTracker) return
 
         if (inCroesusInventory && !croesusEmpty) {
@@ -91,7 +91,7 @@ object CroesusChestTracker {
 
     @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if ((SkyHanniMod.feature.dungeon.croesusUnopenedChestTracker || config.showUsedKismets) &&
             croesusPattern.matches(event.inventoryName)
         ) {
@@ -176,7 +176,7 @@ object CroesusChestTracker {
 
     @HandleEvent
     fun onSlotClick(event: SlotClickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.showUsedKismets) return
         if (chestInventory != null && event.slotId == KISMET_SLOT) {
             setKismetUsed()
@@ -202,7 +202,7 @@ object CroesusChestTracker {
 
     @HandleEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.kismetStackSize) return
         if (chestInventory == null) return
         if (!kismetPattern.matches(event.stack.name)) return
@@ -212,7 +212,7 @@ object CroesusChestTracker {
 
     @HandleEvent
     fun onRenderItemTipIsKismetable(event: RenderInventoryItemTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.showUsedKismets) return
         if (!inCroesusInventory) return
         if (event.slot.slotIndex != event.slot.slotNumber) return

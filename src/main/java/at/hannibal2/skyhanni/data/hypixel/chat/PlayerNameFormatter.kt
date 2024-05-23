@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.data.hypixel.chat
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.chat.PlayerMessagesConfig
 import at.hannibal2.skyhanni.events.chat.hypixel.CoopChatEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.GuildChatEvent
@@ -18,7 +19,6 @@ import at.hannibal2.skyhanni.utils.ChatUtils.changeColor
 import at.hannibal2.skyhanni.utils.ComponentMatcherUtils.matchStyledMatcher
 import at.hannibal2.skyhanni.utils.ComponentSpan
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.StringUtils.applyFormattingFrom
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
@@ -236,7 +236,7 @@ class PlayerNameFormatter {
         return MarkedPlayerManager.replaceInChat(result)
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.enable
+    fun isEnabled() = SkyBlockAPI.isConnected && config.enable
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

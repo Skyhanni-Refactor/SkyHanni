@@ -1,11 +1,11 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.features.event.hoppity.HoppityEggsManager.getEggType
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.RegexUtils.groupOrNull
@@ -57,5 +57,5 @@ object HoppityEggsShared {
         HypixelCommands.allChat("[SkyHanni] ${meal.mealName} Chocolate Egg located at x: $x, y: $y, z: $z ($note)")
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.waypoints && config.sharedWaypoints
+    fun isEnabled() = SkyBlockAPI.isConnected && config.waypoints && config.sharedWaypoints
 }

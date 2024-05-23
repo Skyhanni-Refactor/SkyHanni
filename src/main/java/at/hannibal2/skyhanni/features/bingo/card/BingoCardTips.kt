@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.bingo.card
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
 import at.hannibal2.skyhanni.features.bingo.BingoAPI
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils.getAllItems
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -103,7 +103,7 @@ object BingoCardTips {
         }
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.bingoSplashGuide
+    fun isEnabled() = SkyBlockAPI.isConnected && config.bingoSplashGuide
 
     enum class Difficulty(rawName: String, val color: LorenzColor) {
         EASY("Easy", LorenzColor.GREEN),

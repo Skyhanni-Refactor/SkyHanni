@@ -8,6 +8,7 @@ import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
@@ -72,6 +73,6 @@ object UniqueGiftCounter {
         )
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled && DateUtils.isDecember() &&
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled && DateUtils.isDecember() &&
         InventoryUtils.itemInHandId.endsWith("_GIFT")
 }

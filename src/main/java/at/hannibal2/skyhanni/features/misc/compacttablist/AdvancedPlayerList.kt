@@ -10,10 +10,10 @@ import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.misc.ContributorManager
 import at.hannibal2.skyhanni.features.misc.MarkedPlayerManager
+import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
@@ -43,7 +43,7 @@ object AdvancedPlayerList {
     } ?: TabLine(text, type)
 
     fun newSorting(original: List<String>): List<String> {
-        if (LorenzUtils.inKuudraFight) return original
+        if (KuudraAPI.inKuudra) return original
         if (DungeonAPI.inDungeon()) return original
 
         if (ignoreCustomTabList()) return original

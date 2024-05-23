@@ -1,11 +1,11 @@
 package at.hannibal2.skyhanni.features.gui.customscoreboard
 
 import at.hannibal2.skyhanni.api.BitsAPI
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.skyblock.Gamemode
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.gui.customscoreboard.ArrowConfig.ArrowAmountDisplay
 import at.hannibal2.skyhanni.data.HypixelData
-import at.hannibal2.skyhanni.data.HypixelData.getMaxPlayersForCurrentServer
 import at.hannibal2.skyhanni.data.HypixelData.getPlayersOnCurrentServer
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.MaxwellAPI
@@ -345,7 +345,7 @@ private fun getTitleDisplayPair(): List<ScoreboardElementType> =
     }
 
 private fun getProfileDisplayPair() =
-    listOf(CustomScoreboardUtils.getProfileTypeSymbol() + HypixelData.profileName.firstLetterUppercase() to HorizontalAlignment.LEFT)
+    listOf(CustomScoreboardUtils.getProfileTypeSymbol() + SkyBlockAPI.profileName?.firstLetterUppercase() to HorizontalAlignment.LEFT)
 
 private fun getPurseDisplayPair(): List<ScoreboardElementType> {
     var purse = PurseAPI.currentPurse.formatNum()
@@ -518,7 +518,7 @@ private fun getLocationDisplayPair() = buildList {
 
 fun getPlayerAmountDisplayPair() = buildList {
     val max = if (displayConfig.showMaxIslandPlayers) {
-        "§7/§a${getMaxPlayersForCurrentServer()}"
+        "§7/§a${SkyBlockAPI.maxPlayers}"
     } else {
         ""
     }
@@ -551,9 +551,8 @@ private fun getTimeDisplayPair(): List<ScoreboardElementType> {
 }
 
 private fun getLobbyDisplayPair(): List<ScoreboardElementType> {
-    val lobbyCode = HypixelData.serverId
     val roomId = DungeonAPI.getRoomID()?.let { "§8$it" } ?: ""
-    val lobbyDisplay = lobbyCode?.let { "§8$it $roomId" } ?: "<hidden>"
+    val lobbyDisplay = HypixelAPI.server?.let { "§8$it $roomId" } ?: "<hidden>"
     return listOf(lobbyDisplay to HorizontalAlignment.LEFT)
 }
 

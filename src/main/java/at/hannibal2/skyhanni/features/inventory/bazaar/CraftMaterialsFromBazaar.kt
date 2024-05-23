@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.inventory.bazaar
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.addString
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.itemNameWithoutColor
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getPrice
 import at.hannibal2.skyhanni.utils.NumberUtil
@@ -166,6 +166,6 @@ object CraftMaterialsFromBazaar {
         config.craftMaterialsFromBazaarPosition.renderRenderables(display, posLabel = "Craft Materials From Bazaar")
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.craftMaterialsFromBazaar
+    fun isEnabled() = SkyBlockAPI.isConnected && config.craftMaterialsFromBazaar
 
 }

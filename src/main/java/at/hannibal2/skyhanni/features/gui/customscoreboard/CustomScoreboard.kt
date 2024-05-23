@@ -21,6 +21,7 @@ package at.hannibal2.skyhanni.features.gui.customscoreboard
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiPositionMovedEvent
@@ -31,7 +32,6 @@ import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
 import at.hannibal2.skyhanni.utils.DelayedRun.runDelayed
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.HorizontalAlignment
 import at.hannibal2.skyhanni.utils.RenderUtils.VerticalAlignment
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAlignedWidth
@@ -179,7 +179,7 @@ class CustomScoreboard {
     @HandleEvent
     fun onWorldChange(event: WorldChangeEvent) {
         runDelayed(2.seconds) {
-            if (!LorenzUtils.inSkyBlock) dirty = true
+            if (!SkyBlockAPI.isConnected) dirty = true
         }
     }
 
@@ -201,7 +201,7 @@ class CustomScoreboard {
         }
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled.get()
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled.get()
     private fun isHideVanillaScoreboardEnabled() = isEnabled() && displayConfig.hideVanillaScoreboard.get()
 
     @HandleEvent

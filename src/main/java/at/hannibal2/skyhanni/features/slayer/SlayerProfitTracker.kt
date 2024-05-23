@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.events.slayer.SlayerQuestCompleteEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil
@@ -214,7 +215,7 @@ object SlayerProfitTracker {
         getTracker()?.renderDisplay(config.pos)
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
+    fun isEnabled() = SkyBlockAPI.isConnected && config.enabled
 
     fun clearProfitCommand(args: Array<String>) {
         if (itemLogCategory == "") {

@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ItemsJson
 import at.hannibal2.skyhanni.events.entity.EntityEnterWorldEvent
 import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
@@ -15,7 +16,6 @@ import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -45,7 +45,7 @@ object FishingAPI {
 
     @HandleEvent
     fun onJoinWorld(event: EntityEnterWorldEvent) {
-        if (!LorenzUtils.inSkyBlock || !holdingRod) return
+        if (!SkyBlockAPI.isConnected || !holdingRod) return
         val entity = event.entity ?: return
         if (entity !is EntityFishHook) return
         if (entity.angler != Minecraft.getMinecraft().thePlayer) return
@@ -68,7 +68,7 @@ object FishingAPI {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         val bobber = bobber ?: return
         if (bobber.isDead) {
             resetBobber()

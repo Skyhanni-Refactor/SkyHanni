@@ -2,11 +2,11 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.features.commands.WikiManager
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 
 object BetterWikiFromMenus {
@@ -15,7 +15,7 @@ object BetterWikiFromMenus {
 
     @HandleEvent(priority = HandleEvent.HIGH)
     fun onSlotClick(event: SlotClickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!isEnabled()) return
 
         val chestName = InventoryUtils.openInventoryName()

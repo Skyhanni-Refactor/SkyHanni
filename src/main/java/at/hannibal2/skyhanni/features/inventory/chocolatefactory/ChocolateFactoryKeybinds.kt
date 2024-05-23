@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyClicked
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
@@ -16,7 +16,7 @@ object ChocolateFactoryKeybinds {
 
     @HandleEvent
     fun onKeyPress(event: GuiKeyPressEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
         if (!ChocolateFactoryAPI.inChocolateFactory) return
 
@@ -43,7 +43,7 @@ object ChocolateFactoryKeybinds {
 
     @HandleEvent
     fun onSlotClick(event: SlotClickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
         if (!ChocolateFactoryAPI.inChocolateFactory) return
 

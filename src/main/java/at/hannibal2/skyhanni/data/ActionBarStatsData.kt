@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.events.skyblock.ActionBarValueUpdateEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import org.intellij.lang.annotations.Language
@@ -45,7 +45,7 @@ enum class ActionBarStatsData(@Language("RegExp") rawPattern: String) {
 
         @HandleEvent
         fun onActionBarUpdate(event: ActionBarUpdateEvent) {
-            if (!LorenzUtils.inSkyBlock) return
+            if (!SkyBlockAPI.isConnected) return
 
             entries.mapNotNull { data ->
                 data.pattern.matchMatcher(event.actionBar) {

@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.mining
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
@@ -103,7 +104,7 @@ object KingTalismanHelper {
         skyblockYear = SkyBlockTime.now().year
     }
 
-    fun isEnabled() = config.enabled && LorenzUtils.inSkyBlock
+    fun isEnabled() = config.enabled && SkyBlockAPI.isConnected
         && (IslandType.DWARVEN_MINES.isInIsland() || config.outsideMines)
 
     @HandleEvent

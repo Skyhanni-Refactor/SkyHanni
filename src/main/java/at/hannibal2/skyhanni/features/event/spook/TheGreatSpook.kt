@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.TabListData
@@ -49,11 +50,11 @@ object TheGreatSpook {
         if (isTimeLeftEnabled()) config.positionTimeLeft.renderString(displayTimeLeft, posLabel = "Time Left Display")
     }
 
-    private fun isTimerEnabled(): Boolean = LorenzUtils.inSkyBlock && config.primalFearTimer
+    private fun isTimerEnabled(): Boolean = SkyBlockAPI.isConnected && config.primalFearTimer
 
-    private fun isNotificationEnabled(): Boolean = LorenzUtils.inSkyBlock && config.primalFearNotification
-    private fun isFearStatEnabled(): Boolean = LorenzUtils.inSkyBlock && config.fearStatDisplay
-    private fun isTimeLeftEnabled(): Boolean = LorenzUtils.inSkyBlock && config.greatSpookTimeLeft
+    private fun isNotificationEnabled(): Boolean = SkyBlockAPI.isConnected && config.primalFearNotification
+    private fun isFearStatEnabled(): Boolean = SkyBlockAPI.isConnected && config.fearStatDisplay
+    private fun isTimeLeftEnabled(): Boolean = SkyBlockAPI.isConnected && config.greatSpookTimeLeft
 
     private fun isAllDisabled(): Boolean = !isTimeLeftEnabled() && !isTimerEnabled() && !isFearStatEnabled() &&
         !isNotificationEnabled()

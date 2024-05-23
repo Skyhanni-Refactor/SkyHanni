@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.inventory.auctionhouse
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUItems.getPrice
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
@@ -36,7 +36,7 @@ class AuctionHouseCopyUnderbidPrice {
 
     @HandleEvent
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.autoCopyUnderbidPrice) return
         if (!event.fullyOpenedOnce) return
         if (event.inventoryName != "Create BIN Auction") return
@@ -58,7 +58,7 @@ class AuctionHouseCopyUnderbidPrice {
     @HandleEvent
     fun onKeybind(event: GuiKeyPressEvent) {
         if (!config.copyUnderbidKeybind.isKeyHeld()) return
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!allowedInventoriesPattern.matches(InventoryUtils.openInventoryName())) return
         val stack = event.guiContainer.slotUnderMouse?.stack ?: return
 

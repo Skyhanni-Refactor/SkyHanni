@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.event.hoppity
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -15,7 +16,6 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LocationUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -75,7 +75,7 @@ object HoppityEggsManager {
 
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         hoppityEventNotOn.matchMatcher(event.message) {
             val currentYear = SkyBlockTime.now().year
@@ -219,5 +219,5 @@ object HoppityEggsManager {
         event.move(44, "event.chocolateFactory.hoppityEggs", "event.hoppityEggs")
     }
 
-    fun isActive() = LorenzUtils.inSkyBlock && ChocolateFactoryAPI.isHoppityEvent()
+    fun isActive() = SkyBlockAPI.isConnected && ChocolateFactoryAPI.isHoppityEvent()
 }

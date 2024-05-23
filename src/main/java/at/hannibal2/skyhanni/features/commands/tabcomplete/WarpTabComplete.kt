@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.WarpsJson
 import at.hannibal2.skyhanni.events.chat.TabCompletionEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 
 object WarpTabComplete {
@@ -25,5 +26,5 @@ object WarpTabComplete {
         }
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.warps
+    fun isEnabled() = SkyBlockAPI.isConnected && config.warps
 }

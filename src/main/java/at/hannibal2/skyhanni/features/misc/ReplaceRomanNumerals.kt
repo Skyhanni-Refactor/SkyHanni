@@ -2,12 +2,12 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.chat.ChatHoverEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.SystemMessageEvent
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.features.inventory.patternGroup
 import at.hannibal2.skyhanni.mixins.hooks.GuiChatHook
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.applyIfPossible
@@ -71,5 +71,5 @@ object ReplaceRomanNumerals {
     private fun String.coloredRomanToDecimal() = removeFormatting()
         .let { replace(it, it.romanToDecimal().toString()) }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && SkyHanniMod.feature.misc.replaceRomanNumerals
+    private fun isEnabled() = SkyBlockAPI.isConnected && SkyHanniMod.feature.misc.replaceRomanNumerals
 }

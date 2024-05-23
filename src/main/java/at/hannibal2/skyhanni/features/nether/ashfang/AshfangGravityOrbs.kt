@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.nether.ashfang
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
@@ -10,7 +11,6 @@ import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorMana
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
 import at.hannibal2.skyhanni.utils.LocationUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.getLorenzVec
@@ -58,6 +58,6 @@ object AshfangGravityOrbs {
         orbs.clear()
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled &&
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled &&
         DamageIndicatorManager.isBossSpawned(BossType.NETHER_ASHFANG)
 }

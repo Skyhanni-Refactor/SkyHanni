@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.misc.items
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
 import at.hannibal2.skyhanni.features.garden.pests.SprayType
@@ -46,7 +47,7 @@ object GlowingDroppedItems {
         }
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled
 
     private fun getEntityOutlineColor(entity: Entity): Int? {
         val item = entity as? EntityItem ?: return null

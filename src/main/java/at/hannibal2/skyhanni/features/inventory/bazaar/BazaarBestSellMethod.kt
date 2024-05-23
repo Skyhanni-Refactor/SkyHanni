@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.inventory.bazaar
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
@@ -9,7 +10,6 @@ import at.hannibal2.skyhanni.events.skyblock.BazaarOpenedProductEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.getBazaarDataOrError
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
@@ -77,5 +77,5 @@ object BazaarBestSellMethod {
         nextCloseWillResetItem = false
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.bestSellMethod
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.bestSellMethod
 }

@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.test
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.repo.RepoManager
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
@@ -17,11 +16,6 @@ import at.hannibal2.skyhanni.utils.system.OS
 object DebugCommand {
 
     fun command(args: Array<String>) {
-        if (args.size == 2 && args[0] == "profileName") {
-            HypixelData.profileName = args[1].lowercase()
-            ChatUtils.chat("§eManually set profileName to '${HypixelData.profileName}'")
-            return
-        }
         val list = mutableListOf<String>()
         list.add("```")
         list.add("= Debug Information for SkyHanni ${SkyHanniMod.version} =")
@@ -63,7 +57,7 @@ object DebugCommand {
 
     private fun profileType(event: DebugDataCollectEvent) {
         event.title("Profile Type")
-        if (!LorenzUtils.inSkyBlock) {
+        if (!SkyBlockAPI.isConnected) {
             event.addIrrelevant("Not on SkyBlock")
             return
         }
@@ -73,15 +67,14 @@ object DebugCommand {
 
     private fun profileName(event: DebugDataCollectEvent) {
         event.title("Profile Name")
-        if (!LorenzUtils.inSkyBlock) {
+        if (!SkyBlockAPI.isConnected) {
             event.addIrrelevant("Not on SkyBlock")
             return
         }
 
-        if (HypixelData.profileName != "") {
-            event.addIrrelevant("profileName: '${HypixelData.profileName}'")
-        } else {
-            event.addData("profile name is empty!")
+        event.addIrrelevant {
+            add("profileName: '${SkyBlockAPI.profileName ?: "NULL"}'")
+            add("profileId: '${SkyBlockAPI.profileId ?: "NULL"}'")
         }
     }
 
@@ -91,7 +84,7 @@ object DebugCommand {
             event.addData("not on Hypixel")
             return
         }
-        if (!LorenzUtils.inSkyBlock) {
+        if (!SkyBlockAPI.isConnected) {
             event.addData("not on SkyBlock, but on Hypixel")
             return
         }
