@@ -2,14 +2,12 @@ package at.hannibal2.skyhanni.features.garden.farming
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.compat.elitebot.EliteBotAPI
+import at.hannibal2.skyhanni.compat.elitebot.data.EliteBotLeaderboardRank
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.data.jsonobjects.other.EliteLeaderboardJson
-import at.hannibal2.skyhanni.data.jsonobjects.other.ElitePlayerWeightJson
-import at.hannibal2.skyhanni.data.jsonobjects.other.EliteWeightsJson
-import at.hannibal2.skyhanni.data.jsonobjects.other.UpcomingLeaderboardPlayer
 import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -19,9 +17,7 @@ import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed.getSpeed
-import at.hannibal2.skyhanni.features.garden.pests.PestType
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
@@ -30,12 +26,9 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.StringUtils.toDashlessUUID
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
-import at.hannibal2.skyhanni.utils.json.SkyHanniTypeAdapters
-import at.hannibal2.skyhanni.utils.json.fromJson
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.system.OS
-import com.google.gson.JsonObject
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -101,20 +94,13 @@ object FarmingWeightDisplay {
     private var isLoadingLeaderboard = false
     private var rankGoal = -1
 
-    private var nextPlayers = mutableListOf<UpcomingLeaderboardPlayer>()
+    private var nextPlayers = mutableListOf<EliteBotLeaderboardRank.UpcomingPlayer>()
     private val nextPlayer get() = nextPlayers.firstOrNull()
 
     private val recalculate by lazy {
         ({
             resetData()
         })
-    }
-
-    private val eliteWeightApiGson by lazy {
-        ConfigManager.createBaseGsonBuilder()
-            .registerTypeAdapter(CropType::class.java, SkyHanniTypeAdapters.CROP_TYPE.nullSafe())
-            .registerTypeAdapter(PestType::class.java, SkyHanniTypeAdapters.PEST_TYPE.nullSafe())
-            .create()
     }
 
     private val errorMessage by lazy {
@@ -250,10 +236,10 @@ object FarmingWeightDisplay {
         )
         val showRankGoal = leaderboardPosition == -1 || leaderboardPosition > rankGoal
         var nextName =
-            if (showRankGoal) "#$rankGoal" else nextPlayer.name
+            if (showRankGoal) "#$rankGoal" else nextPlayer.ign
 
         val totalWeight = (localWeight + weight)
-        var weightUntilOvertake = nextPlayer.weight - totalWeight
+        var weightUntilOvertake = nextPlayer.amount - totalWeight
 
         if (weightUntilOvertake < 0) {
             if (weightPerSecond > 0) {
@@ -274,11 +260,11 @@ object FarmingWeightDisplay {
 
             // Display waiting message if nextPlayers list is empty
             // Update values to next player
-            nextName = nextPlayer.name
-            weightUntilOvertake = nextPlayer.weight - totalWeight
+            nextName = nextPlayer.ign
+            weightUntilOvertake = nextPlayer.amount - totalWeight
         }
 
-        if (nextPlayer.weight == 0.0) {
+        if (nextPlayer.amount == 0.0) {
             return Renderable.clickAndHover(
                 "§cRejoin the garden to show ETA!",
                 listOf("Click here to calculate the data right now!"),
@@ -402,81 +388,79 @@ object FarmingWeightDisplay {
         )
     }
 
-    private fun loadLeaderboardPosition(): Int {
-        val uuid = McPlayer.uuid.toDashlessUUID()
-
-        val includeUpcoming = if (isEtaEnabled()) "?includeUpcoming=true" else ""
+    private suspend fun loadLeaderboardPosition(): Int {
+        val includeUpcoming = isEtaEnabled()
         val goalRank = getRankGoal() + 1 // API returns upcoming players as if you were at this rank already
-        val atRank = if (isEtaEnabled() && goalRank != 10001) "&atRank=$goalRank" else ""
 
-        val url = "https://api.elitebot.dev/leaderboard/rank/farmingweight/$uuid/$profileId$includeUpcoming$atRank"
-        val apiResponse = APIUtil.getJSONResponse(url)
-
-        try {
-            val apiData = toEliteLeaderboardJson(apiResponse).data
-
-            if (isEtaEnabled()) {
-                nextPlayers.clear()
-                apiData.upcomingPlayers.forEach { nextPlayers.add(it) }
+        return EliteBotAPI.getLeaderboard(
+            "farmingweight",
+            McPlayer.uuid.toDashlessUUID(),
+            profileId,
+            includeUpcoming = includeUpcoming,
+            atRank = if (includeUpcoming && goalRank != 10001) goalRank else -1
+        ).fold(
+            onSuccess = {
+                if (includeUpcoming) {
+                    nextPlayers.clear()
+                    it.upcomingPlayers.forEach { nextPlayers.add(it) }
+                }
+                return@fold it.rank
+            },
+            onFailure = {
+                ErrorManager.logErrorWithData(
+                    it, "Error getting weight leaderboard position",
+                    "error" to it
+                )
+                return@fold -1
             }
+        )
+    }
 
-            return apiData.rank
-        } catch (e: Exception) {
-            ErrorManager.logErrorWithData(
-                e, "Error getting weight leaderboard position",
-                "url" to url,
-                "apiResponse" to apiResponse
+    private suspend fun loadWeight(localProfile: String) {
+        if (localProfile == "") {
+            return ErrorManager.logErrorStateWithData(
+                "User has no local profile",
+                "User has no local profile",
             )
         }
-        return -1
-    }
+        EliteBotAPI.getPlayerWeights(McPlayer.uuid.toDashlessUUID()).fold(
+            { data ->
+                val entry = data.profiles.find { it.profileId == data.selectedProfileId }
+                    ?.takeIf { it.profileName.equals(localProfile, ignoreCase = true) }
+                    ?: data.profiles.find { it.profileName.lowercase() == localProfile }
 
-    private fun toEliteLeaderboardJson(obj: JsonObject): EliteLeaderboardJson {
-        val jsonObject = JsonObject()
-        jsonObject.add("data", obj)
-        return eliteWeightApiGson.fromJson<EliteLeaderboardJson>(jsonObject)
-    }
+                if (entry != null) {
+                    profileId = entry.profileId
+                    weight = entry.totalWeight
 
-    private fun loadWeight(localProfile: String) {
-        val url = "https://api.elitebot.dev/weight/${McPlayer.uuid.toDashlessUUID()}"
-        val apiResponse = APIUtil.getJSONResponse(url)
+                    localCounter.clear()
+                    weightNeedsRecalculating = true
+                    return
+                }
 
-        var error: Throwable? = null
-
-        try {
-
-            val apiData = eliteWeightApiGson.fromJson<ElitePlayerWeightJson>(apiResponse)
-
-            val selectedProfileId = apiData.selectedProfileId
-            var selectedProfileEntry = apiData.profiles.find { it.profileId == selectedProfileId }
-
-            if (selectedProfileEntry == null || (selectedProfileEntry.profileName.lowercase() != localProfile && localProfile != "")) {
-                selectedProfileEntry = apiData.profiles.find { it.profileName.lowercase() == localProfile }
+                apiError = true
+                ErrorManager.logErrorWithData(
+                    IllegalStateException("Error loading user farming weight"),
+                    "Error loading user farming weight\n" +
+                        "§eLoading the farming weight data from elitebot.dev failed!\n" +
+                        "§eYou can re-enter the garden to try to fix the problem.\n" +
+                        "§cIf this message repeats, please report it on Discord!\n",
+                    "apiResponse" to data,
+                    "localProfile" to localProfile
+                )
+            },
+            {
+                apiError = true
+                ErrorManager.logErrorWithData(
+                    it,
+                    "Error loading user farming weight\n" +
+                        "§eLoading the farming weight data from elitebot.dev failed!\n" +
+                        "§eYou can re-enter the garden to try to fix the problem.\n" +
+                        "§cIf this message repeats, please report it on Discord!\n",
+                    "error" to it,
+                    "localProfile" to localProfile
+                )
             }
-
-            if (selectedProfileEntry != null) {
-                profileId = selectedProfileEntry.profileId
-                weight = selectedProfileEntry.totalWeight
-
-                localCounter.clear()
-                weightNeedsRecalculating = true
-                return
-            }
-
-        } catch (e: Exception) {
-            error = e
-        }
-        apiError = true
-
-        ErrorManager.logErrorWithData(
-            error ?: IllegalStateException("Error loading user farming weight"),
-            "Error loading user farming weight\n" +
-                "§eLoading the farming weight data from elitebot.dev failed!\n" +
-                "§eYou can re-enter the garden to try to fix the problem.\n" +
-                "§cIf this message repeats, please report it on Discord!\n",
-            "url" to url,
-            "apiResponse" to apiResponse,
-            "localProfile" to localProfile
         )
     }
 
@@ -531,25 +515,24 @@ object FarmingWeightDisplay {
     private var attemptingCropWeightFetch = false
     private var hasFetchedCropWeights = false
 
-    private fun getCropWeights() {
+    private suspend fun getCropWeights() {
         if (attemptingCropWeightFetch || hasFetchedCropWeights) return
         attemptingCropWeightFetch = true
-        val url = "https://api.elitebot.dev/weights/all"
-        val apiResponse = APIUtil.getJSONResponse(url)
 
-        try {
-            val apiData = eliteWeightApiGson.fromJson<EliteWeightsJson>(apiResponse)
-            apiData.crops
-            for (crop in apiData.crops) {
-                cropWeight[crop.key] = crop.value
+        EliteBotAPI.getWeights().fold(
+            onSuccess = {
+                for ((crop, weight) in it.crops) {
+                    cropWeight[crop] = weight
+                }
+                hasFetchedCropWeights = true
+            },
+            onFailure = {
+                ErrorManager.logErrorWithData(
+                    it, "Error getting crop weights from elitebot.dev",
+                    "error" to it
+                )
             }
-            hasFetchedCropWeights = true
-        } catch (e: Exception) {
-            ErrorManager.logErrorWithData(
-                e, "Error getting crop weights from elitebot.dev",
-                "apiResponse" to apiResponse
-            )
-        }
+        )
     }
 
     // still needed when first joining garden and if they cant make https requests
