@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.HideNotClickableItemsJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SalvageFilter
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.render.gui.ForegroundDrawnEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
@@ -31,7 +32,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.isEnchanted
 import at.hannibal2.skyhanni.utils.ItemUtils.isVanilla
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.MultiFilter
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.drawBorder
@@ -46,9 +46,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.inventory.ContainerChest
 import net.minecraft.item.ItemStack
-import net.minecraftforge.event.entity.player.ItemTooltipEvent
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 object HideNotClickableItems {
@@ -95,7 +92,7 @@ object HideNotClickableItems {
 
     @HandleEvent
     fun onForegroundDrawn(event: ForegroundDrawnEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!isEnabled()) return
         if (bypassActive()) return
         if (event.gui !is GuiChest) return
@@ -112,10 +109,9 @@ object HideNotClickableItems {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    fun onTooltip(event: ItemTooltipEvent) {
+    @HandleEvent(priority = HandleEvent.LOWEST)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!isEnabled()) return
-        if (event.toolTip == null) return
         if (bypassActive()) return
 
         val guiChest = Minecraft.getMinecraft().currentScreen
@@ -597,5 +593,5 @@ object HideNotClickableItems {
         return result
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.items
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.items
 }

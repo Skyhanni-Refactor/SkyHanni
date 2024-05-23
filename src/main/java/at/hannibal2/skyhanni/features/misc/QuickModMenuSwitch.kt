@@ -2,13 +2,13 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ModGuiSwitcherJson
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.renderables.Renderable
@@ -192,5 +192,5 @@ object QuickModMenuSwitch {
         GlStateManager.popMatrix()
     }
 
-    fun isEnabled() = (LorenzUtils.inSkyBlock || OutsideSbFeature.QUICK_MOD_MENU_SWITCH.isSelected()) && config.enabled
+    fun isEnabled() = (SkyBlockAPI.isConnected || OutsideSbFeature.QUICK_MOD_MENU_SWITCH.isSelected()) && config.enabled
 }

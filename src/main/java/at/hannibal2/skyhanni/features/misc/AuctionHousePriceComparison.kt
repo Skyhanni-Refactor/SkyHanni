@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryOpenEvent
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.features.misc.items.EstimatedItemValueCalculator
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -136,7 +136,7 @@ class AuctionHousePriceComparison {
 
     private fun lerp(delta: Double, start: Int, end: Int) = start + delta * (end - start)
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled && inInventory
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled && inInventory
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

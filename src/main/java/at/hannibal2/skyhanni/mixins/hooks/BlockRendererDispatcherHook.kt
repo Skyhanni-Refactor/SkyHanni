@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.mixins.hooks
 
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.features.mining.MiningCommissionsBlocksColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.renderer.BlockRendererDispatcher
 import net.minecraft.client.resources.model.IBakedModel
@@ -19,7 +19,7 @@ fun modifyGetModelFromBlockState(
     if (state == null || pos == null) return
     var returnState: IBlockState = state
 
-    if (!LorenzUtils.inSkyBlock) return
+    if (!SkyBlockAPI.isConnected) return
 
     if (MiningCommissionsBlocksColor.enabled && MiningCommissionsBlocksColor.active) {
         for (block in MiningCommissionsBlocksColor.MiningBlock.entries) {

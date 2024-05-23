@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.inventory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.GardenCropMilestones
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.events.garden.CropMilestoneUpdateEvent
@@ -10,7 +11,6 @@ import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.indexOfFirst
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
@@ -55,7 +55,7 @@ object GardenCropMilestoneInventory {
 
     @HandleEvent
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.tooltipTweak.cropMilestoneTotalProgress) return
 
         val crop = GardenCropMilestones.getCropTypeByLore(event.itemStack) ?: return

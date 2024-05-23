@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.combat.ghostcounter
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.SkillExperience
@@ -476,7 +477,7 @@ object GhostCounter {
 
     @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         val inventoryName = event.inventoryName
         if (inventoryName != "Bestiary ➜ Dwarven Mines") return
         val stacks = event.inventoryItems

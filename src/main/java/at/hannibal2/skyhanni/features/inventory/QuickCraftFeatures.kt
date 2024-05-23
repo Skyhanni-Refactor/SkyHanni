@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.render.gui.ForegroundDrawnEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.utils.InventoryUtils.getAllItems
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import net.minecraft.client.gui.inventory.GuiChest
@@ -87,7 +87,7 @@ object QuickCraftFeatures {
     }
 
     private fun getInventoryType(): InventoryType? {
-        if (!LorenzUtils.inSkyBlock || !config.quickCraftingConfirmation) return null
+        if (!SkyBlockAPI.isConnected || !config.quickCraftingConfirmation) return null
 
         val inventoryName = InventoryUtils.openInventoryName()
         return InventoryType.entries.firstOrNull { it.inventoryName == inventoryName }

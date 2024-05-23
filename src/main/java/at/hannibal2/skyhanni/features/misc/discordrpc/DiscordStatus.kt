@@ -9,7 +9,6 @@ import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getTierForCropCount
 import at.hannibal2.skyhanni.data.GardenCropMilestones.isMaxed
 import at.hannibal2.skyhanni.data.GardenCropMilestones.progressToNextLevel
-import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.PetAPI
 import at.hannibal2.skyhanni.data.ScoreboardData
@@ -185,7 +184,7 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
             else -> ""
         }
 
-        val fruit = HypixelData.profileName.firstLetterUppercase()
+        val fruit = SkyBlockAPI.profileName?.firstLetterUppercase() ?: ""
         if (fruit == "") profile =
             lastKnownDisplayStrings[PROFILE] ?: "SkyBlock Level: [$sbLevel]" // profile fruit hasn't loaded in yet
         else profile += fruit

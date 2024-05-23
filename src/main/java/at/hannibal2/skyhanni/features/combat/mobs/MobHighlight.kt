@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.combat.mobs
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
 import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
@@ -9,7 +10,6 @@ import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils.getBlockInHand
 import at.hannibal2.skyhanni.utils.EntityUtils.hasNameTagWith
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.LorenzUtils.ignoreDerpy
 import net.minecraft.client.entity.EntityOtherPlayerMP
@@ -25,7 +25,7 @@ object MobHighlight {
 
     @HandleEvent
     fun onEntityHealthUpdate(event: EntityHealthUpdateEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         val entity = event.entity
         val baseMaxHealth = entity.baseMaxHealth
@@ -40,7 +40,7 @@ object MobHighlight {
 
     @HandleEvent
     fun onEntityHealthUpdate(event: EntityMaxHealthUpdateEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         val entity = event.entity
         val maxHealth = event.normalizedMaxHealth

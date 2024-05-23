@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.events.utils
 import at.hannibal2.skyhanni.api.event.SkyHanniEvent
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator.CONFIG_VERSION
 import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator.logger
-import at.hannibal2.skyhanni.features.misc.limbo.LimboTimeTracker
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
@@ -67,7 +66,6 @@ class ConfigFixEvent(
             return
         }
         movesPerformed++
-        if (np == listOf("#player", "personalBest")) LimboTimeTracker.workaroundMigration(oldElem.asInt)
         newParentElement.add(np.last(), transform(oldElem.shDeepCopy()))
         logger.log("Moved element from $oldPath to $newPath")
     }

@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
@@ -12,12 +12,10 @@ import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object MarkedPlayerManager {
 
@@ -79,7 +77,7 @@ object MarkedPlayerManager {
 
     fun isMarkedPlayer(player: String): Boolean = player.lowercase() in playerNamesToMark
 
-    private fun isEnabled() = (LorenzUtils.inSkyBlock || OutsideSbFeature.MARKED_PLAYERS.isSelected())
+    private fun isEnabled() = (SkyBlockAPI.isConnected || OutsideSbFeature.MARKED_PLAYERS.isSelected())
         && config.highlightInWorld
 
     fun replaceInChat(string: String): String {

@@ -2,10 +2,10 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -27,7 +27,7 @@ object ServerRestartTitle {
 
     @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.serverRestartTitle) return
 
         ScoreboardData.sidebarLinesFormatted.matchFirst(restartingPattern) {

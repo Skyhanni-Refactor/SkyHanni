@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.api
 import at.hannibal2.skyhanni.events.entity.EntityEnterWorldEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.ScreenChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.GameRenderEvent
 import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
@@ -10,6 +11,7 @@ import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.mc.McPlayer
+import net.minecraftforge.client.event.GuiOpenEvent
 import net.minecraftforge.client.event.RenderLivingEvent
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
@@ -90,4 +92,10 @@ object FmlEventAPI {
             GameRenderEvent.End().post()
         }
     }
+
+    @SubscribeEvent
+    fun onScreenOpen(event: GuiOpenEvent) {
+        ScreenChangeEvent(event.gui).post()
+    }
+
 }

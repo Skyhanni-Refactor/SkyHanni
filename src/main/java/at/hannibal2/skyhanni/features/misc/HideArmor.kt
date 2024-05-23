@@ -2,12 +2,12 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.misc.HideArmorConfig.ModeEntry
 import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.utils.EntityUtils.getArmorInventory
 import at.hannibal2.skyhanni.utils.EntityUtils.hasPotionEffect
 import at.hannibal2.skyhanni.utils.EntityUtils.isNPC
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
@@ -19,7 +19,7 @@ object HideArmor {
     private var armor = mapOf<Int, ItemStack>()
 
     private fun shouldHideArmor(entity: EntityPlayer): Boolean {
-        if (!LorenzUtils.inSkyBlock) return false
+        if (!SkyBlockAPI.isConnected) return false
         if (entity.hasPotionEffect(Potion.invisibility)) return false
         if (entity.isNPC()) return false
 

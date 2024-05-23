@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.event.lobby.waypoints.easter
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
@@ -10,7 +11,6 @@ import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceSqToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 
 object EasterEggWaypoints {
@@ -113,5 +113,5 @@ object EasterEggWaypoints {
         return a && b && c
     }
 
-    private fun isEnabled() = HypixelAPI.onHypixel && !LorenzUtils.inSkyBlock
+    private fun isEnabled() = HypixelAPI.onHypixel && !SkyBlockAPI.isConnected
 }

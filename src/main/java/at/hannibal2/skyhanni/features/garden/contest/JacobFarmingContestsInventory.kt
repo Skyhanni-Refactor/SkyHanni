@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.garden.contest
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.HypixelData
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
@@ -55,7 +55,7 @@ object JacobFarmingContestsInventory {
 
     @HandleEvent
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (event.inventoryName != "Your Contests") return
 
         realTime.clear()
@@ -84,7 +84,7 @@ object JacobFarmingContestsInventory {
     @HandleEvent
     fun onSlotClick(event: SlotClickEvent) {
         if (!config.openOnElite.isKeyHeld()) return
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         val slot = event.slot ?: return
         val itemName = slot.stack.name
@@ -121,7 +121,7 @@ object JacobFarmingContestsInventory {
             }
 
             "§bClaim your rewards!" -> {
-                OS.openUrl("https://elitebot.dev/@${McPlayer.name}/${HypixelData.profileName}/contests")
+                OS.openUrl("https://elitebot.dev/@${McPlayer.name}/${SkyBlockAPI.profileName}/contests")
                 ChatUtils.chat("Opening your contests in elitebot.dev")
             }
 
@@ -160,7 +160,7 @@ object JacobFarmingContestsInventory {
 
     @HandleEvent
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!InventoryUtils.openInventoryName().contains("Your Contests")) return
         if (!config.highlightRewards) return
 
@@ -180,7 +180,7 @@ object JacobFarmingContestsInventory {
 
     @HandleEvent
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!InventoryUtils.openInventoryName().contains("Your Contests")) return
 
         val slot = event.slot.slotNumber
@@ -196,7 +196,7 @@ object JacobFarmingContestsInventory {
 
     @HandleEvent
     fun onRenderItemOverlayPost(event: GuiRenderItemEvent.RenderOverlayEvent.GuiRenderItemPost) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.medalIcon) return
         if (!InventoryUtils.openInventoryName().contains("Your Contests")) return
 

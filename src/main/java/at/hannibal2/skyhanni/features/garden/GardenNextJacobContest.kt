@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.garden
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.compat.elitebot.EliteBotAPI
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.config.features.garden.NextJacobContestConfig.ShareContestsEntry
@@ -508,8 +509,8 @@ object GardenNextJacobContest {
     }
 
     private fun isEnabled() =
-        config.display && ((LorenzUtils.inSkyBlock && (GardenAPI.inGarden() || config.showOutsideGarden)) ||
-            (OutsideSbFeature.NEXT_JACOB_CONTEST.isSelected() && !LorenzUtils.inSkyBlock))
+        config.display && ((SkyBlockAPI.isConnected && (GardenAPI.inGarden() || config.showOutsideGarden)) ||
+            (OutsideSbFeature.NEXT_JACOB_CONTEST.isSelected() && !SkyBlockAPI.isConnected))
 
     private fun isFetchEnabled() = isEnabled() && config.fetchAutomatically
     private fun isSendEnabled() =

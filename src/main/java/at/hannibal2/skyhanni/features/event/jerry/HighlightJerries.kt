@@ -2,11 +2,11 @@ package at.hannibal2.skyhanni.features.event.jerry
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.entity.passive.EntityVillager
 
 object HighlightJerries {
@@ -27,7 +27,7 @@ object HighlightJerries {
 
     @HandleEvent
     fun onEntityHealthUpdate(event: EntityMaxHealthUpdateEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.highlightJerries) return
 
         val entity = event.entity

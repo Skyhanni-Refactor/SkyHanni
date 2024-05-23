@@ -13,6 +13,7 @@ import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -161,9 +162,9 @@ object TotemOfCorruption {
             Totem(totem.getLorenzVec(), timeRemaining, owner)
         }
 
-    private fun isOverlayEnabled() = LorenzUtils.inSkyBlock && config.showOverlay.get()
-    private fun isHideParticlesEnabled() = LorenzUtils.inSkyBlock && config.hideParticles
-    private fun isEffectiveAreaEnabled() = LorenzUtils.inSkyBlock && config.outlineType != OutlineType.NONE
+    private fun isOverlayEnabled() = SkyBlockAPI.isConnected && config.showOverlay.get()
+    private fun isHideParticlesEnabled() = SkyBlockAPI.isConnected && config.hideParticles
+    private fun isEffectiveAreaEnabled() = SkyBlockAPI.isConnected && config.outlineType != OutlineType.NONE
 }
 
 private class Totem(

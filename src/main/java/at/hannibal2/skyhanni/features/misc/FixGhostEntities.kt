@@ -2,9 +2,9 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.network.play.server.S0CPacketSpawnPlayer
 import net.minecraft.network.play.server.S0FPacketSpawnMob
 import net.minecraft.network.play.server.S13PacketDestroyEntities
@@ -59,5 +59,5 @@ object FixGhostEntities {
         }
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.fixGhostEntities
+    fun isEnabled() = SkyBlockAPI.isConnected && config.fixGhostEntities
 }

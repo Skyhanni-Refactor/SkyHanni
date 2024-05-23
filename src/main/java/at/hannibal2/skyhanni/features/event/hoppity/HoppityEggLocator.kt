@@ -1,15 +1,16 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
-import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
-import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.features.garden.GardenAPI
@@ -249,13 +250,13 @@ object HoppityEggLocator {
     private fun ReceiveParticleEvent.isEnchantmentParticle() =
         type == EnumParticleTypes.ENCHANTMENT_TABLE && speed == -2.0f && count == 10
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.waypoints && !GardenAPI.inGarden()
+    fun isEnabled() = SkyBlockAPI.isConnected && config.waypoints && !GardenAPI.inGarden()
         && !ReminderUtils.isBusy(true) && ChocolateFactoryAPI.isHoppityEvent()
 
     private val ItemStack.isLocatorItem get() = getInternalName() == locatorItem
 
     private fun hasLocatorInHotbar() = RecalculatingValue(1.seconds) {
-        LorenzUtils.inSkyBlock && McPlayer.has(locatorItem, onlyHotBar = true)
+        SkyBlockAPI.isConnected && McPlayer.has(locatorItem, onlyHotBar = true)
     }.getValue()
 
     private fun LorenzVec.getEggLocationWeight(firstPoint: LorenzVec, secondPoint: LorenzVec): Double {

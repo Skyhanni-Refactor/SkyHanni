@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.fishing.tracker
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.fishing.SeaCreatureFishEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
@@ -9,13 +10,13 @@ import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI
 import at.hannibal2.skyhanni.features.fishing.SeaCreatureManager
+import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.CollectionUtils.sumAllValues
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.addButton
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -172,7 +173,7 @@ object SeaCreatureTracker {
         tracker.resetCommand()
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled && !isTrophyFishing && !LorenzUtils.inKuudraFight
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled && !isTrophyFishing && !KuudraAPI.inKuudra
 
     private fun isWearingTrophyArmor(): Boolean = McPlayer.armor.all {
         trophyArmorNames.matches(it?.getInternalName()?.asString())

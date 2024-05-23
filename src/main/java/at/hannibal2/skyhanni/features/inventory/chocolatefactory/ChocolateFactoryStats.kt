@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.toRoman
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
@@ -25,7 +25,7 @@ object ChocolateFactoryStats {
 
     @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!ChocolateFactoryAPI.chocolateFactoryPaused) return
         updateDisplay()
     }

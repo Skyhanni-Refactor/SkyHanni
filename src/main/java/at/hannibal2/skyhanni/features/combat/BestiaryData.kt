@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.combat
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.combat.BestiaryConfig
 import at.hannibal2.skyhanni.config.features.combat.BestiaryConfig.DisplayTypeEntry
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
@@ -12,7 +13,6 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.addButton
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
@@ -514,5 +514,5 @@ object BestiaryData {
         (intValue + 1).toRoman().romanOrInt()
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled
 }

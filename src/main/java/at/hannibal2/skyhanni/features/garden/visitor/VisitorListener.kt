@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.visitor
 
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.garden.visitor.VisitorConfig
 import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
@@ -7,6 +8,7 @@ import at.hannibal2.skyhanni.events.garden.visitor.VisitorOpenEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorRenderEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
@@ -22,7 +24,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
@@ -32,9 +33,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.network.play.client.C02PacketUseEntity
-import net.minecraftforge.event.entity.player.ItemTooltipEvent
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 object VisitorListener {
@@ -74,7 +72,7 @@ object VisitorListener {
 
         val visitorsInTab = VisitorAPI.visitorsInTabList(event.tabList)
 
-        if (LorenzUtils.lastWorldSwitch.passedSince() > 2.seconds) {
+        if (HypixelAPI.lastWorldChange.passedSince() > 2.seconds) {
             VisitorAPI.getVisitors().forEach {
                 val name = it.visitorName
                 val removed = name !in visitorsInTab
@@ -132,8 +130,8 @@ object VisitorListener {
         inventory.handleMouseClick_skyhanni(slot, slot.slotIndex, 0, 0)
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onTooltip(event: ItemTooltipEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!GardenAPI.onBarnPlot) return
         if (!VisitorAPI.inInventory) return
         val visitor = VisitorAPI.getVisitor(lastClickedNpc) ?: return

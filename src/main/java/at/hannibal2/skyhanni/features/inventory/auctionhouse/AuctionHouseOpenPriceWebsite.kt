@@ -2,21 +2,20 @@ package at.hannibal2.skyhanni.features.inventory.auctionhouse
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.ReplaceItemEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.system.OS
-import io.github.moulberry.notenoughupdates.events.ReplaceItemEvent
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.entity.player.InventoryPlayer
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 class AuctionHouseOpenPriceWebsite {
@@ -60,14 +59,14 @@ class AuctionHouseOpenPriceWebsite {
         displayItem = null
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun replaceItem(event: ReplaceItemEvent) {
         if (!isEnabled()) return
         if (event.inventory is InventoryPlayer) return
 
-        if (event.slotNumber == 8) {
+        if (event.slot == 8) {
             displayItem?.let {
-                event.replaceWith(it)
+                event.replace(it)
             }
         }
     }
@@ -84,5 +83,5 @@ class AuctionHouseOpenPriceWebsite {
         }
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.openPriceWebsite
+    fun isEnabled() = SkyBlockAPI.isConnected && config.openPriceWebsite
 }

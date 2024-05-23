@@ -2,15 +2,15 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 
 object BrewingStandOverlay {
 
     @HandleEvent
     fun onRenderItemTip(event: RenderInventoryItemTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.misc.brewingStandOverlay) return
 
         if (event.inventoryName != "Brewing Stand") return

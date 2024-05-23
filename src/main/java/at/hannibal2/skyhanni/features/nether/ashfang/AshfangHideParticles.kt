@@ -2,13 +2,13 @@ package at.hannibal2.skyhanni.features.nether.ashfang
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.BossType
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.entity.item.EntityArmorStand
 
 object AshfangHideParticles {
@@ -17,7 +17,7 @@ object AshfangHideParticles {
 
     @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         if (event.repeatSeconds(3)) {
             nearAshfang = DamageIndicatorManager.getDistanceTo(BossType.NETHER_ASHFANG) < 40
@@ -49,5 +49,5 @@ object AshfangHideParticles {
     }
 
     private fun isEnabled() =
-        LorenzUtils.inSkyBlock && SkyHanniMod.feature.crimsonIsle.ashfang.hide.particles && nearAshfang
+        SkyBlockAPI.isConnected && SkyHanniMod.feature.crimsonIsle.ashfang.hide.particles && nearAshfang
 }

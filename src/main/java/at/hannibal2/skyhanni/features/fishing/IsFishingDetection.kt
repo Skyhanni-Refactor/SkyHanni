@@ -1,11 +1,11 @@
 package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.fishing.FishingBobberInWaterEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McWorld
@@ -31,7 +31,7 @@ object IsFishingDetection {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         if (inRodCastArea()) {
             lastInAreaTime = SimpleTimeMark.now()

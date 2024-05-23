@@ -1,19 +1,19 @@
 package at.hannibal2.skyhanni.features.mining
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.MiningAPI
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
-import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.equalsOneOf
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.TimeLimitedSet
@@ -127,7 +127,7 @@ object MiningCommissionsBlocksColor {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        if (LorenzUtils.lastWorldSwitch.passedSince() > 4.seconds) {
+        if (HypixelAPI.lastWorldChange.passedSince() > 4.seconds) {
             inGlaciteArea = MiningAPI.inGlaciteArea() && !IslandType.MINESHAFT.isInIsland()
             inDwarvenMines = IslandType.DWARVEN_MINES.isInIsland() &&
                 !(inGlaciteArea || HypixelData.skyBlockArea.equalsOneOf("Dwarven Base Camp", "Fossil Research Center"))

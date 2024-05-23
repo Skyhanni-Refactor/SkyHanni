@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.MaxwellPowersJson
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryOpenEvent
@@ -12,7 +13,6 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.RegexUtils.groupOrNull
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
@@ -283,7 +283,7 @@ object MaxwellAPI {
 
     private fun getPowerByNameOrNull(name: String) = powers.find { it == name }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && storage != null
+    private fun isEnabled() = SkyBlockAPI.isConnected && storage != null
 
     @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {

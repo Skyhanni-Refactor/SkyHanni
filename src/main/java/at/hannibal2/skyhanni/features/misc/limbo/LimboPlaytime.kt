@@ -1,22 +1,21 @@
 package at.hannibal2.skyhanni.features.misc.limbo
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
-import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryOpenEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.render.gui.ReplaceItemEvent
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import io.github.moulberry.notenoughupdates.events.ReplaceItemEvent
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.player.inventory.ContainerLocalMenu
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 object LimboPlaytime {
@@ -41,11 +40,11 @@ object LimboPlaytime {
     private lateinit var limboItem: ItemStack
     private var lastCreateCooldown = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
+    @HandleEvent
     fun replaceItem(event: ReplaceItemEvent) {
         if (event.inventory !is ContainerLocalMenu) return
         if (event.inventory.name != "Detailed /playtime") return
-        if (event.slotNumber != 43) return
+        if (event.slot != 43) return
         val playtime = storage?.playtime ?: 0
         if (playtime < 60) return
 
@@ -57,7 +56,7 @@ object LimboPlaytime {
                 *createItemLore()
             )
         }
-        event.replaceWith(limboItem)
+        event.replace(limboItem)
     }
 
     private fun createItemLore(): Array<String> = when {
@@ -73,7 +72,7 @@ object LimboPlaytime {
 
     @HandleEvent
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!event.slot.inventory.name.startsWith("Detailed /playtime")) return
         if (event.slot.slotIndex != 4) return
         val playtime = storage?.playtime ?: 0

@@ -2,12 +2,12 @@ package at.hannibal2.skyhanni.features.nether.ashfang
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.BossType
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUnit
@@ -55,7 +55,7 @@ object AshfangNextResetCooldown {
     }
 
     private fun isEnabled(): Boolean {
-        return LorenzUtils.inSkyBlock && config.nextResetCooldown &&
+        return SkyBlockAPI.isConnected && config.nextResetCooldown &&
             DamageIndicatorManager.isBossSpawned(BossType.NETHER_ASHFANG)
     }
 }

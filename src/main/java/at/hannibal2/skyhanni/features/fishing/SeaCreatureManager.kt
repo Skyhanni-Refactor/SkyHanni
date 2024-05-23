@@ -2,11 +2,11 @@ package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SeaCreatureJson
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.fishing.SeaCreatureFishEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 
 object SeaCreatureManager {
 
@@ -24,7 +24,7 @@ object SeaCreatureManager {
 
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (doubleHookMessages.contains(event.message)) {
             if (SkyHanniMod.feature.fishing.compactDoubleHook) {
                 event.blockedReason = "double_hook"

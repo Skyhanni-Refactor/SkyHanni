@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.anyMatches
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -78,7 +79,7 @@ class SkyblockGuideHighlightFeature private constructor(
         private var activeObject: SkyblockGuideHighlightFeature? = null
         private var missing = mutableSetOf<Int>()
 
-        fun isEnabled() = LorenzUtils.inSkyBlock
+        fun isEnabled() = SkyBlockAPI.isConnected
         fun close() {
             activeObject = null
         }

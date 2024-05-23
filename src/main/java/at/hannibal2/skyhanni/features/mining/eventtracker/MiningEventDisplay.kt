@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.mining.eventtracker
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.mining.MiningEventConfig
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
@@ -93,7 +94,7 @@ object MiningEventDisplay {
     }
 
     private fun shouldDisplay() =
-        LorenzUtils.inSkyBlock && config.enabled && !ReminderUtils.isBusy() && !(!config.outsideMining && !LorenzUtils.inAdvancedMiningIsland())
+        SkyBlockAPI.isConnected && config.enabled && !ReminderUtils.isBusy() && !(!config.outsideMining && !LorenzUtils.inAdvancedMiningIsland())
 }
 
 private class MiningIslandEventInfo(var islandEvents: List<RunningEventType>, var lastEvent: MiningEventType? = null)

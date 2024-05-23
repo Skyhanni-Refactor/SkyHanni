@@ -2,11 +2,11 @@ package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
-import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
 import at.hannibal2.skyhanni.utils.ChatUtils.lastButtonClicked
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
@@ -21,20 +21,12 @@ import java.text.SimpleDateFormat
 
 object LorenzUtils {
 
-    val inSkyBlock get() = HypixelAPI.onHypixel && HypixelData.skyBlock
-
-    val inLimbo get() = HypixelAPI.onHypixel && HypixelData.inLimbo
-
     /**
      * Consider using [IslandType.isInIsland] instead
      */
     val skyBlockIsland get() = HypixelData.skyBlockIsland
 
-    val skyBlockArea get() = if (inSkyBlock) HypixelData.skyBlockArea else null
-
-    val inKuudraFight get() = inSkyBlock && KuudraAPI.inKuudra()
-
-    val lastWorldSwitch get() = HypixelData.joinedWorld
+    val skyBlockArea get() = if (SkyBlockAPI.isConnected) HypixelData.skyBlockArea else null
 
     val debug: Boolean = HypixelAPI.onHypixel && SkyHanniMod.feature.dev.debug.enabled
 
@@ -151,9 +143,9 @@ object LorenzUtils {
         })
     }
 
-    fun IslandType.isInIsland() = inSkyBlock && skyBlockIsland == this
+    fun IslandType.isInIsland() = SkyBlockAPI.isConnected && skyBlockIsland == this
 
-    fun inAnyIsland(vararg islandTypes: IslandType) = inSkyBlock && islandTypes.any { it.isInIsland() }
+    fun inAnyIsland(vararg islandTypes: IslandType) = SkyBlockAPI.isConnected && islandTypes.any { it.isInIsland() }
 
     fun Int.derpy() = if (Perk.DOUBLE_MOBS_HP.isActive) this / 2 else this
 

@@ -8,6 +8,7 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
@@ -25,7 +26,7 @@ object WikiManager {
 
     @HandleEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!isEnabled()) return
         val message = event.message.lowercase()
         if (!(message.startsWith("/wiki"))) return
@@ -52,7 +53,7 @@ object WikiManager {
 
     @HandleEvent
     fun onKeybind(event: GuiKeyPressEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (NEUItems.neuHasFocus()) return
         val stack = event.guiContainer.slotUnderMouse?.stack ?: return
 
@@ -70,7 +71,7 @@ object WikiManager {
     }
 
     fun otherWikiCommands(args: Array<String>, useFandom: Boolean, wikithis: Boolean = false) {
-        if (wikithis && !LorenzUtils.inSkyBlock) {
+        if (wikithis && !SkyBlockAPI.isConnected) {
             ChatUtils.chat("§cYou must be in SkyBlock to do this!")
             return
         }

@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -23,11 +24,11 @@ object ShiftClickNPCSell {
     var inInventory = false
         private set
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config
+    fun isEnabled() = SkyBlockAPI.isConnected && config
 
     @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (event.inventoryItems.isEmpty()) return
         val item = event.inventoryItems[event.inventoryItems.keys.last() + sellSlot] ?: return
 

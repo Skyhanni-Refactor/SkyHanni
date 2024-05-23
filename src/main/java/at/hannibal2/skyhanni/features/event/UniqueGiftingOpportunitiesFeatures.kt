@@ -16,7 +16,6 @@ import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils.isNPC
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.datetime.DateUtils
@@ -110,7 +109,7 @@ object UniqueGiftingOpportunitiesFeatures {
     fun onTick(event: ClientTickEvent) {
         holdingGift = false
 
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
         if (!DateUtils.isDecember()) return
 

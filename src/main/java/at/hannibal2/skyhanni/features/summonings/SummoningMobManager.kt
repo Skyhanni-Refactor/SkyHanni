@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.summonings
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -12,7 +13,6 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -55,7 +55,7 @@ object SummoningMobManager {
 
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         val message = event.message
         spawnPattern.matchMatcher(message) {
@@ -147,7 +147,7 @@ object SummoningMobManager {
 
     @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.summoningMobDisplay) return
         if (summoningMobs.isEmpty()) return
 
@@ -170,7 +170,7 @@ object SummoningMobManager {
 
     @HandleEvent(priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.summoningMobHideNametag) return
 
         val entity = event.entity
@@ -191,7 +191,7 @@ object SummoningMobManager {
     }
 
     private fun isEnabled(): Boolean {
-        return LorenzUtils.inSkyBlock && (config.summoningMobDisplay || config.summoningMobHideNametag)
+        return SkyBlockAPI.isConnected && (config.summoningMobDisplay || config.summoningMobHideNametag)
     }
 
     class SummoningMob(

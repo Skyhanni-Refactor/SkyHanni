@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.RenderUtils.renderSingleLineWithItems
@@ -37,7 +38,7 @@ object Year300RaffleEvent {
         }
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.enableActiveTimer &&
+    fun isEnabled() = SkyBlockAPI.isConnected && config.enableActiveTimer &&
         Instant.now().isBefore(SkyBlockTime(301).toInstant())
 
     @HandleEvent

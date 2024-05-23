@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.garden.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.GardenCropMilestones
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
@@ -10,7 +11,6 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.toRoman
 import at.hannibal2.skyhanni.utils.StringUtils
@@ -90,5 +90,5 @@ object GardenInventoryTooltipOverflow {
         return CropType.getByName(cropName.removeColor())
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.inventoryTooltip
+    fun isEnabled() = SkyBlockAPI.isConnected && config.inventoryTooltip
 }

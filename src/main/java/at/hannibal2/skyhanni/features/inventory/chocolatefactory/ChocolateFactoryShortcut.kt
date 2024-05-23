@@ -1,17 +1,17 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.ReplaceItemEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import io.github.moulberry.notenoughupdates.events.ReplaceItemEvent
 import net.minecraft.client.player.inventory.ContainerLocalMenu
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 object ChocolateFactoryShortcut {
@@ -35,7 +35,7 @@ object ChocolateFactoryShortcut {
 
     @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (LorenzUtils.inAnyIsland(
                 IslandType.THE_RIFT,
                 IslandType.KUUDRA_ARENA,
@@ -51,10 +51,10 @@ object ChocolateFactoryShortcut {
         showItem = false
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun replaceItem(event: ReplaceItemEvent) {
-        if (event.inventory is ContainerLocalMenu && showItem && event.slotNumber == 15) {
-            event.replaceWith(item)
+        if (event.inventory is ContainerLocalMenu && showItem && event.slot == 15) {
+            event.replace(item)
         }
     }
 

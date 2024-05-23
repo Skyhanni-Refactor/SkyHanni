@@ -4,13 +4,14 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
 import at.hannibal2.skyhanni.utils.HypixelCommands
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 
 object WarpIsCommand {
 
     @HandleEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.misc.commands.replaceWarpIs) return
 
         if (event.message.lowercase() == "/warp is") {

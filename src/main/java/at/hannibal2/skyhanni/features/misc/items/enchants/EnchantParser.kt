@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.misc.items.enchants
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.inventory.EnchantParsingConfig
 import at.hannibal2.skyhanni.config.features.inventory.EnchantParsingConfig.CommaFormat
 import at.hannibal2.skyhanni.events.chat.ChatHoverEvent
@@ -15,7 +16,6 @@ import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.isEnchanted
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getEnchantments
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
@@ -399,7 +399,7 @@ object EnchantParser {
     // We don't check if the main toggle here since we still need to go into
     // the parseEnchants method to deal with hiding vanilla enchants
     // and enchant descriptions
-    fun isEnabled() = LorenzUtils.inSkyBlock
+    fun isEnabled() = SkyBlockAPI.isConnected
 
     private fun markCacheDirty() {
         loreCache.configChanged = true

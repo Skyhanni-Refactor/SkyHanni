@@ -2,14 +2,13 @@ package at.hannibal2.skyhanni.features.gui.quiver
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.ArrowType
 import at.hannibal2.skyhanni.data.QuiverAPI
 import at.hannibal2.skyhanni.data.QuiverAPI.amount
 import at.hannibal2.skyhanni.data.TitleManager
-import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.dungeon.DungeonCompleteEvent
 import at.hannibal2.skyhanni.events.kuudra.KuudraCompleteEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.skyblock.QuiverUpdateEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
@@ -23,7 +22,6 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.createCommaSeparatedList
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.playOnRepeat
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 object QuiverWarning {
@@ -91,7 +89,7 @@ object QuiverWarning {
         arrowsInInstance.clear()
     }
 
-    private fun inInstance() = DungeonAPI.inDungeon() || KuudraAPI.inKuudra()
+    private fun inInstance() = DungeonAPI.inDungeon() || KuudraAPI.inKuudra
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

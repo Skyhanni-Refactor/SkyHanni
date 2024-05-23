@@ -2,15 +2,13 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.utils.ItemUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawSlotText
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getAppliedPocketSackInASack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object PocketSackInASackDisplay {
 
@@ -20,7 +18,7 @@ object PocketSackInASackDisplay {
     @HandleEvent
     fun onRenderItemOverlayPost(event: GuiRenderItemEvent.RenderOverlayEvent.GuiRenderItemPost) {
         val stack = event.stack ?: return
-        if (!LorenzUtils.inSkyBlock || stack.stackSize != 1) return
+        if (!SkyBlockAPI.isConnected || stack.stackSize != 1) return
         if (!config.showOverlay) return
         val pocketSackInASackApplied = stack.getAppliedPocketSackInASack() ?: return
 
@@ -33,7 +31,7 @@ object PocketSackInASackDisplay {
 
     @HandleEvent
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.replaceLore) return
         val itemStack = event.itemStack
         val applied = itemStack.getAppliedPocketSackInASack() ?: return

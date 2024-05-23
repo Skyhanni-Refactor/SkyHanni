@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.mixins.hooks
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.features.misc.ContributorManager
 import at.hannibal2.skyhanni.utils.EntityOutlineRenderer
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.datetime.DateUtils
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.EntityLivingBase
@@ -31,7 +31,7 @@ object RendererLivingEntityHook {
      */
     @JvmStatic
     fun shouldBeUpsideDown(userName: String?): Boolean {
-        if (!LorenzUtils.inSkyBlock) return false
+        if (!SkyBlockAPI.isConnected) return false
         if (!config.flipContributors && !DateUtils.isAprilFools()) return false
         val name = userName ?: return false
         return ContributorManager.shouldBeUpsideDown(name)
@@ -42,7 +42,7 @@ object RendererLivingEntityHook {
      */
     @JvmStatic
     fun rotatePlayer(player: EntityPlayer) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.rotateContributors && !DateUtils.isAprilFools()) return
         val name = player.name ?: return
         if (!ContributorManager.shouldSpin(name)) return

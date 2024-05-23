@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryOpenEvent
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
@@ -337,5 +338,5 @@ object DungeonFinderFeatures {
         toolTipMap = emptyMap()
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && LorenzUtils.skyBlockArea == "Dungeon Hub"
+    fun isEnabled() = SkyBlockAPI.isConnected && LorenzUtils.skyBlockArea == "Dungeon Hub"
 }

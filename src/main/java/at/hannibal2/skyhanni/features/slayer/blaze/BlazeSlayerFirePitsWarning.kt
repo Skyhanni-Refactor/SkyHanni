@@ -2,12 +2,12 @@ package at.hannibal2.skyhanni.features.slayer.blaze
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.entity.BossHealthChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.BossType
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McSound
 import kotlin.time.Duration.Companion.seconds
@@ -57,7 +57,7 @@ object BlazeSlayerFirePitsWarning {
     }
 
     private fun isEnabled() =
-        LorenzUtils.inSkyBlock && config.firePitsWarning && DamageIndicatorManager.isBossSpawned(
+        SkyBlockAPI.isConnected && config.firePitsWarning && DamageIndicatorManager.isBossSpawned(
             BossType.SLAYER_BLAZE_3,
             BossType.SLAYER_BLAZE_4,
             BossType.SLAYER_BLAZE_QUAZII_3,

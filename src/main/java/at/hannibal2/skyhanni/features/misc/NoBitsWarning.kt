@@ -2,16 +2,14 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.skyblock.BitsUpdateEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.mc.McSound
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 object NoBitsWarning {
@@ -40,8 +38,8 @@ object NoBitsWarning {
         }
     }
 
-    private fun isChatMessageEnabled() = LorenzUtils.inSkyBlock && config.bitsGainChatMessage
-    private fun isWarningEnabled() = LorenzUtils.inSkyBlock && config.enableWarning
+    private fun isChatMessageEnabled() = SkyBlockAPI.isConnected && config.bitsGainChatMessage
+    private fun isWarningEnabled() = SkyBlockAPI.isConnected && config.enableWarning
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

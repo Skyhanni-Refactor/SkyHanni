@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.misc.items
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ItemsJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.neu.NeuReforgeStoneJson
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
@@ -23,7 +24,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.isRune
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.NumberUtil
@@ -64,7 +64,7 @@ object EstimatedItemValue {
 
     @HandleEvent
     fun onTooltip(event: ItemHoverEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
 
         if (Minecraft.getMinecraft().currentScreen is GuiProfileViewer) {
@@ -102,7 +102,7 @@ object EstimatedItemValue {
     }
 
     private fun checkCurrentlyVisible(): Boolean {
-        if (!LorenzUtils.inSkyBlock) return false
+        if (!SkyBlockAPI.isConnected) return false
         if (!config.enabled) return false
         if (!config.hotkey.isKeyHeld() && !config.alwaysEnabled) return false
         if (System.currentTimeMillis() > lastToolTipTime + 200) return false
@@ -126,7 +126,7 @@ object EstimatedItemValue {
 
     @HandleEvent
     fun onRenderItemTooltip(event: RenderItemTooltipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
 
         updateItem(event.stack)

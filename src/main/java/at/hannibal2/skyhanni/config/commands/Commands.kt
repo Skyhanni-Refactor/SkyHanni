@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.config.commands
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.SkillAPI
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.ConfigGuiManager
 import at.hannibal2.skyhanni.config.features.About.UpdateStream
@@ -81,7 +82,6 @@ import at.hannibal2.skyhanni.test.command.TrackParticlesCommand
 import at.hannibal2.skyhanni.test.command.TrackSoundsCommand
 import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.chat.ChatClickActionManager
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPatternGui
@@ -553,7 +553,7 @@ object Commands {
 
     @JvmStatic
     fun openFortuneGuide() {
-        if (!LorenzUtils.inSkyBlock) {
+        if (!SkyBlockAPI.isConnected) {
             ChatUtils.userError("Join SkyBlock to open the fortune guide!")
         } else {
             FFGuideGUI.open()

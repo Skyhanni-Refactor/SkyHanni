@@ -2,17 +2,15 @@ package at.hannibal2.skyhanni.features.garden
 
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraft.client.Minecraft
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
 object GardenYawAndPitch {
@@ -63,8 +61,8 @@ object GardenYawAndPitch {
     }
 
     private fun isEnabled() =
-        config.enabled && ((OutsideSbFeature.YAW_AND_PITCH.isSelected() && !LorenzUtils.inSkyBlock) ||
-            (LorenzUtils.inSkyBlock && (GardenAPI.inGarden() || config.showOutsideGarden)))
+        config.enabled && ((OutsideSbFeature.YAW_AND_PITCH.isSelected() && !SkyBlockAPI.isConnected) ||
+            (SkyBlockAPI.isConnected && (GardenAPI.inGarden() || config.showOutsideGarden)))
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

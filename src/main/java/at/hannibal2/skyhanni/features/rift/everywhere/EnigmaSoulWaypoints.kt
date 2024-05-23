@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.render.gui.ReplaceItemEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
@@ -22,12 +23,10 @@ import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import io.github.moulberry.notenoughupdates.events.ReplaceItemEvent
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.client.player.inventory.ContainerLocalMenu
 import net.minecraft.inventory.ContainerChest
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object EnigmaSoulWaypoints {
 
@@ -49,13 +48,13 @@ object EnigmaSoulWaypoints {
         )
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun replaceItem(event: ReplaceItemEvent) {
         if (!isEnabled()) return
 
         if (inventoryUnfound.isEmpty()) return
-        if (event.inventory is ContainerLocalMenu && inInventory && event.slotNumber == 31) {
-            event.replaceWith(item)
+        if (event.inventory is ContainerLocalMenu && inInventory && event.slot == 31) {
+            event.replace(item)
         }
     }
 

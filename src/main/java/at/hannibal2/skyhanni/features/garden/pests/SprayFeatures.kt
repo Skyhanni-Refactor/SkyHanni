@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.features.garden.pests.PestAPI.getPests
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
@@ -75,5 +76,5 @@ object SprayFeatures {
         event.renderPlot(plot, LorenzColor.YELLOW.toColor(), LorenzColor.DARK_BLUE.toColor())
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.pestWhenSelector
+    fun isEnabled() = SkyBlockAPI.isConnected && config.pestWhenSelector
 }

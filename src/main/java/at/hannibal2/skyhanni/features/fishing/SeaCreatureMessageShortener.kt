@@ -2,8 +2,8 @@ package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.fishing.SeaCreatureFishEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.util.ChatComponentText
 
 object SeaCreatureMessageShortener {
@@ -12,7 +12,7 @@ object SeaCreatureMessageShortener {
 
     @HandleEvent
     fun onSeaCreatureFish(event: SeaCreatureFishEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         val original = event.chatEvent.chatComponent.formattedText
         var edited = original

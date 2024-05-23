@@ -2,10 +2,10 @@ package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.ParkourHelper
@@ -25,7 +25,7 @@ object ParkourWaypointSaver {
 
     @HandleEvent
     fun onKeyClick(event: KeyPressEvent) {
-        if (!LorenzUtils.inSkyBlock && !config.parkourOutsideSB) return
+        if (!SkyBlockAPI.isConnected && !config.parkourOutsideSB) return
         if (Minecraft.getMinecraft().currentScreen != null) return
         if (NEUItems.neuHasFocus()) return
         if (timeLastSaved.passedSince() < 250.milliseconds) return
@@ -67,7 +67,7 @@ object ParkourWaypointSaver {
 
     @HandleEvent
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!LorenzUtils.inSkyBlock && !config.parkourOutsideSB) return
+        if (!SkyBlockAPI.isConnected && !config.parkourOutsideSB) return
 
         if (locations.size > 1) {
             parkourHelper?.render(event)
