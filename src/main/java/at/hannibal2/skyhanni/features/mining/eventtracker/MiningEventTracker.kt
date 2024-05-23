@@ -2,9 +2,10 @@ package at.hannibal2.skyhanni.features.mining.eventtracker
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.BossbarAPI
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigManager
-import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.BossbarUpdateEvent
@@ -74,7 +75,7 @@ object MiningEventTracker {
     @HandleEvent
     fun onBossbarChange(event: BossbarUpdateEvent) {
         if (!LorenzUtils.inAdvancedMiningIsland()) return
-        if (LorenzUtils.lastWorldSwitch.passedSince() < 5.seconds) return
+        if (HypixelAPI.lastWorldChange.passedSince() < 5.seconds) return
         if (!eventEndTime.isInPast()) {
             return
         }
@@ -102,7 +103,7 @@ object MiningEventTracker {
     @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!config.enabled) return
-        if (!LorenzUtils.inSkyBlock || (!config.outsideMining && !LorenzUtils.inAdvancedMiningIsland())) return
+        if (!SkyBlockAPI.isConnected || (!config.outsideMining && !LorenzUtils.inAdvancedMiningIsland())) return
         if (!canRequestAt.isInPast()) return
 
         fetchData()
@@ -136,7 +137,7 @@ object MiningEventTracker {
         }
         eventEndTime = SimpleTimeMark.now() + timeRemaining
 
-        val serverId = HypixelData.serverId ?: return
+        val serverId = HypixelAPI.server ?: return
 
         val miningEventData = MiningEventDataSend(
             LorenzUtils.skyBlockIsland,

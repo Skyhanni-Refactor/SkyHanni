@@ -77,7 +77,7 @@ object SlayerAPI {
 
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         if (event.message.contains("§r§5§lSLAYER QUEST STARTED!")) {
             questStartTime = SimpleTimeMark.now()
@@ -106,7 +106,7 @@ object SlayerAPI {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         // wait with sending SlayerChangeEvent until profile is detected
         if (ProfileStorageData.profileSpecific == null) return

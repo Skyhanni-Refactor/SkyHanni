@@ -1,6 +1,8 @@
 package at.hannibal2.skyhanni.data
 
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddInInventoryEvent
@@ -14,7 +16,6 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -39,7 +40,7 @@ object OwnInventoryData {
 
     @HandleEvent(priority = HandleEvent.LOW, receiveCancelled = true)
     fun onItemPickupReceivePacket(event: ReceivePacketEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         val packet = event.packet
         if (packet is S2FPacketSetSlot || packet is S0DPacketCollectItem) {
@@ -59,7 +60,7 @@ object OwnInventoryData {
 
     @HandleEvent
     fun onClickEntity(event: SendPacketEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         val packet = event.packet
 
         if (packet is C0EPacketClickWindow) {
@@ -69,7 +70,7 @@ object OwnInventoryData {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (itemAmounts.isEmpty()) {
             itemAmounts = getCurrentItems()
         }
@@ -136,7 +137,7 @@ object OwnInventoryData {
     class IgnoredItem(val condition: (NEUInternalName) -> Boolean, val blockedUntil: SimpleTimeMark)
 
     private fun addItem(internalName: NEUInternalName, add: Int) {
-        if (LorenzUtils.lastWorldSwitch.passedSince() < 3.seconds) return
+        if (HypixelAPI.lastWorldChange.passedSince() < 3.seconds) return
 
         ignoredItemsUntil.removeIf { it.blockedUntil.isInPast() }
         if (ignoredItemsUntil.any { it.condition(internalName) }) {

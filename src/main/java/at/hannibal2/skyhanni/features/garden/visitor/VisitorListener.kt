@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.visitor
 
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.garden.visitor.VisitorConfig
 import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
@@ -23,7 +24,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
@@ -72,7 +72,7 @@ object VisitorListener {
 
         val visitorsInTab = VisitorAPI.visitorsInTabList(event.tabList)
 
-        if (LorenzUtils.lastWorldSwitch.passedSince() > 2.seconds) {
+        if (HypixelAPI.lastWorldChange.passedSince() > 2.seconds) {
             VisitorAPI.getVisitors().forEach {
                 val name = it.visitorName
                 val removed = name !in visitorsInTab

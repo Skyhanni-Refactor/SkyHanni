@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.inventory.ItemInHandChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
@@ -10,7 +11,6 @@ import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.network.play.server.S29PacketSoundEffect
@@ -22,7 +22,7 @@ object MinecraftData {
 
     @HandleEvent(receiveCancelled = true)
     fun onSoundPacket(event: ReceivePacketEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         val packet = event.packet
         if (packet !is S29PacketSoundEffect) return
@@ -40,7 +40,7 @@ object MinecraftData {
 
     @HandleEvent(receiveCancelled = true)
     fun onParticlePacketReceive(event: ReceivePacketEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         val packet = event.packet
         if (packet !is S2APacketParticles) return
@@ -62,7 +62,7 @@ object MinecraftData {
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
         totalTicks++
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         val hand = McPlayer.heldItem
         val newItem = hand?.getInternalName() ?: SkyhanniItems.NONE()
         val oldItem = InventoryUtils.itemInHandId

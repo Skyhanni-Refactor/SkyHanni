@@ -2,10 +2,10 @@ package at.hannibal2.skyhanni.features.slayer.blaze
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import net.minecraft.entity.EntityLiving
 
 object HellionShieldHelper {
@@ -22,7 +22,7 @@ object HellionShieldHelper {
             RenderLivingEntityHelper.setEntityColorWithNoHurtTime(
                 this,
                 shield.color.toColor().withAlpha(80)
-            ) { LorenzUtils.inSkyBlock && SkyHanniMod.feature.slayer.blazes.hellion.coloredMobs }
+            ) { SkyBlockAPI.isConnected && SkyHanniMod.feature.slayer.blazes.hellion.coloredMobs }
         } else {
             hellionShieldMobs.remove(this)
             RenderLivingEntityHelper.removeCustomRender(this)

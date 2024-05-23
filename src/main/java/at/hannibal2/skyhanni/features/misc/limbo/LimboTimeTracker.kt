@@ -3,18 +3,14 @@ package at.hannibal2.skyhanni.features.misc.limbo
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
-import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
-import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
+import at.hannibal2.skyhanni.events.hypixel.HypixelLocationEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
-import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -41,21 +37,19 @@ object LimboTimeTracker {
 
     private val bedwarsLobbyLimbo = BoundingBox(-662.0, 43.0, -76.0, -619.0, 86.0, -27.0)
 
-    private var doMigrate = false
-    private var unmigratedPB = 0
-
     @HandleEvent
-    fun onChat(event: SkyHanniChatEvent) {
-        if (event.message == "§cYou are AFK. Move around to return from AFK." || event.message == "§cYou were spawned in Limbo.") {
+    fun onLocationChange(event: HypixelLocationEvent) {
+        if (event.server == "limbo") {
             limboJoinTime = SimpleTimeMark.now()
-            HypixelData.inLimbo = true
             onFire = Minecraft.getMinecraft().thePlayer.isBurning
+        } else if (!limboJoinTime.isFarPast()) {
+            leaveLimbo()
         }
     }
 
     @HandleEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
-        if (event.message.startsWith("/playtime") && LorenzUtils.inLimbo) {
+        if (event.message.startsWith("/playtime") && inLimbo()) {
             event.cancel()
             printStats(true)
         }
@@ -64,7 +58,7 @@ object LimboTimeTracker {
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
         val personalBest = storage?.personalBest ?: 0
-        if (LorenzUtils.inLimbo && !shownPB && limboJoinTime.passedSince() >= personalBest.seconds && personalBest != 0) {
+        if (inLimbo() && !shownPB && limboJoinTime.passedSince() >= personalBest.seconds && personalBest != 0) {
             shownPB = true
             oldPB = personalBest.seconds
             ChatUtils.chat("§d§lPERSONAL BEST§f! You've surpassed your previous record of §e$oldPB§f!")
@@ -74,37 +68,23 @@ object LimboTimeTracker {
             if (bedwarsLobbyLimbo.contains(McPlayer.pos)) {
                 if (inFakeLimbo) return
                 limboJoinTime = SimpleTimeMark.now()
-                HypixelData.inLimbo = true
                 inFakeLimbo = true
-            } else {
-                if (LorenzUtils.inLimbo) {
-                    leaveLimbo()
-                    inFakeLimbo = false
-                }
+            } else if (inFakeLimbo) {
+                leaveLimbo()
+                inFakeLimbo = false
             }
         }
     }
 
     @HandleEvent
-    fun onWorldChange(event: WorldChangeEvent) {
-        if (!LorenzUtils.inLimbo) return
-        leaveLimbo()
-    }
-
-    @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
         if (!isEnabled()) return
-        if (!LorenzUtils.inLimbo) return
-        if (LorenzUtils.inSkyBlock) {
-            leaveLimbo()
-            return
-        }
+        if (!inLimbo()) return
         val duration = limboJoinTime.passedSince().format()
         config.showTimeInLimboPosition.renderString("§eIn limbo since §b$duration", posLabel = "Limbo Time Tracker")
     }
 
     private fun leaveLimbo() {
-        HypixelData.inLimbo = false
         if (!isEnabled()) return
         val passedSince = limboJoinTime.passedSince()
         val duration = passedSince.format()
@@ -132,11 +112,12 @@ object LimboTimeTracker {
         storage?.playtime = storage?.playtime?.plus(passedSince.toInt(DurationUnit.SECONDS)) ?: 0
         onFire = false
         shownPB = false
+        limboJoinTime = SimpleTimeMark.farPast()
     }
 
     fun printStats(onlyPlaytime: Boolean = false) {
-        val timeInLimbo: Int = if (LorenzUtils.inLimbo) limboJoinTime.passedSince().inWholeSeconds.toInt() else 0
-        val playtime: Int = if (LorenzUtils.inLimbo) (storage?.playtime
+        val timeInLimbo: Int = if (inLimbo()) limboJoinTime.passedSince().inWholeSeconds.toInt() else 0
+        val playtime: Int = if (inLimbo()) (storage?.playtime
             ?: 0) + limboJoinTime.passedSince().inWholeSeconds.toInt() else storage?.playtime ?: 0
         if (onlyPlaytime) {
             ChatUtils.chat("§aYou have ${playtime / 3600} hours and ${playtime % 3600 / 60} minutes playtime!", false)
@@ -160,7 +141,7 @@ object LimboTimeTracker {
     @HandleEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Limbo")
-        if (!LorenzUtils.inLimbo) {
+        if (!inLimbo()) {
             event.addIrrelevant("not in limbo")
             return
         }
@@ -172,28 +153,9 @@ object LimboTimeTracker {
         }
     }
 
-    fun workaroundMigration(personalBest: Int) {
-        doMigrate = true
-        unmigratedPB = personalBest
-    }
+    private fun isEnabled() = config.showTimeInLimbo
 
-    @HandleEvent
-    fun onHypixelJoin(event: HypixelJoinEvent) {
-        if (!doMigrate) return
-        if (unmigratedPB != 0) {
-            ChatUtils.debug("Migrating limbo personalBest")
-            storage?.personalBest = unmigratedPB
-            storage?.userLuck = unmigratedPB * USER_LUCK_MULTIPLIER
-        }
-        if ((storage?.personalBest ?: 0) > (storage?.playtime ?: 0)) {
-            ChatUtils.debug("Migrating limbo playtime")
-            storage?.playtime = (storage?.personalBest ?: 0)
-        }
-        doMigrate = false
-        unmigratedPB = 0
-    }
-
-    fun isEnabled() = config.showTimeInLimbo
+    private fun inLimbo() = HypixelAPI.connected && (HypixelAPI.server == "limbo" || inFakeLimbo)
 
     private fun tryTruncateFloat(input: Float): String {
         val string = input.toString()

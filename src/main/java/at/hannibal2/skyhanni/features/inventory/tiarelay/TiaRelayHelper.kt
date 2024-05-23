@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.sorted
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import kotlin.time.Duration.Companion.minutes
@@ -28,7 +29,7 @@ object TiaRelayHelper {
 
     @HandleEvent
     fun onPlaySound(event: PlaySoundEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         val soundName = event.soundName
 
         if (config.tiaRelayMute && soundName == "mob.wolf.whine") {
@@ -55,7 +56,7 @@ object TiaRelayHelper {
     // TODO inventory open and close events
     @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.soundHelper) return
 
         if (InventoryUtils.openInventoryName().contains("Network Relay")) {
@@ -98,7 +99,7 @@ object TiaRelayHelper {
 
     @HandleEvent
     fun onRenderItemTip(event: RenderInventoryItemTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.soundHelper) return
         if (!inInventory) return
 
@@ -127,7 +128,7 @@ object TiaRelayHelper {
 
     @HandleEvent
     fun onSlotClick(event: SlotClickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!config.soundHelper) return
         if (!inInventory) return
 

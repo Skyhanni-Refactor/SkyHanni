@@ -4,8 +4,8 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -39,8 +39,8 @@ class RepoManager(private val configLocation: File) {
 
         private val config get() = SkyHanniMod.feature.dev.repo
 
-        val successfulConstants = mutableListOf<String>()
-        val unsuccessfulConstants = mutableListOf<String>()
+        val successfulConstants = mutableSetOf<String>()
+        val unsuccessfulConstants = mutableSetOf<String>()
 
         private var lastConstant: String? = null
 

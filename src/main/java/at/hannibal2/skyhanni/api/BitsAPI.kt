@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.FameRank
 import at.hannibal2.skyhanni.data.FameRanks
 import at.hannibal2.skyhanni.data.FameRanks.getFameRankByNameOrNull
@@ -14,7 +15,6 @@ import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -313,7 +313,7 @@ object BitsAPI {
     private fun sendBitsSpentEvent() = BitsUpdateEvent.BitsSpent(bits, bitsAvailable).post()
     private fun sendBitsAvailableGainedEvent() = BitsUpdateEvent.BitsAvailableGained(bits, bitsAvailable).post()
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && profileStorage != null
+    fun isEnabled() = SkyBlockAPI.isConnected && profileStorage != null
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

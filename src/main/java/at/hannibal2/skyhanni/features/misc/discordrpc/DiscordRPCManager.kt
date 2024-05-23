@@ -6,9 +6,9 @@ import at.hannibal2.skyhanni.SkyHanniMod.Companion.coroutineScope
 import at.hannibal2.skyhanni.SkyHanniMod.Companion.feature
 import at.hannibal2.skyhanni.SkyHanniMod.Companion.logger
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.misc.DiscordRPCConfig.LineEntry
 import at.hannibal2.skyhanni.config.features.misc.DiscordRPCConfig.PriorityEntry
-import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.StackingEnchantData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.StackingEnchantsJson
 import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
@@ -23,7 +23,6 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import com.google.gson.JsonObject
@@ -127,7 +126,7 @@ object DiscordRPCManager : IPCListener {
             if (config.showSkyCryptButton.get()) {
                 addButton(
                     RichPresenceButton(
-                        "https://sky.shiiyu.moe/stats/${McPlayer.name}/${HypixelData.profileName}",
+                        "https://sky.shiiyu.moe/stats/${McPlayer.name}/${SkyBlockAPI.profileName}",
                         "Open SkyCrypt"
                     )
                 )
@@ -167,7 +166,7 @@ object DiscordRPCManager : IPCListener {
         // the mod has already started the connection process. this variable is my way of running a function when
         // the player joins SkyBlock but only running it again once they join and leave.
         if (started || !isEnabled()) return
-        if (LorenzUtils.inSkyBlock) {
+        if (SkyBlockAPI.isConnected) {
             start()
             started = true
         }
@@ -178,7 +177,7 @@ object DiscordRPCManager : IPCListener {
         if (nextUpdate.isInFuture()) return
         // wait 5 seconds to check if the new world is skyblock or not before stopping the function
         nextUpdate = DelayedRun.runDelayed(5.seconds) {
-            if (!LorenzUtils.inSkyBlock) {
+            if (!SkyBlockAPI.isConnected) {
                 stop()
             }
         }

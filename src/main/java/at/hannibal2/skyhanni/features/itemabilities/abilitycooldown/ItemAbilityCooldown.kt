@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.itemabilities.abilitycooldown
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
@@ -22,7 +23,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RegexUtils.findMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -185,7 +185,7 @@ object ItemAbilityCooldown {
     }
 
     private fun handleItemClick(itemInHand: ItemStack?) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         itemInHand?.getInternalName()?.run {
             ItemAbility.getByInternalName(this)?.setItemClick()
         }
@@ -241,7 +241,7 @@ object ItemAbilityCooldown {
         lastAbility = ""
     }
 
-    private fun isEnabled(): Boolean = LorenzUtils.inSkyBlock && config.itemAbilityCooldown
+    private fun isEnabled(): Boolean = SkyBlockAPI.isConnected && config.itemAbilityCooldown
 
     private fun click(ability: ItemAbility) {
         if (ability.actionBarDetection) {

@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
@@ -205,7 +206,7 @@ object HoppityCollectionStats {
         return totalAmount
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.hoppityCollectionStats
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.hoppityCollectionStats
 
     private data class RabbitCollectionInfo(
         val rarity: RabbitCollectionRarity,

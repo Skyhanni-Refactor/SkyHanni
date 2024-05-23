@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
 import at.hannibal2.skyhanni.events.skyblock.BazaarOpenedProductEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
+import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.InventoryUtils.getAllItems
@@ -19,7 +20,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -51,10 +51,10 @@ object BazaarApi {
     fun NEUInternalName.isBazaarItem() = getBazaarData() != null
 
     fun searchForBazaarItem(displayName: String, amount: Int = -1) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (NEUItems.neuHasFocus()) return
         if (SkyBlockAPI.gamemode.noTrade) return
-        if (DungeonAPI.inDungeon() || LorenzUtils.inKuudraFight) return
+        if (DungeonAPI.inDungeon() || KuudraAPI.inKuudra) return
         HypixelCommands.bazaar(displayName.removeColor())
         if (amount != -1) OS.copyToClipboard(amount.toString())
         currentSearchedItem = displayName.removeColor()
@@ -81,7 +81,7 @@ object BazaarApi {
 
     @HandleEvent
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!inBazaarInventory) return
         if (!SkyHanniMod.feature.inventory.bazaar.purchaseHelper) return
         if (currentSearchedItem == "") return
@@ -103,7 +103,7 @@ object BazaarApi {
 
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!inBazaarInventory) return
         // TODO USE SH-REPO
         // TODO remove dynamic pattern

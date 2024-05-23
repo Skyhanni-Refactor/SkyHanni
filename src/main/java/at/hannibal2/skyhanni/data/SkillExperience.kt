@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.events.skyblock.skill.SkillExpGainEvent
 import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
@@ -100,7 +101,7 @@ object SkillExperience {
 
     @HandleEvent
     fun onActionBarUpdate(event: ActionBarUpdateEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         actionBarPattern.matchMatcher(event.actionBar) {
             val skill = group("skill").lowercase()

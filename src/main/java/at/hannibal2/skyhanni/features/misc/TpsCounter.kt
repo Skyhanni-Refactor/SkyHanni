@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
@@ -89,7 +90,7 @@ object TpsCounter {
     }
 
     private fun isEnabled() = HypixelAPI.onHypixel && config.tpsDisplay &&
-        (LorenzUtils.inSkyBlock || OutsideSbFeature.TPS_DISPLAY.isSelected())
+        (SkyBlockAPI.isConnected || OutsideSbFeature.TPS_DISPLAY.isSelected())
 
     private fun getColor(tps: Double) = when {
         tps > 19.8 -> "§2"

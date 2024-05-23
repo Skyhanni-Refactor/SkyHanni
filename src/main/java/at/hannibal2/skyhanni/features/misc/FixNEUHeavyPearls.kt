@@ -2,10 +2,10 @@ package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates
 import kotlin.time.Duration.Companion.hours
 
@@ -26,5 +26,5 @@ object FixNEUHeavyPearls {
         }
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.fixNeuHeavyPearls
+    fun isEnabled() = SkyBlockAPI.isConnected && config.fixNeuHeavyPearls
 }

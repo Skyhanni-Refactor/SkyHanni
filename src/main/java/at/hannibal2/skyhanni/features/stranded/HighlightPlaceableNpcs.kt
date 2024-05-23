@@ -11,7 +11,6 @@ import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -71,7 +70,7 @@ object HighlightPlaceableNpcs {
         return lore.none { locationPattern.matches(it) }
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && SkyBlockAPI.gamemode == Gamemode.STRANDED && config.highlightPlaceableNpcs
+    private fun isEnabled() = SkyBlockAPI.isConnected && SkyBlockAPI.gamemode == Gamemode.STRANDED && config.highlightPlaceableNpcs
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

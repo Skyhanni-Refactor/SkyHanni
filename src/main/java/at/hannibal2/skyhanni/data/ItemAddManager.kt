@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
@@ -9,7 +10,6 @@ import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddInInventoryEvent
 import at.hannibal2.skyhanni.events.inventory.SackChangeEvent
 import at.hannibal2.skyhanni.features.inventory.SuperCraftFeatures.craftedPattern
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -48,7 +48,7 @@ object ItemAddManager {
 
     @HandleEvent
     fun onSackChange(event: SackChangeEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         if (inSackInventory || lastSackInventoryLeave.passedSince() < 10.seconds) return
 
@@ -64,7 +64,7 @@ object ItemAddManager {
 
     @HandleEvent
     fun onItemAdd(event: ItemAddInInventoryEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
 
         val internalName = event.internalName
         if (internalName == SkyhanniItems.ARCHFIEND_DICE() || internalName == SkyhanniItems.HIGH_CLASS_ARCHFIEND_DICE()) {

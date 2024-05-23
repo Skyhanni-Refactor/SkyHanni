@@ -32,7 +32,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.isEnchanted
 import at.hannibal2.skyhanni.utils.ItemUtils.isVanilla
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.MultiFilter
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.drawBorder
@@ -93,7 +92,7 @@ object HideNotClickableItems {
 
     @HandleEvent
     fun onForegroundDrawn(event: ForegroundDrawnEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (!isEnabled()) return
         if (bypassActive()) return
         if (event.gui !is GuiChest) return
@@ -594,5 +593,5 @@ object HideNotClickableItems {
         return result
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.items
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.items
 }
