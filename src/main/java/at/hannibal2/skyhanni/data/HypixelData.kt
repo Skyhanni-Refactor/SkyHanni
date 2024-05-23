@@ -103,7 +103,7 @@ object HypixelData {
         skyBlockAreaWithSymbol = null
     }
 
-    @HandleEvent(HandleEvent.HIGHEST)
+    @HandleEvent(priority = HandleEvent.HIGHEST)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         if (event.scoreboard.isEmpty()) return
 

@@ -179,7 +179,7 @@ object TrevorFeatures {
         }
     }
 
-    @HandleEvent(HandleEvent.LOW)
+    @HandleEvent(priority = HandleEvent.LOW)
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
         if (!config.trapperCooldownGui) return
         if (!onFarmingIsland()) return

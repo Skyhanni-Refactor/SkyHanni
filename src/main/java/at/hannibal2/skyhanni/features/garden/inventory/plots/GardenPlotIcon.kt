@@ -36,7 +36,7 @@ object GardenPlotIcon {
 
     fun isEnabled() = GardenAPI.inGarden() && config.enabled && inInventory
 
-    @HandleEvent(HandleEvent.HIGHEST)
+    @HandleEvent(priority = HandleEvent.HIGHEST)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         inInventory = event.inventoryName == "Configure Plots"
         if (!isEnabled()) return

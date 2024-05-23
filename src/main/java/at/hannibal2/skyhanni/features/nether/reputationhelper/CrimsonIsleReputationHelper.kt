@@ -125,7 +125,7 @@ class CrimsonIsleReputationHelper(skyHanniMod: SkyHanniMod) {
         display = newList
     }
 
-    @HandleEvent(HandleEvent.LOWEST)
+    @HandleEvent(priority = HandleEvent.LOWEST)
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
         if (!config.enabled) return
         if (!IslandType.CRIMSON_ISLE.isInIsland()) return

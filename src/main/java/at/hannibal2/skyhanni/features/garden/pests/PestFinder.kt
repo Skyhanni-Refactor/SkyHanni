@@ -107,7 +107,7 @@ object PestFinder {
     }
 
     // priority to low so that this happens after other renderPlot calls.
-    @HandleEvent(HandleEvent.LOW)
+    @HandleEvent(priority = HandleEvent.LOW)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         if (!config.showPlotInWorld) return

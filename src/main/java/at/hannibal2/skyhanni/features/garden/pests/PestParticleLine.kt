@@ -75,7 +75,7 @@ object PestParticleLine {
         return newList
     }
 
-    @HandleEvent(HandleEvent.LOW)
+    @HandleEvent(priority = HandleEvent.LOW)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         // TODO time in config

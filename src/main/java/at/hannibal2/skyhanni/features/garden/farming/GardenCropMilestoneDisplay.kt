@@ -86,7 +86,7 @@ object GardenCropMilestoneDisplay {
         }
     }
 
-    @HandleEvent(HandleEvent.LOW)
+    @HandleEvent(priority = HandleEvent.LOW)
     fun onProfileJoin(event: ProfileJoinEvent) {
         GardenCropMilestones.cropCounter?.let {
             if (it.values.sum() == 0L) {
