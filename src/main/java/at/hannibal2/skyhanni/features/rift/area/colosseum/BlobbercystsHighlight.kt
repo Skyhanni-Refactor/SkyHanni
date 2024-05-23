@@ -18,14 +18,14 @@ object BlobbercystsHighlight {
 
     private val config get() = SkyHanniMod.feature.rift.area.colosseum
     private val entityList = mutableListOf<EntityOtherPlayerMP>()
-    private val blobberName = "Blobbercyst "
+    private const val BLOBBER_NAME = "Blobbercyst "
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
         if (!event.isMod(5)) return
         McWorld.getEntitiesOf<EntityOtherPlayerMP>().forEach {
-            if (it.name == blobberName) {
+            if (it.name == BLOBBER_NAME) {
                 RenderLivingEntityHelper.setEntityColorWithNoHurtTime(it, Color.RED.withAlpha(80)) { isEnabled() }
                 entityList.add(it)
             }
