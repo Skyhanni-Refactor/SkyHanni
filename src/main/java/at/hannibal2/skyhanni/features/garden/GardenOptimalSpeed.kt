@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.ScreenChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -18,7 +19,6 @@ import at.hannibal2.skyhanni.utils.renderables.Renderable
 import io.github.notenoughupdates.moulconfig.observer.Property
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiEditSign
-import net.minecraftforge.client.event.GuiOpenEvent
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
@@ -65,15 +65,15 @@ object GardenOptimalSpeed {
         }
     }
 
-    @SubscribeEvent
-    fun onGuiOpen(event: GuiOpenEvent) {
+    @HandleEvent
+    fun onScreenChange(event: ScreenChangeEvent) {
         if (!isRancherOverlayEnabled()) return
-        val gui = event.gui
-        if (gui !is GuiEditSign) return
-        if (!isRancherSign(gui)) return
+        if (event.screen !is GuiEditSign) return
+        if (!isRancherSign(event.screen)) return
+
         rancherOverlayList = CropType.entries.map { crop ->
             listOf(crop.icon, Renderable.link("${crop.cropName} - ${crop.getOptimalSpeed()}") {
-                gui.setTextIntoSign("${crop.getOptimalSpeed()}")
+                event.screen.setTextIntoSign("${crop.getOptimalSpeed()}")
             })
         }
     }

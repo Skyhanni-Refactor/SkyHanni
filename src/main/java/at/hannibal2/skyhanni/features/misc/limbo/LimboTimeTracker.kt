@@ -3,14 +3,13 @@ package at.hannibal2.skyhanni.features.misc.limbo
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
 import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.ProfileStorageData
+import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
-import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
-import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
@@ -23,7 +22,6 @@ import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.client.Minecraft
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit

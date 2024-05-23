@@ -1,6 +1,8 @@
 package at.hannibal2.skyhanni.api.event
 
+import at.hannibal2.skyhanni.data.MinecraftData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.DisabledEventsJson
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import java.lang.reflect.Method
 
@@ -47,5 +49,18 @@ object SkyHanniEvents {
         val data = event.getConstant<DisabledEventsJson>("DisabledEvents")
         disabledHandlers = data.disabledHandlers
         disabledHandlerInvokers = data.disabledInvokers
+    }
+
+    @HandleEvent
+    fun onDebug(event: DebugDataCollectEvent) {
+        event.title("Events")
+        event.addData {
+            handlers.values.toMutableList()
+                .filter { it.invokeCount > 0 }
+                .sortedWith(compareBy({ -it.invokeCount }, { it.name }))
+                .forEach {
+                    add("- ${it.name} (${it.invokeCount} ${it.invokeCount / (MinecraftData.totalTicks / 20)}/s)")
+                }
+        }
     }
 }

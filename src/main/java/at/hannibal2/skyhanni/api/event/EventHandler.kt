@@ -8,14 +8,15 @@ import at.hannibal2.skyhanni.utils.chat.Text
 import java.lang.reflect.Method
 import java.util.function.Consumer
 
-class EventHandler<T : SkyHanniEvent> private constructor(private val name: String, private val isGeneric: Boolean) {
+class EventHandler<T : SkyHanniEvent> private constructor(val name: String, private val isGeneric: Boolean) {
 
     private val listeners: MutableList<Listener> = mutableListOf()
 
     private var isFrozen = false
     private var canReceiveCancelled = false
 
-    private var invokeCount: Int = 0
+    var invokeCount: Long = 0L
+        private set
 
     constructor(event: Class<T>) : this(
         (event.name.split(".").lastOrNull() ?: event.name).replace("$", "."),
