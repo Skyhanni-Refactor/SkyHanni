@@ -25,7 +25,7 @@ object GeyserFishing {
     private var geyser: LorenzVec? = null
     private var geyserBox: BoundingBox? = null
 
-    @HandleEvent(HandleEvent.LOW, receiveCancelled = true)
+    @HandleEvent(priority = HandleEvent.LOW, receiveCancelled = true)
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!shouldProcessParticles()) return
         with(event) {

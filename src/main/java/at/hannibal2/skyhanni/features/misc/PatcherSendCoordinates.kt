@@ -56,7 +56,7 @@ object PatcherSendCoordinates {
         }
     }
 
-    @HandleEvent(HandleEvent.HIGH)
+    @HandleEvent(priority = HandleEvent.HIGH)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!config.enabled) return
 

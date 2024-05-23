@@ -212,7 +212,7 @@ object SkillProgress {
         }
     }
 
-    @HandleEvent(HandleEvent.LOW)
+    @HandleEvent(priority = HandleEvent.LOW)
     fun onActionBar(event: ActionBarUpdateEvent) {
         if (!config.hideInActionBar || !isEnabled()) return
         var msg = event.actionBar

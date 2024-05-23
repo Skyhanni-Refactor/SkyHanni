@@ -1,15 +1,23 @@
 package at.hannibal2.skyhanni.api.event
 
+import at.hannibal2.skyhanni.data.IslandType
 import kotlin.reflect.KClass
 
+@Retention(AnnotationRetention.RUNTIME)
+@Target(AnnotationTarget.FUNCTION)
 annotation class HandleEvent(
     /**
-     * The priority of when the event will be called, lower priority will be called first.
-     * HIGHEST -> -2
-     * HIGH -> -1
-     * NORMAL -> 0
-     * LOW -> 1
-     * LOWEST -> 2
+     * If the event should only be received while on SkyBlock.
+     */
+    val onlyOnSkyblock: Boolean = false,
+
+    /**
+     * If the event should only be received while on a specific skyblock island.
+     */
+    val onlyOnIsland: IslandType = IslandType.ANY,
+
+    /**
+     * The priority of when the event will be called, lower priority will be called first, see the companion object.
      */
     val priority: Int = 0,
 
@@ -19,7 +27,7 @@ annotation class HandleEvent(
     val receiveCancelled: Boolean = false,
 
     /**
-     * The base generic class that it can receive, ie. if it can receive Entity it will also receive LivingEntity.
+     * The base generic class that it can receive, i.e. if it can receive Entity it will also receive LivingEntity.
      */
     val generic: KClass<*> = Nothing::class,
 ) {

@@ -10,7 +10,7 @@ object ChocolateFactoryTooltip {
 
     private val config get() = ChocolateFactoryAPI.config
 
-    @HandleEvent(HandleEvent.HIGH)
+    @HandleEvent(priority = HandleEvent.HIGH)
     fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!ChocolateFactoryAPI.inChocolateFactory) return
         if (!config.extraTooltipStats) return

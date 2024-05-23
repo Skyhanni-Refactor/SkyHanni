@@ -30,14 +30,14 @@ object ReplaceRomanNumerals {
     )
 
     // TODO: Remove after pr 1717 is ready and switch to ItemHoverEvent
-    @HandleEvent(HandleEvent.HIGHEST)
+    @HandleEvent(priority = HandleEvent.HIGHEST)
     fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!isEnabled()) return
 
         event.toolTip.replaceAll { it.transformLine() }
     }
 
-    @HandleEvent(HandleEvent.LOWEST)
+    @HandleEvent(priority = HandleEvent.LOWEST)
     fun onChatHover(event: ChatHoverEvent) {
         if (event.getHoverEvent().action != HoverEvent.Action.SHOW_TEXT) return
         if (!isEnabled()) return

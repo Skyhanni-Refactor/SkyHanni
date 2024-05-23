@@ -46,7 +46,7 @@ object TestCopyBestiaryValues {
         "\\[Lv(?<lvl>.*)] (?<text>.*)"
     )
 
-    @HandleEvent(HandleEvent.LOW)
+    @HandleEvent(priority = HandleEvent.LOW)
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
         if (!SkyHanniMod.feature.dev.debug.copyBestiaryData) return
         SkyHanniDebugsAndTests.displayLine = ""

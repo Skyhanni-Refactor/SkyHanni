@@ -147,7 +147,7 @@ object MaxwellAPI {
     }
 
     // load earlier, so that other features can already use the api in this event
-    @HandleEvent(HandleEvent.HIGH)
+    @HandleEvent(priority = HandleEvent.HIGH)
     fun onInventoryOpen(event: InventoryOpenEvent) {
         if (!isEnabled()) return
 

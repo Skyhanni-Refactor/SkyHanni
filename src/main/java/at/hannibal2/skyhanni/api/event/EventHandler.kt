@@ -1,8 +1,11 @@
 package at.hannibal2.skyhanni.api.event
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
+import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.ReflectionUtils
 import at.hannibal2.skyhanni.utils.chat.Text
 import java.lang.reflect.Method
@@ -86,6 +89,8 @@ class EventHandler<T : SkyHanniEvent> private constructor(val name: String, priv
 
     private fun shouldInvoke(event: SkyHanniEvent, listener: Listener): Boolean {
         if (SkyHanniEvents.isDisabledInvoker(listener.name)) return false
+        if (listener.options.onlyOnSkyblock && !LorenzUtils.inSkyBlock) return false
+        if (listener.options.onlyOnIsland != IslandType.ANY && !listener.options.onlyOnIsland.isInIsland()) return false
         if (event.isCancelled && !listener.options.receiveCancelled) return false
         if (event is GenericSkyHanniEvent<*> && !listener.options.generic.java.isAssignableFrom(event.type)) return false
         return true

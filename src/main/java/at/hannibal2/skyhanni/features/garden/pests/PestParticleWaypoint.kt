@@ -72,7 +72,7 @@ object PestParticleWaypoint {
         isPointingToPest = false
     }
 
-    @HandleEvent(HandleEvent.LOW, receiveCancelled = true)
+    @HandleEvent(priority = HandleEvent.LOW, receiveCancelled = true)
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
         if (event.type != EnumParticleTypes.REDSTONE || event.speed != 1f) return

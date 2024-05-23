@@ -54,7 +54,7 @@ object GuiEditManager {
         openGuiPositionEditor(hotkeyReminder = false)
     }
 
-    @HandleEvent(HandleEvent.LOWEST)
+    @HandleEvent(priority = HandleEvent.LOWEST)
     fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
         GlStateManager.color(1f, 1f, 1f, 1f)
         GlStateManager.enableBlend()
