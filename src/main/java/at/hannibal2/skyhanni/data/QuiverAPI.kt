@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ArrowTypeJson
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
@@ -98,7 +97,7 @@ object QuiverAPI {
         "§7Active Arrow: §.(?<type>.*) §7\\(§e(?<amount>.*)§7\\)"
     )
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         val message = event.message.trimWhiteSpace().removeResets()
@@ -188,7 +187,7 @@ object QuiverAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryFullyLoaded(event: InventoryFullyOpenedEvent) {
         if (!isEnabled()) return
         if (!quiverInventoryNamePattern.matches(event.inventoryName)) return
@@ -206,7 +205,7 @@ object QuiverAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryUpdate(event: OwnInventoryItemUpdateEvent) {
         if (!isEnabled() && event.slot != 44) return
         val stack = event.itemStack
@@ -249,7 +248,7 @@ object QuiverAPI {
         return arrows.firstOrNull { it.internalName == internalName }
     }
 
-    fun isEnabled() = SkyBlockAPI.isConnected && storage != null
+    private fun isEnabled() = storage != null
 
     private fun checkBowInventory() {
         hasBow = McPlayer.inventory.any {
@@ -270,7 +269,7 @@ object QuiverAPI {
         QuiverUpdateEvent(arrowType, currentAmount).post()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         if (event.repeatSeconds(2)) {

@@ -61,7 +61,7 @@ object ArmorDropTracker {
         hasArmor = false
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
         for (dropType in ArmorDropType.entries) {
             if (dropType.chatMessage == event.message) {

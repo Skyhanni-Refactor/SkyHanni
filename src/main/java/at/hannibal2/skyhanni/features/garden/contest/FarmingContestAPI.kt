@@ -98,7 +98,7 @@ object FarmingContestAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (event.inventoryName == "Your Contests") {
             inInventory = true

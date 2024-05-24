@@ -39,7 +39,7 @@ object MiningAPI {
 
     fun getCold() = cold
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         val newCold = event.scoreboard.matchFirst(ScoreboardPattern.coldPattern) {
             group("cold").toInt().absoluteValue
@@ -50,7 +50,7 @@ object MiningAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
         if (!inColdIsland()) return
         if (coldReset.matches(event.message)) {

@@ -7,8 +7,6 @@ import at.hannibal2.skyhanni.events.skyblock.skill.SkillExpGainEvent
 import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -117,7 +115,7 @@ object SkillExperience {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (event.inventoryName != "Your Skills") return
 
@@ -183,4 +181,3 @@ object SkillExperience {
     // TODO create additional event
     fun getExpForSkill(skillName: String) = skillExp[skillName.lowercase()] ?: 0
 }
-

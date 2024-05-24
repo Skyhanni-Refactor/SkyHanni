@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.ScoreboardData
@@ -154,7 +153,7 @@ object DungeonAPI {
         else -> "§7"
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
         if (dungeonFloor == null) {
             ScoreboardData.sidebarLinesFormatted.matchFirst(floorPattern) {
@@ -179,7 +178,7 @@ object DungeonAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onTabUpdate(event: TablistFooterUpdateEvent) {
         if (!inDungeon()) return
         val tabList = event.footer.split("\n")
@@ -236,7 +235,7 @@ object DungeonAPI {
     }
 
     // This returns a map of boss name to the integer for the amount of kills the user has in the collection
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         val bossCollections = bossStorage ?: return
 

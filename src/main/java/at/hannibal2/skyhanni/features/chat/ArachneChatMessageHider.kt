@@ -5,7 +5,6 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 
@@ -29,7 +28,7 @@ object ArachneChatMessageHider {
     )
     // TODO more repo patterns
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.SPIDER_DEN)
     fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         if (LorenzUtils.skyBlockArea == "Arachne's Sanctuary") return
@@ -62,5 +61,5 @@ object ArachneChatMessageHider {
         return hideArachneDeadMessage
     }
 
-    fun isEnabled() = IslandType.SPIDER_DEN.isInIsland() && config.hideArachneMessages
+    fun isEnabled() = config.hideArachneMessages
 }

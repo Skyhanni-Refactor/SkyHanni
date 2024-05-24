@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.FameRank
 import at.hannibal2.skyhanni.data.FameRanks
 import at.hannibal2.skyhanni.data.FameRanks.getFameRankByNameOrNull
@@ -144,7 +143,7 @@ object BitsAPI {
         "^(§aCommunity Shop|§eFame Rank)$"
     )
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         if (!isEnabled()) return
         for (line in event.scoreboard) {
@@ -167,7 +166,7 @@ object BitsAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         val message = event.message.trimWhiteSpace().removeResets()
@@ -205,7 +204,7 @@ object BitsAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (!isEnabled()) return
 
@@ -313,7 +312,7 @@ object BitsAPI {
     private fun sendBitsSpentEvent() = BitsUpdateEvent.BitsSpent(bits, bitsAvailable).post()
     private fun sendBitsAvailableGainedEvent() = BitsUpdateEvent.BitsAvailableGained(bits, bitsAvailable).post()
 
-    fun isEnabled() = SkyBlockAPI.isConnected && profileStorage != null
+    fun isEnabled() = profileStorage != null
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

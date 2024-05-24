@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.damageindicator.DamageIndicatorFinalBossEvent
 import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
@@ -29,9 +30,8 @@ object DungeonCleanEnd {
     private var chestsSpawned = false
     private var lastBossId: Int = -1
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!DungeonAPI.inDungeon()) return
         if (!config.enabled) return
 
         val message = event.message
@@ -57,9 +57,8 @@ object DungeonCleanEnd {
         lastBossId = -1
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onBossDead(event: DamageIndicatorFinalBossEvent) {
-        if (!DungeonAPI.inDungeon()) return
         if (bossDone) return
 
         if (lastBossId == -1) {
@@ -67,9 +66,8 @@ object DungeonCleanEnd {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onEntityHealthUpdate(event: EntityHealthUpdateEvent) {
-        if (!DungeonAPI.inDungeon()) return
         if (!config.enabled) return
         if (bossDone) return
         if (lastBossId == -1) return

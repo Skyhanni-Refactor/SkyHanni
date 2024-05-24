@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.dungeon
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ClickType
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.click.BlockClickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
@@ -33,20 +34,17 @@ object DungeonHighlightClickedBlocks {
         return colors[colorIndex]
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onChat(event: SkyHanniChatEvent) {
         if (!SkyHanniMod.feature.dungeon.highlightClickedBlocks) return
-        if (!DungeonAPI.inDungeon()) return
-
         if (event.message == "§cYou hear the sound of something opening...") {
             event.blockedReason = "dungeon_highlight_clicked_block"
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onBlockClick(event: BlockClickEvent) {
         if (!SkyHanniMod.feature.dungeon.highlightClickedBlocks) return
-        if (!DungeonAPI.inDungeon()) return
         if (DungeonAPI.inBossRoom) return
         if (event.clickType != ClickType.RIGHT_CLICK) return
 
@@ -80,10 +78,9 @@ object DungeonHighlightClickedBlocks {
         blocks.add(ClickedBlock(position, displayText, color, System.currentTimeMillis()))
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!SkyHanniMod.feature.dungeon.highlightClickedBlocks) return
-        if (!DungeonAPI.inDungeon()) return
 
         blocks.removeAll { System.currentTimeMillis() > it.time + 3000 }
         blocks.forEach {

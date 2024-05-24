@@ -28,7 +28,7 @@ object CropAccessoryData {
         accessoryInInventory = CropAccessory.NONE
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryUpdatedEvent) {
         if (!accessoryBagNamePattern.matches(event.inventoryName)) return
 
