@@ -7,7 +7,6 @@ import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.ConfigGuiManager
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.core.config.Position
-import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
@@ -33,7 +32,6 @@ import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzDebug
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
@@ -309,7 +307,7 @@ class SkyHanniDebugsAndTests {
 
         fun whereAmI() {
             if (SkyBlockAPI.isConnected) {
-                ChatUtils.chat("§eYou are currently in ${LorenzUtils.skyBlockIsland}.")
+                ChatUtils.chat("§eYou are currently in ${SkyBlockAPI.island}.")
                 return
             }
             ChatUtils.chat("§eYou are not in Skyblock.")
@@ -507,7 +505,7 @@ class SkyHanniDebugsAndTests {
 
         if (Minecraft.getMinecraft().gameSettings.showDebugInfo && debugConfig.currentAreaDebug) {
             config.debugLocationPos.renderString(
-                "Current Area: ${HypixelData.skyBlockArea}",
+                "Current Area: ${SkyBlockAPI.area}",
                 posLabel = "SkyBlock Area (Debug)"
             )
         }

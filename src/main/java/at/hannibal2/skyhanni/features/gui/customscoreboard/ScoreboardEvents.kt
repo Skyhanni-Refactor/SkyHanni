@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.features.gui.customscoreboard
 
-import at.hannibal2.skyhanni.data.HypixelData
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
@@ -504,7 +504,7 @@ private fun getMagmaBossLines() = getSbLines().filter { line ->
         || SbPattern.bossHealthBarPattern.matches(line)
 }
 
-private fun getMagmaBossShowWhen(): Boolean = SbPattern.magmaChamberPattern.matches(HypixelData.skyBlockArea)
+private fun getMagmaBossShowWhen(): Boolean = SbPattern.magmaChamberPattern.matches(SkyBlockAPI.area)
 
 private fun getRiftLines() = getSbLines().filter { line ->
     RiftBloodEffigies.heartsPattern.matches(line)

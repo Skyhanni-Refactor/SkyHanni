@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.pests.PestType
+import at.hannibal2.skyhanni.features.slayer.SlayerType
 import at.hannibal2.skyhanni.utils.EncodingUtils.fromBase64
 import at.hannibal2.skyhanni.utils.EncodingUtils.toBase64
 import at.hannibal2.skyhanni.utils.LorenzRarity
@@ -68,5 +69,6 @@ object SkyHanniTypeAdapters {
     val TRACKER_DISPLAY_MODE = SimpleStringTypeAdapter.forEnum<TrackerDisplayMode>()
     val ISLAND_TYPE = SimpleStringTypeAdapter.forEnum<IslandType>()
     val RARITY = SimpleStringTypeAdapter.forEnum<LorenzRarity>()
+    val SLAYER_TYPE = SimpleStringTypeAdapter.forEnum<SlayerType>()
 
 }

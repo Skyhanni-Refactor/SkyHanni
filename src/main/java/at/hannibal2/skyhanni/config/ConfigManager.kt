@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.data.jsonobjects.local.KnownFeaturesJson
 import at.hannibal2.skyhanni.data.jsonobjects.local.VisualWordsJson
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
+import at.hannibal2.skyhanni.features.slayer.SlayerType
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
@@ -71,6 +72,7 @@ class ConfigManager {
             .registerTypeAdapter(LorenzRarity::class.java, SkyHanniTypeAdapters.RARITY.nullSafe())
             .registerTypeAdapter(IslandType::class.java, SkyHanniTypeAdapters.ISLAND_TYPE.nullSafe())
             .registerTypeAdapter(TrackerDisplayMode::class.java, SkyHanniTypeAdapters.TRACKER_DISPLAY_MODE.nullSafe())
+            .registerTypeAdapter(SlayerType::class.java, SkyHanniTypeAdapters.SLAYER_TYPE.nullSafe())
             .registerTypeAdapter(SimpleTimeMark::class.java, object : TypeAdapter<SimpleTimeMark>() {
                 override fun write(out: JsonWriter, value: SimpleTimeMark) {
                     out.value(value.toMillis())

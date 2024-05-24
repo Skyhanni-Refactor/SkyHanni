@@ -3,11 +3,9 @@ package at.hannibal2.skyhanni.test
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.repo.RepoManager
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.StringUtils.equalsIgnoreColor
 import at.hannibal2.skyhanni.utils.StringUtils.toDashlessUUID
 import at.hannibal2.skyhanni.utils.mc.McPlayer
@@ -88,14 +86,10 @@ object DebugCommand {
             event.addData("not on SkyBlock, but on Hypixel")
             return
         }
-        if (LorenzUtils.skyBlockIsland == IslandType.UNKNOWN) {
-            event.addData("Unknown SkyBlock island!")
-            return
-        }
         event.addIrrelevant {
             add("on Hypixel SkyBlock")
-            add("skyBlockIsland: ${LorenzUtils.skyBlockIsland}")
-            add("skyBlockArea: '${LorenzUtils.skyBlockArea}'")
+            add("skyBlockIsland: ${SkyBlockAPI.island}")
+            add("skyBlockArea: '${SkyBlockAPI.area}'")
         }
     }
 

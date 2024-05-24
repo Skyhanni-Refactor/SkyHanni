@@ -1,13 +1,13 @@
 package at.hannibal2.skyhanni.features.rift.everywhere
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.ConditionalUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
@@ -110,7 +110,7 @@ object RiftTimer {
     @HandleEvent
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
-        if (LorenzUtils.skyBlockArea == "Mirrorverse") return
+        if (IslandArea.MIRRORVERSE.isInside()) return
 
         config.timerPosition.renderStrings(display, posLabel = "Rift Timer")
     }

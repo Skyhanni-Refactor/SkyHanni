@@ -1,22 +1,19 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
-import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
-import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
-import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 
 object HypixelData {
 
     val patternGroup = RepoPattern.group("data.hypixeldata")
-    private val islandNamePattern by patternGroup.pattern(
+    val islandNamePattern by patternGroup.pattern(
         "islandname",
         "(?:§.)*(Area|Dungeon): (?:§.)*(?<island>.*)"
     )
@@ -63,7 +60,6 @@ object HypixelData {
         "\\s*§(?<symbol>7⏣|5ф) §(?<color>.)(?<area>.*)"
     )
 
-    var skyBlock = false
     var skyBlockIsland = IslandType.UNKNOWN
 
     var skyBlockArea: String? = null
@@ -87,18 +83,14 @@ object HypixelData {
         return amount
     }
 
-    private var loggerIslandChange = LorenzLogger("debug/island_change")
-
     @HandleEvent
     fun onWorldChange(event: WorldChangeEvent) {
-        skyBlock = false
         skyBlockArea = null
         skyBlockAreaWithSymbol = null
     }
 
     @HandleEvent
     fun onDisconnect(event: ClientDisconnectEvent) {
-        skyBlock = false
         skyBlockArea = null
         skyBlockAreaWithSymbol = null
     }
@@ -107,50 +99,11 @@ object HypixelData {
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         if (event.scoreboard.isEmpty()) return
 
-        val inSkyblock = scoreboardTitlePattern.matches(ScoreboardData.objectiveTitle.removeColor())
-
-        if (inSkyblock) {
-            checkIsland()
-        }
-        skyBlock = inSkyblock
-        if (!inSkyblock) return
-
+        if (!SkyBlockAPI.isConnected) return
         event.scoreboard.matchFirst(skyblockAreaPattern) {
             val originalLocation = group("area")
             skyBlockArea = LocationFixData.fixLocation(skyBlockIsland) ?: originalLocation
             skyBlockAreaWithSymbol = group().trim()
         }
-    }
-
-    private fun checkIsland() {
-        var foundIsland = ""
-        TabListData.fullyLoaded = false
-
-        TabListData.getTabList().matchFirst(islandNamePattern) {
-            foundIsland = group("island").removeColor()
-            TabListData.fullyLoaded = true
-        }
-
-        val guesting = guestPattern.matches(ScoreboardData.objectiveTitle.removeColor())
-        val islandType = getIslandType(foundIsland, guesting)
-        if (skyBlockIsland != islandType) {
-            IslandChangeEvent(islandType, skyBlockIsland).post()
-            if (islandType == IslandType.UNKNOWN) {
-                ChatUtils.debug("Unknown island detected: '$foundIsland'")
-                loggerIslandChange.log("Unknown: '$foundIsland'")
-            } else {
-                loggerIslandChange.log(islandType.name)
-            }
-            skyBlockIsland = islandType
-        }
-    }
-
-    private fun getIslandType(name: String, guesting: Boolean): IslandType {
-        val islandType = IslandType.getByNameOrUnknown(name)
-        if (guesting) {
-            if (islandType == IslandType.PRIVATE_ISLAND) return IslandType.PRIVATE_ISLAND_GUEST
-            if (islandType == IslandType.GARDEN) return IslandType.GARDEN_GUEST
-        }
-        return islandType
     }
 }

@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.garden.visitor
 
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.config.features.garden.visitor.VisitorConfig.HighlightMode
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacksOrNull
@@ -38,7 +39,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.itemNameWithoutColor
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
@@ -575,10 +575,10 @@ object GardenVisitorFeatures {
 
     private fun showGui(): Boolean {
         if (IslandType.HUB.isInIsland()) {
-            if (config.shoppingList.inBazaarAlley && LorenzUtils.skyBlockArea == "Bazaar Alley") {
+            if (config.shoppingList.inBazaarAlley && IslandArea.BAZAAR_ALLEY.isInside()) {
                 return true
             }
-            if (config.shoppingList.inFarmingAreas && LorenzUtils.skyBlockArea == "Farm") {
+            if (config.shoppingList.inFarmingAreas && IslandArea.FARM.isInside()) {
                 return true
             }
         }

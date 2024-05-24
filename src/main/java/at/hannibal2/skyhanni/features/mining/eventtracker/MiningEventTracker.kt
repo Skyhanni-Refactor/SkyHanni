@@ -119,7 +119,7 @@ object MiningEventTracker {
                 Exception("UnknownMiningEvent"), "Unknown mining event detected from string $eventName",
                 "eventName" to eventName,
                 "bossbar" to BossbarAPI.getBossbar(),
-                "serverType" to LorenzUtils.skyBlockIsland,
+                "serverType" to SkyBlockAPI.island,
                 "fromChat" to (time == null)
             )
             return
@@ -140,7 +140,7 @@ object MiningEventTracker {
         val serverId = HypixelAPI.server ?: return
 
         val miningEventData = MiningEventDataSend(
-            LorenzUtils.skyBlockIsland,
+            SkyBlockAPI.island,
             serverId,
             eventType,
             timeRemaining.inWholeMilliseconds,

@@ -2,13 +2,12 @@ package at.hannibal2.skyhanni.features.inventory.tiarelay
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 
@@ -45,7 +44,7 @@ object TiaRelayWaypoints {
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (config.allWaypoints) {
             for (relay in Relay.entries) {
-                if (relay.island == LorenzUtils.skyBlockIsland) {
+                if (relay.island == SkyBlockAPI.island) {
                     event.drawWaypointFilled(relay.waypoint, LorenzColor.LIGHT_PURPLE.toColor())
                     event.drawDynamicText(relay.waypoint, "§d" + relay.relayName, 1.5)
                 }
@@ -54,7 +53,7 @@ object TiaRelayWaypoints {
         }
 
         if (!config.nextWaypoint) return
-        if (LorenzUtils.skyBlockIsland != island) return
+        if (SkyBlockAPI.island != island) return
 
         waypoint?.let {
             event.drawWaypointFilled(it, LorenzColor.LIGHT_PURPLE.toColor())
