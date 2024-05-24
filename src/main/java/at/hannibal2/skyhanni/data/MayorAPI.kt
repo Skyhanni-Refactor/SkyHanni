@@ -9,13 +9,6 @@ import at.hannibal2.skyhanni.data.Mayor.Companion.setAssumeMayorJson
 import at.hannibal2.skyhanni.data.jsonobjects.other.MayorCandidate
 import at.hannibal2.skyhanni.data.jsonobjects.other.MayorElection
 import at.hannibal2.skyhanni.data.jsonobjects.other.MayorJson
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
-import at.hannibal2.skyhanni.data.jsonobjects.other.MayorCandidate
-import at.hannibal2.skyhanni.data.jsonobjects.other.MayorElection
-import at.hannibal2.skyhanni.data.jsonobjects.other.MayorJson
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
@@ -28,9 +21,6 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.json.fromJson
-import at.hannibal2.skyhanni.utils.SkyBlockTime
-import at.hannibal2.skyhanni.utils.StringUtils.matches
-import at.hannibal2.skyhanni.utils.fromJson
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

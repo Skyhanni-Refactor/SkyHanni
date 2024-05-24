@@ -7,17 +7,12 @@ import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI.isBait
 import at.hannibal2.skyhanni.utils.ConditionalUtils.transformIf
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LocationUtils
-import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
-import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityItem
 import kotlin.time.Duration.Companion.milliseconds
@@ -36,7 +31,7 @@ object ShowFishingItemName {
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
-        for (entityItem in EntityUtils.getEntitiesNextToPlayer<EntityItem>(15.0)) {
+        for (entityItem in McWorld.getEntitiesNearPlayer<EntityItem>(15.0)) {
             val itemStack = entityItem.entityItem
             // Hypixel sometimes replaces the bait item mid air with a stone
             if (itemStack.name.removeColor() == "Stone") continue
@@ -62,16 +57,6 @@ object ShowFishingItemName {
 
     @HandleEvent
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!isEnabled()) return
-
-        for ((item, text) in itemsOnGround) {
-            val location = event.exactLocation(item).add(y = 0.8)
-            event.drawString(location, text)
-        }
-    }
-
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
         if (!isEnabled()) return
 
         for ((item, text) in itemsOnGround) {

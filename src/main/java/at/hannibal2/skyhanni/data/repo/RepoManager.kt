@@ -308,12 +308,6 @@ class RepoManager(private val configLocation: File) {
         config.location.branch = "main"
     }
 
-    private fun checkRepoLocation() {
-        if (config.location.user.isEmpty() || config.location.name.isEmpty() || config.location.branch.isEmpty()) {
-            resetRepositoryLocation()
-        }
-    }
-
     fun resetRepositoryLocation(manual: Boolean = false) {
         val defaultUser = "hannibal002"
         val defaultName = "SkyHanni-Repo"
