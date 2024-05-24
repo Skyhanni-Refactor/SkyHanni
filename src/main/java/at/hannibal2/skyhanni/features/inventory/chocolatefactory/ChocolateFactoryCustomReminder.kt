@@ -75,19 +75,9 @@ object ChocolateFactoryCustomReminder {
     }
 
     @HandleEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    fun onRenderOverlay(event: GuiRenderEvent) {
         if (!isEnabled()) return
-        if (!inChocolateMenu()) return
-        if (ReminderUtils.isBusy()) return
-
-        configReminder.position.renderRenderables(display, posLabel = "Chocolate Factory Custom Reminder")
-    }
-
-    @HandleEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!isEnabled()) return
-        if (!configReminder.always) return
-        if (Minecraft.getMinecraft().currentScreen is GuiChest) return
+        if (Minecraft.getMinecraft().currentScreen is GuiChest && !configReminder.always) return
         if (ReminderUtils.isBusy()) return
 
         configReminder.position.renderRenderables(display, posLabel = "Chocolate Factory Custom Reminder")

@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.features.garden.contest
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderItemTooltipEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.FarmingFortuneDisplay.getLatestTrueFarmingFortune
@@ -115,7 +115,7 @@ object JacobContestFFNeededDisplay {
     }
 
     @HandleEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!isEnabled()) return
         if (!FarmingContestAPI.inInventory) return
         if (lastToolTipTime.passedSince() < 200.milliseconds) return

@@ -11,7 +11,7 @@ import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
-import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.skyblock.WarpEvent
@@ -232,7 +232,7 @@ object TunnelsMaps {
     }
 
     @HandleEvent
-    fun onRenderDisplay(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!isEnabled()) return
         val display = buildList<Renderable> {
             if (active.isNotEmpty()) {

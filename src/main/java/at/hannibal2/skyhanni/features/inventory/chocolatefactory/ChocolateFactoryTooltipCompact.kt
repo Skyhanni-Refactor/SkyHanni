@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
-import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.CollectionUtils.getOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -37,7 +37,7 @@ object ChocolateFactoryTooltipCompact {
     }
 
     @HandleEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!ChocolateFactoryAPI.inChocolateFactory) return
         if (config.tooltipMove) {
             if (lastHover.passedSince() < 1.seconds) {

@@ -6,6 +6,8 @@ import at.hannibal2.skyhanni.config.core.config.Position
 import at.hannibal2.skyhanni.config.core.config.gui.GuiPositionEditor
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiPositionMovedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.features.garden.GardenOptimalSpeed
@@ -55,7 +57,7 @@ object GuiEditManager {
     }
 
     @HandleEvent(priority = HandleEvent.LOWEST)
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         GlStateManager.color(1f, 1f, 1f, 1f)
         GlStateManager.enableBlend()
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0)
@@ -106,11 +108,14 @@ object GuiEditManager {
 
         GlStateManager.translate(0f, 0f, 200f)
 
-        GuiRenderEvent.GuiOverlayRenderEvent().post()
+        GuiOverlayRenderEvent().post()
 
         GlStateManager.pushMatrix()
         GlStateManager.enableDepth()
-        GuiRenderEvent.ChestGuiOverlayRenderEvent().post()
+
+        GuiRenderEvent().post()
+        ChestGuiOverlayRenderEvent().post()
+
         GlStateManager.popMatrix()
 
         GlStateManager.translate(0f, 0f, -200f)

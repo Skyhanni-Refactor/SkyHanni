@@ -11,7 +11,7 @@ import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
-import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.skyblock.PurseChangeCause
 import at.hannibal2.skyhanni.events.skyblock.PurseChangeEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
@@ -114,7 +114,7 @@ object GhostCounter {
     private const val CONFIG_VALUE_VERSION = 1
 
     @HandleEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
         if (config.onlyOnMist && !inMist) return
         config.position.renderStringsAndItems(
