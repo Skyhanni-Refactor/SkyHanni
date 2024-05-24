@@ -21,6 +21,7 @@ public class TunnelMapsConfig {
     // TODO rename to enabled
     public boolean enable = true;
 
+    @Expose
     @ConfigLink(owner = TunnelMapsConfig.class, field = "enable")
     public Position position = new Position(20, 20);
 

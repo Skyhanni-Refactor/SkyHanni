@@ -30,6 +30,8 @@ object LimboPlaytime {
         "§5§o§b([\\d.,]+) hours.+\$"
     )
 
+    var tooltipPlaytime = mutableListOf<String>()
+
     private var wholeMinutes = 0
     private var hoursString: String = ""
 
@@ -158,6 +160,8 @@ object LimboPlaytime {
             toolTip.addAll(modifiedList)
         }
         toolTip.addAll(lastList)
+
+        tooltipPlaytime = toolTip
     }
 
     private fun findFloatDecimalPlace(input: Float): Int {

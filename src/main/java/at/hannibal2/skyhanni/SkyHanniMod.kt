@@ -94,6 +94,7 @@ import at.hannibal2.skyhanni.features.chat.playerchat.PlayerChatModifier
 import at.hannibal2.skyhanni.features.chroma.ChromaManager
 import at.hannibal2.skyhanni.features.combat.BestiaryData
 import at.hannibal2.skyhanni.features.combat.FerocityDisplay
+import at.hannibal2.skyhanni.features.combat.FlareDisplay
 import at.hannibal2.skyhanni.features.combat.HideDamageSplash
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
 import at.hannibal2.skyhanni.features.combat.endernodetracker.EnderNodeTracker
@@ -333,6 +334,7 @@ import at.hannibal2.skyhanni.features.misc.BrewingStandOverlay
 import at.hannibal2.skyhanni.features.misc.ButtonOnPause
 import at.hannibal2.skyhanni.features.misc.CollectionTracker
 import at.hannibal2.skyhanni.features.misc.ContributorManager
+import at.hannibal2.skyhanni.features.misc.CopyPlaytime
 import at.hannibal2.skyhanni.features.misc.CurrentPetDisplay
 import at.hannibal2.skyhanni.features.misc.CustomTextBox
 import at.hannibal2.skyhanni.features.misc.ExpOrbsOnGroundHider
@@ -490,7 +492,7 @@ import org.apache.logging.log4j.Logger
     clientSideOnly = true,
     useMetadata = true,
     guiFactory = "at.hannibal2.skyhanni.config.ConfigGuiForgeInterop",
-    version = "0.25",
+    version = "0.26.Beta.1",
 )
 class SkyHanniMod {
 
@@ -729,6 +731,7 @@ class SkyHanniMod {
         loadModule(FishingProfitTracker)
         loadModule(FishingTimer)
         loadModule(FixNEUHeavyPearls)
+        loadModule(FlareDisplay)
         loadModule(FossilSolverDisplay)
         loadModule(FrozenTreasureTracker)
         loadModule(GardenBurrowingSporesNotifier)

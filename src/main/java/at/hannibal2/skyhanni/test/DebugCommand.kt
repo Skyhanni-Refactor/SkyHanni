@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.test
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.repo.RepoManager
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -57,6 +58,11 @@ object DebugCommand {
         event.title("Profile Type")
         if (!SkyBlockAPI.isConnected) {
             event.addIrrelevant("Not on SkyBlock")
+            return
+        }
+
+        if (ProfileStorageData.playerSpecific == null) {
+            event.addData("playerSpecific is null!")
             return
         }
 
