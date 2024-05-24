@@ -19,7 +19,6 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.drainTo
 import at.hannibal2.skyhanni.utils.CollectionUtils.put
 import at.hannibal2.skyhanni.utils.CollectionUtils.refreshReference
 import at.hannibal2.skyhanni.utils.LocationUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.MobUtils
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.mc.McWorld
@@ -229,7 +228,7 @@ class MobDetection {
         }
     }
 
-    private fun islandException(): Boolean = when (LorenzUtils.skyBlockIsland) {
+    private fun islandException(): Boolean = when (SkyBlockAPI.island) {
         IslandType.GARDEN_GUEST -> true
         IslandType.PRIVATE_ISLAND_GUEST -> true
         else -> false

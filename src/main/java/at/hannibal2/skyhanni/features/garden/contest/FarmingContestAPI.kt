@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.contest
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.events.garden.FarmingContestEvent
@@ -43,7 +44,7 @@ object FarmingContestAPI {
     private val contests = mutableMapOf<Long, FarmingContest>()
     private var internalContest = false
     val inContest
-        get() = internalContest && LorenzUtils.skyBlockIsland.isAnyOf(
+        get() = internalContest && SkyBlockAPI.island.isAnyOf(
             IslandType.GARDEN,
             IslandType.HUB,
             IslandType.THE_FARMING_ISLANDS

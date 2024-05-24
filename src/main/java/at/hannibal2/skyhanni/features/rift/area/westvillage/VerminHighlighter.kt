@@ -1,9 +1,10 @@
 package at.hannibal2.skyhanni.features.rift.area.westvillage
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
-import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
@@ -11,7 +12,6 @@ import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
 import at.hannibal2.skyhanni.utils.InventoryUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.TimeLimitedSet
 import at.hannibal2.skyhanni.utils.mc.McWorld
@@ -61,7 +61,7 @@ object VerminHighlighter {
         else -> false
     }
 
-    private fun inArea() = LorenzUtils.skyBlockArea.let { it == "West Village" || it == "Infested House" }
+    private fun inArea() = IslandArea.WEST_VILLAGE.isInside() || IslandArea.INFESTED_HOUSE.isInside()
 
     private fun hasItemInHand() = InventoryUtils.itemInHandId == SkyhanniItems.TURBOMAX_VACUUM()
 

@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.fame
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
@@ -10,7 +11,6 @@ import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 import kotlin.time.Duration
@@ -43,7 +43,7 @@ object AccountUpgradeReminder {
         if (!isEnabled()) return
         val playerSpecific = ProfileStorageData.playerSpecific ?: return
         if (ReminderUtils.isBusy()) return
-        if (LorenzUtils.skyBlockArea == "Community Center") return
+        if (IslandArea.COMMUNITY_CENTER.isInside()) return
 
         val upgrade = playerSpecific.currentAccountUpgrade ?: return
         val nextCompletionTime = nextCompletionTime ?: return

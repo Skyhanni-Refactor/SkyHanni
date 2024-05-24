@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.rift.area.mirrorverse
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ParkourJson
 import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
@@ -68,5 +69,5 @@ object TubulatorParkour {
     }
 
     fun isEnabled() =
-        RiftAPI.inRift() && LorenzUtils.skyBlockArea == "Mirrorverse" && config.enabled && puzzleRoom.contains(McPlayer.pos)
+        RiftAPI.inRift() && IslandArea.MIRRORVERSE.isInside() && config.enabled && puzzleRoom.contains(McPlayer.pos)
 }

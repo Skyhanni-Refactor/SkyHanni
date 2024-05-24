@@ -1,7 +1,9 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.HypixelData.islandNamePattern
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TablistFooterUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
@@ -9,6 +11,7 @@ import at.hannibal2.skyhanni.mixins.hooks.tabListGuard
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiPlayerTabOverlay
 import at.hannibal2.skyhanni.utils.ConditionalUtils.conditionalTransform
 import at.hannibal2.skyhanni.utils.ConditionalUtils.transformIf
+import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
 import at.hannibal2.skyhanni.utils.system.OS
@@ -133,5 +136,15 @@ object TabListData {
             TablistFooterUpdateEvent(tabFooter).post()
         }
         footer = tabFooter
+    }
+
+    //TODO see why this needs to exist
+    @HandleEvent(priority = HandleEvent.HIGHEST)
+    fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
+        fullyLoaded = false
+
+        getTabList().matchFirst(islandNamePattern) {
+            fullyLoaded = true
+        }
     }
 }

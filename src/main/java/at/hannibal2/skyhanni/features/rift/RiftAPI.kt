@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.features.rift
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.config.features.rift.RiftConfig
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import net.minecraft.item.ItemStack
@@ -26,9 +26,9 @@ object RiftAPI {
         return pricePer * stackSize
     }
 
-    fun inLivingCave() = LorenzUtils.skyBlockArea == "Living Cave"
-    fun inLivingStillness() = LorenzUtils.skyBlockArea == "Living Stillness"
-    fun inStillgoreChateau() = LorenzUtils.skyBlockArea.let { it == "Stillgore Château" || it == "Oubliette" }
+    fun inLivingCave() = IslandArea.LIVING_CAVE.isInside()
+    fun inLivingStillness() = IslandArea.LIVING_STILLNESS.isInside()
+    fun inStillgoreChateau() = IslandArea.STILLGORE_CHATEAU.isInside() || IslandArea.OUBLIETTE.isInside()
 
-    fun inDreadfarm() = LorenzUtils.skyBlockArea == "Dreadfarm"
+    fun inDreadfarm() = IslandArea.DREADFARM.isInside()
 }

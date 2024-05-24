@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.data.mob
 
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.mob.MobFilter.makeMobResult
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
@@ -8,7 +9,6 @@ import at.hannibal2.skyhanni.utils.EntityUtils.isNPC
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.LorenzUtils.derpy
 import at.hannibal2.skyhanni.utils.MobUtils
@@ -75,7 +75,7 @@ object IslandExceptions {
                 ) // Consistency fix
                 else -> null
             }
-        } else when (LorenzUtils.skyBlockIsland) {
+        } else when (SkyBlockAPI.island) {
             IslandType.PRIVATE_ISLAND -> when {
                 armorStand?.isDefaultValue() != false -> if (baseEntity.getLorenzVec()
                         .distanceChebyshevIgnoreY(LocationUtils.playerLocation()) < 15.0

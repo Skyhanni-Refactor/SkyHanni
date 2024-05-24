@@ -3,14 +3,17 @@ package at.hannibal2.skyhanni.api.skyblock
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.HypixelData
-import at.hannibal2.skyhanni.data.HypixelData.skyBlockIsland
 import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.data.LocationFixData
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.hypixel.HypixelLocationEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.features.bingo.BingoAPI
+import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -46,14 +49,28 @@ object SkyBlockAPI {
         "Profile ID: (?<id>\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12})"
     )
 
+    /**
+     * REGEX-TEST:  §7⏣ §bVillage
+     * REGEX-TEST:  §5ф §dWizard Tower
+     */
+    private val skyblockAreaPattern by patternGroup.pattern(
+        "skyblock.area",
+        "\\s*§(?<symbol>7⏣|5ф) §(?<color>.)(?<area>.*)"
+    )
+
+    private var lastIslandType = IslandType.UNKNOWN
+
+    val isConnected: Boolean
+        get() = HypixelAPI.onHypixel && HypixelAPI.gametype == "SKYBLOCK"
+
     var isGuesting: Boolean = false
         private set
 
     var island: IslandType = IslandType.UNKNOWN
         private set
 
-    val isConnected: Boolean
-        get() = HypixelAPI.onHypixel && HypixelAPI.gametype == "SKYBLOCK"
+    var area: String? = null
+    var areaWithSymbol: String? = null
 
     var gamemode: Gamemode = Gamemode.UNKNOWN
         private set
@@ -70,7 +87,7 @@ object SkyBlockAPI {
                 return group("maxamount").toInt()
             }
 
-            return when (skyBlockIsland) {
+            return when (island) {
                 IslandType.MINESHAFT -> 4
                 IslandType.CATACOMBS -> 5
                 IslandType.CRYSTAL_HOLLOWS -> 24
@@ -83,12 +100,21 @@ object SkyBlockAPI {
     private fun reset() {
         isGuesting = false
         island = IslandType.UNKNOWN
+        lastIslandType = IslandType.UNKNOWN
     }
 
     @HandleEvent
     fun onLocationChange(event: HypixelLocationEvent) {
         if (event.type != "SKYBLOCK") return reset()
         island = event.map?.let(IslandType::getByNameOrNull) ?: IslandType.UNKNOWN
+        if (island == IslandType.UNKNOWN) {
+            ChatUtils.debug("Unknown island detected: '${event.map}'")
+        }
+    }
+
+    @HandleEvent
+    fun onDisconnect(event: ClientDisconnectEvent) {
+        reset()
     }
 
     @HandleEvent
@@ -115,6 +141,16 @@ object SkyBlockAPI {
                 gamemode = mode
                 return@forEach
             }
+        }
+
+        if (lastIslandType != island) {
+            lastIslandType = island
+            IslandChangeEvent(island).post()
+        }
+
+        event.scoreboard.matchFirst(skyblockAreaPattern) {
+            area = LocationFixData.fixLocation(island) ?: group("area")
+            areaWithSymbol = group().trim()
         }
     }
 

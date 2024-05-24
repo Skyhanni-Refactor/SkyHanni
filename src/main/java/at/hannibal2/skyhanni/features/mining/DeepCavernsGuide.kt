@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.mining
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ParkourJson
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
@@ -16,7 +17,6 @@ import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ConditionalUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.ParkourHelper
 import io.github.moulberry.notenoughupdates.util.Utils
@@ -85,7 +85,7 @@ object DeepCavernsGuide {
         showStartIcon = false
         if (!config.enabled) return
         if (event.inventoryName != "Lift") return
-        if (LorenzUtils.skyBlockArea != "Gunpowder Mines") return
+        if (!IslandArea.GUNPOWDER_MINES.isInside()) return
         showStartIcon = true
 
         event.inventoryItems[30]?.let {
