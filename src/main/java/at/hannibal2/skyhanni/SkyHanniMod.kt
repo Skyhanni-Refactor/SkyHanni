@@ -671,6 +671,7 @@ class SkyHanniMod {
         loadModule(ComposterDisplay)
         loadModule(ComposterInventoryNumbers)
         loadModule(ComposterOverlay)
+        loadModule(CopyPlaytime)
         loadModule(CorpseAPI)
         loadModule(CosmeticFollowingLine)
         loadModule(CraftMaterialsFromBazaar)

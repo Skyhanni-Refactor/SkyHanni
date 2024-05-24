@@ -1,21 +1,19 @@
 package at.hannibal2.skyhanni.features.misc
 
-import at.hannibal2.skyhanni.data.HypixelData
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.features.misc.limbo.LimboPlaytime
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.ClipboardUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.StringUtils.firstLetterUppercase
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.system.OS
 
 object CopyPlaytime {
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    fun onTooltip(event: LorenzToolTipEvent) {
+    @HandleEvent(priority = HandleEvent.LOWEST)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (InventoryUtils.openInventoryName() != "Detailed /playtime") return
         if (event.slot.slotNumber != 4) return
 
@@ -23,8 +21,8 @@ object CopyPlaytime {
         event.toolTip.add("§eClick to Copy!")
     }
 
-    @SubscribeEvent
-    fun onSlotClicked(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent
+    fun onSlotClicked(event: SlotClickEvent) {
         if (InventoryUtils.openInventoryName() != "Detailed /playtime") return
         if (event.slotId != 4) return
         if (event.clickedButton != 0) return
@@ -32,10 +30,10 @@ object CopyPlaytime {
         event.cancel()
         val text = LimboPlaytime.tooltipPlaytime.dropLast(2).toMutableList()
 
-        val profile = HypixelData.profileName.firstLetterUppercase()
-        text.add(0, "${LorenzUtils.getPlayerName()}'s - $profile Playtime Stats")
+        val profile = SkyBlockAPI.profileName
+        text.add(0, "${McPlayer.name}'s - $profile Playtime Stats")
 
-        ClipboardUtils.copyToClipboard(text.joinToString("\n") { it.removeColor() })
+        OS.copyToClipboard(text.joinToString("\n") { it.removeColor() })
         ChatUtils.chat("Copied playtime stats into clipboard.")
     }
 }
