@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.utils
 
-import net.minecraftforge.fml.common.Loader
-import net.minecraftforge.fml.common.ModContainer
+import at.hannibal2.skyhanni.utils.system.ModInstance
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import java.lang.invoke.LambdaMetafactory
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
@@ -71,18 +71,12 @@ object ReflectionUtils {
         return Class.forName(this.className)
     }
 
-    private val packageLookup by lazy {
-        Loader.instance().modList
-            .flatMap { mod -> mod.ownedPackages.map { it to mod } }
-            .toMap()
-    }
-
     val Class<*>.shPackageName
         get() =
             canonicalName?.substringBeforeLast('.')
 
-    fun Class<*>.getModContainer(): ModContainer? {
-        return packageLookup[shPackageName]
+    fun Class<*>.getModContainer(): ModInstance? {
+        return PlatformUtils.getModFromPackage(shPackageName)
     }
 
     fun Class<*>.getDeclaredFieldOrNull(name: String): Field? = declaredFields.firstOrNull { it.name == name }

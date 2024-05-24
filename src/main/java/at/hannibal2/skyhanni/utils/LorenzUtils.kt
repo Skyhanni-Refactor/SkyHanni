@@ -12,10 +12,10 @@ import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.SharedMonsterAttributes
 import net.minecraft.launchwrapper.Launch
-import net.minecraftforge.fml.common.FMLCommonHandler
 import java.text.SimpleDateFormat
 
 object LorenzUtils {
@@ -165,7 +165,7 @@ object LorenzUtils {
         reason?.let {
             System.err.println("Reason: $it")
         }
-        FMLCommonHandler.instance().handleExit(-1)
+        PlatformUtils.delayedExit(-1)
     }
 
     fun inAdvancedMiningIsland() =

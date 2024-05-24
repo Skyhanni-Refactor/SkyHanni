@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.events.chat
 
 import at.hannibal2.skyhanni.api.event.CancellableSkyHanniEvent
-import net.minecraftforge.fml.common.ModContainer
+import at.hannibal2.skyhanni.utils.system.ModInstance
 
 class MessageSendToServerEvent(
     val message: String,
     val splitMessage: List<String>,
-    val originatingModContainer: ModContainer?
+    val originatingModContainer: ModInstance?
 ) : CancellableSkyHanniEvent()

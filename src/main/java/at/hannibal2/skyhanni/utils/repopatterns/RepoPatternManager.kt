@@ -10,8 +10,8 @@ import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import net.minecraft.launchwrapper.Launch
-import net.minecraftforge.fml.common.FMLCommonHandler
 import java.io.File
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
@@ -160,7 +160,7 @@ object RepoPatternManager {
         dump(sourceLabel, File(path))
         if (System.getenv("SKYHANNI_DUMP_REGEXES_EXIT") != null) {
             SkyHanniMod.logger.info("Exiting after dumping RepoPattern regex patterns to $path")
-            FMLCommonHandler.instance().exitJava(0, false)
+            PlatformUtils.exitJava(0, false)
         }
     }
 

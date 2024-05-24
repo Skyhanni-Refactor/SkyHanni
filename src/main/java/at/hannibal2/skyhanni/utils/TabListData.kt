@@ -21,8 +21,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.network.NetworkPlayerInfo
 import net.minecraft.network.play.server.S38PacketPlayerListItem
 import net.minecraft.world.WorldSettings
-import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.fml.relauncher.SideOnly
 
 object TabListData {
 
@@ -83,7 +81,6 @@ object TabListData {
 
     private val playerOrdering = Ordering.from(PlayerComparator())
 
-    @SideOnly(Side.CLIENT)
     internal class PlayerComparator : Comparator<NetworkPlayerInfo> {
 
         override fun compare(o1: NetworkPlayerInfo, o2: NetworkPlayerInfo): Int {

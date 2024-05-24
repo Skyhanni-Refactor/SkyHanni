@@ -85,7 +85,7 @@ object ChatManager {
         val originatingModContainer = originatingModCall?.getClassInstance()?.getModContainer()
         val hoverInfo = listOf(
             "§7Message created by §a${originatingModCall?.toString() ?: "§cprobably minecraft"}",
-            "§7Mod id: §a${originatingModContainer?.modId}",
+            "§7Mod id: §a${originatingModContainer?.id}",
             "§7Mod name: §a${originatingModContainer?.name}"
         )
         val stackTrace =
