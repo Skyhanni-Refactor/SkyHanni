@@ -22,8 +22,6 @@ enum class SkillType(val displayName: String, icon: Item) {
     constructor(displayName: String, block: Block) : this(displayName, Item.getItemFromBlock(block))
 
     val item: ItemStack by lazy { Utils.createItemStack(icon, displayName) }
-    val lowercaseName = displayName.lowercase()
-    val uppercaseName = displayName.uppercase()
 
     override fun toString(): String = "§b$displayName"
 

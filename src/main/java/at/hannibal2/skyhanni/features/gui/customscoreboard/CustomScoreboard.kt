@@ -116,7 +116,7 @@ class CustomScoreboard {
         internal val backgroundConfig get() = config.background
     }
 
-    private fun createLines() = buildList<ScoreboardElementType> {
+    private fun createLines(): List<ScoreboardElementType> = buildList {
         for (element in config.scoreboardEntries) {
             val lines = element.getVisiblePair()
             if (lines.isEmpty()) continue

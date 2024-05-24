@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import net.minecraft.client.gui.inventory.GuiChest

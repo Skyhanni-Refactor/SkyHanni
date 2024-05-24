@@ -16,7 +16,7 @@ object RiftLarva {
 
     private val config get() = RiftAPI.config.area.wyldWoods.larvas
     private var hasHookInHand = false
-    private val larvaSkullTexture =
+    private const val LARVE_SKULL_TEXTURE =
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTgzYjMwZTlkMTM1YjA1MTkwZWVhMmMzYWM2MWUyYWI1NWEyZDgxZTFhNThkYmIyNjk4M2ExNDA4MjY2NCJ9fX0="
 
     @HandleEvent
@@ -34,7 +34,7 @@ object RiftLarva {
 
     private fun findLarvas() {
         for (stand in McWorld.getEntitiesOf<EntityArmorStand>()) {
-            if (stand.hasSkullTexture(larvaSkullTexture)) {
+            if (stand.hasSkullTexture(LARVE_SKULL_TEXTURE)) {
                 RenderLivingEntityHelper.setEntityColor(
                     stand,
                     config.highlightColor.toChromaColour().withAlpha(1)

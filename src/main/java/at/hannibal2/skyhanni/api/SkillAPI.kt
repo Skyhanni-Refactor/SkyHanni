@@ -78,7 +78,7 @@ object SkillAPI {
     var showDisplay = false
     var lastUpdate = SimpleTimeMark.farPast()
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
         val activeSkill = activeSkill ?: return
         val info = skillXPInfoMap[activeSkill] ?: return
@@ -100,7 +100,7 @@ object SkillAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onActionBarUpdate(event: ActionBarUpdateEvent) {
         val actionBar = event.actionBar.removeColor()
         val components = SPACE_SPLITTER.splitToList(actionBar)
@@ -138,7 +138,7 @@ object SkillAPI {
         exactLevelingMap = levelArray.withIndex().associate { (index, xp) -> xp to index }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         val inventoryName = event.inventoryName
         for (stack in event.inventoryItems.values) {
@@ -281,12 +281,13 @@ object SkillAPI {
                 val type = levelMatcher.group("type")
                 if (type != skillType.displayName) continue
                 tablistLevel = levelMatcher.group("level").toInt()
-                if (levelMatcher.group("type").lowercase() != activeSkill?.lowercaseName) tablistLevel = 0
+                if (levelMatcher.group("type").lowercase() != activeSkill?.displayName?.lowercase()) tablistLevel = 0
             } else {
                 levelMatcher = maxSkillTabPattern.matcher(line)
                 if (levelMatcher.matches()) {
                     tablistLevel = levelMatcher.group("level").toInt()
-                    if (levelMatcher.group("type").lowercase() != activeSkill?.lowercaseName) tablistLevel = 0
+                    if (levelMatcher.group("type").lowercase() != activeSkill?.displayName?.lowercase()) tablistLevel =
+                        0
                 }
             }
         }

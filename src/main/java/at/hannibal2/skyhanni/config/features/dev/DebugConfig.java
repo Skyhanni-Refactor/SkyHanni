@@ -101,12 +101,6 @@ public class DebugConfig {
     public boolean alwaysOutdated = false;
 
     @Expose
-    @ConfigOption(name = "SkyHanni Event Counter", desc = "Count once per second how many skyhanni events gets triggered, " +
-        "show the total amount in console output.")
-    @ConfigEditorBoolean
-    public boolean eventCounter = false;
-
-    @Expose
     @ConfigOption(name = "Bypass Advanced Tab List", desc = "The Advanced Player Tab list is disabled whie pressing this hotkey.")
     @ConfigEditorKeybind(defaultKey = Keyboard.KEY_NONE)
     public int bypassAdvancedPlayerTabList = Keyboard.KEY_NONE;

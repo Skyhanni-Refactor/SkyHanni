@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.features.mining
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.IslandArea
-import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ParkourJson
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
@@ -18,7 +17,6 @@ import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ConditionalUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.ParkourHelper
 import io.github.moulberry.notenoughupdates.util.Utils
@@ -82,10 +80,10 @@ object DeepCavernsGuide {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         showStartIcon = false
-        if (!isEnabled()) return
+        if (!config.enabled) return
         if (event.inventoryName != "Lift") return
         if (!IslandArea.GUNPOWDER_MINES.isInside()) return
         showStartIcon = true
@@ -114,12 +112,12 @@ object DeepCavernsGuide {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryClose(event: InventoryCloseEvent) {
         showStartIcon = false
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun replaceItem(event: ReplaceItemEvent) {
         if (show) return
         if (event.inventory is ContainerLocalMenu && showStartIcon && event.slot == 49) {
@@ -136,15 +134,13 @@ object DeepCavernsGuide {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!isEnabled()) return
+        if (!config.enabled) return
         if (!show) return
 
         parkourHelper?.render(event)
     }
-
-    fun isEnabled() = IslandType.DEEP_CAVERNS.isInIsland() && config.enabled
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

@@ -47,7 +47,7 @@ object KuudraAPI {
         kuudraTier = null
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
         val message = event.message
         completePattern.matchMatcher(message) {
@@ -55,5 +55,4 @@ object KuudraAPI {
             KuudraCompleteEvent(tier).post()
         }
     }
-
 }

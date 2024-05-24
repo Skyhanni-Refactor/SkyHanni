@@ -4,8 +4,6 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.utils.LorenzUtils
 
 object WarpIsCommand {
 

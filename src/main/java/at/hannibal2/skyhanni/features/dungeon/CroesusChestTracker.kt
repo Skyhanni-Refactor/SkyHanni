@@ -63,7 +63,7 @@ object CroesusChestTracker {
 
     private var kismetAmountCache = 0
 
-    const val MAX_CHESTS = 60
+    private const val MAX_CHESTS = 60
 
     private val croesusChests get() = ProfileStorageData.profileSpecific?.dungeons?.runs
 

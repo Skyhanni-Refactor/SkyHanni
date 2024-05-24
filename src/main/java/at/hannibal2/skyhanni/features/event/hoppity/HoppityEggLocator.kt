@@ -118,7 +118,7 @@ object HoppityEggLocator {
 
         sharedEggLocation?.let {
             if (config.sharedWaypoints) {
-                event.drawWaypointFilled(it, LorenzColor.GREEN.toColor(), seeThroughBlocks = true,)
+                event.drawWaypointFilled(it, LorenzColor.GREEN.toColor(), seeThroughBlocks = true)
                 event.drawDynamicText(it.add(y = 1), "§aShared Egg", 1.5)
                 return
             }

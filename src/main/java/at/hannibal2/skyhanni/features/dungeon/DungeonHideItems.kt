@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.dungeon
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.EntityMovementData
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.entity.EntityMoveEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
@@ -53,10 +54,8 @@ object DungeonHideItems {
         return itemStack != null && itemStack.cleanName() == "Skeleton Skull"
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
-        if (!DungeonAPI.inDungeon()) return
-
         val entity = event.entity
 
         if (entity is EntityItem) {
@@ -163,9 +162,8 @@ object DungeonHideItems {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onReceiveParticle(event: ReceiveParticleEvent) {
-        if (!DungeonAPI.inDungeon()) return
         if (!config.hideSuperboomTNT && !config.hideReviveStone) return
 
         val packetLocation = event.location
@@ -182,10 +180,8 @@ object DungeonHideItems {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onEntityMove(event: EntityMoveEvent) {
-        if (!DungeonAPI.inDungeon()) return
-
         val entity = event.entity
         if (entity !is EntityArmorStand) return
 

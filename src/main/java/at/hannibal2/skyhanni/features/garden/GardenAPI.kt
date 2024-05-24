@@ -106,9 +106,8 @@ object GardenAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTick(event: ClientTickEvent) {
-        if (!inGarden()) return
         if (event.isMod(10, 1)) {
             inBarn = barnArea.contains(McPlayer.pos)
 
@@ -212,10 +211,8 @@ object GardenAPI {
 
     private var lastLocation: LorenzVec? = null
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onBlockClick(event: BlockClickEvent) {
-        if (!inGarden()) return
-
         val blockState = event.getBlockState
         val cropBroken = blockState.getCropType() ?: return
         val isBaby = blockState.checkProperty<Int, PropertyInteger>("age") { it == 0 }

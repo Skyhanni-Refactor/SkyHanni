@@ -7,11 +7,11 @@ import at.hannibal2.skyhanni.config.features.inventory.SackDisplayConfig.PriceFr
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.neu.NeuSacksJson
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
-import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.inventory.SackChangeEvent
 import at.hannibal2.skyhanni.events.inventory.SackDataUpdateEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
 import at.hannibal2.skyhanni.features.inventory.SackDisplay
@@ -96,7 +96,7 @@ object SackAPI {
         stackList.clear()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         val inventoryName = event.inventoryName
         val isNewInventory = inventoryName != lastOpenedInventory
@@ -231,7 +231,7 @@ object SackAPI {
 
     private val sackChangeRegex = Regex("""([+-][\d,]+) (.+) \((.+)\)""")
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
         if (!event.message.removeColor().startsWith("[Sacks]")) return
 

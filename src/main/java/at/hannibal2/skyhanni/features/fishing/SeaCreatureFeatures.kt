@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.events.fishing.SeaCreatureFishEvent
@@ -38,7 +37,7 @@ object SeaCreatureFeatures {
     private var rareSeaCreatures = listOf<EntityLivingBase>()
     private var lastRareCatch = SimpleTimeMark.farPast()
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onEntityHealthUpdate(event: EntityMaxHealthUpdateEvent) {
         if (!isEnabled()) return
         val entity = event.entity as? EntityLivingBase ?: return
@@ -82,14 +81,14 @@ object SeaCreatureFeatures {
         rareSeaCreatures = emptyList()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderEntityOutlines(event: RenderEntityOutlineEvent) {
         if (isEnabled() && config.highlight && event.type === RenderEntityOutlineEvent.Type.XRAY) {
             event.queueEntitiesToOutline(getEntityOutlineColor)
         }
     }
 
-    private fun isEnabled() = SkyBlockAPI.isConnected && !DungeonAPI.inDungeon() && !KuudraAPI.inKuudra
+    private fun isEnabled() = !DungeonAPI.inDungeon() && !KuudraAPI.inKuudra
 
     private val getEntityOutlineColor: (entity: Entity) -> Int? = { entity ->
         if (entity is EntityLivingBase && entity in rareSeaCreatures && entity.distanceToPlayer() < 30) {
@@ -102,7 +101,6 @@ object SeaCreatureFeatures {
         val nametag: String,
         vararg val health: Int,
     ) {
-
         WATER_HYDRA(EntityZombie::class.java, "Water Hydra", 500_000),
         SEA_EMPEROR(EntityGuardian::class.java, "Sea Emperor", 750_000, 800_000),
         SEA_EMPEROR_RIDER(EntitySkeleton::class.java, "Sea Emperor", 750_000, 800_000),

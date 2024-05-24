@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.inventory.auctionhouse
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.render.gui.ReplaceItemEvent
@@ -36,7 +35,7 @@ class AuctionHouseOpenPriceWebsite {
     private var searchTerm = ""
     private var displayItem: ItemStack? = null
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (!isEnabled()) return
         ahSearchPattern.matchMatcher(event.inventoryName) {
@@ -59,7 +58,7 @@ class AuctionHouseOpenPriceWebsite {
         displayItem = null
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun replaceItem(event: ReplaceItemEvent) {
         if (!isEnabled()) return
         if (event.inventory is InventoryPlayer) return
@@ -71,7 +70,7 @@ class AuctionHouseOpenPriceWebsite {
         }
     }
 
-    @HandleEvent(priority = HandleEvent.HIGH)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH)
     fun onSlotClick(event: SlotClickEvent) {
         if (!isEnabled()) return
         displayItem ?: return
@@ -83,5 +82,5 @@ class AuctionHouseOpenPriceWebsite {
         }
     }
 
-    fun isEnabled() = SkyBlockAPI.isConnected && config.openPriceWebsite
+    fun isEnabled() = config.openPriceWebsite
 }

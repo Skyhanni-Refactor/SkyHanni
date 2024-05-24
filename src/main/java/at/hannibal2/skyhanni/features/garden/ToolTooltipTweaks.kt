@@ -9,8 +9,6 @@ import at.hannibal2.skyhanni.features.garden.fortuneguide.FFGuideGUI
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getFarmingForDummiesCount
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getReforgeName
 import at.hannibal2.skyhanni.utils.StringUtils.firstLetterUppercase
@@ -26,8 +24,8 @@ object ToolTooltipTweaks {
         "^§5§o§7Farming Fortune: §a\\+([\\d.]+)(?: §2\\(\\+\\d\\))?(?: §9\\(\\+(\\d+)\\))?$".toRegex()
     private val counterStartLine = setOf("§5§o§6Logarithmic Counter", "§5§o§6Collection Analysis")
     private val reforgeEndLine = setOf("§5§o", "§5§o§7chance for multiple crops.")
-    private val abilityDescriptionStart = "§5§o§7These boots gain §a+2❈ Defense"
-    private val abilityDescriptionEnd = "§5§o§7Skill level."
+    private const val ABILITY_DESCRIPTION_START = "§5§o§7These boots gain §a+2❈ Defense"
+    private const val ABILITY_DESCRIPTION_END = "§5§o§7Skill level."
 
     private val statFormatter = DecimalFormat("0.##")
 
@@ -130,12 +128,12 @@ object ToolTooltipTweaks {
                         iterator.remove()
                     }
 
-                    if (line == abilityDescriptionStart) {
+                    if (line == ABILITY_DESCRIPTION_START) {
                         removingAbilityDescription = true
                     }
                     if (removingAbilityDescription) {
                         iterator.remove()
-                        if (line == abilityDescriptionEnd) {
+                        if (line == ABILITY_DESCRIPTION_END) {
                             removingAbilityDescription = false
                         }
                     }

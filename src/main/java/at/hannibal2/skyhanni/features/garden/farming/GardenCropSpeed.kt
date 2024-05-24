@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.data.GardenCropMilestones.setCounter
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.data.jsonobjects.repo.DicerDropsJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.DicerType
@@ -42,7 +43,7 @@ object GardenCropSpeed {
     init {
         // TODO use SecondPassedEvent + passedSince
         fixedRateTimer(name = "skyhanni-crop-milestone-speed", period = 1000L) {
-            if (isEnabled()) {
+            if (GardenAPI.inGarden()) {
                 if (GardenAPI.mushroomCowPet) {
                     CropType.MUSHROOM.setCounter(
                         CropType.MUSHROOM.getCounter() + blocksBroken * (lastBrokenCrop?.multiplier ?: 1)
@@ -59,12 +60,10 @@ object GardenCropSpeed {
         lastBrokenCrop = null
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onGardenToolChange(event: GardenToolChangeEvent) {
-        if (isEnabled()) {
-            resetSpeed()
-            update()
-        }
+        resetSpeed()
+        update()
     }
 
     private fun update() {
@@ -174,8 +173,6 @@ object GardenCropSpeed {
     }
 
     fun finneganPerkActive() = Perk.FARMING_SIMULATOR.isActive
-
-    fun isEnabled() = GardenAPI.inGarden()
 
     fun CropType.getSpeed() = cropsPerSecond?.get(this)
 

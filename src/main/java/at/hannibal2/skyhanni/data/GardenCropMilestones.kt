@@ -27,8 +27,6 @@ object GardenCropMilestones {
         "§7Total: §a(?<name>.*)"
     )
 
-    private val config get() = GardenAPI.config.cropMilestones
-
     fun getCropTypeByLore(itemStack: ItemStack): CropType? {
         itemStack.getLore().matchFirst(cropPattern) {
             val name = group("name")
@@ -37,7 +35,7 @@ object GardenCropMilestones {
         return null
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (event.inventoryName != "Crop Milestones") return
 

@@ -200,7 +200,7 @@ object EntityOutlineRenderer {
         GlStateManager.enableDepth()
         GlStateManager.enableAlpha()
 
-        return !shouldRenderOutlines
+        return false
     }
 
     @JvmStatic

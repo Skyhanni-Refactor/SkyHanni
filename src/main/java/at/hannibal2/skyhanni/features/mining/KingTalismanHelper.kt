@@ -132,7 +132,7 @@ object KingTalismanHelper {
         }
 
         allKingsDisplay = buildList {
-            var farDisplay_: String? = null
+            var newFarDisplay: String? = null
 
             val currentKing = getCurrentKing()
             for ((king, timeUntil) in getKingTimes()) {
@@ -152,14 +152,14 @@ object KingTalismanHelper {
 
                 val currentString = if (current) "§6King " else ""
                 if (missing && current) {
-                    farDisplay_ = "§cNext missing king: §7$king §eNow $missingTimeFormat"
+                    newFarDisplay = "§cNext missing king: §7$king §eNow $missingTimeFormat"
                 }
 
                 val timeString = if (missing) " §cMissing $missingTimeFormat" else ""
 
                 add("§7$currentString$king$missingString$timeString")
             }
-            farDisplay = farDisplay_ ?: nextMissingText()
+            farDisplay = newFarDisplay ?: nextMissingText()
         }
     }
 

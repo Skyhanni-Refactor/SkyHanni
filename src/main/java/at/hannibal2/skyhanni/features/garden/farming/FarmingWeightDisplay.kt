@@ -401,7 +401,7 @@ object FarmingWeightDisplay {
             onSuccess = {
                 if (includeUpcoming) {
                     nextPlayers.clear()
-                    it.upcomingPlayers.forEach { nextPlayers.add(it) }
+                    it.upcomingPlayers.forEach(nextPlayers::add)
                 }
                 return@fold it.rank
             },

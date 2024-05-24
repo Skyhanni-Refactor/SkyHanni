@@ -23,7 +23,6 @@ import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
 import at.hannibal2.skyhanni.utils.EntityUtils.isNPC
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawColor
@@ -57,9 +56,9 @@ object VampireSlayerFeatures {
     private var standList = mapOf<EntityArmorStand, EntityOtherPlayerMP>()
     // Nicked support
     private val username get() = McWorld.getEntitiesOf<EntityPlayerSP>().firstOrNull()?.name ?: error("own player is null")
-    private val bloodIchorTexture =
+    private const val BLOOD_ICHOR_TEXTURE =
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzAzNDA5MjNhNmRlNDgyNWExNzY4MTNkMTMzNTAzZWZmMTg2ZGIwODk2ZTMyYjY3MDQ5MjhjMmEyYmY2ODQyMiJ9fX0="
-    private val killerSpringTexture =
+    private const val KILLER_SPRING_TEXTURE =
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzdmN2E3YmM4YWM4NmYyM2NhN2JmOThhZmViNzY5NjAyMjdlMTgzMmZlMjA5YTMwMjZmNmNlYjhiZGU3NGY1NCJ9fX0="
     private var nextClawSend = 0L
 
@@ -80,8 +79,8 @@ object VampireSlayerFeatures {
             McWorld.getEntitiesOf<EntityArmorStand>().forEach { stand ->
                 val vec = stand.position.toLorenzVec()
                 val distance = start.distance(vec)
-                val isIchor = stand.hasSkullTexture(bloodIchorTexture)
-                if (isIchor || stand.hasSkullTexture(killerSpringTexture)) {
+                val isIchor = stand.hasSkullTexture(BLOOD_ICHOR_TEXTURE)
+                if (isIchor || stand.hasSkullTexture(KILLER_SPRING_TEXTURE)) {
                     val color = (if (isIchor) configBloodIchor.color else configKillerSpring.color)
                         .toChromaColour().withAlpha(config.withAlpha)
                     if (distance <= 15) {
@@ -276,8 +275,8 @@ object VampireSlayerFeatures {
             Minecraft.getMinecraft().theWorld.loadedEntityList.filterIsInstance<EntityArmorStand>().forEach { stand ->
                 val vec = stand.position.toLorenzVec()
                 val distance = start.distance(vec)
-                val isIchor = stand.hasSkullTexture(bloodIchorTexture)
-                val isSpring = stand.hasSkullTexture(killerSpringTexture)
+                val isIchor = stand.hasSkullTexture(BLOOD_ICHOR_TEXTURE)
+                val isSpring = stand.hasSkullTexture(KILLER_SPRING_TEXTURE)
                 if ((isIchor && config.bloodIchor.highlight) || (isSpring && config.killerSpring.highlight)) {
                     val color = (if (isIchor) configBloodIchor.color else configKillerSpring.color)
                         .toChromaColour().withAlpha(config.withAlpha)
@@ -339,7 +338,7 @@ object VampireSlayerFeatures {
         McWorld.getEntitiesNear<EntityOtherPlayerMP>(event.location, 3.0).forEach {
             if (!it.isHighlighted()) return@forEach
             McWorld.getEntitiesNear<EntityArmorStand>(event.location, 3.0).forEach { stand ->
-                if (stand.hasSkullTexture(killerSpringTexture) || stand.hasSkullTexture(bloodIchorTexture)) {
+                if (stand.hasSkullTexture(KILLER_SPRING_TEXTURE) || stand.hasSkullTexture(BLOOD_ICHOR_TEXTURE)) {
                     standList = standList.editCopy { this[stand] = it }
                 }
             }

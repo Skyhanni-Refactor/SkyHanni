@@ -77,10 +77,8 @@ object MayorAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!HypixelAPI.onHypixel) return
-
         if (electionOver.matches(event.message)) {
             lastMayor = currentMayor
             currentMayor = Mayor.UNKNOWN

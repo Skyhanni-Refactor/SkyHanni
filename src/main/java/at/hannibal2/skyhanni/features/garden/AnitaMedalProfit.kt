@@ -45,7 +45,7 @@ object AnitaMedalProfit {
         inInventory = false
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (!config.medalProfitEnabled) return
         if (event.inventoryName != "Anita") return

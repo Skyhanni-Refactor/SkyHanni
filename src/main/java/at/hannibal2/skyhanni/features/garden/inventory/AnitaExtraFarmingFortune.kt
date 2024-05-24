@@ -27,7 +27,7 @@ object AnitaExtraFarmingFortune {
 
     private var levelPrice = mapOf<Int, AnitaUpgradePrice>()
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!config.extraFarmingFortune) return
 
