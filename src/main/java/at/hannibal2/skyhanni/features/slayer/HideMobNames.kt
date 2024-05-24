@@ -21,6 +21,7 @@ object HideMobNames {
 
     @HandleEvent
     fun onRepoLoad(event: RepositoryReloadEvent) {
+        patterns.clear()
         event.getConstant<Array<String>>("MobToHide").forEach { addMobToHide(it) }
     }
     
