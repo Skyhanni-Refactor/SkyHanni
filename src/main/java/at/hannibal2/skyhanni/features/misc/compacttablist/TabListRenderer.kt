@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.filterToMutable
 import at.hannibal2.skyhanni.utils.KeyboardManager.isActive
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.TabListData
+import at.hannibal2.skyhanni.utils.mc.McClient
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
@@ -50,7 +51,7 @@ object TabListRenderer {
         if (!config.toggleTab) return
         if (Minecraft.getMinecraft().currentScreen != null) return
 
-        if (Minecraft.getMinecraft().gameSettings.keyBindPlayerList.isActive()) {
+        if (McClient.options.keyBindPlayerList.isActive()) {
             if (!isPressed) {
                 isPressed = true
                 isTabToggled = !isTabToggled

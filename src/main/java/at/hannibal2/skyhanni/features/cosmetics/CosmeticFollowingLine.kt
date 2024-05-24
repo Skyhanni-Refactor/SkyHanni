@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McClient
 import net.minecraft.client.Minecraft
 import java.awt.Color
 import kotlin.time.Duration.Companion.milliseconds
@@ -40,7 +41,7 @@ object CosmeticFollowingLine {
 
         updateClose(event)
 
-        val firstPerson = Minecraft.getMinecraft().gameSettings.thirdPersonView == 0
+        val firstPerson = McClient.options.thirdPersonView == 0
         val color = config.lineColor.toChromaColour()
 
         renderClose(event, firstPerson, color)

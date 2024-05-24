@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.events.utils.neu.NeuRenderEvent
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
+import at.hannibal2.skyhanni.utils.mc.McClient
 import io.github.moulberry.notenoughupdates.NEUApi
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
@@ -38,7 +39,7 @@ object GuiData {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     fun onGuiKeyPress(event: GuiScreenEvent.KeyboardInputEvent.Pre) {
-        val (escKey, invKey) = Minecraft.getMinecraft().gameSettings.let {
+        val (escKey, invKey) = McClient.options.let {
             Keyboard.KEY_ESCAPE to it.keyBindInventory.keyCode
         }
         if (escKey.isKeyHeld() || invKey.isKeyHeld()) return

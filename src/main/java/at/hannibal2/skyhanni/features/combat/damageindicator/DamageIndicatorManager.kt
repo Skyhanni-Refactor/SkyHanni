@@ -43,9 +43,9 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.ticks
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McClient
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import com.google.gson.JsonArray
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.EntityLiving
@@ -146,7 +146,7 @@ class DamageIndicatorManager {
         val sizeBossName: Double
         val sizeFinalResults: Double
         val smallestDistanceVew: Double
-        val thirdPersonView = Minecraft.getMinecraft().gameSettings.thirdPersonView
+        val thirdPersonView = McClient.options.thirdPersonView
         // 0 == normal
         // 1 == f3 behind
         // 2 == selfie

@@ -49,9 +49,8 @@ object McSound {
 
     fun Sound.play() {
         McClient.schedule {
-            val gameSettings = Minecraft.getMinecraft().gameSettings
-            val oldLevel = gameSettings.getSoundLevel(SoundCategory.PLAYERS)
-            gameSettings.setSoundLevel(SoundCategory.PLAYERS, 1f)
+            val oldLevel = McClient.options.getSoundLevel(SoundCategory.PLAYERS)
+            McClient.options.setSoundLevel(SoundCategory.PLAYERS, 1f)
             try {
                 Minecraft.getMinecraft().soundHandler.playSound(this)
             } catch (e: Exception) {
@@ -64,7 +63,7 @@ object McSound {
                     )
                 }
             } finally {
-                gameSettings.setSoundLevel(SoundCategory.PLAYERS, oldLevel)
+                McClient.options.setSoundLevel(SoundCategory.PLAYERS, oldLevel)
             }
         }
     }

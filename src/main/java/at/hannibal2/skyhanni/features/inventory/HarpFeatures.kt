@@ -17,6 +17,7 @@ import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.RegexUtils.anyMatches
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McClient
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
@@ -133,16 +134,15 @@ object HarpFeatures {
     private var isGUIScaled = false
 
     private fun setGUIScale() {
-        val gameSettings = Minecraft.getMinecraft().gameSettings ?: return
-        guiSetting = gameSettings.guiScale
-        gameSettings.guiScale = 0
+        guiSetting = McClient.options.guiScale
+        McClient.options.guiScale = 0
         isGUIScaled = true
         updateScale()
     }
 
     private fun unSetGUIScale() {
         if (!isGUIScaled) return
-        Minecraft.getMinecraft().gameSettings.guiScale = guiSetting
+        McClient.options.guiScale = guiSetting
         isGUIScaled = false
     }
 

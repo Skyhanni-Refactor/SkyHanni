@@ -14,6 +14,7 @@ import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McClient
 import net.minecraft.client.Minecraft
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.seconds
@@ -27,7 +28,6 @@ object SensitivityReducer {
     private const val LOCKED = -1F / 3F
 
     private val mc get() = Minecraft.getMinecraft()
-    private val gameSettings = mc.gameSettings
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
@@ -138,9 +138,9 @@ object SensitivityReducer {
         ChatUtils.debug("dividing by $divisor")
 
         if (!LockMouseLook.lockedMouse) {
-            storage.savedMouseloweredSensitivity = gameSettings.mouseSensitivity
+            storage.savedMouseloweredSensitivity = McClient.options.mouseSensitivity
             val newSens = doTheMath(storage.savedMouseloweredSensitivity)
-            gameSettings?.mouseSensitivity = newSens
+            McClient.options.mouseSensitivity = newSens
         } else {
             storage.savedMouseloweredSensitivity = storage.savedMouselockedSensitivity
         }
@@ -148,7 +148,7 @@ object SensitivityReducer {
     }
 
     private fun restoreSensitivity(showMessage: Boolean = false) {
-        if (!LockMouseLook.lockedMouse) gameSettings?.mouseSensitivity = storage.savedMouseloweredSensitivity
+        if (!LockMouseLook.lockedMouse) McClient.options.mouseSensitivity = storage.savedMouseloweredSensitivity
         if (showMessage) ChatUtils.chat("§bMouse sensitivity is now restored.")
     }
 
@@ -170,7 +170,7 @@ object SensitivityReducer {
     @HandleEvent
     fun onHypixelJoin(event: HypixelJoinEvent) {
         val divisor = config.reducingFactor.get()
-        val expectedLoweredSensitivity = doTheMath(gameSettings.mouseSensitivity, true)
+        val expectedLoweredSensitivity = doTheMath(McClient.options.mouseSensitivity, true)
         if (abs(storage.savedMouseloweredSensitivity - expectedLoweredSensitivity) <= 0.0001) {
             ChatUtils.debug("Fixing incorrectly lowered sensitivity")
             isToggled = false
@@ -194,7 +194,7 @@ object SensitivityReducer {
         }
 
         event.addData {
-            add("Current Sensitivity: ${gameSettings.mouseSensitivity}")
+            add("Current Sensitivity: ${McClient.options.mouseSensitivity}")
             add("Stored Sensitivity: ${storage.savedMouseloweredSensitivity}")
             add("onGround: ${mc.thePlayer.onGround}")
             add("onBarn: ${GardenAPI.onBarnPlot}")

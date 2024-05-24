@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.features.garden.SensitivityReducer
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.mc.McClient
 
 object LockMouseLook {
 
@@ -21,9 +21,8 @@ object LockMouseLook {
     @HandleEvent
     fun onWorldChange(event: WorldChangeEvent) {
         if (lockedMouse) toggleLock()
-        val gameSettings = Minecraft.getMinecraft().gameSettings
-        if (gameSettings.mouseSensitivity == LOCKED_POSITION) {
-            gameSettings.mouseSensitivity = storage.savedMouselockedSensitivity
+        if (McClient.options.mouseSensitivity == LOCKED_POSITION) {
+            McClient.options.mouseSensitivity = storage.savedMouselockedSensitivity
             ChatUtils.chat("§bMouse rotation is now unlocked because you left it locked.")
         }
     }
@@ -37,19 +36,18 @@ object LockMouseLook {
     fun toggleLock() {
         lockedMouse = !lockedMouse
 
-        val gameSettings = Minecraft.getMinecraft().gameSettings ?: return
-        var mouseSensitivity = gameSettings.mouseSensitivity
+        var mouseSensitivity = McClient.options.mouseSensitivity
         if (SensitivityReducer.isEnabled()) mouseSensitivity = SensitivityReducer.doTheMath(mouseSensitivity, true)
 
         if (lockedMouse) {
             storage.savedMouselockedSensitivity = mouseSensitivity
-            gameSettings.mouseSensitivity = LOCKED_POSITION
+            McClient.options.mouseSensitivity = LOCKED_POSITION
             if (config.lockMouseLookChatMessage) {
                 ChatUtils.chat("§bMouse rotation is now locked. Type /shmouselock to unlock your rotation")
             }
         } else {
-            if (!SensitivityReducer.isEnabled()) gameSettings.mouseSensitivity = storage.savedMouselockedSensitivity
-            else gameSettings.mouseSensitivity = SensitivityReducer.doTheMath(storage.savedMouselockedSensitivity)
+            if (!SensitivityReducer.isEnabled()) McClient.options.mouseSensitivity = storage.savedMouselockedSensitivity
+            else McClient.options.mouseSensitivity = SensitivityReducer.doTheMath(storage.savedMouselockedSensitivity)
             if (config.lockMouseLookChatMessage) {
                 ChatUtils.chat("§bMouse rotation is now unlocked.")
             }
