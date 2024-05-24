@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.contest
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.events.garden.FarmingContestEvent
@@ -57,10 +56,8 @@ object FarmingContestAPI {
         ContestBracket.entries.forEach { it.bracketPattern }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         if (internalContest && startTime.passedSince() > 20.minutes) {
             FarmingContestEvent(contestCrop!!, FarmingContestPhase.STOP).post()
             internalContest = false

@@ -15,10 +15,8 @@ object AshfangHideParticles {
 
     private var nearAshfang = false
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         if (event.repeatSeconds(3)) {
             nearAshfang = DamageIndicatorManager.getDistanceTo(BossType.NETHER_ASHFANG) < 40
         }

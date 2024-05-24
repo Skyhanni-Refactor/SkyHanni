@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.LorenzColor
@@ -15,9 +14,8 @@ import net.minecraft.inventory.Slot
 
 object HighlightMissingRepoItems {
 
-    @HandleEvent(priority = HandleEvent.LOWEST)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.LOWEST)
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.dev.debug.highlightMissingRepo) return
 
         val gui = event.gui

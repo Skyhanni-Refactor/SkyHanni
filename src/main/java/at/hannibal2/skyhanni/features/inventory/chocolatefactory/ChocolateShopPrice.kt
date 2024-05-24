@@ -154,9 +154,8 @@ object ChocolateShopPrice {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!inInventory) return
         itemBoughtPattern.matchMatcher(event.message) {
             val item = group("item")

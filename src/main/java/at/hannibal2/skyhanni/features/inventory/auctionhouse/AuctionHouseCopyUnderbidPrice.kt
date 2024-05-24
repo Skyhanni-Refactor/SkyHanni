@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.inventory.auctionhouse
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
@@ -34,9 +33,8 @@ class AuctionHouseCopyUnderbidPrice {
         "Auctions Browser|Manage Auctions|Auctions: \".*\"?"
     )
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.autoCopyUnderbidPrice) return
         if (!event.fullyOpenedOnce) return
         if (event.inventoryName != "Create BIN Auction") return
@@ -55,10 +53,9 @@ class AuctionHouseCopyUnderbidPrice {
         ChatUtils.chat("Copied ${newPrice.addSeparators()} to clipboard. (Copy Underbid Price)")
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onKeybind(event: GuiKeyPressEvent) {
         if (!config.copyUnderbidKeybind.isKeyHeld()) return
-        if (!SkyBlockAPI.isConnected) return
         if (!allowedInventoriesPattern.matches(InventoryUtils.openInventoryName())) return
         val stack = event.guiContainer.slotUnderMouse?.stack ?: return
 

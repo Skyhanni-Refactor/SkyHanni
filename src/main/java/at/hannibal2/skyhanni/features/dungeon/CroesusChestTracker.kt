@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage.DungeonStorage.DungeonRunInfo
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
@@ -68,9 +67,8 @@ object CroesusChestTracker {
 
     private val croesusChests get() = ProfileStorageData.profileSpecific?.dungeons?.runs
 
-    @HandleEvent(priority = HandleEvent.LOW)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.LOW)
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.dungeon.croesusUnopenedChestTracker) return
 
         if (inCroesusInventory && !croesusEmpty) {
@@ -89,9 +87,8 @@ object CroesusChestTracker {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if ((SkyHanniMod.feature.dungeon.croesusUnopenedChestTracker || config.showUsedKismets) &&
             croesusPattern.matches(event.inventoryName)
         ) {
@@ -174,9 +171,8 @@ object CroesusChestTracker {
         chestInventory = null
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSlotClick(event: SlotClickEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.showUsedKismets) return
         if (chestInventory != null && event.slotId == KISMET_SLOT) {
             setKismetUsed()
@@ -200,9 +196,8 @@ object CroesusChestTracker {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderItemTip(event: RenderItemTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.kismetStackSize) return
         if (chestInventory == null) return
         if (!kismetPattern.matches(event.stack.name)) return
@@ -210,9 +205,8 @@ object CroesusChestTracker {
         event.stackTip = "§a$kismetAmountCache"
     }
 
-    @HandleEvent
-    fun onRenderItemTipIsKismetable(event: RenderInventoryItemTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onRenderItemTip(event: RenderInventoryItemTipEvent) {
         if (!config.showUsedKismets) return
         if (!inCroesusInventory) return
         if (event.slot.slotIndex != event.slot.slotNumber) return

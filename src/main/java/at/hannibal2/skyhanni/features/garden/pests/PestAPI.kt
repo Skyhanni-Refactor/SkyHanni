@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.pests
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
@@ -151,9 +152,8 @@ object PestAPI {
         PestUpdateEvent().post()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onPestSpawn(event: PestSpawnEvent) {
-        if (!GardenAPI.inGarden()) return
         PestSpawnTimer.lastSpawnTime = SimpleTimeMark.now()
         val plotNames = event.plotNames
         for (plotName in plotNames) {
@@ -173,9 +173,8 @@ object PestAPI {
         updatePests()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!GardenAPI.inGarden()) return
         if (event.inventoryName != "Configure Plots") return
 
         for (plot in GardenPlotAPI.plots) {
@@ -190,9 +189,8 @@ object PestAPI {
         updatePests()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTabListUpdate(event: TabListUpdateEvent) {
-        if (!GardenAPI.inGarden()) return
         for (line in event.tabList) {
             infectedPlotsTablistPattern.matchMatcher(line) {
                 val plotList = group("plots").removeColor().split(", ").map { it.toInt() }
@@ -213,16 +211,14 @@ object PestAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!firstScoreboardCheck) return
         checkScoreboardLines(event.scoreboard)
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!GardenAPI.inGarden()) return
         if (pestDeathChatPattern.matches(event.message)) {
             lastPestKillTime = SimpleTimeMark.now()
             removeNearestPest()
@@ -232,9 +228,8 @@ object PestAPI {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTick(event: ClientTickEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!firstScoreboardCheck && gardenJoinTime.passedSince() > 5.seconds) {
             checkScoreboardLines(ScoreboardData.sidebarLinesFormatted)
             firstScoreboardCheck = true

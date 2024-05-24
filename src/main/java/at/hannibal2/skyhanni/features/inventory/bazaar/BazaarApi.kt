@@ -79,9 +79,8 @@ object BazaarApi {
         return NEUInternalName.fromItemName(bazaarItem.displayName)
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!inBazaarInventory) return
         if (!SkyHanniMod.feature.inventory.bazaar.purchaseHelper) return
         if (currentSearchedItem == "") return
@@ -101,9 +100,8 @@ object BazaarApi {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!inBazaarInventory) return
         // TODO USE SH-REPO
         // TODO remove dynamic pattern

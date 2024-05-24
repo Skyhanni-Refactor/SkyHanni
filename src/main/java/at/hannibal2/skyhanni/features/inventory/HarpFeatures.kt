@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
@@ -54,9 +53,8 @@ object HarpFeatures {
     private fun isHarpGui(chestName: String) = inventoryTitlePattern.matches(chestName)
     private fun isMenuGui(chestName: String) = menuTitlePattern.matches(chestName)
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onGui(event: GuiKeyPressEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.keybinds) return
         if (!isHarpGui(InventoryUtils.openInventoryName())) return
         val chest = event.guiContainer as? GuiChest ?: return
@@ -94,9 +92,8 @@ object HarpFeatures {
 
     private var openTime: SimpleTimeMark = SimpleTimeMark.farPast()
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (config.quickRestart && isMenuGui(event.inventoryName)) {
             openTime = SimpleTimeMark.now()
         }
@@ -120,9 +117,8 @@ object HarpFeatures {
         minecraft.currentScreen.setWorldAndResolution(minecraft, i, j)
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryClose(event: InventoryCloseEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.guiScale) return
         unSetGUIScale()
     }
@@ -150,10 +146,8 @@ object HarpFeatures {
         isGUIScaled = false
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSlotClick(event: SlotClickEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         if (isHarpGui(InventoryUtils.openInventoryName())) {
             if (config.keybinds) {
                 // needed to not send duplicate clicks via keybind feature
@@ -182,9 +176,8 @@ object HarpFeatures {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderItemTip(event: RenderItemTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.showNumbers) return
         if (!isHarpGui(InventoryUtils.openInventoryName())) return
         if (Item.getIdFromItem(event.stack.item) != 159) return // Stained hardened clay item id = 159
@@ -198,9 +191,8 @@ object HarpFeatures {
     }
 
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.hideMelodyTooltip) return
         if (!isHarpGui(InventoryUtils.openInventoryName())) return
         if (event.slot.inventory !is ContainerLocalMenu) return

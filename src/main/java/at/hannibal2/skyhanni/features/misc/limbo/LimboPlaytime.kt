@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.misc.limbo
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.inventory.InventoryOpenEvent
@@ -70,9 +69,8 @@ object LimboPlaytime {
         else -> arrayOf("§7Playtime: §a$wholeMinutes minutes")
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!event.slot.inventory.name.startsWith("Detailed /playtime")) return
         if (event.slot.slotIndex != 4) return
         val playtime = storage?.playtime ?: 0

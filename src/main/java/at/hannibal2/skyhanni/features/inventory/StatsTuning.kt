@@ -92,10 +92,8 @@ object StatsTuning {
         }
     }
 
-    @HandleEvent(priority = HandleEvent.LOW)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.LOW)
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val chestName = InventoryUtils.openInventoryName()
         if (!config.selectedTemplate || chestName != "Stats Tuning") return
         for (slot in InventoryUtils.getItemsInOpenChest()) {

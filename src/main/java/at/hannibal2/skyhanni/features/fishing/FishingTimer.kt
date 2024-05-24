@@ -35,9 +35,8 @@ object FishingTimer {
     private var startTime = SimpleTimeMark.farPast()
     private var inHollows = false
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
 
         if (event.repeatSeconds(3)) {
@@ -104,9 +103,8 @@ object FishingTimer {
         return false
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
         if (!rightLocation) return
         if (currentCount == 0) return

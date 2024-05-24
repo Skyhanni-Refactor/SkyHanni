@@ -23,9 +23,8 @@ object MiscFeatures {
         event.isCanceled = true
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onReceiveParticle(event: ReceiveParticleEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.misc.hideExplosions) return
 
         when (event.type) {

@@ -20,10 +20,8 @@ object MinecraftData {
 
     var totalTicks = 0
 
-    @HandleEvent(receiveCancelled = true)
+    @HandleEvent(onlyOnSkyblock = true, receiveCancelled = true)
     fun onSoundPacket(event: ReceivePacketEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val packet = event.packet
         if (packet !is S29PacketSoundEffect) return
 
@@ -38,10 +36,8 @@ object MinecraftData {
         }
     }
 
-    @HandleEvent(receiveCancelled = true)
+    @HandleEvent(onlyOnSkyblock = true, receiveCancelled = true)
     fun onParticlePacketReceive(event: ReceivePacketEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val packet = event.packet
         if (packet !is S2APacketParticles) return
 

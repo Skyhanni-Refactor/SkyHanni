@@ -24,9 +24,8 @@ object SlayerItemsOnGround {
 
     private var itemsOnGround = TimeLimitedCache<EntityItem, Pair<LorenzVec, String>>(2.seconds)
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
         if (!SlayerAPI.isInCorrectArea) return
         if (!SlayerAPI.hasActiveSlayerQuest()) return

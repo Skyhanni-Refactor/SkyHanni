@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.combat.mobs
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -30,10 +29,8 @@ object AreaMiniBossFeatures {
     private var miniBossType: AreaMiniBossType? = null
     private var respawnCooldown = 11.seconds
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onEntityHealthUpdate(event: EntityMaxHealthUpdateEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val entity = event.entity
         for (bossType in AreaMiniBossType.entries) {
             if (!bossType.clazz.isInstance(entity)) continue
@@ -57,9 +54,8 @@ object AreaMiniBossFeatures {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.areaBossRespawnTimer) return
 
         miniBossType?.apply {

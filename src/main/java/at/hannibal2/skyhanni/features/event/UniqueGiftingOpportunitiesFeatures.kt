@@ -105,11 +105,9 @@ object UniqueGiftingOpportunitiesFeatures {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
         holdingGift = false
-
-        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
         if (!DateUtils.isDecember()) return
 

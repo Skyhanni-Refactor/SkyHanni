@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryOpenEvent
 import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
@@ -22,9 +21,8 @@ object HighlightOnHoverSlot {
         currentSlots.clear()
     }
 
-    @HandleEvent(priority = HandleEvent.LOW)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.LOW)
     fun onDrawBackground(event: BackgroundDrawnEvent) {
-        if (!SkyBlockAPI.isConnected) return
         val list = currentSlots.flatMapTo(mutableSetOf()) { it.value }
         for (slot in InventoryUtils.getItemsInOpenChest()) {
             if (slot.slotNumber in list) {

@@ -23,10 +23,8 @@ object MobHighlight {
 
     private val config get() = SkyHanniMod.feature.combat.mobs
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onEntityHealthUpdate(event: EntityHealthUpdateEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val entity = event.entity
         val baseMaxHealth = entity.baseMaxHealth
         if (config.corruptedMobHighlight && event.health == baseMaxHealth * 3) {
@@ -38,10 +36,8 @@ object MobHighlight {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onEntityHealthUpdate(event: EntityMaxHealthUpdateEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val entity = event.entity
         val maxHealth = event.normalizedMaxHealth
         if (config.arachneKeeperHighlight && (maxHealth == 3_000 || maxHealth == 12_000) && entity is EntityCaveSpider) {

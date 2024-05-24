@@ -391,9 +391,8 @@ object MinionFeatures {
 
     private fun enableWithHub() = isEnabled() || IslandType.HUB.isInIsland()
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!minionInventoryOpen) return
 
         if (config.hopperProfitDisplay) {

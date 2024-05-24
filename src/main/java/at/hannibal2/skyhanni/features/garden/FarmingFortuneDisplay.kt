@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.garden
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.GardenCropMilestones
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
@@ -95,9 +96,8 @@ object FarmingFortuneDisplay {
     private var lastUniversalFortuneMissingError = SimpleTimeMark.farPast()
     private var lastCropFortuneMissingError = SimpleTimeMark.farPast()
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTabListUpdate(event: TabListUpdateEvent) {
-        if (!GardenAPI.inGarden()) return
         event.tabList.firstNotNullOfOrNull {
             universalTabFortunePattern.matchMatcher(it) {
                 val fortune = group("fortune").toDouble()
@@ -210,9 +210,8 @@ object FarmingFortuneDisplay {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTick(event: ClientTickEvent) {
-        if (!GardenAPI.inGarden()) return
         if (event.isMod(2)) update()
         if (gardenJoinTime.passedSince() > 5.seconds && !foundTabUniversalFortune && !gardenJoinTime.isFarPast()) {
             if (lastUniversalFortuneMissingError.passedSince() < 1.minutes) return

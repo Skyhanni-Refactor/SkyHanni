@@ -27,9 +27,8 @@ object TiaRelayHelper {
 
     private var resultDisplay = mutableMapOf<Int, Int>()
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onPlaySound(event: PlaySoundEvent) {
-        if (!SkyBlockAPI.isConnected) return
         val soundName = event.soundName
 
         if (config.tiaRelayMute && soundName == "mob.wolf.whine") {
@@ -54,9 +53,8 @@ object TiaRelayHelper {
     }
 
     // TODO inventory open and close events
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.soundHelper) return
 
         if (InventoryUtils.openInventoryName().contains("Network Relay")) {
@@ -97,9 +95,8 @@ object TiaRelayHelper {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderItemTip(event: RenderInventoryItemTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.soundHelper) return
         if (!inInventory) return
 
@@ -126,9 +123,8 @@ object TiaRelayHelper {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSlotClick(event: SlotClickEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.soundHelper) return
         if (!inInventory) return
 

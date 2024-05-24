@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
@@ -46,10 +45,8 @@ object ItemAddManager {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSackChange(event: SackChangeEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         if (inSackInventory || lastSackInventoryLeave.passedSince() < 10.seconds) return
 
         for (sackChange in event.sackChanges) {
@@ -62,10 +59,8 @@ object ItemAddManager {
         superCraftedItems.clear()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onItemAdd(event: ItemAddInInventoryEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val internalName = event.internalName
         if (internalName == SkyhanniItems.ARCHFIEND_DICE() || internalName == SkyhanniItems.HIGH_CLASS_ARCHFIEND_DICE()) {
             if (lastDiceRoll.passedSince() < 500.milliseconds) {

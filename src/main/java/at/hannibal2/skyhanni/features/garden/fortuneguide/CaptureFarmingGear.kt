@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.fortuneguide
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.PetAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
@@ -146,9 +145,8 @@ object CaptureFarmingGear {
         captureFarmingGear()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         val storage = GardenAPI.storage?.fortune ?: return
         val farmingItems = farmingItems ?: return
         val outdatedItems = outdatedItems ?: return
@@ -319,9 +317,8 @@ object CaptureFarmingGear {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
         val storage = GardenAPI.storage?.fortune ?: return
         val outdatedItems = outdatedItems ?: return
         val msg = event.message.removeColor().trim()

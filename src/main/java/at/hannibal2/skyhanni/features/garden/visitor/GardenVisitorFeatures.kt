@@ -423,9 +423,8 @@ object GardenVisitorFeatures {
         visitor.lastLore = finalList
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTick(event: ClientTickEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.shoppingList.display && config.highlightStatus == HighlightMode.DISABLED) return
         if (!event.isMod(10, 2)) return
 

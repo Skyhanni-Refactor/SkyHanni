@@ -31,10 +31,8 @@ object ToolTooltipTweaks {
 
     private val statFormatter = DecimalFormat("0.##")
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val itemStack = event.itemStack
         val itemLore = itemStack.getLore()
         val internalName = itemStack.getInternalName()

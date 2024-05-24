@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
@@ -23,9 +22,8 @@ object ChocolateFactoryStats {
 
     private var display = listOf<Renderable>()
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!ChocolateFactoryAPI.chocolateFactoryPaused) return
         updateDisplay()
     }

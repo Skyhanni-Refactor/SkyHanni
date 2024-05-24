@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.slayer
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -44,9 +43,8 @@ object HideMobNames {
         patterns.add("§8\\[§7Lv\\d+§8] §c$bossName§r §[ae](?<min>.+)§f/§a(?<max>.+)§c❤".toPattern())
     }
 
-    @HandleEvent(priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
-        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.slayer.hideMobNames) return
 
         val entity = event.entity
