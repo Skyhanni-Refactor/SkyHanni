@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.combat.ghostcounter
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.SkillExperience
@@ -39,7 +40,6 @@ import at.hannibal2.skyhanni.utils.CombatUtils.lastUpdate
 import at.hannibal2.skyhanni.utils.CombatUtils.xpGainHour
 import at.hannibal2.skyhanni.utils.CombatUtils.xpGainHourLast
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
@@ -323,7 +323,7 @@ object GhostCounter {
             }
         }
 
-        inMist = LorenzUtils.skyBlockArea == "The Mist"
+        inMist = IslandArea.THE_MIST.isInside()
         update()
 
         if (event.repeatSeconds(2)) {
@@ -468,7 +468,7 @@ object GhostCounter {
     @HandleEvent
     fun onPurseChange(event: PurseChangeEvent) {
         if (!isEnabled()) return
-        if (LorenzUtils.skyBlockArea != "The Mist") return
+        if (!IslandArea.THE_MIST.isInside()) return
         if (event.reason != PurseChangeCause.GAIN_MOB_KILL) return
         Option.SCAVENGERCOINS.add(event.coins, true)
         Option.SCAVENGERCOINS.add(event.coins)

@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.api.HypixelPacketAPI
 import at.hannibal2.skyhanni.api.SkillAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.event.SkyHanniEvents
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.ConfigManager
@@ -785,6 +786,7 @@ class SkyHanniMod {
         loadModule(InGameDateDisplay)
         loadModule(InfernoMinionFeatures)
         loadModule(InquisitorWaypointShare)
+        loadModule(IslandArea)
         loadModule(ItemAbilityCooldown)
         loadModule(ItemDisplayOverlayFeatures)
         loadModule(ItemStars)

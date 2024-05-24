@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.mining.fossilexcavator
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.mining.FossilExcavationEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
@@ -9,7 +10,6 @@ import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getPrice
@@ -212,5 +212,5 @@ object ExcavatorProfitTracker {
     }
 
     fun isEnabled() = IslandType.DWARVEN_MINES.isInIsland() && config.enabled
-        && LorenzUtils.skyBlockArea == "Fossil Research Center"
+        && IslandArea.FOSSIL_RESEARCH_CENTER.isInside()
 }

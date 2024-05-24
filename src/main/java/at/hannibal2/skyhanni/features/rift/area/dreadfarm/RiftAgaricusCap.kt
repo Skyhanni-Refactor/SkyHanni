@@ -1,12 +1,12 @@
 package at.hannibal2.skyhanni.features.rift.area.dreadfarm
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -23,8 +23,7 @@ object RiftAgaricusCap {
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
-        val area = LorenzUtils.skyBlockArea
-        if (area != "West Village" && area != "Dreadfarm") return
+        if (!IslandArea.WEST_VILLAGE.isInside() && !IslandArea.DREADFARM.isInside()) return
 
         location = updateLocation()
     }

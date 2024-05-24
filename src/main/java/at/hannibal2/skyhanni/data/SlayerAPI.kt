@@ -3,16 +3,16 @@ package at.hannibal2.skyhanni.data
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.Gamemode
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.slayer.SlayerChangeEvent
 import at.hannibal2.skyhanni.events.slayer.SlayerProgressChangeEvent
 import at.hannibal2.skyhanni.events.slayer.SlayerQuestCompleteEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.slayer.SlayerType
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getNpcPriceOrNull
 import at.hannibal2.skyhanni.utils.NEUItems.getPrice
@@ -26,6 +26,7 @@ import kotlin.time.Duration.Companion.seconds
 object SlayerAPI {
 
     private var nameCache = TimeLimitedCache<Pair<NEUInternalName, Int>, Pair<String, Double>>(1.minutes)
+    private var slayerAreas = emptyMap<String, SlayerType>()
 
     var questStartTime = SimpleTimeMark.farPast()
     var isInCorrectArea = false
@@ -51,6 +52,11 @@ object SlayerAPI {
 
             "$amountFormat$displayName$priceFormat" to totalPrice
         }
+
+    @HandleEvent
+    fun onRepoLoad(event: RepositoryReloadEvent) {
+        slayerAreas = event.getConstant<Map<String, SlayerType>>("SlayerAreas")
+    }
 
     @HandleEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
@@ -119,44 +125,12 @@ object SlayerAPI {
                 isInAnyArea = true
                 true
             } else {
-                val slayerTypeForCurrentArea = getSlayerTypeForCurrentArea()
+                val slayerTypeForCurrentArea = getSlayerForArea(SkyBlockAPI.area)
                 isInAnyArea = slayerTypeForCurrentArea != null
                 slayerTypeForCurrentArea == getActiveSlayer() && slayerTypeForCurrentArea != null
             }
         }
     }
 
-    // TODO USE SH-REPO
-    fun getSlayerTypeForCurrentArea() = when (LorenzUtils.skyBlockArea) {
-        "Graveyard",
-        "Coal Mine",
-        -> SlayerType.REVENANT
-
-        "Spider Mound",
-        "Arachne's Burrow",
-        "Arachne's Sanctuary",
-        "Burning Desert",
-        -> SlayerType.TARANTULA
-
-        "Ruins",
-        "Howling Cave",
-        -> SlayerType.SVEN
-
-        "The End",
-        "Dragon's Nest",
-        "Void Sepulture",
-        "Zealot Bruiser Hideout",
-        -> SlayerType.VOID
-
-        "Stronghold",
-        "The Wasteland",
-        "Smoldering Tomb",
-        -> SlayerType.INFERNO
-
-        "Stillgore Château",
-        "Oubliette",
-        -> SlayerType.VAMPIRE
-
-        else -> null
-    }
+    fun getSlayerForArea(area: String?) = slayerAreas[area]
 }

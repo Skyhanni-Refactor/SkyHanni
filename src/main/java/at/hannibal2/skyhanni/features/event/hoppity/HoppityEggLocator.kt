@@ -18,7 +18,6 @@ import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactor
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RecalculatingValue
@@ -238,8 +237,7 @@ object HoppityEggLocator {
         drawLocations = true
     }
 
-    fun getCurrentIslandEggLocations(): List<LorenzVec>? =
-        eggLocations[LorenzUtils.skyBlockIsland]
+    fun getCurrentIslandEggLocations(): List<LorenzVec>? = eggLocations[SkyBlockAPI.island]
 
     fun isValidEggLocation(location: LorenzVec): Boolean =
         getCurrentIslandEggLocations()?.any { it.distance(location) < 5.0 } ?: false

@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.features.mining
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.HypixelData
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.MiningAPI
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
@@ -129,8 +129,8 @@ object MiningCommissionsBlocksColor {
         if (HypixelAPI.lastWorldChange.passedSince() > 4.seconds) {
             inGlaciteArea = MiningAPI.inGlaciteArea() && !IslandType.MINESHAFT.isInIsland()
             inDwarvenMines = IslandType.DWARVEN_MINES.isInIsland() &&
-                !(inGlaciteArea || HypixelData.skyBlockArea.equalsOneOf("Dwarven Base Camp", "Fossil Research Center"))
-            inCrystalHollows = IslandType.CRYSTAL_HOLLOWS.isInIsland() && HypixelData.skyBlockArea != "Crystal Nucleus"
+                !(inGlaciteArea || IslandArea.FOSSIL_RESEARCH_CENTER.isInside() || IslandArea.DWARVEN_BASE_CAMP.isInside())
+            inCrystalHollows = IslandType.CRYSTAL_HOLLOWS.isInIsland() && IslandArea.CRYSTAL_NUCLEUS.isInside()
         }
 
         // TODO add dwarven mines support

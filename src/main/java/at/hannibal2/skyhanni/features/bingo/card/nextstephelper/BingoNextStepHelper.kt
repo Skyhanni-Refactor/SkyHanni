@@ -23,7 +23,6 @@ import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.steps.SkillLevel
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -229,7 +228,7 @@ object BingoNextStepHelper {
     private fun updateIslandsVisited() {
         for (step in islands.values) {
             val island = step.island
-            if (island == LorenzUtils.skyBlockIsland) {
+            if (island == SkyBlockAPI.island) {
                 step.done()
             }
         }

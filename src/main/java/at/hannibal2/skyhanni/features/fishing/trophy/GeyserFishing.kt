@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.fishing.trophy
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -10,7 +11,6 @@ import at.hannibal2.skyhanni.features.fishing.FishingAPI
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayerIgnoreY
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
@@ -72,5 +72,5 @@ object GeyserFishing {
     }
 
     private fun shouldProcessParticles() =
-        IslandType.CRIMSON_ISLE.isInIsland() && LorenzUtils.skyBlockArea == "Blazing Volcano" && (config.hideParticles || config.drawBox)
+        IslandType.CRIMSON_ISLE.isInIsland() && IslandArea.BLAZING_VOLCANO.isInside() && (config.hideParticles || config.drawBox)
 }

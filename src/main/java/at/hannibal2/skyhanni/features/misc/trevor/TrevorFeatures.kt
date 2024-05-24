@@ -2,8 +2,8 @@ package at.hannibal2.skyhanni.features.misc.trevor
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
@@ -21,13 +21,11 @@ import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.RegexUtils.findMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
-import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
@@ -330,7 +328,7 @@ object TrevorFeatures {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        inTrapperDen = areaTrappersDenPattern.matches(LorenzUtils.skyBlockArea)
+        inTrapperDen = IslandArea.TRAPPERS_DEN.isInside()
     }
 
     enum class TrapperStatus(baseColor: LorenzColor) {
@@ -344,6 +342,4 @@ object TrevorFeatures {
     }
 
     fun onFarmingIsland() = IslandType.THE_FARMING_ISLANDS.isInIsland()
-
-    fun inTrapperDen() = ScoreboardData.sidebarLinesFormatted.contains(" §7⏣ §bTrapper's Den")
 }

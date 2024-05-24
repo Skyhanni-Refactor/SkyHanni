@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.nether.reputationhelper.dailyquest
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacksOrNull
@@ -33,7 +34,6 @@ import at.hannibal2.skyhanni.utils.InventoryUtils.getInventoryName
 import at.hannibal2.skyhanni.utils.InventoryUtils.getUpperItems
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
@@ -103,7 +103,7 @@ class DailyQuestHelper(val reputationHelper: CrimsonIsleReputationHelper) {
         val chestName = chest.getInventoryName()
 
         if (chestName == "Challenges") {
-            if (LorenzUtils.skyBlockArea != "Dojo") return
+            if (!IslandArea.DOJO.isInside()) return
             val dojoQuest = getQuest<DojoQuest>() ?: return
             if (dojoQuest.state != QuestState.ACCEPTED) return
 

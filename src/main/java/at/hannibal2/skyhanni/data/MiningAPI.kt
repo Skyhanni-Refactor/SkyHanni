@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -33,7 +34,7 @@ object MiningAPI {
     var lastColdUpdate = SimpleTimeMark.farPast()
     var lastColdReset = SimpleTimeMark.farPast()
 
-    fun inGlaciteArea() = glaciteAreaPattern.matches(HypixelData.skyBlockArea) || IslandType.MINESHAFT.isInIsland()
+    fun inGlaciteArea() = glaciteAreaPattern.matches(SkyBlockAPI.area) || IslandType.MINESHAFT.isInIsland()
 
     fun inColdIsland() = IslandType.DWARVEN_MINES.isInIsland() || IslandType.MINESHAFT.isInIsland()
 

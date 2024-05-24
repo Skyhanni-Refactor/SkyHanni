@@ -17,7 +17,6 @@ import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.GardenAPI.getCropType
 import at.hannibal2.skyhanni.features.misc.compacttablist.AdvancedPlayerList
 import at.hannibal2.skyhanni.features.rift.RiftAPI
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.colorCodeToRarity
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
@@ -88,8 +87,8 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
     NONE({ null }),
 
     LOCATION({
-        var location = LorenzUtils.skyBlockArea?.removeColor() ?: "invalid"
-        val island = LorenzUtils.skyBlockIsland
+        var location = SkyBlockAPI.area?.removeColor() ?: "invalid"
+        val island = SkyBlockAPI.island
 
         if (location == "Your Island") location = "Private Island"
         when {

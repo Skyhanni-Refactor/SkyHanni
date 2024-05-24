@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.minion
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.data.IslandType
@@ -32,7 +33,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
@@ -183,7 +183,7 @@ object MinionFeatures {
 
         val openInventory = event.inventoryName
         val name = getMinionName(openInventory)
-        if (!minions.contains(entity) && LorenzUtils.skyBlockIsland != IslandType.HUB) {
+        if (!minions.contains(entity) && SkyBlockAPI.island != IslandType.HUB) {
             MinionFeatures.minions = minions.editCopy {
                 this[entity] = ProfileSpecificStorage.MinionConfig().apply {
                     displayName = name

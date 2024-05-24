@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.rift.area.mirrorverse
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ParkourJson
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
@@ -10,7 +11,6 @@ import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ConditionalUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.ParkourHelper
 
 object RiftUpsideDownParkour {
@@ -74,5 +74,5 @@ object RiftUpsideDownParkour {
         parkourHelper?.render(event)
     }
 
-    fun isEnabled() = RiftAPI.inRift() && LorenzUtils.skyBlockArea == "Mirrorverse" && config.enabled
+    fun isEnabled() = RiftAPI.inRift() && IslandArea.MIRRORVERSE.isInside() && config.enabled
 }

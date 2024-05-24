@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.utils
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
@@ -20,13 +19,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler
 import java.text.SimpleDateFormat
 
 object LorenzUtils {
-
-    /**
-     * Consider using [IslandType.isInIsland] instead
-     */
-    val skyBlockIsland get() = HypixelData.skyBlockIsland
-
-    val skyBlockArea get() = if (SkyBlockAPI.isConnected) HypixelData.skyBlockArea else null
 
     val debug: Boolean = HypixelAPI.onHypixel && SkyHanniMod.feature.dev.debug.enabled
 
@@ -143,7 +135,7 @@ object LorenzUtils {
         })
     }
 
-    fun IslandType.isInIsland() = SkyBlockAPI.isConnected && skyBlockIsland == this
+    fun IslandType.isInIsland() = SkyBlockAPI.isConnected && SkyBlockAPI.island == this
 
     fun inAnyIsland(vararg islandTypes: IslandType) = SkyBlockAPI.isConnected && islandTypes.any { it.isInIsland() }
 

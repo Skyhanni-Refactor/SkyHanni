@@ -23,6 +23,7 @@ object GlowingDroppedItems {
     /**
      * List of SkyBlock locations where we might see items in showcases
      */
+    //TODO change to IslandArea
     private val showcaseItemLocations = setOf(
         "The End",
         "Jerry's Workshop",
@@ -66,7 +67,7 @@ object GlowingDroppedItems {
     }
 
     private val isShowcaseArea = RecalculatingValue(1.seconds) {
-        showcaseItemIslands.contains(LorenzUtils.skyBlockIsland) || showcaseItemLocations.contains(LorenzUtils.skyBlockArea)
+        showcaseItemIslands.contains(SkyBlockAPI.island) || showcaseItemLocations.contains(SkyBlockAPI.area)
     }
 
     private fun shouldHideShowcaseItem(entity: EntityItem): Boolean {
