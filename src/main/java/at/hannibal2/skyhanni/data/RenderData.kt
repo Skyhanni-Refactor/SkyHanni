@@ -1,5 +1,7 @@
 package at.hannibal2.skyhanni.data
 
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.features.misc.visualwords.VisualWordGui
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
@@ -21,7 +23,8 @@ object RenderData {
         if (GuiEditManager.isInGui() || VisualWordGui.isInGui()) return
 
         GlStateManager.translate(0f, 0f, -3f)
-        GuiRenderEvent.GuiOverlayRenderEvent().post()
+        GuiRenderEvent().post()
+        GuiOverlayRenderEvent().post()
         GlStateManager.translate(0f, 0f, 3f)
     }
 
@@ -38,11 +41,11 @@ object RenderData {
 
         if (GuiEditManager.isInGui()) {
             GlStateManager.translate(0f, 0f, -3f)
-            GuiRenderEvent.GuiOverlayRenderEvent().post()
+            GuiOverlayRenderEvent().post()
             GlStateManager.translate(0f, 0f, 3f)
         }
 
-        GuiRenderEvent.ChestGuiOverlayRenderEvent().post()
+        ChestGuiOverlayRenderEvent().post()
 
         GlStateManager.popMatrix()
     }

@@ -16,7 +16,7 @@ import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.click.BlockClickEvent
 import at.hannibal2.skyhanni.events.minecraft.click.EntityClickEvent
 import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
-import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.skyblock.minion.MinionCloseEvent
 import at.hannibal2.skyhanni.events.skyblock.minion.MinionOpenEvent
@@ -392,7 +392,7 @@ object MinionFeatures {
     private fun enableWithHub() = isEnabled() || IslandType.HUB.isInIsland()
 
     @HandleEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!SkyBlockAPI.isConnected) return
         if (!minionInventoryOpen) return
 

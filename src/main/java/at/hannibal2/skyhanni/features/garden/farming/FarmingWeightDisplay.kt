@@ -2,10 +2,9 @@ package at.hannibal2.skyhanni.features.garden.farming
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.compat.elitebot.EliteBotAPI
 import at.hannibal2.skyhanni.compat.elitebot.data.EliteBotLeaderboardRank
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
@@ -136,7 +135,7 @@ object FarmingWeightDisplay {
 
         if (weight == -1.0) {
             if (!isLoadingWeight) {
-                val localProfile = SkyBlockAPI.profileName ?: ""
+                val localProfile = SkyBlockAPI.profileName ?: return
 
                 isLoadingWeight = true
                 if (display.isEmpty()) {
@@ -417,12 +416,6 @@ object FarmingWeightDisplay {
     }
 
     private suspend fun loadWeight(localProfile: String) {
-        if (localProfile == "") {
-            return ErrorManager.logErrorStateWithData(
-                "User has no local profile",
-                "User has no local profile",
-            )
-        }
         EliteBotAPI.getPlayerWeights(McPlayer.uuid.toDashlessUUID()).fold(
             { data ->
                 val entry = data.profiles.find { it.profileId == data.selectedProfileId }

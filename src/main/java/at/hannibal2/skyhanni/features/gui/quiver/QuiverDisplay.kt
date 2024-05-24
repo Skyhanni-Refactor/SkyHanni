@@ -7,7 +7,7 @@ import at.hannibal2.skyhanni.config.features.combat.QuiverDisplayConfig.ShowWhen
 import at.hannibal2.skyhanni.data.ArrowType
 import at.hannibal2.skyhanni.data.QuiverAPI
 import at.hannibal2.skyhanni.data.QuiverAPI.NONE_ARROW_TYPE
-import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.skyblock.QuiverUpdateEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
@@ -70,7 +70,7 @@ object QuiverDisplay {
     }
 
     @HandleEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
         if (display.isEmpty()) updateDisplay()
         val whenToShow = config.whenToShow.get()

@@ -10,7 +10,7 @@ import at.hannibal2.skyhanni.config.features.inventory.SackDisplayConfig.Sorting
 import at.hannibal2.skyhanni.data.SackAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
-import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi
 import at.hannibal2.skyhanni.utils.CollectionUtils.addButton
 import at.hannibal2.skyhanni.utils.CollectionUtils.addItemStack
@@ -32,7 +32,7 @@ object SackDisplay {
     private val config get() = SkyHanniMod.feature.inventory.sackDisplay
 
     @HandleEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (SackAPI.inSackInventory) {
             if (!isEnabled()) return
             config.position.renderRenderables(
