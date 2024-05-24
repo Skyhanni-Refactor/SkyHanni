@@ -221,10 +221,9 @@ object BingoCardDisplay {
         }
 
         if (config.quickToggle && ItemUtils.isSkyBlockMenuItem(McPlayer.heldItem)) {
-            val sneaking = Minecraft.getMinecraft().thePlayer.isSneaking
-            if (lastSneak != sneaking) {
-                lastSneak = sneaking
-                if (sneaking) {
+            if (lastSneak != McPlayer.isSneaking) {
+                lastSneak = McPlayer.isSneaking
+                if (McPlayer.isSneaking) {
                     toggleMode()
                 }
             }

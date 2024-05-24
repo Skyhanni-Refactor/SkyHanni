@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils.getSkinTexture
 import at.hannibal2.skyhanni.utils.LorenzColor
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import io.github.moulberry.notenoughupdates.util.SBInfo
@@ -90,8 +91,7 @@ object HighlightVisitorsOutsideOfGarden {
     fun onClickEntity(event: SendPacketEvent) {
         if (!shouldBlock) return
         val world = Minecraft.getMinecraft().theWorld ?: return
-        val player = Minecraft.getMinecraft().thePlayer ?: return
-        if (player.isSneaking) return
+        if (McPlayer.isSneaking) return
         val packet = event.packet as? C02PacketUseEntity ?: return
         val entity = packet.getEntityFromWorld(world) ?: return
         if (isVisitor(entity) || (entity is EntityArmorStand && isVisitorNearby(entity))) {

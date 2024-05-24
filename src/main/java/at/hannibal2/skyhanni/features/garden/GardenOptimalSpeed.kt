@@ -14,6 +14,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McScreen.setTextIntoSign
 import at.hannibal2.skyhanni.utils.mc.McScreen.text
 import at.hannibal2.skyhanni.utils.renderables.Renderable
@@ -31,7 +32,6 @@ object GardenOptimalSpeed {
 
     private val configCustomSpeed get() = config.customSpeed
     private var sneakingTime = 0.seconds
-    private val sneaking get() = Minecraft.getMinecraft().thePlayer.isSneaking
     private val sneakingPersistent get() = sneakingTime > 5.seconds
 
     /**
@@ -58,7 +58,7 @@ object GardenOptimalSpeed {
     fun onTick(event: ClientTickEvent) {
         currentSpeed = (Minecraft.getMinecraft().thePlayer.capabilities.walkSpeed * 1000).toInt()
 
-        if (sneaking) {
+        if (McPlayer.isSneaking) {
             currentSpeed = (currentSpeed * 0.3).toInt()
             sneakingTime += 50.milliseconds
         } else {
@@ -135,12 +135,12 @@ object GardenOptimalSpeed {
         var text = "Optimal Speed: §f$optimalSpeed"
         if (optimalSpeed != currentSpeed) {
             text += " (§eCurrent: §f$currentSpeed"
-            if (sneaking) text += " §7[Sneaking]"
+            if (McPlayer.isSneaking) text += " §7[Sneaking]"
             text += "§f)"
         }
 
         val recentlySwitchedTool = lastToolSwitch.passedSince() < 1.5.seconds
-        val recentlyStartedSneaking = sneaking && !sneakingPersistent
+        val recentlyStartedSneaking = McPlayer.isSneaking && !sneakingPersistent
 
         val colorCode =
             if (recentlySwitchedTool || recentlyStartedSneaking) "7" else if (optimalSpeed != currentSpeed) "c" else "a"
@@ -159,7 +159,7 @@ object GardenOptimalSpeed {
         TitleManager.sendTitle("§cWrong speed!", 3.seconds)
         cropInHand?.let {
             var text = "Wrong speed for ${it.cropName}: §f$currentSpeed"
-            if (sneaking) text += " §7[Sneaking]"
+            if (McPlayer.isSneaking) text += " §7[Sneaking]"
             text += " §e(§f$optimalSpeed §eis optimal)"
 
             ChatUtils.chat(text)

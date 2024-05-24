@@ -19,6 +19,7 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.zipWithNext3
 import at.hannibal2.skyhanni.utils.ColourUtils.getFirstColorCode
 import at.hannibal2.skyhanni.utils.LorenzColor.Companion.toLorenzColor
 import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.renderXAligned
 import at.hannibal2.skyhanni.utils.shader.ShaderManager
@@ -1038,7 +1039,7 @@ object RenderUtils {
 
     fun SkyHanniRenderWorldEvent.exactPlayerEyeLocation(): LorenzVec {
         val player = Minecraft.getMinecraft().thePlayer
-        return exactLocation(player).up(if (player.isSneaking) 1.54 else 1.62)
+        return exactLocation(player).up(if (McPlayer.isSneaking) 1.54 else 1.62)
     }
 
     fun exactLocation(entity: Entity, partialTicks: Float): LorenzVec {

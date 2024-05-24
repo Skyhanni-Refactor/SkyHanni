@@ -20,7 +20,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.network.play.server.S0EPacketSpawnObject
 import net.minecraft.util.EnumParticleTypes
 import java.awt.Color
@@ -48,7 +48,7 @@ object PestParticleWaypoint {
     fun onItemClick(event: ItemClickEvent) {
         if (!isEnabled()) return
         if (PestAPI.hasVacuumInHand()) {
-            if (event.clickType == ClickType.LEFT_CLICK && !Minecraft.getMinecraft().thePlayer.isSneaking) {
+            if (event.clickType == ClickType.LEFT_CLICK && !McPlayer.isSneaking) {
                 reset()
                 lastPestTrackerUse = SimpleTimeMark.now()
             }

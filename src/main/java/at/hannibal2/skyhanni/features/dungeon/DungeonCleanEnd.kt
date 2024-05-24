@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
@@ -92,7 +93,7 @@ object DungeonCleanEnd {
             && DungeonAPI.isOneOf("F3", "M3")
             && entity is EntityGuardian
             && entity.entityId != lastBossId
-            && Minecraft.getMinecraft().thePlayer.isSneaking
+            && McPlayer.isSneaking
         ) {
             return
         }
