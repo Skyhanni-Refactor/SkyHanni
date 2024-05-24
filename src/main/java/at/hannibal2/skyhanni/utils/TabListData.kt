@@ -139,7 +139,7 @@ object TabListData {
     }
 
     //TODO see why this needs to exist
-    @HandleEvent(HandleEvent.HIGHEST)
+    @HandleEvent(priority = HandleEvent.HIGHEST)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         fullyLoaded = false
 
