@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.misc.items
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.utils.InventoryUtils
@@ -16,9 +15,8 @@ object EstimatedWardrobePrice {
     private val config get() = SkyHanniMod.feature.inventory.estimatedItemValues
     var data = mutableMapOf<Int, MutableList<ItemStack>>()
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.armor) return
         if (!InventoryUtils.openInventoryName().contains("Wardrobe")) return
 
@@ -44,9 +42,8 @@ object EstimatedWardrobePrice {
         toolTip.add(index, " §aTotal Value: §6§l${NumberUtil.format(totalPrice)} coins")
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.armor) return
         if (!event.inventoryName.startsWith("Wardrobe")) return
 

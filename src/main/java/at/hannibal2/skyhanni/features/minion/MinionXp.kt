@@ -136,9 +136,8 @@ object MinionXp {
         return positionsToCheck.any { pos -> McWorld.getBlock(minionPosition + pos) is BlockChest }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.xpDisplay) return
         when {
             MinionFeatures.minionInventoryOpen -> {

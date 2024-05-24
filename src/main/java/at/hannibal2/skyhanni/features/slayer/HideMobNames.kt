@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.slayer
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
@@ -24,10 +23,9 @@ object HideMobNames {
     fun onRepoLoad(event: RepositoryReloadEvent) {
         event.getConstant<Array<String>>("MobToHide").forEach { addMobToHide(it) }
     }
-
-    @HandleEvent(priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
+    
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
-        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.slayer.hideMobNames) return
 
         val entity = event.entity

@@ -53,10 +53,8 @@ object SummoningMobManager {
         "§cThe Seraph recalled your (\\d) summoned allies!"
     )
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val message = event.message
         spawnPattern.matchMatcher(message) {
             if (config.summoningMobDisplay) {
@@ -145,9 +143,8 @@ object SummoningMobManager {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.summoningMobDisplay) return
         if (summoningMobs.isEmpty()) return
 
@@ -168,9 +165,8 @@ object SummoningMobManager {
         despawned()
     }
 
-    @HandleEvent(priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.summoningMobHideNametag) return
 
         val entity = event.entity

@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.garden.visitor
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorAcceptEvent
@@ -279,10 +280,9 @@ object GardenVisitorDropStatistics {
         saveAndUpdate()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!config.enabled) return
-        if (!GardenAPI.inGarden()) return
         if (GardenAPI.hideExtraGuis()) return
         if (config.onlyOnBarn && !GardenAPI.onBarnPlot) return
         config.pos.renderStringsAndItems(display, posLabel = "Visitor Stats")

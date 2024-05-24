@@ -24,9 +24,8 @@ object WikiManager {
 
     private val config get() = SkyHanniMod.feature.misc.commands.betterWiki
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!isEnabled()) return
         val message = event.message.lowercase()
         if (!(message.startsWith("/wiki"))) return
@@ -51,9 +50,8 @@ object WikiManager {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onKeybind(event: GuiKeyPressEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (NEUItems.neuHasFocus()) return
         val stack = event.guiContainer.slotUnderMouse?.stack ?: return
 

@@ -9,9 +9,8 @@ import net.minecraft.client.gui.inventory.GuiChest
 
 object ShiftClickBrewing {
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSlotClick(event: SlotClickEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.inventory.shiftClickBrewing) return
 
         if (event.gui !is GuiChest) return

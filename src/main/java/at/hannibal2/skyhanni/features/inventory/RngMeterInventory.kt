@@ -35,10 +35,8 @@ object RngMeterInventory {
         }
     }
 
-    @HandleEvent(priority = HandleEvent.LOW)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.LOW)
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val chestName = InventoryUtils.openInventoryName()
         if (config.noDrop && chestName == "Catacombs RNG Meter") {
             for (slot in InventoryUtils.getItemsInOpenChest()) {

@@ -9,9 +9,8 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 
 object WarpIsCommand {
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.misc.commands.replaceWarpIs) return
 
         if (event.message.lowercase() == "/warp is") {

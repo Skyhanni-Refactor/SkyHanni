@@ -53,9 +53,8 @@ object JacobFarmingContestsInventory {
         hideEverything = true
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (event.inventoryName != "Your Contests") return
 
         realTime.clear()
@@ -81,10 +80,9 @@ object JacobFarmingContestsInventory {
         realTime[slot] = "$dayFormat $startTimeFormat-$endTimeFormat"
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSlotClick(event: SlotClickEvent) {
         if (!config.openOnElite.isKeyHeld()) return
-        if (!SkyBlockAPI.isConnected) return
 
         val slot = event.slot ?: return
         val itemName = slot.stack.name
@@ -158,11 +156,10 @@ object JacobFarmingContestsInventory {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
-        if (!SkyBlockAPI.isConnected) return
-        if (!InventoryUtils.openInventoryName().contains("Your Contests")) return
         if (!config.highlightRewards) return
+        if (!InventoryUtils.openInventoryName().contains("Your Contests")) return
 
         // hide green border for a tick
         if (hideEverything) return
@@ -178,9 +175,8 @@ object JacobFarmingContestsInventory {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!InventoryUtils.openInventoryName().contains("Your Contests")) return
 
         val slot = event.slot.slotNumber
@@ -194,9 +190,8 @@ object JacobFarmingContestsInventory {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderItemOverlayPost(event: GuiRenderItemEvent.RenderOverlayEvent.GuiRenderItemPost) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.medalIcon) return
         if (!InventoryUtils.openInventoryName().contains("Your Contests")) return
 

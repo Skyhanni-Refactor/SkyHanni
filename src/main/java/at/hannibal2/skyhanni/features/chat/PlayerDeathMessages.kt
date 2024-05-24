@@ -36,10 +36,8 @@ object PlayerDeathMessages {
         checkOtherPlayers()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val message = event.message
         deathMessagePattern.matchMatcher(message) {
             val name = group("name")

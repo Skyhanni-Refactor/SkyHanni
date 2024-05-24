@@ -22,9 +22,8 @@ object SeaCreatureManager {
         "§eIt's a §r§aDouble Hook§r§e!"
     )
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (doubleHookMessages.contains(event.message)) {
             if (SkyHanniMod.feature.fishing.compactDoubleHook) {
                 event.blockedReason = "double_hook"

@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.composter
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -23,9 +24,8 @@ object ComposterInventoryNumbers {
         "§7§7Compost Available: §a(?<amount>.*)"
     )
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onRenderItemTip(event: RenderInventoryItemTipEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!GardenAPI.config.composters.inventoryNumbers) return
 
         if (event.inventoryName != "Composter") return

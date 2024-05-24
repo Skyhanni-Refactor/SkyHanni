@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
 import at.hannibal2.skyhanni.events.skyblock.ActionBarValueUpdateEvent
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -43,10 +42,8 @@ enum class ActionBarStatsData(@Language("RegExp") rawPattern: String) {
             entries.forEach { it.pattern }
         }
 
-        @HandleEvent
+        @HandleEvent(onlyOnSkyblock = true)
         fun onActionBarUpdate(event: ActionBarUpdateEvent) {
-            if (!SkyBlockAPI.isConnected) return
-
             entries.mapNotNull { data ->
                 data.pattern.matchMatcher(event.actionBar) {
                     val newValue = group(1)

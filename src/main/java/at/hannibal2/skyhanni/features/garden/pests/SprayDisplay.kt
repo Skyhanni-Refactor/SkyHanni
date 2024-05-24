@@ -43,9 +43,8 @@ object SprayDisplay {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onIslandChange(event: IslandChangeEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.expiryNotification || event.newIsland != IslandType.GARDEN) return
         sendExpiredPlotsToChat(true)
     }

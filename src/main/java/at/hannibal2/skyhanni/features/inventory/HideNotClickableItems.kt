@@ -90,9 +90,8 @@ object HideNotClickableItems {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onForegroundDrawn(event: ForegroundDrawnEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!isEnabled()) return
         if (bypassActive()) return
         if (event.gui !is GuiChest) return

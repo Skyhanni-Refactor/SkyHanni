@@ -51,9 +51,8 @@ object NewYearCakeReminder {
         return playerSpecific.winter.cakeCollectedYear == SkyBlockTime.now().year
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.newYearCakeReminder) return
         if (!isCakeTime()) return
         if (ReminderUtils.isBusy()) return

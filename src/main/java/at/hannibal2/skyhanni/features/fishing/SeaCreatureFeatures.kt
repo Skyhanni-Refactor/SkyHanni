@@ -68,7 +68,6 @@ object SeaCreatureFeatures {
 
     @HandleEvent
     fun onSeaCreatureFish(event: SeaCreatureFishEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.alertOwnCatches) return
 
         if (event.seaCreature.rare) {

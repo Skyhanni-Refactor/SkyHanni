@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
@@ -21,9 +20,8 @@ object ChocolateFactoryUpgradeWarning {
     private var lastUpgradeSlot = -1
     private var lastUpgradeLevel = 0
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         val profileStorage = profileStorage ?: return
 
         val upgradeAvailableAt = SimpleTimeMark(profileStorage.bestUpgradeAvailableAt)
