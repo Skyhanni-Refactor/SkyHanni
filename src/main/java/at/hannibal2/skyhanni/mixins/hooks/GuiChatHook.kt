@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.mixins.hooks
 
 import net.minecraft.event.HoverEvent
 import net.minecraft.util.ChatComponentText
+import net.minecraft.util.ChatStyle
 import net.minecraft.util.IChatComponent
 
 object GuiChatHook {
