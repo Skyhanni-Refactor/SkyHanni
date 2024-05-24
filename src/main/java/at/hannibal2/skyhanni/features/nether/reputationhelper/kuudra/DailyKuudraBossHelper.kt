@@ -13,7 +13,6 @@ import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
@@ -27,9 +26,8 @@ class DailyKuudraBossHelper(private val reputationHelper: CrimsonIsleReputationH
 
     private val config get() = SkyHanniMod.feature.crimsonIsle.reputationHelper
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CRIMSON_ISLE)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!IslandType.CRIMSON_ISLE.isInIsland()) return
         if (!config.enabled) return
         if (!reputationHelper.showLocations()) return
         if (allKuudraDone) return

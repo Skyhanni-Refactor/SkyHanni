@@ -11,7 +11,6 @@ import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.mining.FossilExcavationEvent
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
@@ -50,9 +49,8 @@ object FossilExcavatorAPI {
 
     val scrapItem = SkyhanniItems.SUSPICIOUS_SCRAP()
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.DWARVEN_MINES)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!IslandType.DWARVEN_MINES.isInIsland()) return
         if (event.inventoryName != "Fossil Excavator") return
         inInventory = true
     }
@@ -77,10 +75,8 @@ object FossilExcavatorAPI {
         inExcavatorMenu = false
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.DWARVEN_MINES)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!IslandType.DWARVEN_MINES.isInIsland()) return
-
         val message = event.message
 
         if (emptyPattern.matches(message)) {
