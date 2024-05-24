@@ -53,9 +53,8 @@ object JoinCrystalHollows {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.DWARVEN_MINES)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!IslandType.DWARVEN_MINES.isInIsland()) return
         if (!isEnabled()) return
 
         if (inTime()) {

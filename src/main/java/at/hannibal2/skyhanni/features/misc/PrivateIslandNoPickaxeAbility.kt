@@ -7,15 +7,13 @@ import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.minecraft.click.WorldClickEvent
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 
 object PrivateIslandNoPickaxeAbility {
 
     private val config get() = SkyHanniMod.feature.mining
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.PRIVATE_ISLAND)
     fun onClick(event: WorldClickEvent) {
-        if (!IslandType.PRIVATE_ISLAND.isInIsland()) return
         if (!config.privateIslandNoPickaxeAbility) return
         if (event.clickType != ClickType.RIGHT_CLICK) return
 

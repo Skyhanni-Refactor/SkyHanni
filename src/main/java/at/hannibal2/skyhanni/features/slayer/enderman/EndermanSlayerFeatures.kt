@@ -22,7 +22,6 @@ import at.hannibal2.skyhanni.utils.LocationUtils.canBeSeen
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawColor
@@ -49,9 +48,8 @@ object EndermanSlayerFeatures {
     private const val NUKEKUBI_SKULL_TEXTURE =
         "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZWIwNzU5NGUyZGYyNzM5MjFhNzdjMTAxZDBiZmRmYTExMTVhYmVkNWI5YjIwMjllYjQ5NmNlYmE5YmRiYjRiMyJ9fX0="
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.THE_END)
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
-        if (!IslandType.THE_END.isInIsland()) return
         val entity = event.entity
         if (entity in endermenWithBeacons || entity in flyingBeacons) return
 
@@ -95,10 +93,8 @@ object EndermanSlayerFeatures {
 
     private fun showBeacon() = beaconConfig.highlightBeacon || beaconConfig.showWarning || beaconConfig.showLine
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.THE_END)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!IslandType.THE_END.isInIsland()) return
-
 
         if (beaconConfig.highlightBeacon) {
             endermenWithBeacons.removeIf { it.isDead || !hasBeaconInHand(it) }
@@ -159,10 +155,8 @@ object EndermanSlayerFeatures {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.THE_END)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!IslandType.THE_END.isInIsland()) return
-
         nukekubiSkulls.removeAll {
             if (it.isDead) {
                 RenderLivingEntityHelper.removeEntityColor(it)
@@ -186,9 +180,8 @@ object EndermanSlayerFeatures {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.THE_END)
     fun onBlockChange(event: ServerBlockChangeEvent) {
-        if (!IslandType.THE_END.isInIsland()) return
         if (!showBeacon()) return
 
         val location = event.location
