@@ -40,7 +40,7 @@ object AnvilCombineHelper {
 
         for ((slot, stack) in chest.getLowerItems()) {
             if (matchLore == stack.getLore()) {
-                slot highlight LorenzColor.GREEN
+                slot.highlight(LorenzColor.GREEN)
             }
         }
     }

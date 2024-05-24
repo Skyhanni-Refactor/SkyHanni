@@ -122,12 +122,12 @@ object EnigmaSoulWaypoints {
         for ((slot, stack) in chest.getAllItems()) {
             for (soul in trackedSouls) {
                 if (stack.displayName.removeColor().contains(soul)) {
-                    slot highlight config.colour.toChromaColour()
+                    slot.highlight(config.colour.toChromaColour())
                 }
             }
         }
         if (!adding) {
-            chest.inventorySlots[31] highlight config.colour.toChromaColour()
+            chest.inventorySlots[31].highlight(config.colour.toChromaColour())
         }
     }
 

@@ -126,9 +126,9 @@ object MayorAPI {
             rawMayorData = ConfigManager.gson.fromJson<MayorJson>(jsonObject)
             val data = rawMayorData ?: return@launch
             val map = mutableMapOf<Int, MayorCandidate>()
-            map put data.mayor.election.getPairs()
+            map.put(data.mayor.election.getPairs())
             data.current?.let {
-                map put data.current.getPairs()
+                map.put(data.current.getPairs())
             }
             candidates = map
             checkCurrentMayor()

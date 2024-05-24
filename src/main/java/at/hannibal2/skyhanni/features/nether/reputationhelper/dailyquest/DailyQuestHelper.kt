@@ -109,7 +109,7 @@ class DailyQuestHelper(val reputationHelper: CrimsonIsleReputationHelper) {
 
             for ((slot, stack) in chest.getUpperItems()) {
                 if (stack.name.contains(dojoQuest.dojoName)) {
-                    slot highlight LorenzColor.AQUA
+                    slot.highlight(LorenzColor.AQUA)
                 }
             }
         }

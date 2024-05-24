@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.MaxwellAPI
 import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
@@ -9,8 +10,6 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.StringUtils.createCommaSeparatedList
@@ -104,7 +103,7 @@ object StatsTuning {
             val lore = stack.getLore()
 
             if (lore.any { it == "§aCurrently selected!" }) {
-                slot highlight LorenzColor.GREEN
+                slot.highlight(LorenzColor.GREEN)
             }
         }
     }

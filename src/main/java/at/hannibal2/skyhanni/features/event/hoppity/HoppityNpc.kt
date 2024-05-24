@@ -57,7 +57,7 @@ object HoppityNpc {
         if (!inShop) return
         for (slot in InventoryUtils.getItemsInOpenChest()) {
             if (slot.slotIndex in slotsToHighlight) {
-                slot highlight LorenzColor.GREEN.addOpacity(200)
+                slot.highlight(LorenzColor.GREEN.addOpacity(200))
             }
         }
     }

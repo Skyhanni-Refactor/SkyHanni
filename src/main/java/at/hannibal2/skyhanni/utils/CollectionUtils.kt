@@ -45,7 +45,7 @@ object CollectionUtils {
 
     fun <T> List<T>.indexOfFirst(vararg args: T) = args.map { indexOf(it) }.firstOrNull { it != -1 }
 
-    infix fun <K, V> MutableMap<K, V>.put(pairs: Pair<K, V>) {
+    fun <K, V> MutableMap<K, V>.put(pairs: Pair<K, V>) {
         this[pairs.first] = pairs.second
     }
 

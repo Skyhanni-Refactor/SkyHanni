@@ -338,7 +338,7 @@ object ItemAbilityCooldown {
                 opacity = 80
                 if (!config.itemAbilityShowWhenReady) return
             }
-            event highlight color.addOpacity(opacity)
+            event.highlight(color.addOpacity(opacity))
         }
     }
 

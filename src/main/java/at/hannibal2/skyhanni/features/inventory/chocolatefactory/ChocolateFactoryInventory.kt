@@ -49,30 +49,30 @@ object ChocolateFactoryInventory {
             val currentUpdates = ChocolateFactoryAPI.factoryUpgrades
             currentUpdates.find { it.slotIndex == slotIndex }?.let { upgrade ->
                 if (upgrade.canAfford()) {
-                    slot highlight LorenzColor.GREEN.addOpacity(75)
+                    slot.highlight(LorenzColor.GREEN.addOpacity(75))
                 }
             }
             if (slotIndex == ChocolateFactoryAPI.bestAffordableSlot) {
-                slot highlight LorenzColor.GREEN.addOpacity(200)
+                slot.highlight(LorenzColor.GREEN.addOpacity(200))
             }
 
             if (slotIndex == ChocolateFactoryAPI.barnIndex && ChocolateFactoryBarnManager.barnFull) {
-                slot highlight LorenzColor.RED
+                slot.highlight(LorenzColor.RED)
             }
             if (slotIndex == ChocolateFactoryAPI.clickRabbitSlot) {
-                slot highlight LorenzColor.RED
+                slot.highlight(LorenzColor.RED)
             }
             if (slotIndex == ChocolateFactoryAPI.milestoneIndex) {
                 slot.stack?.getLore()?.matchFirst(unclaimedRewardsPattern) {
-                    slot highlight LorenzColor.RED
+                    slot.highlight(LorenzColor.RED)
                 }
             }
             if (slotIndex == ChocolateFactoryAPI.timeTowerIndex) {
                 if (ChocolateFactoryTimeTowerManager.timeTowerActive()) {
-                    slot highlight LorenzColor.LIGHT_PURPLE.addOpacity(200)
+                    slot.highlight(LorenzColor.LIGHT_PURPLE.addOpacity(200))
                 }
                 if (ChocolateFactoryTimeTowerManager.timeTowerFull()) {
-                    slot highlight LorenzColor.RED
+                    slot.highlight(LorenzColor.RED)
                 }
             }
         }

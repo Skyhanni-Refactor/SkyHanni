@@ -44,7 +44,7 @@ object RngMeterInventory {
             for (slot in InventoryUtils.getItemsInOpenChest()) {
                 val stack = slot.stack
                 if (stack.getLore().any { it.contains("You don't have an RNG drop") }) {
-                    slot highlight LorenzColor.RED
+                    slot.highlight(LorenzColor.RED)
                 }
             }
         }
@@ -53,7 +53,7 @@ object RngMeterInventory {
             for (slot in InventoryUtils.getItemsInOpenChest()) {
                 val stack = slot.stack
                 if (stack.getLore().any { it.contains("§a§lSELECTED") }) {
-                    slot highlight LorenzColor.YELLOW
+                    slot.highlight(LorenzColor.YELLOW)
                 }
             }
         }

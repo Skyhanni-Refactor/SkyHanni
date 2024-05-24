@@ -52,7 +52,7 @@ object PowerStoneGuideFeatures {
 
         event.gui.inventorySlots.inventorySlots
             .filter { missing.containsKey(it.slotNumber) }
-            .forEach { it highlight LorenzColor.RED }
+            .forEach { it.highlight(LorenzColor.RED) }
     }
 
     @HandleEvent

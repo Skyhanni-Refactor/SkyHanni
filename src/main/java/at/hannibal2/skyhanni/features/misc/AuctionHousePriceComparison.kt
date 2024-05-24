@@ -84,7 +84,7 @@ class AuctionHousePriceComparison {
         for (slot in InventoryUtils.getItemsInOpenChest()) {
             val diff = slotPriceMap[slot.slotIndex] ?: continue
             if (diff == 0L) {
-                slot highlight good
+                slot.highlight(good)
                 continue
             }
             val isGood = diff >= 0
@@ -98,7 +98,7 @@ class AuctionHousePriceComparison {
             } else {
                 getColorInBetween(bad, veryBad, percentage)
             }
-            slot highlight color
+            slot.highlight(color)
         }
     }
 

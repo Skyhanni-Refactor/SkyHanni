@@ -324,7 +324,7 @@ class DamageIndicatorManager {
     fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
         data = data.editCopy {
-            McWorld.getEntitiesOf<EntityLivingBase>().mapNotNull(::checkEntity).forEach { this put it }
+            McWorld.getEntitiesOf<EntityLivingBase>().mapNotNull(::checkEntity).forEach { this.put(it) }
         }
     }
 

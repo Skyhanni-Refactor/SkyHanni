@@ -89,7 +89,7 @@ object GardenComposterInventoryFeatures {
 
             for ((slot, stack) in chest.getUpperItems()) {
                 if (stack.getLore().any { it == "§eClick to upgrade!" }) {
-                    slot highlight LorenzColor.GOLD
+                    slot.highlight(LorenzColor.GOLD)
                 }
             }
         }

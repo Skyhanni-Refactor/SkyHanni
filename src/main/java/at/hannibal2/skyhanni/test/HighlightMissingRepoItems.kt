@@ -37,7 +37,7 @@ object HighlightMissingRepoItems {
             if (NEUItems.allInternalNames.contains(internalName)) continue
             if (NEUItems.ignoreItemsFilter.match(internalName.asString())) continue
 
-            slot highlight LorenzColor.RED
+            slot.highlight(LorenzColor.RED)
         }
     }
 }
