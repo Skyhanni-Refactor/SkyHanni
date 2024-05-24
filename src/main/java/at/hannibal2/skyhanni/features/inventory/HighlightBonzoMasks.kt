@@ -9,10 +9,16 @@ import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
+import at.hannibal2.skyhanni.utils.NEUInternalName
+import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.RenderUtils.interpolate
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.StringUtils.matches
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import java.awt.Color
 import kotlin.time.Duration
@@ -45,8 +51,8 @@ object HighlightBonzoMasks {
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         if (!config.depletedBonzosMasks) return
         for (slot in event.gui.inventorySlots.inventorySlots) {
-            val item = slot.stack ?: continue
-            val maskType = MaskType.getByInternalName(item.getInternalName()) ?: continue
+            val internalName = slot.stack?.getInternalName() ?: continue
+            val maskType = MaskType.getByInternalName(internalName) ?: continue
             val readyAt = maskTimers[maskType] ?: continue
 
             if (readyAt.isInFuture()) {
@@ -59,6 +65,7 @@ object HighlightBonzoMasks {
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
         val message = event.message.removeColor()
+        // TODO move pattern into enum
         if (bonzoMaskPattern.matches(message)) {
             maskTimers[MaskType.BONZO_MASK] = SimpleTimeMark.now() + MaskType.BONZO_MASK.cooldown
         } else if (spiritMaskPattern.matches(message)) {
@@ -88,4 +95,3 @@ object HighlightBonzoMasks {
         }
     }
 }
-

@@ -3,6 +3,10 @@ package at.hannibal2.skyhanni.features.garden.pests
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.garden.pests.PestFinderConfig.VisibilityType
 import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.events.GuiRenderEvent
+import at.hannibal2.skyhanni.events.IslandChangeEvent
+import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
+import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
 import at.hannibal2.skyhanni.events.garden.pests.PestUpdateEvent
 import at.hannibal2.skyhanni.events.inventory.ItemInHandChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
@@ -37,7 +41,6 @@ object PestFinder {
     private val config get() = PestAPI.config.pestFinder
 
     private var display = emptyList<Renderable>()
-    private var lastTimeVacuumHold = SimpleTimeMark.farPast()
 
     @HandleEvent
     fun onPestUpdate(event: PestUpdateEvent) {
@@ -112,7 +115,7 @@ object PestFinder {
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         if (!config.showPlotInWorld) return
-        if (config.onlyWithVacuum && !PestAPI.hasVacuumInHand() && (lastTimeVacuumHold.passedSince() > config.showBorderForSeconds.seconds)) return
+        if (config.onlyWithVacuum && !PestAPI.hasVacuumInHand() && (PestAPI.lastTimeVacuumHold.passedSince() > config.showBorderForSeconds.seconds)) return
 
         val playerLocation = event.exactPlayerEyeLocation()
         val visibility = config.visibilityType
@@ -165,6 +168,14 @@ object PestFinder {
         if (lastKeyPress.passedSince() < 2.seconds) return
         lastKeyPress = SimpleTimeMark.now()
 
+        teleportNearestInfestedPlot()
+    }
+
+    fun teleportNearestInfestedPlot() {
+        // need to check again for the command
+        if (!GardenAPI.inGarden()) {
+            ChatUtils.userError("This command only works while on the Garden!")
+        }
         val plot = PestAPI.getNearestInfestedPlot() ?: run {
             ChatUtils.userError("No infested plots detected to warp to!")
             return
@@ -176,14 +187,6 @@ object PestFinder {
         }
 
         plot.sendTeleportTo()
-    }
-
-    @HandleEvent
-    fun onItemInHandChange(event: ItemInHandChangeEvent) {
-        if (!isEnabled()) return
-        if (!config.showPlotInWorld) return
-        if (event.oldItem !in PestAPI.vacuumVariants) return
-        lastTimeVacuumHold = SimpleTimeMark.now()
     }
 
     fun isEnabled() = GardenAPI.inGarden() && (config.showDisplay || config.showPlotInWorld)

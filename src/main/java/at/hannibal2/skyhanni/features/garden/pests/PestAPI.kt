@@ -3,8 +3,15 @@ package at.hannibal2.skyhanni.features.garden.pests
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ScoreboardData
+import at.hannibal2.skyhanni.events.DebugDataCollectEvent
+import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.ItemInHandChangeEvent
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.ScoreboardChangeEvent
+import at.hannibal2.skyhanni.events.TabListUpdateEvent
 import at.hannibal2.skyhanni.events.garden.pests.PestSpawnEvent
 import at.hannibal2.skyhanni.events.garden.pests.PestUpdateEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
@@ -49,6 +56,7 @@ object PestAPI {
         }
 
     var lastPestKillTime = SimpleTimeMark.farPast()
+    var lastTimeVacuumHold = SimpleTimeMark.farPast()
 
     val vacuumVariants = listOf(
         SkyhanniItems.SKYMART_VACUUM(),
@@ -240,8 +248,16 @@ object PestAPI {
     @HandleEvent
     fun onWorldChange(event: WorldChangeEvent) {
         lastPestKillTime = SimpleTimeMark.farPast()
+        lastTimeVacuumHold = SimpleTimeMark.farPast()
         gardenJoinTime = SimpleTimeMark.now()
         firstScoreboardCheck = false
+    }
+
+    @SubscribeEvent
+    fun onItemInHandChange(event: ItemInHandChangeEvent) {
+        if (!GardenAPI.inGarden()) return
+        if (event.oldItem !in vacuumVariants) return
+        lastTimeVacuumHold = SimpleTimeMark.now()
     }
 
     private fun getPlotsWithAccuratePests() = GardenPlotAPI.plots.filter { it.pests > 0 && !it.isPestCountInaccurate }

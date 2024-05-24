@@ -29,7 +29,9 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderSingleLineWithItems
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
-import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
+import at.hannibal2.skyhanni.utils.SkyBlockTime
+import at.hannibal2.skyhanni.utils.SoundUtils
+import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
@@ -66,6 +68,13 @@ object GardenNextJacobContest {
         "day",
         "§aDay (?<day>.*)"
     )
+
+    /**
+     * REGEX-TEST: Early Spring, Year 351
+     * REGEX-TEST: Late Summer, Year 351
+     * REGEX-TEST: Autumn, Year 351
+     */
+
     val monthPattern by patternGroup.pattern(
         "month",
         "(?<month>(?:\\w+ )?(?:Summer|Spring|Winter|Autumn)), Year (?<year>\\d+)"

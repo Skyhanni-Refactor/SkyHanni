@@ -82,6 +82,7 @@ object JacobFarmingContestsInventory {
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onSlotClick(event: SlotClickEvent) {
+        // TODO add tooltip line "click + press <keybind> to open on elite website
         if (!config.openOnElite.isKeyHeld()) return
 
         val slot = event.slot ?: return

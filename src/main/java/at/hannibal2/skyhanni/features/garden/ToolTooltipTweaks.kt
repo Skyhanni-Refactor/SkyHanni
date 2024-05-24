@@ -140,11 +140,6 @@ object ToolTooltipTweaks {
                 }
             }
         }
-
-        // Fixing a hypixel bug. TODO remove once hypixel fixes it. use disabled features repo maybe?
-        if (internalName.contains("LOTUS")) {
-            event.toolTip.replaceAll { it.replace("Kills:", "Visitors:") }
-        }
     }
 
     private fun Number.formatStat() = statFormatter.format(this)

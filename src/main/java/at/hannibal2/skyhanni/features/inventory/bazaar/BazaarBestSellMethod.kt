@@ -8,6 +8,12 @@ import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.events.skyblock.BazaarOpenedProductEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.getBazaarDataOrError
+import at.hannibal2.skyhanni.events.BazaarOpenedProductEvent
+import at.hannibal2.skyhanni.events.GuiContainerEvent
+import at.hannibal2.skyhanni.events.GuiRenderEvent
+import at.hannibal2.skyhanni.events.InventoryCloseEvent
+import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.Companion.getBazaarDataOrError
+import at.hannibal2.skyhanni.utils.InventoryUtils.getAmountInInventory
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.NEUInternalName
@@ -15,6 +21,8 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.item.ItemStack
+import net.minecraftforge.fml.common.eventhandler.EventPriority
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object BazaarBestSellMethod {
     private val config get() = SkyHanniMod.feature.inventory.bazaar

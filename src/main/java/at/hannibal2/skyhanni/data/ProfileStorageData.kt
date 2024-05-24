@@ -5,6 +5,12 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.SackData
 import at.hannibal2.skyhanni.config.storage.PlayerSpecificStorage
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
+import at.hannibal2.skyhanni.events.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.HypixelJoinEvent
+import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.events.ProfileJoinEvent
+import at.hannibal2.skyhanni.events.TabListUpdateEvent
+import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
@@ -35,7 +41,7 @@ object ProfileStorageData {
         val playerSpecific = playerSpecific
         val sackPlayers = sackPlayers
         if (playerSpecific == null) {
-            ErrorManager.skyHanniError("playerSpecific is null in ProfileJoinEvent! If you have a mod that auto-joins SkyBlock, disable it!")
+            ErrorManager.skyHanniError("playerSpecific is null in ProfileJoinEvent!  If you have a mod that auto-joins SkyBlock, disable it!")
         }
         if (sackPlayers == null) {
             ErrorManager.skyHanniError("sackPlayers is null in ProfileJoinEvent!")

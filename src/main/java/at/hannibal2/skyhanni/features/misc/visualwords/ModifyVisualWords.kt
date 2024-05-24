@@ -28,28 +28,24 @@ object ModifyVisualWords {
             modifiedWords.addAll(SkyHanniMod.visualWordsData.modifiedWords)
         }
 
-        val cachedResult = textCache.getOrNull(originalText)
-        if (cachedResult != null) {
-            return cachedResult
-        }
+        return textCache.getOrPut(originalText) {
+            if (originalText.startsWith("§§")) {
+                modifiedText = modifiedText.removePrefix("§§")
+            } else {
+                for (modifiedWord in modifiedWords) {
+                    if (!modifiedWord.enabled) continue
+                    val phrase = modifiedWord.phrase.convertToFormatted()
 
-        if (originalText.startsWith("§§")) {
-            modifiedText = modifiedText.removePrefix("§§")
-        } else {
-            for (modifiedWord in modifiedWords) {
-                if (!modifiedWord.enabled) continue
-                val phrase = modifiedWord.phrase.convertToFormatted()
+                    if (phrase.isEmpty()) continue
 
-                if (phrase.isEmpty()) continue
-
-                modifiedText = modifiedText.replace(
-                    phrase, modifiedWord.replacement.convertToFormatted(), modifiedWord.isCaseSensitive()
-                )
+                    modifiedText = modifiedText.replace(
+                        phrase, modifiedWord.replacement.convertToFormatted(), modifiedWord.isCaseSensitive()
+                    )
+                }
             }
-        }
 
-        textCache.put(originalText, modifiedText)
-        return modifiedText
+            modifiedText
+        }
     }
 
     @HandleEvent
