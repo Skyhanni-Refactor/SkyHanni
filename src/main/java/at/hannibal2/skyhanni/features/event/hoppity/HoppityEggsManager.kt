@@ -73,10 +73,8 @@ object HoppityEggsManager {
         lastNote = null
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         hoppityEventNotOn.matchMatcher(event.message) {
             val currentYear = SkyBlockTime.now().year
 

@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.misc.items
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ItemsJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.neu.NeuReforgeStoneJson
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
@@ -63,9 +62,8 @@ object EstimatedItemValue {
         bookBundleAmount = data.bookBundleAmount
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: ItemHoverEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
 
         if (Minecraft.getMinecraft().currentScreen is GuiProfileViewer) {
@@ -97,13 +95,12 @@ object EstimatedItemValue {
         config.itemPriceDataPos.renderStringsAndItems(display, posLabel = "Estimated Item Value")
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         tryRendering()
     }
 
     private fun checkCurrentlyVisible(): Boolean {
-        if (!SkyBlockAPI.isConnected) return false
         if (!config.enabled) return false
         if (!config.hotkey.isKeyHeld() && !config.alwaysEnabled) return false
         if (System.currentTimeMillis() > lastToolTipTime + 200) return false
@@ -125,9 +122,8 @@ object EstimatedItemValue {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderItemTooltip(event: RenderItemTooltipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
 
         updateItem(event.stack)

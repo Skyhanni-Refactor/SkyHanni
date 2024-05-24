@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.garden.composter
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.garden.composter.ComposterConfig
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacksOrNull
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenJson
@@ -111,18 +112,16 @@ object ComposterOverlay {
         update()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTick(event: ClientTickEvent) {
-        if (!GardenAPI.inGarden()) return
         if (inComposterUpgrades && extraComposterUpgrade != null && System.currentTimeMillis() > lastHovered + 200) {
             extraComposterUpgrade = null
             update()
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.overlay) return
         inComposter = event.inventoryName == "Composter"
         inComposterUpgrades = event.inventoryName == "Composter Upgrades"

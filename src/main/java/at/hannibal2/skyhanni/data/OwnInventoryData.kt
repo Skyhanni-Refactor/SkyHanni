@@ -38,10 +38,8 @@ object OwnInventoryData {
         "§aMoved §r§e\\d* (?<name>.*)§r§a from your Sacks to your inventory."
     )
 
-    @HandleEvent(priority = HandleEvent.LOW, receiveCancelled = true)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.LOW, receiveCancelled = true)
     fun onItemPickupReceivePacket(event: ReceivePacketEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val packet = event.packet
         if (packet is S2FPacketSetSlot || packet is S0DPacketCollectItem) {
             dirty = true
@@ -58,9 +56,8 @@ object OwnInventoryData {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onClickEntity(event: SendPacketEvent) {
-        if (!SkyBlockAPI.isConnected) return
         val packet = event.packet
 
         if (packet is C0EPacketClickWindow) {
@@ -68,9 +65,8 @@ object OwnInventoryData {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (itemAmounts.isEmpty()) {
             itemAmounts = getCurrentItems()
         }

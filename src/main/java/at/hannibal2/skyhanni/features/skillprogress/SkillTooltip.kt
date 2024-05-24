@@ -21,9 +21,8 @@ object SkillTooltip {
     private val overflowConfig get() = SkillProgress.config.overflowConfig
     private val customGoalConfig get() = SkillProgress.config.customGoalConfig
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         val inventoryName = InventoryUtils.openInventoryName()
         val stack = event.itemStack
         if (inventoryName == "Your Skills" && stack.getLore().any { it.contains("Click to view!") }) {

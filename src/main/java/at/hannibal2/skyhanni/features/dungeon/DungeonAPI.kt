@@ -210,7 +210,7 @@ object DungeonAPI {
         DungeonBlessings.reset()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
         val floor = dungeonFloor ?: return
         if (event.message == "§e[NPC] §bMort§f: §rHere, I found this map when I first entered the dungeon.") {
@@ -221,7 +221,6 @@ object DungeonAPI {
             isUniqueClass = true
         }
 
-        if (!SkyBlockAPI.isConnected) return
         killPattern.matchMatcher(event.message.removeColor()) {
             val bossCollections = bossStorage ?: return
             val boss = DungeonFloor.byBossName(group("boss"))

@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.event.diana
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
@@ -44,10 +43,8 @@ object BurrowWarpHelper {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         if (event.message == "§cYou haven't unlocked this fast travel destination!") {
             if (lastWarpTime.passedSince() < 1.seconds) {
                 lastWarp?.let {

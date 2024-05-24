@@ -26,9 +26,8 @@ object ShiftClickNPCSell {
 
     fun isEnabled() = SkyBlockAPI.isConnected && config
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (event.inventoryItems.isEmpty()) return
         val item = event.inventoryItems[event.inventoryItems.keys.last() + sellSlot] ?: return
 

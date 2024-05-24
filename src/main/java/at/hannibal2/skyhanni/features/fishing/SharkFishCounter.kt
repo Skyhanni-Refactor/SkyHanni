@@ -36,9 +36,8 @@ object SharkFishCounter {
         else -> 0
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.fishing.sharkFishCounter) return
 
         if (event.isMod(10)) {
@@ -75,9 +74,8 @@ object SharkFishCounter {
 
     private fun isWaterFishingRod() = FishingAPI.isFishing() && !FishingAPI.holdingLavaRod
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniMod.feature.fishing.sharkFishCounter) return
         if (!hasWaterRodInHand) return
 

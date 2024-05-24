@@ -87,9 +87,8 @@ object ArmorDropTracker {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onRenderOverlay(event: GuiRenderEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.enabled) return
         if (!hasArmor) return
         if (!GardenAPI.hasFarmingToolInHand()) return
@@ -104,9 +103,8 @@ object ArmorDropTracker {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.enabled) return
 
         checkArmor()

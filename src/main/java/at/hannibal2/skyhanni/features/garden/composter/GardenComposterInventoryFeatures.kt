@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.composter
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
@@ -22,9 +22,8 @@ object GardenComposterInventoryFeatures {
 
     private val config get() = GardenAPI.config.composters
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.upgradePrice) return
 
         if (InventoryUtils.openInventoryName() != "Composter Upgrades") return
@@ -77,9 +76,8 @@ object GardenComposterInventoryFeatures {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.highlightUpgrade) return
 
         if (InventoryUtils.openInventoryName() == "Composter Upgrades") {

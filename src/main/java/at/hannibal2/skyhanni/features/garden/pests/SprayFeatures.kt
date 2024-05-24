@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.garden.pests
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
@@ -66,9 +67,8 @@ object SprayFeatures {
         config.position.renderString(display, posLabel = "Pest Spray Selector")
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.drawPlotsBorderWhenInHands) return
         if (!InventoryUtils.itemInHandId.equals("SPRAYONATOR")) return
         val plot = GardenPlotAPI.getCurrentPlot() ?: return

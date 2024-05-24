@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.entity.EntityMoveEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
@@ -30,9 +29,8 @@ object EntityMovementData {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
-        if (!SkyBlockAPI.isConnected) return
         addToTrack(Minecraft.getMinecraft().thePlayer)
 
         for (entity in entityLocation.keys) {
@@ -48,9 +46,8 @@ object EntityMovementData {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!warpingPattern.matches(event.message)) return
         DelayedRun.runNextTick {
             WarpEvent().post()

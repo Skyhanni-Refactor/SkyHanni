@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.features.garden.visitor
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.garden.visitor.VisitorConfig
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorOpenEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorRenderEvent
@@ -63,10 +64,8 @@ object VisitorListener {
         lastClickedNpc = entityId
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTabListUpdate(event: TabListUpdateEvent) {
-        if (!GardenAPI.inGarden()) return
-
         val hasVisitorInfo = event.tabList.any { VisitorAPI.visitorCountPattern.matches(it) }
         if (!hasVisitorInfo) return
 
@@ -88,9 +87,8 @@ object VisitorListener {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!GardenAPI.inGarden()) return
         val npcItem = event.inventoryItems[INFO_SLOT] ?: return
         val lore = npcItem.getLore()
         if (!VisitorAPI.isVisitorInfo(lore)) return
@@ -138,9 +136,8 @@ object VisitorListener {
         GardenVisitorFeatures.onTooltip(visitor, event.itemStack, event.toolTip)
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
-        if (!GardenAPI.inGarden()) return
         if (!GardenAPI.onBarnPlot) return
         if (config.highlightStatus != VisitorConfig.HighlightMode.NAME && config.highlightStatus != VisitorConfig.HighlightMode.BOTH) return
 
@@ -150,9 +147,8 @@ object VisitorListener {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!GardenAPI.onBarnPlot) return
         if (config.highlightStatus != VisitorConfig.HighlightMode.NAME && config.highlightStatus != VisitorConfig.HighlightMode.BOTH) return
 

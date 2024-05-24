@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.data
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.model.ComposterUpgrade
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.composter.ComposterAPI
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimalIfNecessary
@@ -11,9 +10,8 @@ import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 
 object GardenComposterUpgradesData {
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!GardenAPI.inGarden()) return
         if (event.inventoryName != "Composter Upgrades") return
         for (item in event.inventoryItems.values) {
             ComposterUpgrade.regex.matchMatcher(item.name) {

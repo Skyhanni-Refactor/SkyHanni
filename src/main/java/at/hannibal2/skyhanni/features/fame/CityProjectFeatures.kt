@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.fame
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
@@ -91,10 +90,8 @@ object CityProjectFeatures {
         inInventory = false
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         inInventory = false
         if (!inCityProject(event)) return
         inInventory = true
@@ -193,18 +190,16 @@ object CityProjectFeatures {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.showMaterials) return
         if (!inInventory) return
 
         config.pos.renderStringsAndItems(display, posLabel = "City Project Materials")
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.showReady) return
         if (!inInventory) return
 

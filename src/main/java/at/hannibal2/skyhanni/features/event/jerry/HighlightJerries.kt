@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.event.jerry
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
@@ -25,9 +24,8 @@ object HighlightJerries {
         LorenzColor.LIGHT_PURPLE
     )
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onEntityHealthUpdate(event: EntityMaxHealthUpdateEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.highlightJerries) return
 
         val entity = event.entity

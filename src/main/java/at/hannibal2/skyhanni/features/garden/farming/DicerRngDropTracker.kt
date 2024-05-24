@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
@@ -90,9 +91,8 @@ object DicerRngDropTracker {
         PRAY_TO_RNGESUS("§5§lPRAY TO RNGESUS DROP"),
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.hideChat && !config.display) return
 
         val message = event.message

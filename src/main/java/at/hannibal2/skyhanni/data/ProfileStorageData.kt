@@ -47,10 +47,8 @@ object ProfileStorageData {
         ConfigLoadEvent().post()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTabListUpdate(event: TabListUpdateEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         event.tabList.matchFirst(UtilsPatterns.tabListProfilePattern) {
             noTabListTime = SimpleTimeMark.farPast()
             return
@@ -59,9 +57,8 @@ object ProfileStorageData {
         noTabListTime = SimpleTimeMark.now()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (noTabListTime == SimpleTimeMark.farPast()) return
 
         if (noTabListTime.passedSince() > 3.seconds) {

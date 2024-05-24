@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyClicked
@@ -14,9 +13,8 @@ object ChocolateFactoryKeybinds {
     private val config get() = ChocolateFactoryAPI.config.keybinds
     private var lastClick = SimpleTimeMark.farPast()
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onKeyPress(event: GuiKeyPressEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
         if (!ChocolateFactoryAPI.inChocolateFactory) return
 
@@ -41,9 +39,8 @@ object ChocolateFactoryKeybinds {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSlotClick(event: SlotClickEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.enabled) return
         if (!ChocolateFactoryAPI.inChocolateFactory) return
 

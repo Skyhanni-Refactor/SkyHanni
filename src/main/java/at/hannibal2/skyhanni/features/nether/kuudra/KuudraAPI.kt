@@ -30,9 +30,8 @@ object KuudraAPI {
 
     fun inKuudra() = kuudraTier != null
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (kuudraTier != null) return
         for (line in ScoreboardData.sidebarLinesFormatted) {
             tierPattern.matchMatcher(line) {

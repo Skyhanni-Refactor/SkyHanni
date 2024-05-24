@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.farming.lane
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.garden.farming.FarmingLaneSwitchEvent
 import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
@@ -58,9 +59,8 @@ object FarmingLaneFeatures {
         display = emptyList()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTick(event: ClientTickEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.distanceDisplay && !config.laneSwitchNotification.enabled) return
 
         if (!calculateDistance()) return
@@ -188,9 +188,8 @@ object FarmingLaneFeatures {
         return MovementState.NORMAL
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.cornerWaypoints) return
 
         val lane = FarmingLaneAPI.currentLane ?: return
@@ -207,9 +206,8 @@ object FarmingLaneFeatures {
 
     private fun LorenzVec.capAtBuildHeight(): LorenzVec = if (y > 76) copy(y = 76.0) else this
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.distanceDisplay) return
 
         config.distanceDisplayPosition.renderStrings(display, posLabel = "Lane Display")

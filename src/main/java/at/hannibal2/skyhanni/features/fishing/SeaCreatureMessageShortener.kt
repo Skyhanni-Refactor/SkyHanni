@@ -12,8 +12,6 @@ object SeaCreatureMessageShortener {
 
     @HandleEvent
     fun onSeaCreatureFish(event: SeaCreatureFishEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         val original = event.chatEvent.chatComponent.formattedText
         var edited = original
 

@@ -99,10 +99,8 @@ object SkillExperience {
         skillExp.clear()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onActionBarUpdate(event: ActionBarUpdateEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         actionBarPattern.matchMatcher(event.actionBar) {
             val skill = group("skill").lowercase()
             val overflow = group("overflow").formatLong()

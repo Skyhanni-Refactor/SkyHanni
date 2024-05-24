@@ -25,9 +25,8 @@ object ServerRestartTitle {
         "§cServer closing.*"
     )
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.serverRestartTitle) return
 
         ScoreboardData.sidebarLinesFormatted.matchFirst(restartingPattern) {

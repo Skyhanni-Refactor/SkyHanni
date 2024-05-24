@@ -52,9 +52,8 @@ object RareDropMessages {
 
     private val config get() = SkyHanniMod.feature.chat.petRarityDropMessage
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config) return
 
         patterns.matchMatchers(event.message) {

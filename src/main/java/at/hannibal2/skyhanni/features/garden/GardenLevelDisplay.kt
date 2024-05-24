@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
@@ -72,10 +73,8 @@ object GardenLevelDisplay {
         update()
     }
 
-    @HandleEvent(receiveCancelled = true)
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN, receiveCancelled = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!GardenAPI.inGarden()) return
-
         visitorRewardPattern.matchMatcher(event.message) {
             addExp(group("exp").toInt())
         }
@@ -104,9 +103,8 @@ object GardenLevelDisplay {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!GardenAPI.inGarden()) return
         val item = when (event.inventoryName) {
             "Desk" -> event.inventoryItems[4] ?: return
             "SkyBlock Menu" -> event.inventoryItems[10] ?: return
@@ -138,9 +136,8 @@ object GardenLevelDisplay {
         update()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.overflow.get()) return
         val slotIndex = event.slot.slotIndex
         val name = InventoryUtils.openInventoryName()

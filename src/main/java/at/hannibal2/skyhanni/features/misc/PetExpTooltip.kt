@@ -26,9 +26,8 @@ object PetExpTooltip {
     private const val LEVEL_100_LEGENDARY = 25_353_230
     private const val LEVEL_200_LEGENDARY = 210_255_385
 
-    @HandleEvent(priority = HandleEvent.LOWEST)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.LOWEST)
     fun onItemTooltipLow(event: SkyHanniToolTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.petDisplay) return
         if (!KeyboardManager.isShiftKeyDown() && !config.showAlways) return
 

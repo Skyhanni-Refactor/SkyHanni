@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.inventory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.GardenCropMilestones
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.events.garden.CropMilestoneUpdateEvent
@@ -53,9 +52,8 @@ object GardenCropMilestoneInventory {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.tooltipTweak.cropMilestoneTotalProgress) return
 
         val crop = GardenCropMilestones.getCropTypeByLore(event.itemStack) ?: return

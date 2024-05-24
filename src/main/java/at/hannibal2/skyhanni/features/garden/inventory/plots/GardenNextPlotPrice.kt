@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.inventory.plots
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -13,9 +14,8 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 
 object GardenNextPlotPrice {
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!GardenAPI.config.plotPrice) return
 
         if (InventoryUtils.openInventoryName() != "Configure Plots") return

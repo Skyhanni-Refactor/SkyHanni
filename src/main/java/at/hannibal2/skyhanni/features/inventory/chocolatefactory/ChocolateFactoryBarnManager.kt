@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.features.event.hoppity.HoppityEggsManager
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -39,10 +38,8 @@ object ChocolateFactoryBarnManager {
     var barnFull = false
     private var lastBarnFullWarning = SimpleTimeMark.farPast()
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         newRabbitPattern.matchMatcher(event.message) {
             val profileStorage = profileStorage ?: return
             profileStorage.currentRabbits += 1

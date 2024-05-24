@@ -29,9 +29,8 @@ object PocketSackInASackDisplay {
         event.drawSlotText(x, y, stackTip, .9f)
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: SkyHanniToolTipEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.replaceLore) return
         val itemStack = event.itemStack
         val applied = itemStack.getAppliedPocketSackInASack() ?: return

@@ -27,10 +27,8 @@ object GardenCropUpgrades {
 
     private val cropUpgrades: MutableMap<CropType, Int>? get() = GardenAPI.storage?.cropUpgrades
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!GardenAPI.inGarden()) return
-
         chatUpgradePattern.matchMatcher(event.message) {
             val crop = CropType.getByNameOrNull(group("crop"))
             val level = group("tier").formatInt()
@@ -38,9 +36,8 @@ object GardenCropUpgrades {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!GardenAPI.inGarden()) return
         if (event.inventoryName != "Crop Upgrades") return
 
         for (item in event.inventoryItems.values) {

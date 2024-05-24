@@ -178,15 +178,10 @@ object ItemAbilityCooldown {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onItemClick(event: ItemClickEvent) {
         if (AshfangFreezeCooldown.iscurrentlyFrozen()) return
-        handleItemClick(event.itemInHand)
-    }
-
-    private fun handleItemClick(itemInHand: ItemStack?) {
-        if (!SkyBlockAPI.isConnected) return
-        itemInHand?.getInternalName()?.run {
+        event.itemInHand?.getInternalName()?.run {
             ItemAbility.getByInternalName(this)?.setItemClick()
         }
     }

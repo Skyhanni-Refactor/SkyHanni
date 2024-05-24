@@ -68,9 +68,8 @@ object VerminTracker {
         SILVERFISH(3, "§aSilverfish", silverfishPattern),
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.THE_RIFT)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!RiftAPI.inRift()) return
         hasVacuum = McPlayer.has(SkyhanniItems.TURBOMAX_VACUUM(), true)
     }
 

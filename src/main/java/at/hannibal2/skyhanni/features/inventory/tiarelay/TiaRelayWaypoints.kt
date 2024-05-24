@@ -23,9 +23,8 @@ object TiaRelayWaypoints {
         Relay.entries.forEach { it.chatPattern }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!config.nextWaypoint) return
 
         val message = event.message
@@ -42,10 +41,8 @@ object TiaRelayWaypoints {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!SkyBlockAPI.isConnected) return
-
         if (config.allWaypoints) {
             for (relay in Relay.entries) {
                 if (relay.island == LorenzUtils.skyBlockIsland) {

@@ -36,9 +36,8 @@ object ItemTipHelper {
         }
     }
 
-    @HandleEvent(priority = HandleEvent.HIGHEST)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGHEST)
     fun onRenderInventoryItemOverlayPost(event: DrawScreenAfterEvent) {
-        if (!SkyBlockAPI.isConnected) return
         if (!SkyHanniDebugsAndTests.globalRender) return
 
         val gui = Minecraft.getMinecraft().currentScreen

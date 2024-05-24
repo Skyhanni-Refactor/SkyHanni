@@ -66,9 +66,8 @@ object FishingAPI {
         resetBobber()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
-        if (!SkyBlockAPI.isConnected) return
         val bobber = bobber ?: return
         if (bobber.isDead) {
             resetBobber()
