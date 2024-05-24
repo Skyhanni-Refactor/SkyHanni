@@ -90,5 +90,6 @@ object FishingBaitWarnings {
         ChatUtils.chat("You're not using any fishing baits!")
     }
 
+    //TODO see if this can actually be used without breaking stuff
     private fun isEnabled() = SkyBlockAPI.isConnected && FishingAPI.isFishing() && !KuudraAPI.inKuudra
 }

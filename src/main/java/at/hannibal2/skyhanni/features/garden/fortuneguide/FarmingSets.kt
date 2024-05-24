@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.garden.fortuneguide
 
+//TODO this whole file doesn't seem to be used?
 enum class FarmingSets(
     val helmetIncrease: Double,
     val chestplateIncrease: Double,

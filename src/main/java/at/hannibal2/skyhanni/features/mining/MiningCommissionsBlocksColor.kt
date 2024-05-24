@@ -90,7 +90,6 @@ object MiningCommissionsBlocksColor {
     private var oldSneakState = false
 
     private var dirty = false
-    private var forceDirty = false
 
     private var inDwarvenMines = false
     private var inCrystalHollows = false

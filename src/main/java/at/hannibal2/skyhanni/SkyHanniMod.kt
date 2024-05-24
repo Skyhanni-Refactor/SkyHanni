@@ -137,6 +137,7 @@ import at.hannibal2.skyhanni.features.dungeon.TerracottaPhase
 import at.hannibal2.skyhanni.features.event.UniqueGiftingOpportunitiesFeatures
 import at.hannibal2.skyhanni.features.event.diana.AllBurrowsList
 import at.hannibal2.skyhanni.features.event.diana.BurrowWarpHelper
+import at.hannibal2.skyhanni.features.event.diana.DianaFixChat
 import at.hannibal2.skyhanni.features.event.diana.DianaProfitTracker
 import at.hannibal2.skyhanni.features.event.diana.GriffinBurrowHelper
 import at.hannibal2.skyhanni.features.event.diana.GriffinBurrowParticleFinder
@@ -685,6 +686,7 @@ class SkyHanniMod {
         loadModule(DamageIndicatorManager)
         loadModule(DanceRoomHelper)
         loadModule(DeepCavernsGuide)
+        loadModule(DianaFixChat)
         loadModule(DianaProfitTracker)
         loadModule(DicerRngDropTracker)
         loadModule(DiscordRPCManager)

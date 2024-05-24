@@ -25,11 +25,11 @@ object MobUtils {
         McWorld.getEntitiesNear<EntityArmorStand>(entity, range)
 
     fun getClosedArmorStand(entity: Entity, range: Double) =
-        getArmorStandByRangeAll(entity, range).sortedBy { it.distanceTo(entity) }.firstOrNull()
+        getArmorStandByRangeAll(entity, range).minByOrNull { it.distanceTo(entity) }
 
     fun getClosedArmorStandWithName(entity: Entity, range: Double, name: String) =
         getArmorStandByRangeAll(entity, range).filter { it.cleanName().startsWith(name) }
-            .sortedBy { it.distanceTo(entity) }.firstOrNull()
+            .minByOrNull { it.distanceTo(entity) }
 
     fun EntityArmorStand.isDefaultValue() = defaultArmorStandName.matches(this.name)
 

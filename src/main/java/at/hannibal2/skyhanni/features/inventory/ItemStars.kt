@@ -29,7 +29,7 @@ object ItemStars {
     @HandleEvent(priority = HandleEvent.LOW)
     fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!isEnabled()) return
-        val stack = event.itemStack ?: return
+        val stack = event.itemStack
         if (stack.stackSize != 1) return
 
         val itemName = stack.name

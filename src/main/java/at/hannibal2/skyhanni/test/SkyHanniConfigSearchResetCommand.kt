@@ -28,7 +28,7 @@ object SkyHanniConfigSearchResetCommand {
         lastCommand = args
     }
 
-    private suspend fun runCommand(args: Array<String>): String {
+    private fun runCommand(args: Array<String>): String {
         if (args.isEmpty()) {
             return "§cThis is a powerful config-edit command, only use it if you know what you are doing!"
         }

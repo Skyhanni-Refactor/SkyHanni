@@ -13,7 +13,8 @@ internal object RenderableUtils {
         buildList {
             add(0)
             while (true) {
-                buffer += content.map { it.getOrNull(index) }.takeIf { it.any { it != null } }?.maxOf {
+                buffer += content.map { it.getOrNull(index) }.takeIf { it.any { renderable -> renderable != null } }
+                    ?.maxOf {
                     it?.width ?: 0
                 }?.let { it + xPadding } ?: break
                 add(buffer)

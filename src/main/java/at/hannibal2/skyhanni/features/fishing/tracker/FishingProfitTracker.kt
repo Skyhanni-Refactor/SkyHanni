@@ -35,8 +35,6 @@ import com.google.gson.annotations.Expose
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-typealias CategoryName = String
-
 object FishingProfitTracker {
 
     val config get() = SkyHanniMod.feature.fishing.fishingProfitTracker
@@ -90,10 +88,8 @@ object FishingProfitTracker {
         var totalCatchAmount = 0L
     }
 
-    private val ItemTrackerData.TrackedItem.timesCaught get() = timesGained
-
-    private val nameAll: CategoryName = "All"
-    private var currentCategory: CategoryName = nameAll
+    private const val NAME_ALL: String = "All"
+    private var currentCategory: String = NAME_ALL
 
     private var itemCategories = mapOf<String, List<NEUInternalName>>()
 
@@ -102,9 +98,9 @@ object FishingProfitTracker {
         itemCategories = event.getConstant<FishingProfitItemsJson>("FishingProfitItems").categories
     }
 
-    private fun getCurrentCategories(data: Data): Map<CategoryName, Int> {
-        val map = mutableMapOf<CategoryName, Int>()
-        map[nameAll] = data.items.size
+    private fun getCurrentCategories(data: Data): Map<String, Int> {
+        val map = mutableMapOf<String, Int>()
+        map[NAME_ALL] = data.items.size
         for ((name, items) in itemCategories) {
             val amount = items.count { it in data.items }
             if (amount > 0) {
@@ -139,7 +135,7 @@ object FishingProfitTracker {
         checkMissingItems(data)
         val list = amounts.keys.toList()
         if (currentCategory !in list) {
-            currentCategory = nameAll
+            currentCategory = NAME_ALL
         }
 
         if (tracker.isInventoryOpen()) {
@@ -154,7 +150,7 @@ object FishingProfitTracker {
             )
         }
 
-        val filter: (NEUInternalName) -> Boolean = if (currentCategory == nameAll) {
+        val filter: (NEUInternalName) -> Boolean = if (currentCategory == NAME_ALL) {
             { true }
         } else {
             val items = itemCategories[currentCategory]!!

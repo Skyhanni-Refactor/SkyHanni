@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.slayer
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SlayerProfitTrackerItemsJson
@@ -15,8 +16,6 @@ import at.hannibal2.skyhanni.events.slayer.SlayerQuestCompleteEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
@@ -80,10 +79,8 @@ object SlayerProfitTracker {
         }
     }
 
-    private val ItemTrackerData.TrackedItem.timesDropped get() = timesGained
-
     private fun addSlayerCosts(price: Double) {
-        require(price < 0) { "slayer costs can not be positve" }
+        require(price < 0) { "slayer costs can not be positive" }
         getTracker()?.modify {
             it.slayerSpawnCost += price.toInt()
         }
@@ -194,17 +191,6 @@ object SlayerProfitTracker {
         addAsSingletonList(tracker.addTotalProfit(profit, data.slayerCompletedCount, "boss"))
 
         tracker.addPriceFromButton(this)
-    }
-
-    val coinFormat: (ItemTrackerData.TrackedItem) -> Pair<String, List<String>> = { item ->
-        val mobKillCoinsFormat = NumberUtil.format(item.totalAmount)
-        val text = " §6Mob kill coins§7: §6$mobKillCoinsFormat"
-        val lore = listOf(
-            "§7Killing mobs gives you coins (more with scavenger)",
-            "§7You got §e$mobKillCoinsFormat §7coins in total this way"
-        )
-
-        text to lore
     }
 
     @HandleEvent

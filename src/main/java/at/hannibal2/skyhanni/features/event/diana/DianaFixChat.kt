@@ -13,7 +13,7 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class DianaFixChat {
+object DianaFixChat {
 
     private var hasSetParticleQuality = false
     private var hasSetToggleMusic = false
@@ -34,7 +34,7 @@ class DianaFixChat {
             lastErrorTime = SimpleTimeMark.farPast()
             return
         }
-        // particles dont work if a valid target point is close
+        // particles don't work if a valid target point is close
         if (GriffinBurrowHelper.targetLocation != null) return
         val spadeUse = lastSpadeUse.passedSince()
         if (spadeUse <= 3.seconds) return

@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.item.ItemHoverEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -11,18 +11,18 @@ import net.minecraft.item.ItemStack
 
 // Please use LorenzToolTipEvent over ItemTooltipEvent if no special EventPriority is necessary
 object ToolTipData {
-    fun getTooltip(stack: ItemStack, toolTip: MutableList<String>): List<String> {
+    fun getTooltip(stack: ItemStack, toolTip: MutableList<String>) {
         onHover(stack, toolTip)
-        return onTooltip(toolTip)
+        onTooltip(toolTip)
     }
 
     private fun onHover(stack: ItemStack, toolTip: MutableList<String>) {
         ItemHoverEvent(stack, toolTip).post()
     }
 
-    fun onTooltip(toolTip: MutableList<String>): List<String> {
-        val slot = lastSlot ?: return toolTip
-        val itemStack = slot.stack ?: return toolTip
+    fun onTooltip(toolTip: MutableList<String>) {
+        val slot = lastSlot ?: return
+        val itemStack = slot.stack ?: return
         try {
             if (SkyHanniToolTipEvent(slot, itemStack, toolTip).post()) {
                 toolTip.clear()
@@ -40,7 +40,6 @@ object ToolTipData {
                 "lore" to itemStack.getLore(),
             )
         }
-        return toolTip
     }
 
     var lastSlot: Slot? = null

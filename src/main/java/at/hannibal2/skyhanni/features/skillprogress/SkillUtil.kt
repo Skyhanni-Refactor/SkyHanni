@@ -10,7 +10,7 @@ import com.google.common.base.Splitter
 
 object SkillUtil {
 
-    val SPACE_SPLITTER = Splitter.on("  ").omitEmptyStrings().trimResults()
+    val SPACE_SPLITTER: Splitter = Splitter.on("  ").omitEmptyStrings().trimResults()
     const val XP_NEEDED_FOR_60 = 111_672_425L
 
     fun getSkillInfo(skill: SkillType): SkillAPI.SkillInfo? {

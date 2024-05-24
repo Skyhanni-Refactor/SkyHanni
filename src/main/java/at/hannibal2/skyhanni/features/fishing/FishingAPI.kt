@@ -13,7 +13,6 @@ import at.hannibal2.skyhanni.features.fishing.trophy.TrophyFishManager
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyFishManager.getFilletValue
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
 import at.hannibal2.skyhanni.utils.ItemCategory
-import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
@@ -45,7 +44,7 @@ object FishingAPI {
     @HandleEvent(onlyOnSkyblock = true)
     fun onJoinWorld(event: EntityEnterWorldEvent) {
         if (!holdingRod) return
-        val entity = event.entity ?: return
+        val entity = event.entity
         if (entity !is EntityFishHook) return
         if (entity.angler != Minecraft.getMinecraft().thePlayer) return
 
@@ -81,12 +80,11 @@ object FishingAPI {
         }
     }
 
-    fun ItemStack.isFishingRod() = getInternalName().isFishingRod()
-    fun NEUInternalName.isFishingRod() = isLavaRod() || isWaterRod()
+    private fun NEUInternalName.isFishingRod() = isLavaRod() || isWaterRod()
 
-    fun NEUInternalName.isLavaRod() = this in lavaRods
+    private fun NEUInternalName.isLavaRod() = this in lavaRods
 
-    fun NEUInternalName.isWaterRod() = this in waterRods
+    private fun NEUInternalName.isWaterRod() = this in waterRods
 
     fun ItemStack.isBait(): Boolean = stackSize == 1 && getItemCategoryOrNull() == ItemCategory.FISHING_BAIT
 

@@ -38,7 +38,7 @@ enum class LorenzRarity(val color: LorenzColor, val id: Int) {
         if (rarityBelow == null && logError) {
             ErrorManager.logErrorStateWithData(
                 "Problem with item rarity detected.",
-                "Trying to get an item rarity above special",
+                "Trying to get an item rarity above ultimate",
                 "ordinal" to ordinal
             )
         }
