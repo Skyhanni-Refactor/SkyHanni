@@ -20,7 +20,6 @@ import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
-import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 
@@ -33,8 +32,6 @@ class CrimsonIsleReputationHelper(skyHanniMod: SkyHanniMod) {
     val kuudraBossHelper = DailyKuudraBossHelper(this)
 
     var factionType = FactionType.NONE
-
-    private var lastUpdate = SimpleTimeMark.farPast()
 
     private var display = emptyList<List<Any>>()
     private var dirty = true
@@ -123,7 +120,7 @@ class CrimsonIsleReputationHelper(skyHanniMod: SkyHanniMod) {
         display = newList
     }
 
-    @HandleEvent(priority = HandleEvent.LOWEST, onlyOnIsland = IslandType.CRIMSON_ISLE)
+    @HandleEvent(onlyOnIsland = IslandType.CRIMSON_ISLE, priority = HandleEvent.LOWEST)
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!config.enabled) return
 

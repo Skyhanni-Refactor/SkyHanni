@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ItemsJson
 import at.hannibal2.skyhanni.events.entity.EntityEnterWorldEvent
 import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
@@ -42,9 +41,9 @@ object FishingAPI {
     var bobber: EntityFishHook? = null
     var bobberHasTouchedWater = false
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onJoinWorld(event: EntityEnterWorldEvent) {
-        if (!SkyBlockAPI.isConnected || !holdingRod) return
+        if (!holdingRod) return
         val entity = event.entity
         if (entity !is EntityFishHook) return
         if (entity.angler != Minecraft.getMinecraft().thePlayer) return
@@ -89,7 +88,7 @@ object FishingAPI {
 
     fun ItemStack.isBait(): Boolean = stackSize == 1 && getItemCategoryOrNull() == ItemCategory.FISHING_BAIT
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onItemInHandChange(event: ItemInHandChangeEvent) {
         // TODO correct rod type per island water/lava
         holdingRod = event.newItem.isFishingRod()

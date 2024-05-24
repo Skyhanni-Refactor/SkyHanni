@@ -62,7 +62,7 @@ object HighlightVisitorsOutsideOfGarden {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!config.highlightVisitors) return
         McWorld.getEntitiesOf<EntityLivingBase>()
@@ -86,7 +86,7 @@ object HighlightVisitorsOutsideOfGarden {
     private fun isVisitorNearby(entity: Entity) =
         McWorld.getEntitiesNear<EntityLivingBase>(entity, 2.0).any(::isVisitor)
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onClickEntity(event: SendPacketEvent) {
         if (!shouldBlock) return
         val world = Minecraft.getMinecraft().theWorld ?: return

@@ -40,7 +40,7 @@ object GardenCropMilestoneInventory {
         average = -1.0
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderItemTip(event: RenderInventoryItemTipEvent) {
         if (average == -1.0) return
 

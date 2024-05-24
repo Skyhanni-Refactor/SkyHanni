@@ -125,6 +125,7 @@ object HypixelData {
         val guesting = guestPattern.matches(ScoreboardData.objectiveTitle.removeColor())
         val islandType = getIslandType(foundIsland, guesting)
         if (skyBlockIsland != islandType) {
+            skyBlockIsland = islandType
             IslandChangeEvent(islandType, skyBlockIsland).post()
             if (islandType == IslandType.UNKNOWN) {
                 ChatUtils.debug("Unknown island detected: '$foundIsland'")
@@ -132,7 +133,6 @@ object HypixelData {
             } else {
                 loggerIslandChange.log(islandType.name)
             }
-            skyBlockIsland = islandType
         }
     }
 

@@ -33,7 +33,7 @@ object PurseAPI {
         inventoryCloseTime = SimpleTimeMark.now()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         event.scoreboard.matchFirst(coinsPattern) {
             val newPurse = group("coins").formatDouble()

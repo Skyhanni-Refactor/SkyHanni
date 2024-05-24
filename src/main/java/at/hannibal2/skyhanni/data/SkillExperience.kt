@@ -115,7 +115,7 @@ object SkillExperience {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (event.inventoryName != "Your Skills") return
 
@@ -181,4 +181,3 @@ object SkillExperience {
     // TODO create additional event
     fun getExpForSkill(skillName: String) = skillExp[skillName.lowercase()] ?: 0
 }
-

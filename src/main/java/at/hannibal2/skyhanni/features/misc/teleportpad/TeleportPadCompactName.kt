@@ -20,9 +20,9 @@ object TeleportPadCompactName {
     )
 
     @HandleEvent(
+        onlyOnIsland = IslandType.PRIVATE_ISLAND,
         priority = HandleEvent.HIGH,
-        generic = EntityArmorStand::class,
-        onlyOnIsland = IslandType.PRIVATE_ISLAND
+        generic = EntityArmorStand::class
     )
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
         if (!SkyHanniMod.feature.misc.teleportPad.compactName) return

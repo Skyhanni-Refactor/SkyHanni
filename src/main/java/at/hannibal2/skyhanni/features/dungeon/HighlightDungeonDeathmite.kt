@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
@@ -10,9 +11,8 @@ import net.minecraft.entity.monster.EntitySilverfish
 
 object HighlightDungeonDeathmite {
 
-    @HandleEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onEntityHealthUpdate(event: EntityMaxHealthUpdateEvent) {
-        if (!DungeonAPI.inDungeon()) return
         if (!SkyHanniMod.feature.dungeon.highlightDeathmites) return
 
         val entity = event.entity

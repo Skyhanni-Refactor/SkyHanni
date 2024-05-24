@@ -55,7 +55,7 @@ object FossilExcavatorAPI {
         inInventory = true
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
         if (!inInventory) return
         val slots = InventoryUtils.getItemsInOpenChest()

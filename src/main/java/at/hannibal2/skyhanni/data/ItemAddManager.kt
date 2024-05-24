@@ -30,7 +30,7 @@ object ItemAddManager {
     private var inSackInventory = false
     private var lastSackInventoryLeave = SimpleTimeMark.farPast()
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryOpenEvent) {
         if (event.inventoryName.contains("Sack")) {
             inSackInventory = true
@@ -75,7 +75,7 @@ object ItemAddManager {
         ItemAddEvent(internalName, amount, this).post()
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
         if (diceRollChatPattern.matches(event.message)) {
             lastDiceRoll = SimpleTimeMark.now()

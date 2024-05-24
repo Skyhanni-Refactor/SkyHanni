@@ -70,7 +70,7 @@ object AccountUpgradeReminder {
         inInventory = false
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSlotClick(event: SlotClickEvent) {
         if (!inInventory) return
         val clickedItemLore = event.slot?.stack?.getLore() ?: return
@@ -81,7 +81,7 @@ object AccountUpgradeReminder {
         duration = result.groups[1]!!.value.toInt().days
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
         if (claimedRegex.matches(event.message)) {
             clearUpgrade()

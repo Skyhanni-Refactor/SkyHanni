@@ -40,7 +40,7 @@ object BingoCardReader {
         ".*§7§eThe next hint will unlock in (?<time>.*)"
     )
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
         if (!config.enabled) return
         if (event.inventoryName != "Bingo Card") return
@@ -150,7 +150,7 @@ object BingoCardReader {
         return HiddenGoalData(unknownTip, nextHintTime, tipNote)
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
         if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
         if (!config.enabled) return

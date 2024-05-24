@@ -35,7 +35,7 @@ object GardenCropMilestones {
         return null
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (event.inventoryName != "Crop Milestones") return
 
