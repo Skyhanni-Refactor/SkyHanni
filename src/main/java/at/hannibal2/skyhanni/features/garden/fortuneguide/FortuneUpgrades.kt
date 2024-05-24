@@ -295,7 +295,7 @@ object FortuneUpgrades {
         else -> 8
     }
 
-    private val cropUpgrades = listOf(5, 10, 20, 50, 100, 500, 1000, 5000, 10000)
+//     private val cropUpgrades = listOf(5, 10, 20, 50, 100, 500, 1000, 5000, 10000)
 
     // If they unlock in a weird order for example getting a corner before a cheaper one won't work properly
     private val compostNeeded = listOf(

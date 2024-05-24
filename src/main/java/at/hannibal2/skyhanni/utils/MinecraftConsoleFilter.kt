@@ -35,6 +35,7 @@ class MinecraftConsoleFilter(private val loggerConfigName: String) : Filter {
     }
 
     // prevents error sending on every shutdown
+    //TODO what is this?
     fun stop() {}
 
     override fun filter(event: LogEvent?): Filter.Result {

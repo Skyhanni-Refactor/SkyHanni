@@ -2,14 +2,12 @@ package at.hannibal2.skyhanni.features.mining.fossilexcavator.solver
 
 enum class FossilType(
     val displayName: String,
-    val totalTiles: Int,
     val firstPercentage: String,
     val fossilShape: FossilShape,
     val possibleMutations: List<FossilMutation>
 ) {
     TUSK(
-        "Tusk", 8, "12.5%",
-        FossilShape(
+        "Tusk", "12.5%", FossilShape(
             listOf(
                 FossilTile(0, 2),
                 FossilTile(0, 3),
@@ -24,8 +22,7 @@ enum class FossilType(
         FossilMutation.entries
     ),
     WEBBED(
-        "Webbed", 10, "10%",
-        FossilShape(
+        "Webbed", "10%", FossilShape(
             listOf(
                 FossilTile(0, 2),
                 FossilTile(1, 1),
@@ -45,8 +42,7 @@ enum class FossilType(
         )
     ),
     CLUB(
-        "Club", 11, "9.1%",
-        FossilShape(
+        "Club", "9.1%", FossilShape(
             listOf(
                 FossilTile(0, 2),
                 FossilTile(0, 3),
@@ -69,8 +65,7 @@ enum class FossilType(
         )
     ),
     SPINE(
-        "Spine", 12, "8.3%",
-        FossilShape(
+        "Spine", "8.3%", FossilShape(
             listOf(
                 FossilTile(0, 2),
                 FossilTile(1, 1),
@@ -89,8 +84,7 @@ enum class FossilType(
         FossilMutation.onlyRotation
     ),
     CLAW(
-        "Claw", 13, "7.7%",
-        FossilShape(
+        "Claw", "7.7%", FossilShape(
             listOf(
                 FossilTile(0, 3),
                 FossilTile(1, 2),
@@ -110,8 +104,7 @@ enum class FossilType(
         FossilMutation.entries
     ),
     FOOTPRINT(
-        "Footprint", 13, "7.7%",
-        FossilShape(
+        "Footprint", "7.7%", FossilShape(
             listOf(
                 FossilTile(0, 2),
                 FossilTile(1, 1),
@@ -131,8 +124,7 @@ enum class FossilType(
         FossilMutation.onlyRotation
     ),
     HELIX(
-        "Helix", 14, "7.1%",
-        FossilShape(
+        "Helix", "7.1%", FossilShape(
             listOf(
                 FossilTile(0, 0),
                 FossilTile(0, 1),
@@ -153,8 +145,7 @@ enum class FossilType(
         FossilMutation.entries
     ),
     UGLY(
-        "Ugly", 16, "6.2%",
-        FossilShape(
+        "Ugly", "6.2%", FossilShape(
             listOf(
                 FossilTile(0, 1),
                 FossilTile(1, 0),

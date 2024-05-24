@@ -20,15 +20,6 @@ object HypixelData {
         "islandname",
         "(?:§.)*(Area|Dungeon): (?:§.)*(?<island>.*)"
     )
-
-    private val serverIdScoreboardPattern by patternGroup.pattern(
-        "serverid.scoreboard",
-        "§7\\d+/\\d+/\\d+ §8(?<servertype>[mM])(?<serverid>\\S+).*"
-    )
-    private val serverIdTablistPattern by patternGroup.pattern(
-        "serverid.tablist",
-        " Server: §r§8(?<serverid>\\S+)"
-    )
     private val playerAmountPattern by patternGroup.pattern(
         "playeramount",
         "^\\s*(?:§.)+Players (?:§.)+\\((?<amount>\\d+)\\)\\s*$"

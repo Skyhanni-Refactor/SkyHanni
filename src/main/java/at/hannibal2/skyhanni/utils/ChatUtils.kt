@@ -11,7 +11,6 @@ import at.hannibal2.skyhanni.utils.chat.Text.asComponent
 import at.hannibal2.skyhanni.utils.chat.Text.command
 import at.hannibal2.skyhanni.utils.chat.Text.hover
 import at.hannibal2.skyhanni.utils.chat.Text.onClick
-import at.hannibal2.skyhanni.utils.chat.Text.prefix
 import at.hannibal2.skyhanni.utils.chat.Text.url
 import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.Minecraft
@@ -181,23 +180,6 @@ object ChatUtils {
         if (autoOpen) OS.openUrl(url)
     }
 
-    /**
-     * Sends a message to the user that combines many message components e.g. clickable, hoverable and regular text
-     * @param components The list of components to be joined together to form the final message
-     * @param prefix Whether to prefix the message with the chat prefix, default true
-     * @param prefixColor Color that the prefix should be, default yellow (§e)
-     *
-     * @see CHAT_PREFIX
-     */
-    fun multiComponentMessage(
-        components: List<ChatComponentText>,
-        prefix: Boolean = true,
-        prefixColor: String = "§e",
-    ) {
-        val msgPrefix = if (prefix) prefixColor + CHAT_PREFIX else ""
-        chat(Text.join(components).prefix(msgPrefix))
-    }
-
     private var lastMessageSent = SimpleTimeMark.farPast()
     private val sendQueue: Queue<String> = LinkedList()
     private val messageDelay = 300.milliseconds
@@ -222,6 +204,7 @@ object ChatUtils {
         sendQueue.add(message)
     }
 
+    //TODO look at later
     fun MessageSendToServerEvent.isCommand(commandWithSlash: String) =
         splitMessage.takeIf { it.isNotEmpty() }?.get(0) == commandWithSlash
 

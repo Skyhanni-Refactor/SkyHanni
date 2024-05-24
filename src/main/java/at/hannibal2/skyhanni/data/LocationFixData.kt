@@ -12,7 +12,7 @@ object LocationFixData {
 
     class LocationFix(val island: IslandType, val area: BoundingBox, val realLocation: String)
 
-    // priority set to low (1) so that IslandType can load their island names from repo earlier
+    // priority is set to low (1) so that IslandType can load their island names from repo earlier
     @HandleEvent(priority = HandleEvent.LOW)
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<LocationFixJson>("LocationFix")

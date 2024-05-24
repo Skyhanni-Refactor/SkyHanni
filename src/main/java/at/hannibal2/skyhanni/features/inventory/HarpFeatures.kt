@@ -32,7 +32,7 @@ object HarpFeatures {
     private val config get() = SkyHanniMod.feature.inventory.helper.harp
     private var lastClick = SimpleTimeMark.farPast()
 
-    private const val closeButtonSlot = 40
+    private const val CLOSE_BUTTON_SLOT = 40
 
     private val buttonColors = listOf('d', 'e', 'a', '2', '5', '9', 'b')
 
@@ -104,7 +104,7 @@ object HarpFeatures {
 
     private fun updateScale() {
         if (Minecraft.getMinecraft().currentScreen == null) {
-            DelayedRun.runNextTick() {
+            DelayedRun.runNextTick {
                 updateScale()
             }
             return
@@ -160,7 +160,7 @@ object HarpFeatures {
 
         if (!config.quickRestart) return
         if (!isMenuGui(InventoryUtils.openInventoryName())) return
-        if (event.slot?.slotNumber != closeButtonSlot) return
+        if (event.slot?.slotNumber != CLOSE_BUTTON_SLOT) return
         if (openTime.passedSince() > 2.seconds) return
         event.container.inventory.filterNotNull().indexOfFirst {
             songSelectedPattern.anyMatches(it.getLore())

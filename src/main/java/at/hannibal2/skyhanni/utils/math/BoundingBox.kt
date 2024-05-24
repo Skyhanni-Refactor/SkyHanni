@@ -29,7 +29,7 @@ data class BoundingBox(
 
     // Expand
     fun expand(x: Double, y: Double, z: Double) =
-        BoundingBox(minX - x, minY - y, minZ - z, maxX + x, maxY + y, maxZ + z,)
+        BoundingBox(minX - x, minY - y, minZ - z, maxX + x, maxY + y, maxZ + z)
 
     fun expand(vec: LorenzVec) = expand(vec.x, vec.y, vec.z)
     fun expand(xyz: Double) = expand(xyz, xyz, xyz)

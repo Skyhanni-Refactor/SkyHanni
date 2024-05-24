@@ -150,16 +150,36 @@ object Commands {
     }
 
     private fun usersMain() {
-        registerCommand("sh", "Opens the main SkyHanni config", openMainMenu)
-        registerCommand("skyhanni", "Opens the main SkyHanni config", openMainMenu)
-        registerCommand("ff", "Opens the Farming Fortune Guide") { openFortuneGuide() }
-        registerCommand("shcommands", "Shows this list") { HelpCommand.onCommand(it, commands) }
-        registerCommand0("shdefaultoptions", "Select default options", {
-            DefaultConfigFeatures.onCommand(
-                it.getOrNull(0) ?: "null", it.getOrNull(1) ?: "null"
-            )
-        }, DefaultConfigFeatures::onComplete)
-        registerCommand("shwords", "Opens the config list for modifying visual words") { openVisualWords() }
+        registerCommand(
+            "sh",
+            "Opens the main SkyHanni config",
+            openMainMenu
+        )
+        registerCommand(
+            "skyhanni",
+            "Opens the main SkyHanni config",
+            openMainMenu
+        )
+        registerCommand(
+            "ff",
+            "Opens the Farming Fortune Guide"
+        ) { openFortuneGuide() }
+        registerCommand(
+            "shcommands",
+            "Shows this list"
+        ) { HelpCommand.onCommand(it, commands) }
+        registerCommand0(
+            "shdefaultoptions",
+            "Select default options", {
+                DefaultConfigFeatures.onCommand(
+                    it.getOrNull(0) ?: "null", it.getOrNull(1) ?: "null"
+                )
+            }, DefaultConfigFeatures::onComplete
+        )
+        registerCommand(
+            "shwords",
+            "Opens the config list for modifying visual words"
+        ) { openVisualWords() }
     }
 
     private fun usersNormal() {
@@ -167,7 +187,10 @@ object Commands {
             "shmarkplayer",
             "Add a highlight effect to a player for better visibility"
         ) { MarkedPlayerManager.command(it) }
-        registerCommand("shtrackcollection", "Tracks your collection gain over time") { CollectionTracker.command(it) }
+        registerCommand(
+            "shtrackcollection",
+            "Tracks your collection gain over time"
+        ) { CollectionTracker.command(it) }
         registerCommand(
             "shcroptime",
             "Calculates with your current crop per second speed how long you need to farm a crop to collect this amount of items"
@@ -196,9 +219,18 @@ object Commands {
             "shclearfarmingitems",
             "Clear farming items saved for the Farming Fortune Guide"
         ) { clearFarmingItems() }
-        registerCommand("shresetghostcounter", "Resets the ghost counter") { GhostUtil.reset() }
-        registerCommand("shresetpowdertracker", "Resets the Powder Tracker") { PowderTracker.resetCommand() }
-        registerCommand("shresetdicertracker", "Resets the Dicer Drop Tracker") { DicerRngDropTracker.resetCommand() }
+        registerCommand(
+            "shresetghostcounter",
+            "Resets the ghost counter"
+        ) { GhostUtil.reset() }
+        registerCommand(
+            "shresetpowdertracker",
+            "Resets the Powder Tracker"
+        ) { PowderTracker.resetCommand() }
+        registerCommand(
+            "shresetdicertracker",
+            "Resets the Dicer Drop Tracker"
+        ) { DicerRngDropTracker.resetCommand() }
         registerCommand(
             "shresetendernodetracker",
             "Resets the Ender Node Tracker"
@@ -219,7 +251,10 @@ object Commands {
             "shresetvisitordrops",
             "Reset the Visitors Drop Statistics"
         ) { GardenVisitorDropStatistics.resetCommand() }
-        registerCommand("shbingotoggle", "Toggle the bingo card display mode") { BingoCardDisplay.toggleCommand() }
+        registerCommand(
+            "shbingotoggle",
+            "Toggle the bingo card display mode"
+        ) { BingoCardDisplay.toggleCommand() }
         registerCommand(
             "shfarmingprofile",
             "Look up the farming profile from yourself or another player on elitebot.dev"
@@ -326,7 +361,10 @@ object Commands {
     }
 
     private fun usersBugFix() {
-        registerCommand("shupdaterepo", "Download the SkyHanni repo again") { SkyHanniMod.repo.updateRepo() }
+        registerCommand(
+            "shupdaterepo",
+            "Download the SkyHanni repo again"
+        ) { SkyHanniMod.repo.updateRepo() }
         registerCommand(
             "shresetburrowwarps",
             "Manually resetting disabled diana burrow warp points"
@@ -402,14 +440,38 @@ object Commands {
     }
 
     private fun developersDebugFeatures() {
-        registerCommand("shtestbingo", "dev command") { TestBingo.toggle() }
-        registerCommand("shprintbingohelper", "dev command") { BingoNextStepHelper.command() }
-        registerCommand("shreloadbingodata", "dev command") { BingoCardDisplay.command() }
-        registerCommand("shtestgardenvisitors", "dev command") { SkyHanniDebugsAndTests.testGardenVisitors() }
-        registerCommand("shtestcomposter", "dev command") { ComposterOverlay.onCommand(it) }
-        registerCommand("shtestinquisitor", "dev command") { InquisitorWaypointShare.test() }
-        registerCommand("shshowcropmoneycalculation", "dev command") { CropMoneyDisplay.toggleShowCalculation() }
-        registerCommand("shcropspeedmeter", "Debugs how many crops you collect over time") { CropSpeedMeter.toggle() }
+        registerCommand(
+            "shtestbingo",
+            "dev command"
+        ) { TestBingo.toggle() }
+        registerCommand(
+            "shprintbingohelper",
+            "dev command"
+        ) { BingoNextStepHelper.command() }
+        registerCommand(
+            "shreloadbingodata",
+            "dev command"
+        ) { BingoCardDisplay.command() }
+        registerCommand(
+            "shtestgardenvisitors",
+            "dev command"
+        ) { SkyHanniDebugsAndTests.testGardenVisitors() }
+        registerCommand(
+            "shtestcomposter",
+            "dev command"
+        ) { ComposterOverlay.onCommand(it) }
+        registerCommand(
+            "shtestinquisitor",
+            "dev command"
+        ) { InquisitorWaypointShare.test() }
+        registerCommand(
+            "shshowcropmoneycalculation",
+            "dev command"
+        ) { CropMoneyDisplay.toggleShowCalculation() }
+        registerCommand(
+            "shcropspeedmeter",
+            "Debugs how many crops you collect over time"
+        ) { CropSpeedMeter.toggle() }
         registerCommand0(
             "shworldedit",
             "Select regions in the world",
@@ -434,8 +496,14 @@ object Commands {
     }
 
     private fun developersCodingHelp() {
-        registerCommand("shrepopatterns", "See where regexes are loaded from") { RepoPatternGui.open() }
-        registerCommand("shtest", "Unused test command.") { SkyHanniDebugsAndTests.testCommand(it) }
+        registerCommand(
+            "shrepopatterns",
+            "See where regexes are loaded from"
+        ) { RepoPatternGui.open() }
+        registerCommand(
+            "shtest",
+            "Unused test command."
+        ) { SkyHanniDebugsAndTests.testCommand(it) }
         registerCommand(
             "shtestitem",
             "test item internal name resolving"
@@ -444,10 +512,22 @@ object Commands {
             "shfindnullconfig",
             "Find config elements that are null and prints them into the console"
         ) { SkyHanniDebugsAndTests.findNullConfig(it) }
-        registerCommand("shtestwaypoint", "Set a waypoint on that location") { SkyHanniDebugsAndTests.waypoint(it) }
-        registerCommand("shtesttablist", "Set your clipboard as a fake tab list.") { TabListData.toggleDebug() }
-        registerCommand("shreloadlocalrepo", "Reloading the local repo data") { SkyHanniMod.repo.reloadLocalRepo() }
-        registerCommand("shchathistory", "Show the unfiltered chat history") { ChatManager.openChatFilterGUI(it) }
+        registerCommand(
+            "shtestwaypoint",
+            "Set a waypoint on that location"
+        ) { SkyHanniDebugsAndTests.waypoint(it) }
+        registerCommand(
+            "shtesttablist",
+            "Set your clipboard as a fake tab list."
+        ) { TabListData.toggleDebug() }
+        registerCommand(
+            "shreloadlocalrepo",
+            "Reloading the local repo data"
+        ) { SkyHanniMod.repo.reloadLocalRepo() }
+        registerCommand(
+            "shchathistory",
+            "Show the unfiltered chat history"
+        ) { ChatManager.openChatFilterGUI(it) }
         registerCommand(
             "shstoplisteners",
             "Unregistering all loaded forge event listeners"
@@ -539,16 +619,38 @@ object Commands {
     }
 
     private fun internalCommands() {
-        registerCommand("shaction", "") { ChatClickActionManager.onCommand(it) }
+        registerCommand(
+            "shaction",
+            ""
+        )
+        { ChatClickActionManager.onCommand(it) }
     }
 
     private fun shortenedCommands() {
-        registerCommand("pko", "Kicks offline party members") { PartyCommands.kickOffline() }
-        registerCommand("pw", "Warps your party") { PartyCommands.warp() }
-        registerCommand("pk", "Kick a specific party member") { PartyCommands.kick(it) }
-        registerCommand("pt", "Transfer the party to another party member") { PartyCommands.transfer(it) }
-        registerCommand("pp", "Promote a specific party member") { PartyCommands.promote(it) }
-        registerCommand("pd", "Disbands the party") { PartyCommands.disband() }
+        registerCommand(
+            "pko",
+            "Kicks offline party members"
+        ) { PartyCommands.kickOffline() }
+        registerCommand(
+            "pw",
+            "Warps your party"
+        ) { PartyCommands.warp() }
+        registerCommand(
+            "pk",
+            "Kick a specific party member"
+        ) { PartyCommands.kick(it) }
+        registerCommand(
+            "pt",
+            "Transfer the party to another party member"
+        ) { PartyCommands.transfer(it) }
+        registerCommand(
+            "pp",
+            "Promote a specific party member"
+        ) { PartyCommands.promote(it) }
+        registerCommand(
+            "pd",
+            "Disbands the party"
+        ) { PartyCommands.disband() }
     }
 
     @JvmStatic

@@ -137,7 +137,7 @@ object TunnelsMaps {
 
     /** @return Errors with an empty String */
     private fun getGenericName(input: String): String = translateTable.getOrPut(input) {
-        possibleLocations.keys.firstOrNull() { it.uppercase().removeColor().contains(input.uppercase()) } ?: ""
+        possibleLocations.keys.firstOrNull { it.uppercase().removeColor().contains(input.uppercase()) } ?: ""
     }
 
     private var clickTranslate = mapOf<Int, String>()
@@ -234,7 +234,7 @@ object TunnelsMaps {
     @HandleEvent
     fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!isEnabled()) return
-        val display = buildList<Renderable> {
+        val display = buildList {
             if (active.isNotEmpty()) {
                 if (goal == campfire && active != campfire.name) {
                     add(Renderable.string("§6Override for ${campfire.name}"))

@@ -281,12 +281,13 @@ object SkillAPI {
                 val type = levelMatcher.group("type")
                 if (type != skillType.displayName) continue
                 tablistLevel = levelMatcher.group("level").toInt()
-                if (levelMatcher.group("type").lowercase() != activeSkill?.lowercaseName) tablistLevel = 0
+                if (levelMatcher.group("type").lowercase() != activeSkill?.displayName?.lowercase()) tablistLevel = 0
             } else {
                 levelMatcher = maxSkillTabPattern.matcher(line)
                 if (levelMatcher.matches()) {
                     tablistLevel = levelMatcher.group("level").toInt()
-                    if (levelMatcher.group("type").lowercase() != activeSkill?.lowercaseName) tablistLevel = 0
+                    if (levelMatcher.group("type").lowercase() != activeSkill?.displayName?.lowercase()) tablistLevel =
+                        0
                 }
             }
         }

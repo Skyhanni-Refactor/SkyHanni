@@ -72,7 +72,7 @@ object CorpseAPI {
              */
             ItemUtils.readItemAmount(group("item"))
         } ?: return
-        // Workaround: If it is a enchanted book, we assume it is a paleontologist I book
+        // Workaround: If it is an enchanted book, we assume it is a paleontologist I book
         if (pair.first.let { it == "§fEnchanted" || it == "§fEnchanted Book" }) {
 //             pair = "Paleontologist I" to pair.second
             pair = "§9Ice Cold I" to pair.second

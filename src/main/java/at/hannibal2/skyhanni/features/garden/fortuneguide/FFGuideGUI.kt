@@ -76,8 +76,8 @@ open class FFGuideGUI : GuiScreen() {
         var guiTop = 0
         var screenHeight = 0
 
-        const val sizeX = 360
-        const val sizeY = 180
+        const val SIZE_X = 360
+        const val SIZE_Y = 180
 
         var selectedPage = FortuneGuidePage.OVERVIEW
         var currentCrop: CropType? = null
@@ -139,14 +139,14 @@ open class FFGuideGUI : GuiScreen() {
         super.drawScreen(unusedX, unusedY, partialTicks)
         drawDefaultBackground()
         screenHeight = height
-        guiLeft = (width - sizeX) / 2
-        guiTop = (height - sizeY) / 2
+        guiLeft = (width - SIZE_X) / 2
+        guiTop = (height - SIZE_Y) / 2
 
         mouseX = Mouse.getX() * width / Minecraft.getMinecraft().displayWidth
         mouseY = height - Mouse.getY() * height / Minecraft.getMinecraft().displayHeight - 1
 
         GlStateManager.pushMatrix()
-        drawRect(guiLeft, guiTop, guiLeft + sizeX, guiTop + sizeY, 0x50000000)
+        drawRect(guiLeft, guiTop, guiLeft + SIZE_X, guiTop + SIZE_Y, 0x50000000)
         renderTabs()
 
         if (selectedPage == FortuneGuidePage.UPGRADES) {
@@ -307,10 +307,10 @@ open class FFGuideGUI : GuiScreen() {
                     selectedPage = FortuneGuidePage.OVERVIEW
                 }
             } else {
-                if (selectedPage == FortuneGuidePage.UPGRADES) {
-                    selectedPage = FortuneGuidePage.OVERVIEW
+                selectedPage = if (selectedPage == FortuneGuidePage.UPGRADES) {
+                    FortuneGuidePage.OVERVIEW
                 } else {
-                    selectedPage = FortuneGuidePage.UPGRADES
+                    FortuneGuidePage.UPGRADES
                 }
             }
         }
@@ -462,7 +462,7 @@ open class FFGuideGUI : GuiScreen() {
                 }
             }
         } else {
-            if (isMouseIn(guiLeft, guiTop, sizeX, sizeY)) {
+            if (isMouseIn(guiLeft, guiTop, SIZE_X, SIZE_Y)) {
                 lastClickedHeight = mouseY
             }
         }

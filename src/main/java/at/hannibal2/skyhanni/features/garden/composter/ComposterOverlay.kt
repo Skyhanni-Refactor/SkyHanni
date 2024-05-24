@@ -382,7 +382,7 @@ object ComposterOverlay {
         bigList: MutableList<List<Any>>,
         factors: Map<NEUInternalName, Double>,
         missing: Double,
-        testOffset_: Int = 0,
+        offset: Int = 0,
         onClick: (NEUInternalName) -> Unit,
     ): NEUInternalName {
         val map = mutableMapOf<NEUInternalName, Double>()
@@ -390,11 +390,11 @@ object ComposterOverlay {
             map[internalName] = factor / getPrice(internalName)
         }
 
-        val testOffset = if (testOffset_ > map.size) {
+        val testOffset = if (offset > map.size) {
             ChatUtils.userError("Invalid Composter Overlay Offset! $testOffset cannot be greater than ${map.size}!")
             ComposterOverlay.testOffset = 0
             0
-        } else testOffset_
+        } else offset
 
         val first: NEUInternalName? = calculateFirst(map, testOffset, factors, missing, onClick, bigList)
         if (testOffset != 0) {

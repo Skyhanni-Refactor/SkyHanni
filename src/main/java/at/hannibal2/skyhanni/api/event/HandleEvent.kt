@@ -35,7 +35,6 @@ annotation class HandleEvent(
     companion object {
         const val HIGHEST = -2
         const val HIGH = -1
-        const val NORMAL = 0
         const val LOW = 1
         const val LOWEST = 2
     }

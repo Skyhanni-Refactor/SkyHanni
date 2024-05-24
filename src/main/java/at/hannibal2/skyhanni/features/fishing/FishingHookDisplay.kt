@@ -50,7 +50,7 @@ object FishingHookDisplay {
     @HandleEvent
     fun onJoinWorld(event: EntityEnterWorldEvent) {
         if (!isEnabled()) return
-        val entity = event.entity ?: return
+        val entity = event.entity
         if (entity !is EntityArmorStand) return
 
         potentialArmorStands.add(entity)

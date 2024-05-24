@@ -21,12 +21,10 @@ import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.isDouble
 import at.hannibal2.skyhanni.utils.PrimitiveItemStack
-import at.hannibal2.skyhanni.utils.PrimitiveItemStack.Companion.makePrimitiveStack
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.inventory.Slot
 import java.util.Deque
 import java.util.LinkedList
 import kotlin.time.Duration.Companion.seconds
@@ -35,7 +33,7 @@ object GetFromSackAPI {
     private val config get() = SkyHanniMod.feature.inventory.gfs
 
     val commands = arrayOf("gfs", "getfromsacks")
-    val commandsWithSlash = commands.map { "/$it" }
+    private val commandsWithSlash = commands.map { "/$it" }
 
     private val patternGroup = RepoPattern.group("gfs.chat")
     private val fromSacksChatPattern by patternGroup.pattern(
@@ -47,11 +45,9 @@ object GetFromSackAPI {
         "§cYou have no (?<item>.+) in your Sacks!"
     )
 
-    fun getFromSack(item: NEUInternalName, amount: Int) = getFromSack(item.makePrimitiveStack(amount))
+    private fun getFromSack(item: PrimitiveItemStack) = getFromSack(listOf(item))
 
-    fun getFromSack(item: PrimitiveItemStack) = getFromSack(listOf(item))
-
-    fun getFromSack(items: List<PrimitiveItemStack>) = addToQueue(items)
+    private fun getFromSack(items: List<PrimitiveItemStack>) = addToQueue(items)
 
     fun getFromChatMessageSackItems(
         item: PrimitiveItemStack,
@@ -60,10 +56,6 @@ object GetFromSackAPI {
         ChatUtils.clickableChat(text, onClick = {
             HypixelCommands.getFromSacks(item.internalName.asString(), item.amount)
         })
-
-    fun getFromSlotClickedSackItems(items: List<PrimitiveItemStack>, slotIndex: Int) = addToInventory(items, slotIndex)
-
-    fun Slot.getFromSackWhenClicked(items: List<PrimitiveItemStack>) = getFromSlotClickedSackItems(items, slotIndex)
 
     private val minimumDelay = 1.65.seconds
 
@@ -74,12 +66,7 @@ object GetFromSackAPI {
 
     private var lastItemStack: PrimitiveItemStack? = null
 
-    @Deprecated("", ReplaceWith("SackAPI.sackListNames"))
-    val sackListNames get() = SackAPI.sackListNames
-
     private fun addToQueue(items: List<PrimitiveItemStack>) = queue.addAll(items)
-
-    private fun addToInventory(items: List<PrimitiveItemStack>, slotId: Int) = inventoryMap.put(slotId, items)
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
