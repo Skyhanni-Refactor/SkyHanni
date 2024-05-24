@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.events.hypixel.HypixelJoinEvent
 import at.hannibal2.skyhanni.events.hypixel.HypixelLocationEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
@@ -9,12 +8,12 @@ import at.hannibal2.skyhanni.utils.RegexUtils.groupOrNull
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 
-//TODO move HypixelData in here
 object HypixelAPI {
 
-    private val lobbyTypePattern by HypixelData.patternGroup.pattern(
-        "lobbytype",
+    private val lobbyTypePattern by RepoPattern.pattern(
+        "hypixel.lobbytype",
         "(?<lobbyType>.*lobby)\\d+"
     )
 

@@ -5,8 +5,6 @@ import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.skyblock.Gamemode
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.gui.customscoreboard.ArrowConfig.ArrowAmountDisplay
-import at.hannibal2.skyhanni.data.HypixelData
-import at.hannibal2.skyhanni.data.HypixelData.getPlayersOnCurrentServer
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.MaxwellAPI
 import at.hannibal2.skyhanni.data.MayorAPI
@@ -507,10 +505,10 @@ private fun getNorthStarsShowWhen() = inAnyIsland(IslandType.WINTER)
 private fun getEmptyLineDisplayPair() = listOf("<empty>" to HorizontalAlignment.LEFT)
 
 private fun getIslandDisplayPair() =
-    listOf("§7㋖ §a" + HypixelData.skyBlockIsland.displayName to HorizontalAlignment.LEFT)
+    listOf("§7㋖ §a" + SkyBlockAPI.island.displayName to HorizontalAlignment.LEFT)
 
 private fun getLocationDisplayPair() = buildList {
-    HypixelData.skyBlockAreaWithSymbol?.let { add(it to HorizontalAlignment.LEFT) }
+    SkyBlockAPI.areaWithSymbol?.let { add(it to HorizontalAlignment.LEFT) }
 
     ScoreboardData.sidebarLinesFormatted.firstOrNull { ScoreboardPattern.plotPattern.matches(it) }
         ?.let { add(it to HorizontalAlignment.LEFT) }
@@ -522,10 +520,11 @@ fun getPlayerAmountDisplayPair() = buildList {
     } else {
         ""
     }
-    if (displayConfig.displayNumbersFirst)
-        add("§a${getPlayersOnCurrentServer()}$max Players" to HorizontalAlignment.LEFT)
-    else
-        add("§7Players: §a${getPlayersOnCurrentServer()}$max" to HorizontalAlignment.LEFT)
+    if (displayConfig.displayNumbersFirst) {
+        add("§a${SkyBlockAPI.players}$max Players" to HorizontalAlignment.LEFT)
+    } else {
+        add("§7Players: §a${SkyBlockAPI.players}$max" to HorizontalAlignment.LEFT)
+    }
 }
 
 private fun getVisitDisplayPair() =

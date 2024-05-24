@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.HypixelData.islandNamePattern
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
@@ -14,6 +13,7 @@ import at.hannibal2.skyhanni.utils.ConditionalUtils.transformIf
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
+import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.system.OS
 import com.google.common.collect.ComparisonChain
 import com.google.common.collect.Ordering
@@ -25,6 +25,12 @@ import net.minecraftforge.fml.relauncher.Side
 import net.minecraftforge.fml.relauncher.SideOnly
 
 object TabListData {
+
+    private val islandNamePattern by RepoPattern.pattern(
+        "tablist.islandname",
+        "(?:§.)*(Area|Dungeon): (?:§.)*(?<island>.*)"
+    )
+
     private var tablistCache = emptyList<String>()
     private var debugCache: List<String>? = null
 

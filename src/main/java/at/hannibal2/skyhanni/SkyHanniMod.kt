@@ -36,7 +36,6 @@ import at.hannibal2.skyhanni.data.GardenCropUpgrades
 import at.hannibal2.skyhanni.data.GuiData
 import at.hannibal2.skyhanni.data.GuiEditManager
 import at.hannibal2.skyhanni.data.HighlightOnHoverSlot
-import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.ItemAddManager
 import at.hannibal2.skyhanni.data.ItemClickData
 import at.hannibal2.skyhanni.data.ItemTipHelper
@@ -534,7 +533,6 @@ class SkyHanniMod {
         loadModule(HighlightVisitorsOutsideOfGarden)
         loadModule(HypixelBazaarFetcher)
         loadModule(HypixelAPI)
-        loadModule(HypixelData)
         loadModule(HypixelPacketAPI)
         loadModule(ItemAddManager)
         loadModule(ItemClickData)

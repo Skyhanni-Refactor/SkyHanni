@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.api.skyblock
 
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.HypixelData
 import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.LocationFixData
 import at.hannibal2.skyhanni.data.ScoreboardData
@@ -18,6 +17,7 @@ import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import java.util.UUID
 
@@ -47,6 +47,28 @@ object SkyBlockAPI {
     private val profileIdPattern by patternGroup.pattern(
         "profile.id",
         "Profile ID: (?<id>\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12})"
+    )
+
+    private val playerAmountPattern by patternGroup.pattern(
+        "playeramount",
+        "^\\s*(?:§.)+Players (?:§.)+\\((?<amount>\\d+)\\)\\s*$"
+    )
+    private val playerAmountCoopPattern by patternGroup.pattern(
+        "playeramount.coop",
+        "^\\s*(?:§.)*Coop (?:§.)*\\((?<amount>\\d+)\\)\\s*$"
+    )
+    private val playerAmountGuestingPattern by patternGroup.pattern(
+        "playeramount.guesting",
+        "^\\s*(?:§.)*Guests (?:§.)*\\((?<amount>\\d+)\\)\\s*$"
+    )
+    private val soloProfileAmountPattern by patternGroup.pattern(
+        "solo.profile.amount",
+        "^\\s*(?:§.)*Island\\s*$"
+    )
+
+    private val guestPattern by patternGroup.pattern(
+        "guesting.scoreboard",
+        "SKYBLOCK GUEST"
     )
 
     /**
@@ -80,6 +102,25 @@ object SkyBlockAPI {
 
     var profileId: UUID? = null
         private set
+
+    val players: Int
+        get() {
+            var amount = 0
+            val playerPatternList = listOf(
+                playerAmountPattern,
+                playerAmountCoopPattern,
+                playerAmountGuestingPattern
+            )
+
+            for (pattern in playerPatternList) {
+                TabListData.getTabList().matchFirst(pattern) {
+                    amount += group("amount").toInt()
+                }
+            }
+            amount += TabListData.getTabList().count { soloProfileAmountPattern.matches(it) }
+
+            return amount
+        }
 
     val maxPlayers: Int
         get() {
@@ -119,7 +160,7 @@ object SkyBlockAPI {
 
     @HandleEvent
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
-        if (HypixelData.guestPattern.matches(ScoreboardData.objectiveTitle.removeColor()) != isGuesting) {
+        if (guestPattern.matches(ScoreboardData.objectiveTitle.removeColor()) != isGuesting) {
             isGuesting = !isGuesting
             island = when (island) {
                 IslandType.PRIVATE_ISLAND -> IslandType.PRIVATE_ISLAND_GUEST
