@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import net.minecraft.entity.item.EntityArmorStand
 import java.util.regex.Pattern
@@ -15,33 +16,13 @@ object HideMobNames {
     private val mobNamesHidden = mutableListOf<EntityArmorStand>()
     private val patterns = mutableListOf<Pattern>()
 
-    init {
-        // TODO USE SH-REPO
-        addMobToHide("Zombie")
-        addMobToHide("Zombie Villager")
-        addMobToHide("Crypt Ghoul")
-
-        addMobToHide("Dasher Spider")
-        addMobToHide("Weaver Spider")
-        addMobToHide("Splitter Spider")
-        addMobToHide("Voracious Spider")
-        addMobToHide("Silverfish")
-
-        addMobToHide("Wolf")
-        addMobToHide("§bHowling Spirit")
-        addMobToHide("§bPack Spirit")
-
-        addMobToHide("Enderman")
-        addMobToHide("Voidling Fanatic")
-
-        addMobToHide("Blaze") // 1.2m
-        addMobToHide("Mutated Blaze") // 1.5m
-        addMobToHide("Bezal") // 2m
-        addMobToHide("Smoldering Blaze") // 5.5m
-    }
-
     private fun addMobToHide(bossName: String) {
         patterns.add("§8\\[§7Lv\\d+§8] §c$bossName§r §[ae](?<min>.+)§f/§a(?<max>.+)§c❤".toPattern())
+    }
+
+    @HandleEvent
+    fun onRepoLoad(event: RepositoryReloadEvent) {
+        event.getConstant<Array<String>>("MobToHide").forEach { addMobToHide(it) }
     }
 
     @HandleEvent(priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
