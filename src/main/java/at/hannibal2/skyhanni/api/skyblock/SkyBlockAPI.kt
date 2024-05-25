@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.api.skyblock
 
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.LocationFixData
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent

@@ -1,14 +1,13 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandTypeTag
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.render.gui.ReplaceItemEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraft.client.player.inventory.ContainerLocalMenu
 import kotlin.time.Duration.Companion.seconds
@@ -34,13 +33,7 @@ object ChocolateFactoryShortcut {
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (LorenzUtils.inAnyIsland(
-                IslandType.THE_RIFT,
-                IslandType.KUUDRA_ARENA,
-                IslandType.CATACOMBS,
-                IslandType.MINESHAFT,
-            )
-        ) return
+        if (IslandTypeTag.HOPPITY_DISALLOWED.inAny()) return
         showItem = config.hoppityMenuShortcut && event.inventoryName == "SkyBlock Menu"
     }
 

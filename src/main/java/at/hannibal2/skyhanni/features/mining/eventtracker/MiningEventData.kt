@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.features.mining.eventtracker
 
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 

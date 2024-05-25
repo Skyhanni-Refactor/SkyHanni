@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.api.event
 
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import kotlin.reflect.KClass
 
 @Retention(AnnotationRetention.RUNTIME)

@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.features.combat.ghostcounter
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.IslandArea
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.SkillExperience
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
@@ -40,7 +40,6 @@ import at.hannibal2.skyhanni.utils.CombatUtils.lastUpdate
 import at.hannibal2.skyhanni.utils.CombatUtils.xpGainHour
 import at.hannibal2.skyhanni.utils.CombatUtils.xpGainHourLast
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong

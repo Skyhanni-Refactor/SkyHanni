@@ -2,8 +2,8 @@ package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.data.EntityMovementData
-import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.entity.EntityMoveEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent

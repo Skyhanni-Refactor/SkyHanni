@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ArmorDropInfo
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ArmorDropsJson
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent

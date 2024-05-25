@@ -4,9 +4,10 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.BossbarAPI
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandTypeTag
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigManager
-import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.BossbarUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -17,7 +18,6 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.toDashlessUUID
@@ -74,7 +74,7 @@ object MiningEventTracker {
 
     @HandleEvent
     fun onBossbarChange(event: BossbarUpdateEvent) {
-        if (!LorenzUtils.inAdvancedMiningIsland()) return
+        if (!IslandTypeTag.ADVANCED_MINING.inAny()) return
         if (HypixelAPI.lastWorldChange.passedSince() < 5.seconds) return
         if (!eventEndTime.isInPast()) {
             return
@@ -90,7 +90,7 @@ object MiningEventTracker {
 
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
-        if (!LorenzUtils.inAdvancedMiningIsland()) return
+        if (!IslandTypeTag.ADVANCED_MINING.inAny()) return
 
         eventStartedPattern.matchMatcher(event.message) {
             sendData(group("event"), null)
@@ -103,7 +103,7 @@ object MiningEventTracker {
     @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!config.enabled) return
-        if (!SkyBlockAPI.isConnected || (!config.outsideMining && !LorenzUtils.inAdvancedMiningIsland())) return
+        if (!SkyBlockAPI.isConnected || (!config.outsideMining && !IslandTypeTag.ADVANCED_MINING.inAny())) return
         if (!canRequestAt.isInPast()) return
 
         fetchData()

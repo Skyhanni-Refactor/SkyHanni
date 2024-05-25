@@ -1,13 +1,14 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandTypeTag
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.mining.ColdUpdateEvent
 import at.hannibal2.skyhanni.features.gui.customscoreboard.ScoreboardPattern
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -36,7 +37,7 @@ object MiningAPI {
 
     fun inGlaciteArea() = glaciteAreaPattern.matches(SkyBlockAPI.area) || IslandType.MINESHAFT.isInIsland()
 
-    fun inColdIsland() = IslandType.DWARVEN_MINES.isInIsland() || IslandType.MINESHAFT.isInIsland()
+    fun inColdIsland() = IslandTypeTag.IS_COLD.inAny()
 
     fun getCold() = cold
 

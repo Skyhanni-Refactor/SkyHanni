@@ -2,8 +2,6 @@ package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
 import at.hannibal2.skyhanni.utils.ChatUtils.lastButtonClicked
@@ -135,10 +133,6 @@ object LorenzUtils {
         })
     }
 
-    fun IslandType.isInIsland() = SkyBlockAPI.isConnected && SkyBlockAPI.island == this
-
-    fun inAnyIsland(vararg islandTypes: IslandType) = SkyBlockAPI.isConnected && islandTypes.any { it.isInIsland() }
-
     fun Int.derpy() = if (Perk.DOUBLE_MOBS_HP.isActive) this / 2 else this
 
     fun Int.ignoreDerpy() = if (Perk.DOUBLE_MOBS_HP.isActive) this * 2 else this
@@ -167,12 +161,6 @@ object LorenzUtils {
         }
         PlatformUtils.delayedExit(-1)
     }
-
-    fun inAdvancedMiningIsland() =
-        IslandType.DWARVEN_MINES.isInIsland() || IslandType.CRYSTAL_HOLLOWS.isInIsland() || IslandType.MINESHAFT.isInIsland()
-
-    fun inMiningIsland() = IslandType.GOLD_MINES.isInIsland() || IslandType.DEEP_CAVERNS.isInIsland()
-        || inAdvancedMiningIsland()
 
     fun isBetaVersion() = UpdateManager.isCurrentlyBeta()
 }

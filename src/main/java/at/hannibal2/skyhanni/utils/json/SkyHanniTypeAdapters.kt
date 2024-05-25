@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.utils.json
 
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.config.TrackerDisplayMode
-import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.pests.PestType

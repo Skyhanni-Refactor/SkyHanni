@@ -3,7 +3,8 @@ package at.hannibal2.skyhanni.features.mining
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.GetFromSackAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandTypeTag
 import at.hannibal2.skyhanni.data.MiningAPI.getCold
 import at.hannibal2.skyhanni.data.MiningAPI.inColdIsland
 import at.hannibal2.skyhanni.data.MiningAPI.lastColdReset
@@ -15,8 +16,6 @@ import at.hannibal2.skyhanni.events.mining.ColdUpdateEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.PrimitiveItemStack.Companion.makePrimitiveStack
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.mc.McSound
@@ -67,7 +66,7 @@ object MiningNotifications {
 
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
-        if (!LorenzUtils.inMiningIsland()) return
+        if (!IslandTypeTag.MINING.inAny()) return
         if (!config.enabled) return
         val message = event.message
         when {

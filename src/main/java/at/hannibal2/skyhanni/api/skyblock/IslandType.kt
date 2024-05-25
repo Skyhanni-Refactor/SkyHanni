@@ -1,4 +1,4 @@
-package at.hannibal2.skyhanni.data
+package at.hannibal2.skyhanni.api.skyblock
 
 enum class IslandType(val displayName: String) {
     // TODO USE SH-REPO (for displayName only)
@@ -9,7 +9,7 @@ enum class IslandType(val displayName: String) {
     CRIMSON_ISLE("Crimson Isle"),
     DWARVEN_MINES("Dwarven Mines"),
     DUNGEON_HUB("Dungeon Hub"),
-    CATACOMBS("Catacombs"),
+    CATACOMBS("Dungeon"),
 
     HUB("Hub"),
     DARK_AUCTION("Dark Auction"),
@@ -29,6 +29,8 @@ enum class IslandType(val displayName: String) {
     ANY(""),
     UNKNOWN("???"),
     ;
+
+    fun isInIsland() = SkyBlockAPI.isConnected && SkyBlockAPI.island == this
 
     companion object {
 

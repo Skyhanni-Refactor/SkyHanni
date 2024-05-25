@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.events.hypixel
 
 import at.hannibal2.skyhanni.api.event.SkyHanniEvent
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 
 class HypixelLocationEvent(
     val server: String,
