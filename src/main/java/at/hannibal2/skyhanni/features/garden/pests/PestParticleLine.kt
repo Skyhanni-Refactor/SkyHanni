@@ -15,7 +15,7 @@ import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils.isAnyOf
 import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine_nea
+import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraft.util.EnumParticleTypes
@@ -106,7 +106,7 @@ object PestParticleLine {
             // TODO time in config
             if (next.spawnTime.passedSince() > 5.seconds) continue
             val location = next.location
-            event.draw3DLine_nea(
+            event.draw3DLine(
                 prev.location,
                 location,
                 color,

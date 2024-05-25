@@ -1,9 +1,9 @@
 package at.hannibal2.skyhanni.features.chroma
 
-import at.hannibal2.skyhanni.utils.ColourUtils
 import at.hannibal2.skyhanni.utils.shader.ShaderHelper
 import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.opengl.GL11
+import java.awt.Color
 
 /**
  * Class to handle chroma font rendering
@@ -12,7 +12,7 @@ import org.lwjgl.opengl.GL11
  *
  * Credit: [DrawStateFontRenderer.java](https://github.com/BiscuitDevelopment/SkyblockAddons/blob/main/src/main/java/codes/biscuit/skyblockaddons/utils/draw/DrawStateFontRenderer.java)
  */
-class ChromaFontRenderer(private val baseColor: Int) {
+class ChromaFontRenderer(private val baseColor: Color) {
 
     private var chromaOn = false
 
@@ -44,9 +44,9 @@ class ChromaFontRenderer(private val baseColor: Int) {
 
     fun bindActualColor(alpha: Float): ChromaFontRenderer {
         GlStateManager.color(
-            ColourUtils.getRed(baseColor).toFloat() / 255f,
-            ColourUtils.getGreen(baseColor).toFloat() / 255f,
-            ColourUtils.getBlue(baseColor).toFloat() / 255f,
+            baseColor.red / 255f,
+            baseColor.green / 255f,
+            baseColor.blue / 255f,
             alpha
         )
         return this

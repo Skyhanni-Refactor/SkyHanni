@@ -3,9 +3,9 @@ package at.hannibal2.skyhanni.test
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ClickType
-import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.click.BlockClickEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.LocationUtils
@@ -72,21 +72,21 @@ object WorldEdit {
         if (!isEnabled()) return
 
         leftPos?.let { l ->
-            RenderUtils.drawWireframeBoundingBox_nea(
+            RenderUtils.drawWireframeBoundingBox(
                 funAABB(l, l).expandToEdge(),
                 Color.RED,
                 event.partialTicks
             )
         }
         rightPos?.let { r ->
-            RenderUtils.drawWireframeBoundingBox_nea(
+            RenderUtils.drawWireframeBoundingBox(
                 funAABB(r, r).expandToEdge(),
                 Color.BLUE,
                 event.partialTicks
             )
         }
         aabb?.let {
-            RenderUtils.drawFilledBoundingBox_nea(
+            RenderUtils.drawFilledBoundingBox(
                 it.expandToEdge(),
                 Color(Color.CYAN.withAlpha(60), true),
                 partialTicks = event.partialTicks,

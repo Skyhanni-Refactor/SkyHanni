@@ -1050,73 +1050,8 @@ object RenderUtils {
         return LorenzVec(x, y, z)
     }
 
-    fun drawFilledBoundingBox(aabb: BoundingBox, c: Color, alphaMultiplier: Float = 1f) {
-        GlStateManager.enableBlend()
-        GlStateManager.disableLighting()
-        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0)
-        GlStateManager.disableTexture2D()
-        val tessellator = Tessellator.getInstance()
-        val worldRenderer = tessellator.worldRenderer
-        GlStateManager.color(c.red / 255f, c.green / 255f, c.blue / 255f, c.alpha / 255f * alphaMultiplier)
-
-        // vertical
-        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION)
-        worldRenderer.pos(aabb.minX, aabb.minY, aabb.minZ).endVertex()
-        worldRenderer.pos(aabb.maxX, aabb.minY, aabb.minZ).endVertex()
-        worldRenderer.pos(aabb.maxX, aabb.minY, aabb.maxZ).endVertex()
-        worldRenderer.pos(aabb.minX, aabb.minY, aabb.maxZ).endVertex()
-        tessellator.draw()
-        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION)
-        worldRenderer.pos(aabb.minX, aabb.maxY, aabb.maxZ).endVertex()
-        worldRenderer.pos(aabb.maxX, aabb.maxY, aabb.maxZ).endVertex()
-        worldRenderer.pos(aabb.maxX, aabb.maxY, aabb.minZ).endVertex()
-        worldRenderer.pos(aabb.minX, aabb.maxY, aabb.minZ).endVertex()
-        tessellator.draw()
-        GlStateManager.color(
-            c.red / 255f * 0.8f,
-            c.green / 255f * 0.8f,
-            c.blue / 255f * 0.8f,
-            c.alpha / 255f * alphaMultiplier
-        )
-
-        // x
-        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION)
-        worldRenderer.pos(aabb.minX, aabb.minY, aabb.maxZ).endVertex()
-        worldRenderer.pos(aabb.minX, aabb.maxY, aabb.maxZ).endVertex()
-        worldRenderer.pos(aabb.minX, aabb.maxY, aabb.minZ).endVertex()
-        worldRenderer.pos(aabb.minX, aabb.minY, aabb.minZ).endVertex()
-        tessellator.draw()
-        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION)
-        worldRenderer.pos(aabb.maxX, aabb.minY, aabb.minZ).endVertex()
-        worldRenderer.pos(aabb.maxX, aabb.maxY, aabb.minZ).endVertex()
-        worldRenderer.pos(aabb.maxX, aabb.maxY, aabb.maxZ).endVertex()
-        worldRenderer.pos(aabb.maxX, aabb.minY, aabb.maxZ).endVertex()
-        tessellator.draw()
-        GlStateManager.color(
-            c.red / 255f * 0.9f,
-            c.green / 255f * 0.9f,
-            c.blue / 255f * 0.9f,
-            c.alpha / 255f * alphaMultiplier
-        )
-        // z
-        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION)
-        worldRenderer.pos(aabb.minX, aabb.maxY, aabb.minZ).endVertex()
-        worldRenderer.pos(aabb.maxX, aabb.maxY, aabb.minZ).endVertex()
-        worldRenderer.pos(aabb.maxX, aabb.minY, aabb.minZ).endVertex()
-        worldRenderer.pos(aabb.minX, aabb.minY, aabb.minZ).endVertex()
-        tessellator.draw()
-        worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION)
-        worldRenderer.pos(aabb.minX, aabb.minY, aabb.maxZ).endVertex()
-        worldRenderer.pos(aabb.maxX, aabb.minY, aabb.maxZ).endVertex()
-        worldRenderer.pos(aabb.maxX, aabb.maxY, aabb.maxZ).endVertex()
-        worldRenderer.pos(aabb.minX, aabb.maxY, aabb.maxZ).endVertex()
-        tessellator.draw()
-        GlStateManager.enableTexture2D()
-        GlStateManager.disableBlend()
-    }
-
     // TODO nea please merge with 'drawFilledBoundingBox'
-    fun SkyHanniRenderWorldEvent.drawFilledBoundingBox_nea(
+    fun SkyHanniRenderWorldEvent.drawFilledBoundingBox(
         aabb: BoundingBox,
         c: Color,
         alphaMultiplier: Float = 1f,
@@ -1127,10 +1062,10 @@ object RenderUtils {
         renderRelativeToCamera: Boolean = false,
         drawVerticalBarriers: Boolean = true,
     ) {
-        drawFilledBoundingBox_nea(aabb, c, alphaMultiplier, renderRelativeToCamera, drawVerticalBarriers, partialTicks)
+        drawFilledBoundingBox(aabb, c, alphaMultiplier, renderRelativeToCamera, drawVerticalBarriers, partialTicks)
     }
 
-    fun drawWireframeBoundingBox_nea(
+    fun drawWireframeBoundingBox(
         aabb: BoundingBox,
         color: Color,
         partialTicks: Float,
@@ -1411,7 +1346,7 @@ object RenderUtils {
         }
     }
 
-    fun drawFilledBoundingBox_nea(
+    fun drawFilledBoundingBox(
         aabb: BoundingBox,
         c: Color,
         alphaMultiplier: Float = 1f,
@@ -1518,48 +1453,6 @@ object RenderUtils {
         this.draw3DLine(cornerTwo, cornerThree, colour, lineWidth, depth)
         this.draw3DLine(cornerThree, cornerFour, colour, lineWidth, depth)
         this.draw3DLine(cornerFour, cornerOne, colour, lineWidth, depth)
-    }
-
-    // TODO nea please merge with 'draw3DLine'
-    fun SkyHanniRenderWorldEvent.draw3DLine_nea(
-        p1: LorenzVec, p2: LorenzVec, color: Color, lineWidth: Int, depth: Boolean,
-    ) {
-        GlStateManager.disableDepth()
-        GlStateManager.disableCull()
-
-        val render = Minecraft.getMinecraft().renderViewEntity
-        val worldRenderer = Tessellator.getInstance().worldRenderer
-        val realX = render.lastTickPosX + (render.posX - render.lastTickPosX) * partialTicks
-        val realY = render.lastTickPosY + (render.posY - render.lastTickPosY) * partialTicks
-        val realZ = render.lastTickPosZ + (render.posZ - render.lastTickPosZ) * partialTicks
-        GlStateManager.pushMatrix()
-        GlStateManager.translate(-realX, -realY, -realZ)
-        GlStateManager.disableTexture2D()
-        GlStateManager.enableBlend()
-        GlStateManager.disableAlpha()
-        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0)
-        GL11.glLineWidth(lineWidth.toFloat())
-        if (!depth) {
-            GL11.glDisable(GL11.GL_DEPTH_TEST)
-            GlStateManager.depthMask(false)
-        }
-        GlStateManager.color(color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f)
-        worldRenderer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION)
-        worldRenderer.pos(p1.x, p1.y, p1.z).endVertex()
-        worldRenderer.pos(p2.x, p2.y, p2.z).endVertex()
-        Tessellator.getInstance().draw()
-        GlStateManager.translate(realX, realY, realZ)
-        if (!depth) {
-            GL11.glEnable(GL11.GL_DEPTH_TEST)
-            GlStateManager.depthMask(true)
-        }
-        GlStateManager.disableBlend()
-        GlStateManager.enableAlpha()
-        GlStateManager.enableTexture2D()
-        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f)
-        GlStateManager.popMatrix()
-        GlStateManager.disableLighting()
-        GlStateManager.enableDepth()
     }
 
     fun chromaColor(

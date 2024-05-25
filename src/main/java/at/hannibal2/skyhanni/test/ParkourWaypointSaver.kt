@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.ParkourHelper
-import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
+import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.system.OS
@@ -77,7 +77,7 @@ object ParkourWaypointSaver {
                     loc.x, loc.y, loc.z,
                     loc.x + 1, loc.y + 1, loc.z + 1
                 ).expandToEdge()
-                event.drawFilledBoundingBox_nea(box, LorenzColor.GREEN.toColor(), 1f)
+                event.drawFilledBoundingBox(box, LorenzColor.GREEN.toColor(), 1f)
             }
         }
     }

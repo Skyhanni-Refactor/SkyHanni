@@ -76,9 +76,9 @@ object ProfileStorageData {
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
-        if (noTabListTime == SimpleTimeMark.farPast()) return
+        if (noTabListTime.isFarPast()) return
 
-        if (noTabListTime.passedSince() > 3.seconds) {
+        if (noTabListTime.passedSince() > 6.seconds) {
             noTabListTime = SimpleTimeMark.now()
             val foundSkyBlockTabList = TabListData.getTabList().any { it.contains("§b§lArea:") }
             if (foundSkyBlockTabList) {

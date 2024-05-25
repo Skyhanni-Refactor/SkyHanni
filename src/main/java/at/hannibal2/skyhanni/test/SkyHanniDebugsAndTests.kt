@@ -30,8 +30,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzDebug
-import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
@@ -58,7 +56,6 @@ import kotlinx.coroutines.launch
 import net.minecraft.init.Blocks
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
-import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.common.MinecraftForge
 import java.io.File
 import kotlin.time.Duration.Companion.seconds
@@ -77,20 +74,6 @@ class SkyHanniDebugsAndTests {
         var a = 1.0
         var b = 60.0
         var c = 0.0
-
-        val debugLogger = LorenzLogger("debug/test")
-
-        private fun run(compound: NBTTagCompound, text: String) {
-            print("$text'$compound'")
-            for (s in compound.keySet) {
-                val element = compound.getCompoundTag(s)
-                run(element, "$text  ")
-            }
-        }
-
-        private fun print(text: String) {
-            LorenzDebug.log(text)
-        }
 
         private var testLocation: LorenzVec? = null
 

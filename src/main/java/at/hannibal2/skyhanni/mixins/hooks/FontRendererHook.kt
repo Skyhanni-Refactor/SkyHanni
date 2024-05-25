@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.features.chroma.ChromaFontRenderer
 import at.hannibal2.skyhanni.features.chroma.ChromaManager
 import at.hannibal2.skyhanni.utils.RenderUtils
 import net.minecraft.client.renderer.GlStateManager
+import java.awt.Color
 
 /**
  * Object to handle chroma font states from handler methods from MixinFontRenderer
@@ -20,10 +21,8 @@ object FontRendererHook {
     private const val CHROMA_FORMAT_INDEX = 22
     private const val WHITE_FORMAT_INDEX = 15
 
-    private var CHROMA_COLOR: Int = -0x1
-    private val DRAW_CHROMA = ChromaFontRenderer(CHROMA_COLOR)
-    private var CHROMA_COLOR_SHADOW: Int = -0xAAAAAB
-    private val DRAW_CHROMA_SHADOW = ChromaFontRenderer(CHROMA_COLOR_SHADOW)
+    private val DRAW_CHROMA = ChromaFontRenderer(Color(0xFFFFFF))
+    private val DRAW_CHROMA_SHADOW = ChromaFontRenderer(Color(0x555555))
 
     private var currentDrawState: ChromaFontRenderer? = null
     private var previewChroma = false

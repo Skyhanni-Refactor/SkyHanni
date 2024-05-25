@@ -79,7 +79,7 @@ object SulphurSkitterBox {
         val color = Color(config.boxColor.toChromaColourInt(), true)
         when (config.boxType) {
             SulphurSkitterBoxConfig.BoxType.FULL -> {
-                RenderUtils.drawFilledBoundingBox_nea(
+                RenderUtils.drawFilledBoundingBox(
                     axis,
                     color,
                     partialTicks = partialTicks,
@@ -88,11 +88,11 @@ object SulphurSkitterBox {
             }
 
             SulphurSkitterBoxConfig.BoxType.WIREFRAME -> {
-                RenderUtils.drawWireframeBoundingBox_nea(axis, color, partialTicks)
+                RenderUtils.drawWireframeBoundingBox(axis, color, partialTicks)
             }
 
             else -> {
-                RenderUtils.drawWireframeBoundingBox_nea(axis, color, partialTicks)
+                RenderUtils.drawWireframeBoundingBox(axis, color, partialTicks)
             }
         }
     }

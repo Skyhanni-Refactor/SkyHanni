@@ -3,13 +3,12 @@ package at.hannibal2.skyhanni.data.mob
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.dev.DebugMobConfig.HowToShow
-import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.entity.MobEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.test.command.CopyNearbyEntitiesCommand.getMobInfo
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzDebug
 import at.hannibal2.skyhanni.utils.MobUtils
-import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
+import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
@@ -30,7 +29,7 @@ object MobDebug {
 
     private fun MobData.MobSet.highlight(event: SkyHanniRenderWorldEvent, color: (Mob) -> (LorenzColor)) =
         this.filter { it.isNotInvisible() }.forEach {
-            event.drawFilledBoundingBox_nea(it.boundingBox.expandToEdge(), color.invoke(it).toColor(), 0.3f)
+            event.drawFilledBoundingBox(it.boundingBox.expandToEdge(), color.invoke(it).toColor(), 0.3f)
         }
 
     private fun MobData.MobSet.showName(event: SkyHanniRenderWorldEvent) =
@@ -76,7 +75,7 @@ object MobDebug {
         }
         if (config.showRayHit) {
             lastRayHit?.let {
-                event.drawFilledBoundingBox_nea(it.boundingBox.expandToEdge(), LorenzColor.GOLD.toColor(), 0.5f)
+                event.drawFilledBoundingBox(it.boundingBox.expandToEdge(), LorenzColor.GOLD.toColor(), 0.5f)
             }
         }
     }
@@ -88,6 +87,6 @@ object MobDebug {
             getMobInfo(event.mob).joinToString(", ")
         }"
         MobData.logger.log(text)
-        LorenzDebug.log(text)
+        SkyHanniMod.logger.info("[Mod Debug]: $text")
     }
 }

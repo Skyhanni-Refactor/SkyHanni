@@ -11,7 +11,7 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
-import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
+import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox
 import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import java.util.TreeSet
@@ -52,7 +52,7 @@ object MatriarchHelper {
         if (config.highlight) {
             val color = config.highlightColor.toChromaColour()
             pearlList.forEach {
-                event.drawFilledBoundingBox_nea(it.boundingBox.expandToEdge(), color, 1.0f)
+                event.drawFilledBoundingBox(it.boundingBox.expandToEdge(), color, 1.0f)
             }
         }
         if (config.line) {
