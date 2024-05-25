@@ -71,7 +71,6 @@ class ConfigManager {
             .registerTypeAdapter(LorenzRarity::class.java, SkyHanniTypeAdapters.RARITY.nullSafe())
             .registerTypeAdapter(IslandType::class.java, SkyHanniTypeAdapters.ISLAND_TYPE.nullSafe())
             .registerTypeAdapter(TrackerDisplayMode::class.java, SkyHanniTypeAdapters.TRACKER_DISPLAY_MODE.nullSafe())
-//             .registerTypeAdapter(SlayerType::class.java, SkyHanniTypeAdapters.SLAYER_TYPE.nullSafe())
             .registerTypeAdapter(SimpleTimeMark::class.java, object : TypeAdapter<SimpleTimeMark>() {
                 override fun write(out: JsonWriter, value: SimpleTimeMark) {
                     out.value(value.toMillis())
