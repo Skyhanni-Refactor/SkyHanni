@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.data
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.Gamemode
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.data.jsonobjects.repo.SlayerTypeJson
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.slayer.SlayerChangeEvent
@@ -55,7 +56,8 @@ object SlayerAPI {
 
     @HandleEvent
     fun onRepoLoad(event: RepositoryReloadEvent) {
-        slayerAreas = event.getConstant<Map<String, SlayerType>>("SlayerAreas")
+        val data = event.getConstant<SlayerTypeJson>("SlayerAreas")
+        slayerAreas = data.slayerAreas
     }
 
     @HandleEvent
