@@ -60,6 +60,10 @@ object SkyBlockAPI {
         "playeramount.guesting",
         "^\\s*(?:§.)*Guests (?:§.)*\\((?<amount>\\d+)\\)\\s*$"
     )
+    private val dungeonPartyAmountPattern by patternGroup.pattern(
+        "playeramount.dungeonparty",
+        "^\\s*(?:§.)+Party (?:§.)+\\((?<amount>\\d+)\\)\\s*$"
+    )
     private val soloProfileAmountPattern by patternGroup.pattern(
         "solo.profile.amount",
         "^\\s*(?:§.)*Island\\s*$"
@@ -108,7 +112,8 @@ object SkyBlockAPI {
             val playerPatternList = listOf(
                 playerAmountPattern,
                 playerAmountCoopPattern,
-                playerAmountGuestingPattern
+                playerAmountGuestingPattern,
+                dungeonPartyAmountPattern,
             )
 
             for (pattern in playerPatternList) {
