@@ -49,7 +49,7 @@ object ChocolateFactoryDataLoader {
     )
     private val chocolateMultiplierPattern by ChocolateFactoryAPI.patternGroup.pattern(
         "chocolate.multiplier",
-        "§7Total Multiplier: §6(?<amount>[\\d.]+)x"
+        "(?:§.)+You are §8#§b(?<position>[\\d,]+)(?: §7in all-time Chocolate\\.)?"
     )
     private val leaderboardPlacePattern by ChocolateFactoryAPI.patternGroup.pattern(
         "leaderboard.place",
