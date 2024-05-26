@@ -60,6 +60,10 @@ object SkyBlockAPI {
         "playeramount.guesting",
         "^\\s*(?:§.)*Guests (?:§.)*\\((?<amount>\\d+)\\)\\s*$"
     )
+
+    /**
+     * REGEX-TEST:           §r§b§lParty §r§f(4)
+     */
     private val dungeonPartyAmountPattern by patternGroup.pattern(
         "playeramount.dungeonparty",
         "^\\s*(?:§.)+Party (?:§.)+\\((?<amount>\\d+)\\)\\s*$"
