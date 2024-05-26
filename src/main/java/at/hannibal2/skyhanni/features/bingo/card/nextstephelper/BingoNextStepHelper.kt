@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.features.bingo.card.nextstephelper
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.CollectionAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.Gamemode
 import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.SkillExperience
@@ -134,7 +133,7 @@ object BingoNextStepHelper {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
+        if (!BingoAPI.isBingo()) return
         if (!config.enabled) return
 
         if (event.repeatSeconds(1)) {
@@ -150,7 +149,7 @@ object BingoNextStepHelper {
 
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
-        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
+        if (!BingoAPI.isBingo()) return
         if (!config.enabled) return
 
         for (currentStep in currentSteps) {

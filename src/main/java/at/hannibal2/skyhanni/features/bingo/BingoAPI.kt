@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.bingo.card.goals.BingoGoal
 import at.hannibal2.skyhanni.features.bingo.card.goals.GoalType
+import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
@@ -23,8 +24,15 @@ import java.time.ZoneOffset
 
 object BingoAPI {
 
+    val bingoStorage: BingoSession by lazy {
+        val playerSpecific = ProfileStorageData.playerSpecific ?: error("playerSpecific is null")
+        playerSpecific.bingoSessions.getOrPut(getStartOfMonthInMillis()) { BingoSession() }
+    }
+
     private var ranks = mapOf<String, Int>()
     private var data: Map<String, BingoData> = emptyMap()
+
+    private var debugBingo = false
 
     val bingoGoals get() = bingoStorage.goals
     val personalGoals get() = bingoGoals.values.filter { it.type == GoalType.PERSONAL }
@@ -40,7 +48,7 @@ object BingoAPI {
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Bingo Card")
 
-        if (SkyBlockAPI.gamemode != Gamemode.BINGO) {
+        if (isBingo()) {
             event.addIrrelevant("not on bingo")
             return
         }
@@ -73,6 +81,11 @@ object BingoAPI {
         data = event.getConstant<BingoJson>("Bingo").bingoTips
     }
 
+    fun toggleDebug() {
+        debugBingo = !debugBingo
+        ChatUtils.chat("Bingo debug " + (if (debugBingo) "enabled" else "disabled"))
+    }
+
     fun getRankFromScoreboard(text: String) = if (detectionPattern.matches(text)) getRank(text) else null
 
     fun getIconFromScoreboard(text: String) = getRankFromScoreboard(text)?.let { getIcon(it) }
@@ -89,11 +102,6 @@ object BingoAPI {
         getData(displayName)
     } else {
         data[displayName]
-    }
-
-    val bingoStorage: BingoSession by lazy {
-        val playerSpecific = ProfileStorageData.playerSpecific ?: error("playerSpecific is null")
-        playerSpecific.bingoSessions.getOrPut(getStartOfMonthInMillis()) { BingoSession() }
     }
 
     private fun getStartOfMonthInMillis() = OffsetDateTime.of(
@@ -118,4 +126,6 @@ object BingoAPI {
             rankIcon
         }
     }
+
+    fun isBingo() = SkyBlockAPI.gamemode == Gamemode.BINGO || debugBingo
 }

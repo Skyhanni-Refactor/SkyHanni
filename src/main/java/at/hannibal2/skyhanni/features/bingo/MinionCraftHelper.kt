@@ -57,7 +57,7 @@ object MinionCraftHelper {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
+        if (!BingoAPI.isBingo()) return
         if (!config.minionCraftHelperEnabled) return
 
         if (event.isMod(10)) {
@@ -243,7 +243,7 @@ object MinionCraftHelper {
 
     @HandleEvent
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
-        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
+        if (!BingoAPI.isBingo()) return
         if (!config.minionCraftHelperEnabled) return
 
         config.minionCraftHelperPos.renderStrings(display, posLabel = "Minion Craft Helper")

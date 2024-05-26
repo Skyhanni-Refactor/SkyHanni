@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.features.event
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.Gamemode
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
@@ -10,6 +9,7 @@ import at.hannibal2.skyhanni.events.entity.EntityCustomNameUpdateEvent
 import at.hannibal2.skyhanni.events.entity.EntityEnterWorldEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.event.winter.UniqueGiftCounter
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
@@ -92,7 +92,7 @@ object UniqueGiftingOpportunitiesFeatures {
     }
 
     private fun isBingo(entity: EntityLivingBase) =
-        SkyBlockAPI.gamemode != Gamemode.BINGO && entity.displayName.formattedText.endsWith("Ⓑ§r")
+        !BingoAPI.isBingo() && entity.displayName.formattedText.endsWith("Ⓑ§r")
 
     private fun isIronman(entity: EntityLivingBase) =
         !SkyBlockAPI.gamemode.noTrade && entity.displayName.formattedText.endsWith("♲§r")

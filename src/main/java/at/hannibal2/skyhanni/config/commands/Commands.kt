@@ -14,6 +14,7 @@ import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.data.SackAPI
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.bazaar.HypixelBazaarFetcher
+import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.bingo.card.BingoCardDisplay
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.BingoNextStepHelper
 import at.hannibal2.skyhanni.features.chat.Translator
@@ -69,7 +70,6 @@ import at.hannibal2.skyhanni.test.DebugCommand
 import at.hannibal2.skyhanni.test.PacketTest
 import at.hannibal2.skyhanni.test.SkyHanniConfigSearchResetCommand
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
-import at.hannibal2.skyhanni.test.TestBingo
 import at.hannibal2.skyhanni.test.WorldEdit
 import at.hannibal2.skyhanni.test.command.CopyActionBarCommand
 import at.hannibal2.skyhanni.test.command.CopyBossbarCommand
@@ -448,7 +448,7 @@ object Commands {
         registerCommand(
             "shtestbingo",
             "dev command"
-        ) { TestBingo.toggle() }
+        ) { BingoAPI.toggleDebug() }
         registerCommand(
             "shprintbingohelper",
             "dev command"

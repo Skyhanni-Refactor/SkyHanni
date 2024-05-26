@@ -2,8 +2,6 @@ package at.hannibal2.skyhanni.features.bingo.card
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.Gamemode
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.BingoData
 import at.hannibal2.skyhanni.events.bingo.BingoCardUpdateEvent
 import at.hannibal2.skyhanni.events.bingo.BingoGoalReachedEvent
@@ -152,7 +150,7 @@ object BingoCardReader {
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onChat(event: SkyHanniChatEvent) {
-        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
+        if (!BingoAPI.isBingo()) return
         if (!config.enabled) return
 
         val name = goalCompletePattern.matchMatcher(event.message) {

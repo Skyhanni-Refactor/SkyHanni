@@ -48,7 +48,7 @@ object BingoCardDisplay {
     }
 
     fun toggleCommand() {
-        if (SkyBlockAPI.gamemode != Gamemode.BINGO) {
+        if (BingoAPI.isBingo()) {
             ChatUtils.userError("This command only works on a bingo profile!")
             return
         }

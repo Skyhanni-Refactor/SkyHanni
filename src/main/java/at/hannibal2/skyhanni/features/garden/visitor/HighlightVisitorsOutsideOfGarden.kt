@@ -1,14 +1,13 @@
 package at.hannibal2.skyhanni.features.garden.visitor
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.Gamemode
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.garden.visitor.VisitorConfig.VisitorBlockBehaviour
 import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenVisitor
 import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -80,7 +79,7 @@ object HighlightVisitorsOutsideOfGarden {
         get() = when (config.blockInteracting) {
             VisitorBlockBehaviour.DONT -> false
             VisitorBlockBehaviour.ALWAYS -> true
-            VisitorBlockBehaviour.ONLY_ON_BINGO -> SkyBlockAPI.gamemode == Gamemode.BINGO
+            VisitorBlockBehaviour.ONLY_ON_BINGO -> BingoAPI.isBingo()
             null -> false
         }
 

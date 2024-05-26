@@ -451,7 +451,6 @@ import at.hannibal2.skyhanni.test.PacketTest
 import at.hannibal2.skyhanni.test.ParkourWaypointSaver
 import at.hannibal2.skyhanni.test.ShowItemUuid
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
-import at.hannibal2.skyhanni.test.TestBingo
 import at.hannibal2.skyhanni.test.TestCopyBestiaryValues
 import at.hannibal2.skyhanni.test.TestCopyRngMeterValues
 import at.hannibal2.skyhanni.test.TestExportTools
@@ -956,7 +955,6 @@ class SkyHanniMod {
         loadModule(PacketTest)
         loadModule(ParkourWaypointSaver)
         loadModule(SkyHanniDebugsAndTests())
-        loadModule(TestBingo)
         loadModule(TestCopyBestiaryValues)
         loadModule(TestCopyRngMeterValues)
         loadModule(TestShowSlotNumber)

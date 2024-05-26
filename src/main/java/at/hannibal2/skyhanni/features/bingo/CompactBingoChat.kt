@@ -2,8 +2,6 @@ package at.hannibal2.skyhanni.features.bingo
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.Gamemode
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -37,7 +35,7 @@ object CompactBingoChat {
     @HandleEvent
     fun onChat(event: SkyHanniChatEvent) {
         if (!config.enabled) return
-        if (SkyBlockAPI.gamemode != Gamemode.BINGO && !config.outsideBingo) return
+        if (!BingoAPI.isBingo() && !config.outsideBingo) return
 
         val message = event.message
         borderPattern.matchMatcher(message) {
