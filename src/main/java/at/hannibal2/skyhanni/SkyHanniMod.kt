@@ -449,7 +449,6 @@ import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.test.HighlightMissingRepoItems
 import at.hannibal2.skyhanni.test.PacketTest
 import at.hannibal2.skyhanni.test.ParkourWaypointSaver
-import at.hannibal2.skyhanni.test.ShowItemUuid
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import at.hannibal2.skyhanni.test.TestCopyBestiaryValues
 import at.hannibal2.skyhanni.test.TestCopyRngMeterValues
@@ -885,7 +884,6 @@ class SkyHanniMod {
         loadModule(ShiftClickEquipment)
         loadModule(ShiftClickNPCSell)
         loadModule(ShowFishingItemName)
-        loadModule(ShowItemUuid)
         loadModule(ShowMotesNpcSellPrice)
         loadModule(ShyCruxWarnings)
         loadModule(SkillProgress)
@@ -954,7 +952,7 @@ class SkyHanniMod {
         loadModule(HighlightMissingRepoItems)
         loadModule(PacketTest)
         loadModule(ParkourWaypointSaver)
-        loadModule(SkyHanniDebugsAndTests())
+        loadModule(SkyHanniDebugsAndTests)
         loadModule(TestCopyBestiaryValues)
         loadModule(TestCopyRngMeterValues)
         loadModule(TestShowSlotNumber)
