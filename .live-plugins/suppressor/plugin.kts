@@ -51,9 +51,9 @@ class HandleEventInspectionKotlin : AbstractKotlinInspection() {
 
         return visitor
     }
-    override fun getDisplayName() = "Replace \"hello\" with \"Hello world\" in Kotlin"
-    override fun getShortName() = "HelloWorldInspectionKotlin"
-    override fun getGroupDisplayName() = "Live plugin"
+    override fun getDisplayName() = "Event handler function should be annotated with @HandleEvent"
+    override fun getShortName() = "HandleEventInspection"
+    override fun getGroupDisplayName() = "SkyHanni"
     override fun isEnabledByDefault() = true
 }
 
