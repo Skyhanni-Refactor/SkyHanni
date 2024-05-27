@@ -11,6 +11,7 @@ plugins {
     kotlin("jvm") version "1.9.0"
     id("com.bnorm.power.kotlin-power-assert") version "0.13.0"
     `maven-publish`
+    id("com.google.devtools.ksp") version "1.9.0-1.0.13"
     id("moe.nea.shot") version "1.0.0"
 }
 
@@ -90,6 +91,10 @@ dependencies {
 
     headlessLwjgl(libs.headlessLwjgl)
 
+    // This should stay the same as the kotlin version above
+    implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:1.9.0"))
+    compileOnly(ksp(project(":annotations"))!!)
+
     shadowImpl("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
         isTransitive = false
     }
@@ -129,6 +134,11 @@ dependencies {
 
     implementation("net.hypixel:mod-api:0.3.1")
 }
+
+ksp {
+    arg("symbolProcessor", "at.hannibal2.skyhanni.loadmodule.LoadModuleProvider")
+}
+
 configurations.getByName("minecraftNamed").dependencies.forEach {
     shot.applyTo(it as HasConfigurableAttributes<*>)
 }
@@ -145,6 +155,14 @@ kotlin {
         languageSettings {
             languageVersion = "2.0"
             enableLanguageFeature("BreakContinueInInlineLambdas")
+        }
+    }
+    kotlin {
+        sourceSets.main {
+            kotlin.srcDir("build/generated/ksp/main/kotlin")
+        }
+        sourceSets.test {
+            kotlin.srcDir("build/generated/ksp/test/kotlin")
         }
     }
 }
@@ -290,6 +308,3 @@ publishing.publications {
         }
     }
 }
-
-
-
