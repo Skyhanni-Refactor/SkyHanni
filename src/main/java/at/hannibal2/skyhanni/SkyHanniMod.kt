@@ -7,7 +7,6 @@ import at.hannibal2.skyhanni.api.BossbarAPI
 import at.hannibal2.skyhanni.api.CollectionAPI
 import at.hannibal2.skyhanni.api.DataWatcherAPI
 import at.hannibal2.skyhanni.api.EntityAttributeAPI
-import at.hannibal2.skyhanni.api.FmlEventAPI
 import at.hannibal2.skyhanni.api.GetFromSackAPI
 import at.hannibal2.skyhanni.api.GuildAPI
 import at.hannibal2.skyhanni.api.HypixelAPI
@@ -446,6 +445,7 @@ import at.hannibal2.skyhanni.features.stranded.HighlightPlaceableNpcs
 import at.hannibal2.skyhanni.features.summonings.SummoningMobManager
 import at.hannibal2.skyhanni.features.summonings.SummoningSoulsName
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
+import at.hannibal2.skyhanni.skyhannimodule.LoadedModules
 import at.hannibal2.skyhanni.test.HighlightMissingRepoItems
 import at.hannibal2.skyhanni.test.PacketTest
 import at.hannibal2.skyhanni.test.ParkourWaypointSaver
@@ -959,12 +959,11 @@ class SkyHanniMod {
         loadModule(TrackParticlesCommand)
         loadModule(TrackSoundsCommand)
         loadModule(WorldEdit)
-
         loadModule(MobDebug)
 
         loadModule(SkyHanniEvents)
-        loadModule(FmlEventAPI)
 
+        LoadedModules.modules.forEach { loadModule(it) }
         SkyHanniEvents.init(modules)
 
         Commands.init()
