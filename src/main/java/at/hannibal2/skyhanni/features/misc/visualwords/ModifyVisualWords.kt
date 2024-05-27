@@ -18,6 +18,7 @@ object ModifyVisualWords {
 
     var modifiedWords = mutableListOf<VisualWord>()
 
+    @JvmStatic
     fun modifyText(originalText: String?): String? {
         var modifiedText = originalText ?: return null
         if (!HypixelAPI.onHypixel) return originalText

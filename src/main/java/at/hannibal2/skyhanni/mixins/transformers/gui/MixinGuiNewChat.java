@@ -19,11 +19,11 @@ public class MixinGuiNewChat {
 
     @Inject(method = "drawChat", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;enableBlend()V", shift = At.Shift.AFTER))
     private void setTextRenderIsFromChat(int updateCounter, CallbackInfo ci) {
-        FontRendererHook.INSTANCE.setCameFromChat(true);
+        FontRendererHook.setCameFromChat(true);
     }
 
     @Inject(method = "drawChat", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GlStateManager;disableAlpha()V", shift = At.Shift.BEFORE))
     private void setTextRenderIsntFromChat(int updateCounter, CallbackInfo ci) {
-        FontRendererHook.INSTANCE.setCameFromChat(false);
+        FontRendererHook.setCameFromChat(false);
     }
 }

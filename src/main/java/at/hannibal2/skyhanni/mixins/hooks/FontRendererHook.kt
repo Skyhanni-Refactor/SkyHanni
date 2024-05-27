@@ -27,6 +27,7 @@ object FontRendererHook {
     private var currentDrawState: ChromaFontRenderer? = null
     private var previewChroma = false
 
+    @JvmStatic
     var cameFromChat = false
 
     /**
