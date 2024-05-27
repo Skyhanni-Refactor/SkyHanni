@@ -5,6 +5,8 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.api.skyblock.IslandTypeTag
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.compat.soopy.data.MiningEventData
+import at.hannibal2.skyhanni.compat.soopy.data.RunningEventType
 import at.hannibal2.skyhanni.config.features.mining.MiningEventConfig
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent

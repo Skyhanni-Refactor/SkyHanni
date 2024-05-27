@@ -7,7 +7,8 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.api.skyblock.IslandTypeTag
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
-import at.hannibal2.skyhanni.config.ConfigManager
+import at.hannibal2.skyhanni.compat.soopy.SoopyAPI
+import at.hannibal2.skyhanni.compat.soopy.data.MiningEventBody
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.BossbarUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -15,19 +16,16 @@ import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.toDashlessUUID
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils
-import at.hannibal2.skyhanni.utils.json.fromJson
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.JsonPrimitive
 import kotlinx.coroutines.launch
-import java.io.IOException
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -139,46 +137,26 @@ object MiningEventTracker {
 
         val serverId = HypixelAPI.server ?: return
 
-        val miningEventData = MiningEventDataSend(
+        if (apiError) {
+            ChatUtils.debug("blocked sending mining event data: api error")
+            return
+        }
+        val body = MiningEventBody(
             SkyBlockAPI.island,
             serverId,
             eventType,
             timeRemaining.inWholeMilliseconds,
             McPlayer.uuid.toDashlessUUID()
         )
-        val miningEventJson = ConfigManager.gson.toJson(miningEventData)
 
-        if (apiError) {
-            ChatUtils.debug("blocked sending mining event data: api error")
-            return
-        }
         SkyHanniMod.coroutineScope.launch {
-            sendData(miningEventJson)
-        }
-    }
-
-    private fun sendData(json: String) {
-        val response = try {
-            APIUtil.postJSON("https://api.soopy.dev/skyblock/chevents/set", json)
-        } catch (e: IOException) {
-            if (LorenzUtils.debug) {
+            SoopyAPI.postMiningEvent(body).onFailure {
+                if (!config.enabled) return@launch
                 ErrorManager.logErrorWithData(
-                    e, "Sending mining event data was unsuccessful",
-                    "sentData" to json
+                    it, "Sending mining event data was unsuccessful",
+                    "data" to body
                 )
             }
-            return
-        }
-        if (!response.success) return
-
-        val formattedResponse = ConfigManager.gson.fromJson<MiningEventDataReceive>(response.data)
-        if (!formattedResponse.success) {
-            if (!config.enabled) return
-            ErrorManager.logErrorWithData(
-                Exception("PostFailure"), "Sending mining event data was unsuccessful",
-                "cause" to formattedResponse.cause,
-                "sentData" to json
-            )
         }
     }
 
@@ -192,33 +170,22 @@ object MiningEventTracker {
     private fun fetchData() {
         canRequestAt = SimpleTimeMark.now() + defaultCooldown
         SkyHanniMod.coroutineScope.launch {
-            val data = try {
-                APIUtil.getJSONResponse("https://api.soopy.dev/skyblock/chevents/get")
-            } catch (e: Exception) {
-                apiErrorCount++
-                canRequestAt = SimpleTimeMark.now() + 20.minutes
-                if (LorenzUtils.debug) {
-                    ErrorManager.logErrorWithData(
-                        e, "Receiving mining event data was unsuccessful",
-                    )
+            SoopyAPI.getMiningEvent().fold(
+                {
+                    apiErrorCount = 0
+                    canRequestAt = SimpleTimeMark.now() + it.data.updateIn.milliseconds
+                    MiningEventDisplay.updateData(it.data)
+                },
+                {
+                    apiErrorCount++
+                    canRequestAt = SimpleTimeMark.now() + 20.minutes
+                    if (LorenzUtils.debug) {
+                        ErrorManager.logErrorWithData(
+                            it, "Receiving mining event data was unsuccessful",
+                        )
+                    }
                 }
-                return@launch
-            }
-            val miningEventData = ConfigManager.gson.fromJson(data, MiningEventDataReceive::class.java)
-
-            if (!miningEventData.success) {
-                ErrorManager.logErrorWithData(
-                    Exception("PostFailure"), "Receiving mining event data was unsuccessful",
-                    "cause" to miningEventData.cause,
-                    "recievedData" to data
-                )
-                return@launch
-            }
-            apiErrorCount = 0
-
-            canRequestAt = SimpleTimeMark.now() + miningEventData.data.updateIn.milliseconds
-
-            MiningEventDisplay.updateData(miningEventData.data)
+            )
         }
     }
 
