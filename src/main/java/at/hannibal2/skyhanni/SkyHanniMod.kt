@@ -444,8 +444,8 @@ import at.hannibal2.skyhanni.features.slayer.enderman.EndermanSlayerHideParticle
 import at.hannibal2.skyhanni.features.stranded.HighlightPlaceableNpcs
 import at.hannibal2.skyhanni.features.summonings.SummoningMobManager
 import at.hannibal2.skyhanni.features.summonings.SummoningSoulsName
-import at.hannibal2.skyhanni.loadmodule.LoadedModules
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
+import at.hannibal2.skyhanni.skyhannimodule.LoadedModules
 import at.hannibal2.skyhanni.test.HighlightMissingRepoItems
 import at.hannibal2.skyhanni.test.PacketTest
 import at.hannibal2.skyhanni.test.ParkourWaypointSaver

@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.GameRenderEvent
 import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
-import at.hannibal2.skyhanni.loadmodule.LoadModule
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.mc.McPlayer
@@ -26,7 +26,7 @@ import net.minecraftforge.fml.common.network.FMLNetworkEvent
 /**
  * Handles all posting of FML events to SkyHanni events.
  */
-@LoadModule
+@SkyHanniModule
 object FmlEventAPI {
 
     private var totalTicks = 0

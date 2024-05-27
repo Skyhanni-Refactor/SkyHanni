@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm")
     java
@@ -16,4 +18,9 @@ tasks.withType<JavaCompile> {
     if (JavaVersion.current().isJava9Compatible) {
         options.release.set(8)
     }
+}
+
+val compileKotlin: KotlinCompile by tasks
+compileKotlin.kotlinOptions {
+    jvmTarget = "1.8"
 }

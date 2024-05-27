@@ -91,9 +91,7 @@ dependencies {
 
     headlessLwjgl(libs.headlessLwjgl)
 
-    // This should stay the same as the kotlin version above
-    implementation(enforcedPlatform("org.jetbrains.kotlin:kotlin-bom:1.9.0"))
-    compileOnly(ksp(project(":annotations"))!!)
+    compileOnly(ksp(project(":annotation-processors"))!!)
 
     shadowImpl("org.spongepowered:mixin:0.7.11-SNAPSHOT") {
         isTransitive = false

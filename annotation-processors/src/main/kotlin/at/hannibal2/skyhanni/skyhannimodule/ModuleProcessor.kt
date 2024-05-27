@@ -1,4 +1,4 @@
-package at.hannibal2.skyhanni.loadmodule
+package at.hannibal2.skyhanni.skyhannimodule
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies
@@ -11,11 +11,11 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
 import java.io.OutputStreamWriter
 
-class LoadModuleProcessor(private val codeGenerator: CodeGenerator, private val logger: KSPLogger) : SymbolProcessor {
+class ModuleProcessor(private val codeGenerator: CodeGenerator, private val logger: KSPLogger) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
 
-        val symbols = resolver.getSymbolsWithAnnotation(LoadModule::class.qualifiedName!!).toList()
+        val symbols = resolver.getSymbolsWithAnnotation(SkyHanniModule::class.qualifiedName!!).toList()
         val validSymbols = symbols.mapNotNull { validateSymbol(it) }
 
         if (validSymbols.isNotEmpty()) {
@@ -41,11 +41,6 @@ class LoadModuleProcessor(private val codeGenerator: CodeGenerator, private val 
             return null
         }
 
-        if (symbol.typeParameters.isNotEmpty()) {
-            logger.error("@LoadModule is not valid on generic classes", symbol)
-            return null
-        }
-
         return symbol
     }
 
@@ -53,10 +48,10 @@ class LoadModuleProcessor(private val codeGenerator: CodeGenerator, private val 
         val dependencies = symbols.mapNotNull { it.containingFile }.toTypedArray()
         val deps = Dependencies(true, *dependencies)
 
-        val file = codeGenerator.createNewFile(deps, "at.hannibal2.skyhanni.loadmodule", "LoadedModules")
+        val file = codeGenerator.createNewFile(deps, "at.hannibal2.skyhanni.skyhannimodule", "LoadedModules")
 
         OutputStreamWriter(file).use {
-            it.write("package at.hannibal2.skyhanni.loadmodule\n\n")
+            it.write("package at.hannibal2.skyhanni.skyhannimodule\n\n")
             it.write("object LoadedModules {\n")
             it.write("    val modules: List<Any> = listOf(\n")
 
