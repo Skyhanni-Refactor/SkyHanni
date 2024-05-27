@@ -68,6 +68,6 @@ class LoadModuleProcessor(private val codeGenerator: CodeGenerator, private val 
             it.write("}\n")
         }
 
-        logger.warn("Generated file LoadedModules")
+        logger.warn("Generated LoadedModules file with ${symbols.size} modules")
     }
 }
