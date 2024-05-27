@@ -46,11 +46,22 @@ import kotlin.time.Duration.Companion.seconds
 
 typealias ScoreboardElementType = Pair<String, HorizontalAlignment>
 
-class CustomScoreboard {
+object CustomScoreboard {
 
     private var display = emptyList<ScoreboardElementType>()
     private var cache = emptyList<ScoreboardElementType>()
     private val guiName = "Custom Scoreboard"
+
+    internal val config get() = SkyHanniMod.feature.gui.customScoreboard
+    internal val displayConfig get() = config.display
+    internal val alignmentConfig get() = displayConfig.alignment
+    internal val arrowConfig get() = displayConfig.arrow
+    internal val eventsConfig get() = displayConfig.events
+    internal val mayorConfig get() = displayConfig.mayor
+    internal val partyConfig get() = displayConfig.party
+    internal val maxwellConfig get() = displayConfig.maxwell
+    internal val informationFilteringConfig get() = config.informationFiltering
+    internal val backgroundConfig get() = config.background
 
     @HandleEvent
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
@@ -101,19 +112,6 @@ class CustomScoreboard {
 
         // Remove Known Lines, so we can get the unknown ones
         UnknownLinesHandler.handleUnknownLines()
-    }
-
-    companion object {
-        internal val config get() = SkyHanniMod.feature.gui.customScoreboard
-        internal val displayConfig get() = config.display
-        internal val alignmentConfig get() = displayConfig.alignment
-        internal val arrowConfig get() = displayConfig.arrow
-        internal val eventsConfig get() = displayConfig.events
-        internal val mayorConfig get() = displayConfig.mayor
-        internal val partyConfig get() = displayConfig.party
-        internal val maxwellConfig get() = displayConfig.maxwell
-        internal val informationFilteringConfig get() = config.informationFiltering
-        internal val backgroundConfig get() = config.background
     }
 
     private fun createLines(): List<ScoreboardElementType> = buildList {

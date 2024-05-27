@@ -34,7 +34,7 @@ import net.minecraft.util.IChatComponent
  * Listening to the player chat events, and applying custom chat options to them.
  * E.g. part order, rank hider, etc
  */
-class PlayerNameFormatter {
+object PlayerNameFormatter {
     private val config get() = SkyHanniMod.feature.chat.playerMessage
 
     private val patternGroup = RepoPattern.group("data.chat.player.name")

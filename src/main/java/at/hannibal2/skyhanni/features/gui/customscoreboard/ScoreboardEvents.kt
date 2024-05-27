@@ -5,7 +5,6 @@ import at.hannibal2.skyhanni.api.skyblock.IslandTypeTag
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
-import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard.Companion.eventsConfig
 import at.hannibal2.skyhanni.features.gui.customscoreboard.ScoreboardEvents.VOTING
 import at.hannibal2.skyhanni.features.gui.customscoreboard.ScoreboardPattern
 import at.hannibal2.skyhanni.features.misc.ServerRestartTitle
@@ -180,14 +179,16 @@ enum class ScoreboardEvents(
 
     companion object {
         fun getEvent() = buildList {
-            if (eventsConfig.showAllActiveEvents) {
-                for (event in eventsConfig.eventEntries) {
+            if (CustomScoreboard.eventsConfig.showAllActiveEvents) {
+                for (event in CustomScoreboard.eventsConfig.eventEntries) {
                     if (event.showWhen()) {
                         add(event)
                     }
                 }
             } else {
-                add(eventsConfig.eventEntries.firstOrNull { it.showWhen() && it.getLines().isNotEmpty() })
+                add(CustomScoreboard.eventsConfig.eventEntries.firstOrNull {
+                    it.showWhen() && it.getLines().isNotEmpty()
+                })
             }
         }
 

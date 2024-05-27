@@ -5,7 +5,6 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.gui.customscoreboard.DisplayConfig
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.features.bingo.BingoAPI
-import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard.Companion.displayConfig
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
@@ -34,7 +33,7 @@ object CustomScoreboardUtils {
         else -> "§e"
     }
 
-    internal fun Number.formatNum(): String = when (displayConfig.numberFormat) {
+    internal fun Number.formatNum(): String = when (CustomScoreboard.displayConfig.numberFormat) {
         DisplayConfig.NumberFormat.SHORT -> NumberUtil.format(this)
         DisplayConfig.NumberFormat.LONG -> this.addSeparators()
         else -> "0"

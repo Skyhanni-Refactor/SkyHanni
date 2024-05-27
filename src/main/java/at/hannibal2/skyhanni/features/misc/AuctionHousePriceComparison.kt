@@ -19,7 +19,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import net.minecraft.item.ItemStack
 import java.awt.Color
 
-class AuctionHousePriceComparison {
+object AuctionHousePriceComparison {
 
     private val config get() = SkyHanniMod.feature.inventory.auctions.auctionsPriceComparison
 

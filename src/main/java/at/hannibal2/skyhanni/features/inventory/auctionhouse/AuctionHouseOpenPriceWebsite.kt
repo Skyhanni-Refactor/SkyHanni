@@ -17,7 +17,7 @@ import net.minecraft.entity.player.InventoryPlayer
 import net.minecraft.item.ItemStack
 import kotlin.time.Duration.Companion.seconds
 
-class AuctionHouseOpenPriceWebsite {
+object AuctionHouseOpenPriceWebsite {
 
     private val config get() = SkyHanniMod.feature.inventory.auctions
     private var lastClick = SimpleTimeMark.farPast()

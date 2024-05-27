@@ -19,7 +19,7 @@ import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.system.OS
 
-class AuctionHouseCopyUnderbidPrice {
+object AuctionHouseCopyUnderbidPrice {
 
     private val config get() = SkyHanniMod.feature.inventory.auctions
 

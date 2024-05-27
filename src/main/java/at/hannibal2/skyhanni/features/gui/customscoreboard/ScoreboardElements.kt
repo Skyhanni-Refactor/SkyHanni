@@ -17,13 +17,6 @@ import at.hannibal2.skyhanni.data.QuiverAPI.NONE_ARROW_TYPE
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
-import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard.Companion.arrowConfig
-import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard.Companion.config
-import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard.Companion.displayConfig
-import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard.Companion.informationFilteringConfig
-import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard.Companion.maxwellConfig
-import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard.Companion.mayorConfig
-import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard.Companion.partyConfig
 import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboardUtils.formatNum
 import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboardUtils.getGroupFromPattern
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -51,7 +44,7 @@ private fun onRemoval(line: String) {
     if (!unconfirmedUnknownLines.contains(line)) return
     unconfirmedUnknownLines = unconfirmedUnknownLines.filterNot { it == line }
     confirmedUnknownLines.add(line)
-    if (!config.unknownLinesWarning) return
+    if (!CustomScoreboard.config.unknownLinesWarning) return
     val pluralize = pluralize(confirmedUnknownLines.size, "unknown line", withNumber = true)
     val message = "CustomScoreboard detected $pluralize"
     ErrorManager.logErrorWithData(
@@ -286,7 +279,7 @@ enum class ScoreboardElement(
     }
 
     private fun isVisible(): Boolean {
-        if (!informationFilteringConfig.hideIrrelevantLines) return true
+        if (!CustomScoreboard.informationFilteringConfig.hideIrrelevantLines) return true
         return showWhen()
     }
 
@@ -331,13 +324,14 @@ enum class ScoreboardElement(
 }
 
 private fun getTitleDisplayPair(): List<ScoreboardElementType> =
-    if (displayConfig.titleAndFooter.useHypixelTitleAnimation) {
-        listOf(ScoreboardData.objectiveTitle to displayConfig.titleAndFooter.alignTitleAndFooter)
+    if (CustomScoreboard.displayConfig.titleAndFooter.useHypixelTitleAnimation) {
+        listOf(ScoreboardData.objectiveTitle to CustomScoreboard.displayConfig.titleAndFooter.alignTitleAndFooter)
     } else {
-        listOf(displayConfig.titleAndFooter.customTitle.get().toString()
+        listOf(
+            CustomScoreboard.displayConfig.titleAndFooter.customTitle.get().toString()
             .replace("&", "§")
             .split("\\n")
-            .map { it to displayConfig.titleAndFooter.alignTitleAndFooter }
+                .map { it to CustomScoreboard.displayConfig.titleAndFooter.alignTitleAndFooter }
         ).flatten()
     }
 
@@ -355,8 +349,8 @@ private fun getPurseDisplayPair(): List<ScoreboardElementType> {
 
     return listOf(
         when {
-            informationFilteringConfig.hideEmptyLines && purse == "0" -> "<hidden>"
-            displayConfig.displayNumbersFirst -> "§6$purse Purse"
+            CustomScoreboard.informationFilteringConfig.hideEmptyLines && purse == "0" -> "<hidden>"
+            CustomScoreboard.displayConfig.displayNumbersFirst -> "§6$purse Purse"
             else -> "Purse: §6$purse"
         } to HorizontalAlignment.LEFT
     )
@@ -370,8 +364,8 @@ private fun getMotesDisplayPair(): List<ScoreboardElementType> {
 
     return listOf(
         when {
-            informationFilteringConfig.hideEmptyLines && motes == "0" -> "<hidden>"
-            displayConfig.displayNumbersFirst -> "§d$motes Motes"
+            CustomScoreboard.informationFilteringConfig.hideEmptyLines && motes == "0" -> "<hidden>"
+            CustomScoreboard.displayConfig.displayNumbersFirst -> "§d$motes Motes"
             else -> "Motes: §d$motes"
         } to HorizontalAlignment.LEFT
     )
@@ -384,8 +378,8 @@ private fun getBankDisplayPair(): List<ScoreboardElementType> {
 
     return listOf(
         when {
-            informationFilteringConfig.hideEmptyLines && (bank == "0" || bank == "0§7 / §60") -> "<hidden>"
-            displayConfig.displayNumbersFirst -> "§6$bank Bank"
+            CustomScoreboard.informationFilteringConfig.hideEmptyLines && (bank == "0" || bank == "0§7 / §60") -> "<hidden>"
+            CustomScoreboard.displayConfig.displayNumbersFirst -> "§6$bank Bank"
             else -> "Bank: §6$bank"
         } to HorizontalAlignment.LEFT
     )
@@ -403,9 +397,9 @@ private fun getBitsDisplayPair(): List<ScoreboardElementType> {
 
     return listOf(
         when {
-            informationFilteringConfig.hideEmptyLines && bits == "0" && bitsToClaim == "0" -> "<hidden>"
-            displayConfig.displayNumbersFirst -> {
-                if (displayConfig.showUnclaimedBits) {
+            CustomScoreboard.informationFilteringConfig.hideEmptyLines && bits == "0" && bitsToClaim == "0" -> "<hidden>"
+            CustomScoreboard.displayConfig.displayNumbersFirst -> {
+                if (CustomScoreboard.displayConfig.showUnclaimedBits) {
                     "§b$bits§7/${if (bitsToClaim == "0") "§30" else "§b${bitsToClaim}"} §bBits"
                 } else {
                     "§b$bits Bits"
@@ -413,7 +407,7 @@ private fun getBitsDisplayPair(): List<ScoreboardElementType> {
             }
 
             else -> {
-                if (displayConfig.showUnclaimedBits) {
+                if (CustomScoreboard.displayConfig.showUnclaimedBits) {
                     "Bits: §b$bits§7/${if (bitsToClaim == "0") "§30" else "§b${bitsToClaim}"}"
                 } else {
                     "Bits: §b$bits"
@@ -432,8 +426,8 @@ private fun getCopperDisplayPair(): List<ScoreboardElementType> {
 
     return listOf(
         when {
-            informationFilteringConfig.hideEmptyLines && copper == "0" -> "<hidden>"
-            displayConfig.displayNumbersFirst -> "§c$copper Copper"
+            CustomScoreboard.informationFilteringConfig.hideEmptyLines && copper == "0" -> "<hidden>"
+            CustomScoreboard.displayConfig.displayNumbersFirst -> "§c$copper Copper"
             else -> "Copper: §c$copper"
         } to HorizontalAlignment.LEFT
     )
@@ -446,8 +440,8 @@ private fun getGemsDisplayPair(): List<ScoreboardElementType> {
 
     return listOf(
         when {
-            informationFilteringConfig.hideEmptyLines && gems == "0" -> "<hidden>"
-            displayConfig.displayNumbersFirst -> "§a$gems Gems"
+            CustomScoreboard.informationFilteringConfig.hideEmptyLines && gems == "0" -> "<hidden>"
+            CustomScoreboard.displayConfig.displayNumbersFirst -> "§a$gems Gems"
             else -> "Gems: §a$gems"
         } to HorizontalAlignment.LEFT
     )
@@ -460,8 +454,8 @@ private fun getHeatDisplayPair(): List<ScoreboardElementType> {
 
     return listOf(
         when {
-            informationFilteringConfig.hideEmptyLines && heat == "§c♨ 0" -> "<hidden>"
-            displayConfig.displayNumbersFirst/* && heat != "§6IMMUNE" */ -> if (heat == "0") "§c♨ 0 Heat" else "$heat Heat"
+            CustomScoreboard.informationFilteringConfig.hideEmptyLines && heat == "§c♨ 0" -> "<hidden>"
+            CustomScoreboard.displayConfig.displayNumbersFirst/* && heat != "§6IMMUNE" */ -> if (heat == "0") "§c♨ 0 Heat" else "$heat Heat"
             else -> if (heat == "0") "Heat: §c♨ 0" else "Heat: $heat"
         } to HorizontalAlignment.LEFT
     )
@@ -475,8 +469,8 @@ private fun getColdDisplayPair(): List<ScoreboardElementType> {
 
     return listOf(
         when {
-            informationFilteringConfig.hideEmptyLines && cold == 0 -> "<hidden>"
-            displayConfig.displayNumbersFirst -> "§b$cold❄ Cold"
+            CustomScoreboard.informationFilteringConfig.hideEmptyLines && cold == 0 -> "<hidden>"
+            CustomScoreboard.displayConfig.displayNumbersFirst -> "§b$cold❄ Cold"
             else -> "Cold: §b$cold❄"
         } to HorizontalAlignment.LEFT
     )
@@ -492,8 +486,8 @@ private fun getNorthStarsDisplayPair(): List<ScoreboardElementType> {
 
     return listOf(
         when {
-            informationFilteringConfig.hideEmptyLines && northStars == "0" -> "<hidden>"
-            displayConfig.displayNumbersFirst -> "§d$northStars North Stars"
+            CustomScoreboard.informationFilteringConfig.hideEmptyLines && northStars == "0" -> "<hidden>"
+            CustomScoreboard.displayConfig.displayNumbersFirst -> "§d$northStars North Stars"
             else -> "North Stars: §d$northStars"
         } to HorizontalAlignment.LEFT
     )
@@ -514,12 +508,12 @@ private fun getLocationDisplayPair() = buildList {
 }
 
 fun getPlayerAmountDisplayPair() = buildList {
-    val max = if (displayConfig.showMaxIslandPlayers) {
+    val max = if (CustomScoreboard.displayConfig.showMaxIslandPlayers) {
         "§7/§a${SkyBlockAPI.maxPlayers}"
     } else {
         ""
     }
-    if (displayConfig.displayNumbersFirst) {
+    if (CustomScoreboard.displayConfig.displayNumbersFirst) {
         add("§a${SkyBlockAPI.players}$max Players" to HorizontalAlignment.LEFT)
     } else {
         add("§7Players: §a${SkyBlockAPI.players}$max" to HorizontalAlignment.LEFT)
@@ -556,8 +550,9 @@ private fun getLobbyDisplayPair(): List<ScoreboardElementType> {
 
 private fun getPowerDisplayPair() = listOf(
     (MaxwellAPI.currentPower?.let {
-        val mp = if (maxwellConfig.showMagicalPower) "§7(§6${MaxwellAPI.magicalPower?.addSeparators()}§7)" else ""
-        if (displayConfig.displayNumbersFirst) {
+        val mp =
+            if (CustomScoreboard.maxwellConfig.showMagicalPower) "§7(§6${MaxwellAPI.magicalPower?.addSeparators()}§7)" else ""
+        if (CustomScoreboard.displayConfig.displayNumbersFirst) {
             "§a${it.replace(" Power", "")} Power $mp"
         } else {
             "Power: §a$it $mp"
@@ -571,12 +566,12 @@ private fun getTuningDisplayPair(): List<Pair<String, HorizontalAlignment>> {
     if (tunings.isEmpty()) return listOf("§cNo Maxwell Tunings :(" to HorizontalAlignment.LEFT)
 
     val title = pluralize(tunings.size, "Tuning", "Tunings")
-    return if (maxwellConfig.compactTuning) {
+    return if (CustomScoreboard.maxwellConfig.compactTuning) {
         val tuning = tunings
             .take(3)
             .joinToString("§7, ") { tuning ->
                 with(tuning) {
-                    if (displayConfig.displayNumbersFirst) {
+                    if (CustomScoreboard.displayConfig.displayNumbersFirst) {
                         "$color$value$icon"
                     } else {
                         "$color$icon$value"
@@ -585,7 +580,7 @@ private fun getTuningDisplayPair(): List<Pair<String, HorizontalAlignment>> {
 
             }
         listOf(
-            if (displayConfig.displayNumbersFirst) {
+            if (CustomScoreboard.displayConfig.displayNumbersFirst) {
                 "$tuning §f$title"
             } else {
                 "$title: $tuning"
@@ -593,10 +588,10 @@ private fun getTuningDisplayPair(): List<Pair<String, HorizontalAlignment>> {
         )
     } else {
         val tuning = tunings
-            .take(maxwellConfig.tuningAmount.coerceAtLeast(1))
+            .take(CustomScoreboard.maxwellConfig.tuningAmount.coerceAtLeast(1))
             .map { tuning ->
                 with(tuning) {
-                    " §7- §f" + if (displayConfig.displayNumbersFirst) {
+                    " §7- §f" + if (CustomScoreboard.displayConfig.displayNumbersFirst) {
                         "$color$value $icon $name"
                     } else {
                         "$name: $color$value$icon"
@@ -619,7 +614,7 @@ private fun getCookieDisplayPair() = listOf(
 
 private fun getCookieShowWhen(): Boolean {
     if (SkyBlockAPI.gamemode == Gamemode.BINGO) return false
-    return informationFilteringConfig.hideEmptyLines && BitsAPI.hasCookieBuff()
+    return CustomScoreboard.informationFilteringConfig.hideEmptyLines && BitsAPI.hasCookieBuff()
 }
 
 private fun getObjectiveDisplayPair() = buildList {
@@ -647,7 +642,7 @@ private fun getSlayerDisplayPair(): List<ScoreboardElementType> = buildList {
 }
 
 private fun getSlayerShowWhen() =
-    if (informationFilteringConfig.hideIrrelevantLines) SlayerAPI.isInCorrectArea else true
+    if (CustomScoreboard.informationFilteringConfig.hideIrrelevantLines) SlayerAPI.isInCorrectArea else true
 
 private fun getQuiverDisplayPair(): List<ScoreboardElementType> {
     if (QuiverAPI.currentArrow == null)
@@ -655,7 +650,7 @@ private fun getQuiverDisplayPair(): List<ScoreboardElementType> {
     if (QuiverAPI.currentArrow == NONE_ARROW_TYPE)
         return listOf("No Arrows selected" to HorizontalAlignment.LEFT)
 
-    val amountString = (if (arrowConfig.colorArrowAmount) {
+    val amountString = (if (CustomScoreboard.arrowConfig.colorArrowAmount) {
         percentageColor(
             QuiverAPI.currentAmount.toLong(),
             QuiverAPI.MAX_ARROW_AMOUNT.toLong()
@@ -665,7 +660,7 @@ private fun getQuiverDisplayPair(): List<ScoreboardElementType> {
     }) + if (QuiverAPI.wearingSkeletonMasterChestplate) {
         "∞"
     } else {
-        when (arrowConfig.arrowAmountDisplay) {
+        when (CustomScoreboard.arrowConfig.arrowAmountDisplay) {
             ArrowAmountDisplay.NUMBER -> QuiverAPI.currentAmount.addSeparators()
             ArrowAmountDisplay.PERCENTAGE -> "${QuiverAPI.asArrowPercentage(QuiverAPI.currentAmount)}%"
             else -> QuiverAPI.currentAmount.addSeparators()
@@ -673,7 +668,7 @@ private fun getQuiverDisplayPair(): List<ScoreboardElementType> {
     }
 
     return listOf(
-        if (displayConfig.displayNumbersFirst) {
+        if (CustomScoreboard.displayConfig.displayNumbersFirst) {
             "$amountString ${QuiverAPI.currentArrow?.arrow}s"
         } else {
             "Arrows: $amountString ${QuiverAPI.currentArrow?.arrow?.replace(" Arrow", "")}"
@@ -682,7 +677,7 @@ private fun getQuiverDisplayPair(): List<ScoreboardElementType> {
 }
 
 private fun getQuiverShowWhen(): Boolean {
-    if (informationFilteringConfig.hideIrrelevantLines && !QuiverAPI.hasBowInInventory()) return false
+    if (CustomScoreboard.informationFilteringConfig.hideIrrelevantLines && !QuiverAPI.hasBowInInventory()) return false
     return !IslandType.THE_RIFT.isInIsland()
 }
 
@@ -711,12 +706,12 @@ private fun getPowderDisplayPair() = buildList {
         )
     )
 
-    if (informationFilteringConfig.hideEmptyLines && powderTypes.all { it.third == "0" }) {
+    if (CustomScoreboard.informationFilteringConfig.hideEmptyLines && powderTypes.all { it.third == "0" }) {
         add("<hidden>" to HorizontalAlignment.LEFT)
     } else {
         add("§9§lPowder" to HorizontalAlignment.LEFT)
 
-        if (displayConfig.displayNumbersFirst) {
+        if (CustomScoreboard.displayConfig.displayNumbersFirst) {
             for ((type, color, value) in powderTypes) {
                 if (value != "0") {
                     add(" §7- $color$value $type" to HorizontalAlignment.LEFT)
@@ -747,13 +742,13 @@ private fun getMayorDisplayPair() = buildList {
     add(
         ((MayorAPI.currentMayor?.mayorName?.let { MayorAPI.mayorNameWithColorCode(it) }
             ?: "<hidden>") +
-            (if (mayorConfig.showTimeTillNextMayor) {
+            (if (CustomScoreboard.mayorConfig.showTimeTillNextMayor) {
                 "§7 (§e${MayorAPI.timeTillNextMayor.format(maxUnits = 2)}§7)"
             } else {
                 ""
             })) to HorizontalAlignment.LEFT
     )
-    if (mayorConfig.showMayorPerks) {
+    if (CustomScoreboard.mayorConfig.showMayorPerks) {
         MayorAPI.currentMayor?.activePerks?.forEach {
             add(" §7- §e${it.perkName}" to HorizontalAlignment.LEFT)
         }
@@ -764,13 +759,13 @@ private fun getMayorShowWhen() =
     !IslandType.THE_RIFT.isInIsland() && MayorAPI.currentMayor != null
 
 private fun getPartyDisplayPair() =
-    if (PartyAPI.partyMembers.isEmpty() && informationFilteringConfig.hideEmptyLines) {
+    if (PartyAPI.partyMembers.isEmpty() && CustomScoreboard.informationFilteringConfig.hideEmptyLines) {
         listOf("<hidden>" to HorizontalAlignment.LEFT)
     } else {
         val title =
             if (PartyAPI.partyMembers.isEmpty()) "§9§lParty" else "§9§lParty (${PartyAPI.partyMembers.size})"
         val partyList = PartyAPI.partyMembers
-            .take(partyConfig.maxPartyList.get())
+            .take(CustomScoreboard.partyConfig.maxPartyList.get())
             .map {
                 " §7- §f$it"
             }
@@ -781,14 +776,15 @@ private fun getPartyDisplayPair() =
 private fun getPartyShowWhen() = if (DungeonAPI.inDungeon()) {
     false // Hidden bc the scoreboard lines already exist
 } else {
-    partyConfig.showPartyEverywhere || IslandTypeTag.SHOW_PARTY.inAny()
+    CustomScoreboard.partyConfig.showPartyEverywhere || IslandTypeTag.SHOW_PARTY.inAny()
 }
 
 private fun getFooterDisplayPair(): List<ScoreboardElementType> =
-    listOf(displayConfig.titleAndFooter.customFooter.get().toString()
+    listOf(
+        CustomScoreboard.displayConfig.titleAndFooter.customFooter.get().toString()
         .replace("&", "§")
         .split("\\n")
-        .map { it to displayConfig.titleAndFooter.alignTitleAndFooter }
+            .map { it to CustomScoreboard.displayConfig.titleAndFooter.alignTitleAndFooter }
     ).flatten()
 
 private fun getExtraDisplayPair(): List<ScoreboardElementType> {
