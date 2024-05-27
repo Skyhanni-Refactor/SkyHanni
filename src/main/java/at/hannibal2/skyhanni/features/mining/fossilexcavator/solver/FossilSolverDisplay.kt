@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.mining.fossilexcavator.solver
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.SkyHanniMod.Companion.coroutineScope
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
@@ -134,7 +133,7 @@ object FossilSolverDisplay {
             }
         }
 
-        coroutineScope.launch {
+        SkyHanniMod.coroutineScope.launch {
             FossilSolver.findBestTile(fossilLocations, dirtLocations, percentage)
         }
     }

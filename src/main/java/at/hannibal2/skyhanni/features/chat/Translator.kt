@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.features.chat
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.SkyHanniMod.Companion.coroutineScope
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -51,7 +50,7 @@ object Translator {
     fun toEnglish(args: Array<String>) {
         val message = args.joinToString(" ").removeColor()
 
-        coroutineScope.launch {
+        SkyHanniMod.coroutineScope.launch {
             GoogleTranslator.translate(message, "auto", "en").fold(
                 { ChatUtils.chat("Found translation: §f${it.text}") },
                 {
@@ -73,7 +72,7 @@ object Translator {
         val language = args[0]
         val message = args.drop(1).joinToString(" ")
 
-        coroutineScope.launch {
+        SkyHanniMod.coroutineScope.launch {
             GoogleTranslator.translate(message, "en", language).fold(
                 {
                     ChatUtils.chat("Copied translation to clipboard: §f${it.text}")

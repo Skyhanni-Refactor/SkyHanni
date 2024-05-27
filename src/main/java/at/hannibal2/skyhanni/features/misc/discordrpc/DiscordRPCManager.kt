@@ -2,9 +2,7 @@ package at.hannibal2.skyhanni.features.misc.discordrpc
 
 // This entire file was taken from SkyblockAddons code, ported to SkyHanni
 
-import at.hannibal2.skyhanni.SkyHanniMod.Companion.coroutineScope
-import at.hannibal2.skyhanni.SkyHanniMod.Companion.feature
-import at.hannibal2.skyhanni.SkyHanniMod.Companion.logger
+import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.misc.DiscordRPCConfig.LineEntry
@@ -38,7 +36,7 @@ object DiscordRPCManager : IPCListener {
 
     private const val APPLICATION_ID = 1093298182735282176L
 
-    val config get() = feature.gui.discordRPC
+    val config get() = SkyHanniMod.feature.gui.discordRPC
 
     private var client: IPCClient? = null
     private var startTimestamp: Long = 0
@@ -48,22 +46,22 @@ object DiscordRPCManager : IPCListener {
     var stackingEnchants: Map<String, StackingEnchantData> = emptyMap()
 
     fun start(fromCommand: Boolean = false) {
-        coroutineScope.launch {
+        SkyHanniMod.coroutineScope.launch {
             try {
                 if (isConnected()) return@launch
 
-                logger.info("Starting Discord RPC...")
+                SkyHanniMod.logger.info("Starting Discord RPC...")
                 startTimestamp = System.currentTimeMillis()
                 client = IPCClient(APPLICATION_ID)
                 client?.setup(fromCommand)
             } catch (ex: Throwable) {
-                logger.warn("Discord RPC has thrown an unexpected error while trying to start...", ex)
+                SkyHanniMod.logger.warn("Discord RPC has thrown an unexpected error while trying to start...", ex)
             }
         }
     }
 
     private fun stop() {
-        coroutineScope.launch {
+        SkyHanniMod.coroutineScope.launch {
             if (isConnected()) {
                 client?.close()
                 started = false
@@ -81,11 +79,11 @@ object DiscordRPCManager : IPCListener {
             // confirm that /shrpcstart worked
             ChatUtils.chat("Successfully started Rich Presence!", prefixColor = "§a")
         } catch (ex: Exception) {
-            logger.warn("Failed to connect to RPC!", ex)
+            SkyHanniMod.logger.warn("Failed to connect to RPC!", ex)
             ChatUtils.clickableChat(
                 "Discord Rich Presence was unable to start! " +
-                            "This usually happens when you join SkyBlock when Discord is not started. " +
-                            "Please run /shrpcstart to retry once you have launched Discord.",
+                    "This usually happens when you join SkyBlock when Discord is not started. " +
+                    "Please run /shrpcstart to retry once you have launched Discord.",
                 onClick = {
                     startCommand()
                 }
@@ -135,7 +133,7 @@ object DiscordRPCManager : IPCListener {
     }
 
     override fun onReady(client: IPCClient) {
-        logger.info("Discord RPC Ready.")
+        SkyHanniMod.logger.info("Discord RPC Ready.")
     }
 
     @HandleEvent
@@ -147,12 +145,12 @@ object DiscordRPCManager : IPCListener {
     }
 
     override fun onClose(client: IPCClient, json: JsonObject?) {
-        logger.info("Discord RPC closed.")
+        SkyHanniMod.logger.info("Discord RPC closed.")
         this.client = null
     }
 
     override fun onDisconnect(client: IPCClient?, t: Throwable?) {
-        logger.info("Discord RPC disconnected.")
+        SkyHanniMod.logger.info("Discord RPC disconnected.")
         this.client = null
     }
 
