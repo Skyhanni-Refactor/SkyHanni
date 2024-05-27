@@ -181,6 +181,17 @@ loom {
             isIdeConfigGenerated = false
         }
     }
+
+    afterEvaluate {
+        runConfigs {
+            "client" {
+                val mixinPath = configurations.compileClasspath.get()
+                    .files { it.group == "org.spongepowered" && it.name == "mixin" }
+                    .first()
+                vmArgs.add("-javaagent:$mixinPath")
+            }
+        }
+    }
 }
 
 // Tasks:
@@ -269,6 +280,14 @@ val sourcesJar by tasks.creating(Jar::class) {
     destinationDirectory.set(layout.buildDirectory.dir("badjars"))
     archiveClassifier.set("src")
     from(sourceSets.main.get().allSource)
+}
+
+allprojects {
+    idea {
+        module {
+            excludeDirs.add(file("run"))
+        }
+    }
 }
 
 publishing.publications {
