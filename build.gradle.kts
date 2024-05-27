@@ -197,11 +197,11 @@ loom {
     }
 
     afterEvaluate {
+        val mixinPath = configurations.compileClasspath.get()
+            .files { it.group == "org.spongepowered" && it.name == "mixin" }
+            .first()
         runConfigs {
             "client" {
-                val mixinPath = configurations.compileClasspath.get()
-                    .files { it.group == "org.spongepowered" && it.name == "mixin" }
-                    .first()
                 vmArgs.add("-javaagent:$mixinPath")
             }
         }
@@ -296,11 +296,9 @@ val sourcesJar by tasks.creating(Jar::class) {
     from(sourceSets.main.get().allSource)
 }
 
-allprojects {
-    idea {
-        module {
-            excludeDirs.add(file("run"))
-        }
+idea {
+    module {
+        excludeDirs.add(file("run"))
     }
 }
 
