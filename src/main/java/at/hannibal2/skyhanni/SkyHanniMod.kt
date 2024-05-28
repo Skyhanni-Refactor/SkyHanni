@@ -466,7 +466,6 @@ import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.MinecraftConsoleFilter.Companion.initLogging
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.NEUVersionCheck.checkIfNeuIsLoaded
-import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.UtilsPatterns
 import at.hannibal2.skyhanni.utils.renderables.RenderableTooltips
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPatternManager
@@ -559,7 +558,6 @@ class SkyHanniMod {
         loadModule(SeaCreatureManager)
         loadModule(SkillExperience)
         loadModule(TabComplete)
-        loadModule(TabListData)
         loadModule(TestExportTools)
         loadModule(TitleManager)
         loadModule(TrackerManager)
