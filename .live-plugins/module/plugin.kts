@@ -5,6 +5,7 @@ import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElementVisitor
 import liveplugin.registerInspection
+import liveplugin.show
 import org.jetbrains.kotlin.idea.base.utils.fqname.fqName
 import org.jetbrains.kotlin.idea.codeinsight.api.classic.inspections.AbstractKotlinInspection
 import org.jetbrains.kotlin.idea.util.AnnotationModificationHelper
@@ -54,17 +55,18 @@ class ModuleInspectionKotlin : AbstractKotlinInspection() {
             }
 
             override fun visitObjectDeclaration(declaration: KtObjectDeclaration) {
+                val hasAnnotation = declaration.annotationEntries.any { it.shortName?.asString() == skyHanniModule }
+                if (hasAnnotation) return
+
                 val hasSkyHanniEvents = declaration.body!!.functions.any { function -> isEvent(function) }
                 val hasRepoPatterns = declaration.body!!.properties.any { property -> isRepoPattern(property) }
-                val hasAnnotation = declaration.annotationEntries.any { it.shortName?.asString() == skyHanniModule }
+                if (!hasSkyHanniEvents && !hasRepoPatterns) return
 
-                if ((hasSkyHanniEvents || hasRepoPatterns) && !hasAnnotation) {
-                    holder.registerProblem(
-                        declaration,
-                        "Modules should have a @SkyHanniModule annotation",
-                        ModuleQuickFix()
-                    )
-                }
+                holder.registerProblem(
+                    declaration,
+                    "Module should have a @SkyHanniModule annotation",
+                    ModuleQuickFix()
+                )
             }
         }
 
@@ -89,6 +91,7 @@ class ModuleQuickFix : LocalQuickFix {
             " ",
             null
         )
+        show("Annotation applied, make sure SkyHanniMod isn't still loading this module")
     }
 
     override fun getName() = "Annotate with @SkyHanniModule"

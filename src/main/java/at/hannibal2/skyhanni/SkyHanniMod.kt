@@ -502,6 +502,9 @@ class SkyHanniMod {
 
         // data
         loadModule(this)
+
+        LoadedModules.modules.forEach { loadModule(it) }
+
         loadModule(ActionBarAPI)
         loadModule(ActionBarStatsData)
         loadModule(AdvancedPlayerList)
@@ -962,8 +965,6 @@ class SkyHanniMod {
         loadModule(MobDebug)
 
         loadModule(SkyHanniEvents)
-
-        LoadedModules.modules.forEach { loadModule(it) }
         SkyHanniEvents.init(modules)
 
         Commands.init()
@@ -991,9 +992,8 @@ class SkyHanniMod {
     private val loadedClasses = mutableSetOf<Any>()
 
     fun loadModule(obj: Any) {
+        if (!loadedClasses.add(obj.javaClass.name)) throw IllegalStateException("Module ${obj.javaClass.name} is already loaded")
         modules.add(obj)
-        if (!loadedClasses.add(obj.javaClass.name)) error("Module ${obj.javaClass.name} is already loaded")
-
         MinecraftForge.EVENT_BUS.register(obj)
     }
 
