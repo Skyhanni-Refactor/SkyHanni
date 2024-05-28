@@ -54,7 +54,6 @@ class SkyHanniMod {
 
         HotswapSupport.load()
 
-        // data
         loadModule(this)
 
         LoadedModules.modules.forEach { loadModule(it) }
