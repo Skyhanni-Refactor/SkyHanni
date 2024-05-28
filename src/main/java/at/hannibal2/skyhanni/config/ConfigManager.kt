@@ -15,12 +15,12 @@ import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.IdentityCharacteristics
 import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.LorenzRarity
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 import at.hannibal2.skyhanni.utils.json.SkyHanniTypeAdapters
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -49,10 +49,8 @@ import java.nio.file.StandardCopyOption
 import java.util.UUID
 import kotlin.concurrent.fixedRateTimer
 
-typealias TrackerDisplayMode = SkyHanniTracker.DefaultDisplayMode
-
 private fun GsonBuilder.reigsterIfBeta(create: TypeAdapterFactory): GsonBuilder {
-    return if (LorenzUtils.isBetaVersion()) {
+    return if (UpdateManager.isCurrentlyBeta()) {
         registerTypeAdapterFactory(create)
     } else this
 }
@@ -70,7 +68,7 @@ class ConfigManager {
             .registerTypeAdapter(NEUInternalName::class.java, SkyHanniTypeAdapters.INTERNAL_NAME.nullSafe())
             .registerTypeAdapter(LorenzRarity::class.java, SkyHanniTypeAdapters.RARITY.nullSafe())
             .registerTypeAdapter(IslandType::class.java, SkyHanniTypeAdapters.ISLAND_TYPE.nullSafe())
-            .registerTypeAdapter(TrackerDisplayMode::class.java, SkyHanniTypeAdapters.TRACKER_DISPLAY_MODE.nullSafe())
+            .registerTypeAdapter(SkyHanniTracker.DefaultDisplayMode::class.java, SkyHanniTypeAdapters.TRACKER_DISPLAY_MODE.nullSafe())
             .registerTypeAdapter(SimpleTimeMark::class.java, object : TypeAdapter<SimpleTimeMark>() {
                 override fun write(out: JsonWriter, value: SimpleTimeMark) {
                     out.value(value.toMillis())
@@ -173,7 +171,7 @@ class ConfigManager {
             }
             val configLink = field.getAnnotation(ConfigLink::class.java)
             if (configLink == null) {
-                if (LorenzUtils.isInDevEnvironment()) {
+                if (PlatformUtils.isDevEnvironment) {
                     var name = "${field.declaringClass.name}.${field.name}"
                     name = name.replace("at.hannibal2.skyhanni.config.", "")
                     if (name !in ignoredMissingConfigLinks) {
@@ -195,7 +193,7 @@ class ConfigManager {
             println("2. Either add the Config Link.")
             println("3. Or add the name to ignoredMissingConfigLinks.")
             println("")
-            LorenzUtils.shutdownMinecraft("Missing Config Link")
+            forceShutdown("Missing Config Link")
         }
     }
 
@@ -215,12 +213,12 @@ class ConfigManager {
                     val jsonObject = gson.fromJson(bufferedReader.readText(), JsonObject::class.java)
                     val newJsonObject = ConfigUpdaterMigrator.fixConfig(jsonObject)
                     val run = { gson.fromJson(newJsonObject, defaultValue.javaClass) }
-                    if (LorenzUtils.isInDevEnvironment()) {
+                    if (PlatformUtils.isDevEnvironment) {
                         try {
                             run()
                         } catch (e: Throwable) {
                             e.printStackTrace()
-                            LorenzUtils.shutdownMinecraft("Config is corrupt inside development environment.")
+                            forceShutdown("Config is corrupt inside development environment.")
                         }
                     } else {
                         run()
@@ -249,6 +247,12 @@ class ConfigManager {
         }
 
         return output
+    }
+
+    private fun forceShutdown(reason: String) {
+        System.err.println("SkyHanni-${SkyHanniMod.version} forced the game to shutdown.")
+        System.err.println("Reason: $reason")
+        PlatformUtils.delayedExit(-1)
     }
 
     fun saveConfig(fileType: ConfigFileType, reason: String) {

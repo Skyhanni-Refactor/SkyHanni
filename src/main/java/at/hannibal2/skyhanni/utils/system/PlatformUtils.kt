@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.utils.system
 
+import net.minecraft.launchwrapper.Launch
 import net.minecraftforge.fml.common.FMLCommonHandler
 import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.ModContainer
@@ -14,6 +15,10 @@ object PlatformUtils {
         Loader.instance().modList
             .flatMap { mod -> mod.ownedPackages.map { it to mod } }
             .toMap()
+    }
+
+    val isDevEnvironment: Boolean by lazy {
+        Launch.blackboard?.get("fml.deobfuscatedEnvironment") as? Boolean ?: true
     }
 
     fun getModFromPackage(packageName: String?): ModInstance? =

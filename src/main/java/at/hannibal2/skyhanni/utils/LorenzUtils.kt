@@ -3,17 +3,14 @@ package at.hannibal2.skyhanni.utils
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.data.Perk
-import at.hannibal2.skyhanni.features.misc.update.UpdateManager
 import at.hannibal2.skyhanni.utils.ChatUtils.lastButtonClicked
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.SharedMonsterAttributes
-import net.minecraft.launchwrapper.Launch
 import java.text.SimpleDateFormat
 
 object LorenzUtils {
@@ -150,17 +147,4 @@ object LorenzUtils {
         enumValues<T>().joinToString("|", transform = transform)
 
     inline fun <reified T : Enum<T>> T.isAnyOf(vararg array: T): Boolean = array.contains(this)
-
-    // TODO move to val by lazy
-    fun isInDevEnvironment() = ((Launch.blackboard ?: mapOf())["fml.deobfuscatedEnvironment"] as Boolean?) ?: true
-
-    fun shutdownMinecraft(reason: String? = null) {
-        System.err.println("SkyHanni-${SkyHanniMod.version} forced the game to shutdown.")
-        reason?.let {
-            System.err.println("Reason: $it")
-        }
-        PlatformUtils.delayedExit(-1)
-    }
-
-    fun isBetaVersion() = UpdateManager.isCurrentlyBeta()
 }

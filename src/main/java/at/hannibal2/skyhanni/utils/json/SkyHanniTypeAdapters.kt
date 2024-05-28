@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.utils.json
 
 import at.hannibal2.skyhanni.api.skyblock.IslandType
-import at.hannibal2.skyhanni.config.TrackerDisplayMode
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.pests.PestType
@@ -10,6 +9,7 @@ import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
+import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import com.google.gson.TypeAdapter
 import net.minecraft.item.ItemStack
 import java.util.UUID
@@ -47,7 +47,7 @@ object SkyHanniTypeAdapters {
         { PestType.getByName(this) }
     )
 
-    val TRACKER_DISPLAY_MODE = SimpleStringTypeAdapter.forEnum<TrackerDisplayMode>()
+    val TRACKER_DISPLAY_MODE = SimpleStringTypeAdapter.forEnum<SkyHanniTracker.DefaultDisplayMode>()
     val ISLAND_TYPE = SimpleStringTypeAdapter.forEnum<IslandType>()
     val RARITY = SimpleStringTypeAdapter.forEnum<LorenzRarity>()
 
