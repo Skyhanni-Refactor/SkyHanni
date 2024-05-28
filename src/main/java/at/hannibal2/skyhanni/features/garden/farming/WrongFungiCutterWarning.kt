@@ -8,12 +8,14 @@ import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.click.CropClickEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getFungiCutterMode
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraft.item.ItemStack
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object WrongFungiCutterWarning {
 
     private var mode = FungiMode.UNKNOWN

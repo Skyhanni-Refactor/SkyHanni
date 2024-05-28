@@ -5,11 +5,13 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RenderUtils.drawSlotText
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getMaxPetLevel
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getPetCandyUsed
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getPetLevel
 
+@SkyHanniModule
 object PetCandyUsedDisplay {
 
     private val config get() = SkyHanniMod.feature.misc.petCandy

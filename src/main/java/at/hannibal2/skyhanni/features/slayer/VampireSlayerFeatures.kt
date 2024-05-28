@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
@@ -42,6 +43,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 
+@SkyHanniModule
 object VampireSlayerFeatures {
 
     private val config get() = SkyHanniMod.feature.slayer.vampire

@@ -18,6 +18,7 @@ import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.event.diana.DianaAPI.isDianaSpade
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.DelayedRun
@@ -41,6 +42,7 @@ import net.minecraft.init.Blocks
 import org.lwjgl.input.Keyboard
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object GriffinBurrowHelper {
 
     private val config get() = SkyHanniMod.feature.event.diana

@@ -16,6 +16,7 @@ import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi
 import at.hannibal2.skyhanni.features.mining.fossilexcavator.FossilExcavatorAPI
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.features.rift.RiftAPI.motesNpcPrice
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.equalsOneOf
 import at.hannibal2.skyhanni.utils.InventoryUtils
@@ -48,6 +49,7 @@ import net.minecraft.inventory.ContainerChest
 import net.minecraft.item.ItemStack
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object HideNotClickableItems {
 
     private val config get() = SkyHanniMod.feature.inventory.hideNotClickable

@@ -2,10 +2,11 @@ package at.hannibal2.skyhanni.features.event.diana
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.diana.BurrowGuessEvent
 import at.hannibal2.skyhanni.events.minecraft.PlaySoundEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.toLorenzVec
@@ -22,6 +23,7 @@ import kotlin.math.sin
  * Taken and ported from Soopyboo32's javascript module SoopyV2
  */
 // TODO fix whatever is going on in this file
+@SkyHanniModule
 object SoopyGuessBurrow {
 
     private var dingIndex = 0

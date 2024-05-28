@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.mining.ColdUpdateEvent
 import at.hannibal2.skyhanni.features.gui.customscoreboard.ScoreboardPattern
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -18,6 +19,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object MiningAPI {
 
     private val group = RepoPattern.group("data.miningapi")

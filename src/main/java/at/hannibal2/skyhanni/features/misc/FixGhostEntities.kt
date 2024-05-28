@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import net.minecraft.network.play.server.S0CPacketSpawnPlayer
 import net.minecraft.network.play.server.S0FPacketSpawnMob
 import net.minecraft.network.play.server.S13PacketDestroyEntities
@@ -13,6 +14,7 @@ import net.minecraft.network.play.server.S13PacketDestroyEntities
  * This feature fixes ghost entities sent by hypixel that are not properly deleted in the correct order.
  * This included Diana, Dungeon and Crimson Isle mobs and nametags.
  */
+@SkyHanniModule
 object FixGhostEntities {
 
     private val config get() = SkyHanniMod.feature.misc

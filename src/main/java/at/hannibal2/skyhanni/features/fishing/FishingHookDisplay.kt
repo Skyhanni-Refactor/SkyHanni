@@ -9,9 +9,11 @@ import at.hannibal2.skyhanni.events.fishing.FishingBobberCastEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import net.minecraft.entity.item.EntityArmorStand
 
+@SkyHanniModule
 object FishingHookDisplay {
 
     private val config get() = SkyHanniMod.feature.fishing.fishingHookDisplay

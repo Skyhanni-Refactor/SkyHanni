@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.events.minecraft.TitleReceivedEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import io.github.notenoughupdates.moulconfig.internal.TextRenderUtils
@@ -16,6 +17,7 @@ import org.lwjgl.opengl.GL11
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object TitleManager {
 
     private var originalText = ""

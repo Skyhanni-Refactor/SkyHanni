@@ -13,6 +13,7 @@ import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
@@ -35,6 +36,7 @@ import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import kotlin.math.roundToLong
 
+@SkyHanniModule
 object EstimatedItemValue {
 
     private val config get() = SkyHanniMod.feature.inventory.estimatedItemValues

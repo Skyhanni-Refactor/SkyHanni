@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LocationUtils
@@ -24,6 +25,7 @@ import net.minecraft.util.EnumParticleTypes
 import java.awt.Color
 import kotlin.time.Duration.Companion.milliseconds
 
+@SkyHanniModule
 object RiftWiltedBerberisHelper {
 
     private val config get() = RiftAPI.config.area.dreadfarm.wiltedBerberis

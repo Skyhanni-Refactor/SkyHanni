@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
 import at.hannibal2.skyhanni.features.garden.pests.SprayType
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -16,6 +17,7 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.item.EntityItem
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object GlowingDroppedItems {
 
     private val config get() = SkyHanniMod.feature.misc.glowingDroppedItems

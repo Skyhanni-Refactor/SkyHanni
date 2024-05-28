@@ -16,6 +16,7 @@ import at.hannibal2.skyhanni.events.render.gui.RenderObject
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.itemabilities.abilitycooldown.ItemAbility.Companion.getMultiplier
 import at.hannibal2.skyhanni.features.nether.ashfang.AshfangFreezeCooldown
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.equalsOneOf
 import at.hannibal2.skyhanni.utils.CollectionUtils.mapKeysNotNull
 import at.hannibal2.skyhanni.utils.InventoryUtils
@@ -36,6 +37,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
 import kotlin.math.max
 
+@SkyHanniModule
 object ItemAbilityCooldown {
 
     private val config get() = SkyHanniMod.feature.inventory.itemAbilities

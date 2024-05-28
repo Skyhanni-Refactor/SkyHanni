@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -22,6 +23,7 @@ import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.client.Minecraft
 import java.util.Collections
 
+@SkyHanniModule
 object CollectionTracker {
 
     private const val RECENT_GAIN_TIME = 1_500

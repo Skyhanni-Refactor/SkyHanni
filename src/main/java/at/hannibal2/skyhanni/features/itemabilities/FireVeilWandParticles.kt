@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.nether.ashfang.AshfangFreezeCooldown
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.RenderUtils
@@ -17,6 +18,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.util.EnumParticleTypes
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object FireVeilWandParticles {
 
     private val config get() = SkyHanniMod.feature.inventory.itemAbilities.fireVeilWands

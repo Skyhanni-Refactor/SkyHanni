@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorMana
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils.hasMaxHealth
@@ -31,6 +32,7 @@ import net.minecraft.entity.passive.EntitySquid
 import net.minecraft.entity.player.EntityPlayer
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object SeaCreatureFeatures {
 
     private val config get() = SkyHanniMod.feature.fishing.rareCatches

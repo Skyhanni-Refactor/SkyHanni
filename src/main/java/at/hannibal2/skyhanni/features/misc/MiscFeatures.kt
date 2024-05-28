@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import net.minecraft.util.EnumParticleTypes
 import net.minecraftforge.client.event.RenderBlockOverlayEvent
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 /**
  *  I need these features in my dev env
  */
+@SkyHanniModule
 object MiscFeatures {
 
     @SubscribeEvent

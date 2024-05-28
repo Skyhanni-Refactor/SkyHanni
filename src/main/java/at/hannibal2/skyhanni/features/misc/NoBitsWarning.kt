@@ -6,12 +6,14 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.skyblock.BitsUpdateEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.mc.McSound
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object NoBitsWarning {
 
     private val config get() = SkyHanniMod.feature.misc.bits

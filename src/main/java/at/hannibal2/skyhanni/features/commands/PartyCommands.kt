@@ -8,9 +8,11 @@ import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.misc.limbo.LimboTimeTracker
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.mc.McWorld
 
+@SkyHanniModule
 object PartyCommands {
 
     private val config get() = SkyHanniMod.feature.misc.commands

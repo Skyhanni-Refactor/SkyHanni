@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.ACCEPT_SLOT
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.REFUSE_SLOT
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.VisitorBlockReason
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.lastClickedNpc
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -23,6 +24,7 @@ import net.minecraft.inventory.Slot
 import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object VisitorRewardWarning {
     private val config get() = VisitorAPI.config.rewardWarning
 

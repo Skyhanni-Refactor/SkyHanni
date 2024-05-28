@@ -14,6 +14,7 @@ import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.slayer.SlayerChangeEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
@@ -36,6 +37,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import kotlin.math.ceil
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object SlayerRngMeterDisplay {
 
     private val config get() = SkyHanniMod.feature.slayer.rngMeterDisplay

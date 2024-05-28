@@ -3,8 +3,10 @@ package at.hannibal2.skyhanni.api
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 
+@SkyHanniModule
 object GuildAPI {
 
     private val storage: MutableList<String>?

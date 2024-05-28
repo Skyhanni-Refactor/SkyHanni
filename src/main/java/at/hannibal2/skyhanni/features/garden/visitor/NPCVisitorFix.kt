@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorOpenEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryOpenEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
@@ -23,6 +24,7 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Fixing the visitor detection problem with Anita and Jacob, as those two are on the garden twice when visiting.
  */
+@SkyHanniModule
 object NPCVisitorFix {
     private val staticVisitors = listOf("Jacob", "Anita")
 

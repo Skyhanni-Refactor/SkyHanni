@@ -11,9 +11,11 @@ import at.hannibal2.skyhanni.config.features.mining.MiningEventConfig
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 
+@SkyHanniModule
 object MiningEventDisplay {
     private val config get() = SkyHanniMod.feature.mining.miningEvent
     private var display = listOf<String>()

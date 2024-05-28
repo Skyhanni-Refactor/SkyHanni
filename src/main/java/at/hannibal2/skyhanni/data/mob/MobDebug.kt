@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.dev.DebugMobConfig.HowToShow
 import at.hannibal2.skyhanni.events.entity.MobEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.CopyNearbyEntitiesCommand.getMobInfo
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.MobUtils
@@ -13,6 +14,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
 
+@SkyHanniModule
 object MobDebug {
 
     private val config get() = SkyHanniMod.feature.dev.mobDebug.mobDetection

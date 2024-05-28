@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.events.chat.hypixel.PlayerAllChatEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.PlayerShowItemChatEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.PrivateMessageChatEvent
 import at.hannibal2.skyhanni.events.chat.hypixel.SystemMessageEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ComponentMatcher
 import at.hannibal2.skyhanni.utils.ComponentMatcherUtils.intoSpan
 import at.hannibal2.skyhanni.utils.ComponentMatcherUtils.matchStyledMatcher
@@ -22,6 +23,7 @@ import net.minecraft.util.IChatComponent
 /**
  * Reading normal chat events, and splitting them up into many different player chat events, with all available extra information
  */
+@SkyHanniModule
 object PlayerChatManager {
 
     private val patternGroup = RepoPattern.group("data.chat.player")

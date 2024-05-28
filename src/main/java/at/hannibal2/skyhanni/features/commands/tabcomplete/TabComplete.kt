@@ -5,7 +5,9 @@ import at.hannibal2.skyhanni.events.chat.TabCompletionEvent
 import at.hannibal2.skyhanni.features.commands.PartyCommands
 import at.hannibal2.skyhanni.features.commands.ViewRecipeCommand
 import at.hannibal2.skyhanni.features.misc.CollectionTracker
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 
+@SkyHanniModule
 object TabComplete {
 
     @HandleEvent

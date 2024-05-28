@@ -4,10 +4,12 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import kotlin.time.Duration.Companion.milliseconds
 
+@SkyHanniModule
 object ShyCruxWarnings {
 
     private val config get() = RiftAPI.config.area.wyldWoods

@@ -6,11 +6,13 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.chat.ChatConfig
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import java.util.regex.Pattern
 
 private typealias MessageTypes = ChatConfig.DungeonMessageTypes
 
+@SkyHanniModule
 object DungeonChatFilter {
 
     private val config get() = SkyHanniMod.feature.chat

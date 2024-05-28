@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
@@ -25,6 +26,7 @@ import com.google.gson.JsonNull
 import com.google.gson.annotations.Expose
 import kotlin.time.Duration.Companion.minutes
 
+@SkyHanniModule
 object PowderTracker {
 
     private val config get() = SkyHanniMod.feature.mining.powderTracker

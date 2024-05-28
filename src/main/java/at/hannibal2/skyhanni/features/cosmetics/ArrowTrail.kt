@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
@@ -20,6 +21,7 @@ import java.util.LinkedList
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
+@SkyHanniModule
 object ArrowTrail {
 
     private val config get() = SkyHanniMod.feature.gui.cosmetic.arrowTrail

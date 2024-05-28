@@ -4,12 +4,14 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.garden.GardenPlotAPI.renderPlot
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceSqToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import org.lwjgl.input.Keyboard
 import kotlin.time.Duration.Companion.milliseconds
 
+@SkyHanniModule
 object GardenPlotBorders {
 
     private val config get() = GardenAPI.config.plotBorders

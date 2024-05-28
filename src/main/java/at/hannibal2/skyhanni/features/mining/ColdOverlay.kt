@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.MiningAPI.inColdIsland
 import at.hannibal2.skyhanni.events.mining.ColdUpdateEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.RenderUtils
@@ -15,6 +16,7 @@ import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object ColdOverlay {
 
     private val config get() = SkyHanniMod.feature.mining.coldOverlay

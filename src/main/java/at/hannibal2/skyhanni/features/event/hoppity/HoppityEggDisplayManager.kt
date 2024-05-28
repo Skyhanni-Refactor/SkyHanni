@@ -4,12 +4,14 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.mob.MobFilter.isRealPlayer
 import at.hannibal2.skyhanni.events.render.entity.EntityRenderLayersEvent
 import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.player.EntityPlayer
 import org.lwjgl.opengl.GL11
 
+@SkyHanniModule
 object HoppityEggDisplayManager {
 
     private val config get() = HoppityEggsManager.config

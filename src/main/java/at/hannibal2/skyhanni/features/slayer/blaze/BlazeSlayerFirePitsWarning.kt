@@ -8,10 +8,12 @@ import at.hannibal2.skyhanni.events.entity.BossHealthChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.BossType
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McSound
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object BlazeSlayerFirePitsWarning {
 
     private val config get() = SkyHanniMod.feature.slayer.blazes

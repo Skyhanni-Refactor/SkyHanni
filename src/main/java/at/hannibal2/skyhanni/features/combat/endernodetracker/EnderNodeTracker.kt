@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.events.inventory.SackChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
@@ -27,6 +28,7 @@ import at.hannibal2.skyhanni.utils.tracker.TrackerData
 import com.google.gson.annotations.Expose
 import net.minecraft.client.Minecraft
 
+@SkyHanniModule
 object EnderNodeTracker {
 
     private val config get() = SkyHanniMod.feature.combat.enderNodeTracker

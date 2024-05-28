@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.utils.renderables
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.render.GameRenderEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.RenderUtils
@@ -14,6 +15,7 @@ import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.item.ItemStack
 import java.awt.Color
 
+@SkyHanniModule
 object RenderableTooltips {
 
     private var tooltip: DeferredTooltip? = null

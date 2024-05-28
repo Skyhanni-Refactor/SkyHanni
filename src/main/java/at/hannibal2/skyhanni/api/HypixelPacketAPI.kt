@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.events.hypixel.HypixelLocationEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.mc.McClient
@@ -21,6 +22,7 @@ import net.minecraft.network.play.client.C17PacketCustomPayload
 import net.minecraft.network.play.server.S3FPacketCustomPayload
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object HypixelPacketAPI {
 
     private val events = mutableMapOf<String, Int>()

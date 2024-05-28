@@ -22,6 +22,7 @@ import at.hannibal2.skyhanni.events.skyblock.minion.MinionCloseEvent
 import at.hannibal2.skyhanni.events.skyblock.minion.MinionOpenEvent
 import at.hannibal2.skyhanni.events.skyblock.minion.MinionStorageOpenEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
@@ -58,6 +59,7 @@ import net.minecraft.init.Blocks
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object MinionFeatures {
 
     private val config get() = SkyHanniMod.feature.misc.minions

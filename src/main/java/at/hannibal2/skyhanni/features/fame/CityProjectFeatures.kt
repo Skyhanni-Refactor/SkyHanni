@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
 import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.InventoryUtils.getUpperItems
@@ -40,6 +41,7 @@ import net.minecraft.inventory.ContainerChest
 import net.minecraft.item.ItemStack
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object CityProjectFeatures {
 
     private val config get() = SkyHanniMod.feature.event.cityProject

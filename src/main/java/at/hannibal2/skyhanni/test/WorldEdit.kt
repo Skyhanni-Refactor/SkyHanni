@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.click.BlockClickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.LocationUtils
@@ -16,6 +17,7 @@ import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.util.BlockPos
 import java.awt.Color
 
+@SkyHanniModule
 object WorldEdit {
 
     private var leftPos = null as BlockPos?

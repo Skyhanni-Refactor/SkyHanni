@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
@@ -35,6 +36,7 @@ import net.minecraft.entity.monster.EntityEnderman
 import net.minecraft.init.Blocks
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object EndermanSlayerFeatures {
 
     private val config get() = SkyHanniMod.feature.slayer.endermen

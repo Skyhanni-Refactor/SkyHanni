@@ -8,6 +8,7 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColourInt
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
@@ -21,6 +22,7 @@ import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.init.Blocks
 import java.awt.Color
 
+@SkyHanniModule
 object ThunderSparksHighlight {
 
     private val config get() = SkyHanniMod.feature.fishing.thunderSpark

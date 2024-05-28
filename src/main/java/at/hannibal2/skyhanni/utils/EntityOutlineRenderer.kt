@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
 import at.hannibal2.skyhanni.mixins.transformers.CustomRenderGlobal
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.mc.McClient
 import net.minecraft.client.Minecraft
@@ -33,6 +34,7 @@ import java.lang.reflect.Method
  * https://github.com/BiscuitDevelopment/SkyblockAddons/blob/main/src/main/java/codes/biscuit/skyblockaddons/features/EntityOutlines/EntityOutlineRenderer.java
  *
  */
+@SkyHanniModule
 object EntityOutlineRenderer {
 
     private val entityRenderCache: CachedInfo = CachedInfo(null, null, null)

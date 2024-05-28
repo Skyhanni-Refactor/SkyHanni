@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.FarmingFortuneDisplay.getLatestTrueFarmingFortune
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed.getLatestBlocksPerSecond
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -20,6 +21,7 @@ import net.minecraft.item.ItemStack
 import kotlin.math.ceil
 import kotlin.time.Duration.Companion.milliseconds
 
+@SkyHanniModule
 object JacobContestFFNeededDisplay {
 
     private val config get() = GardenAPI.config

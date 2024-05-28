@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.config.features.dev.RepoPatternConfig
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.utils.PreInitFinishedEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -19,6 +20,7 @@ import java.util.regex.PatternSyntaxException
 /**
  * Manages [RepoPattern]s.
  */
+@SkyHanniModule
 object RepoPatternManager {
 
     val allPatterns: Collection<RepoPatternImpl> get() = usedKeys.values

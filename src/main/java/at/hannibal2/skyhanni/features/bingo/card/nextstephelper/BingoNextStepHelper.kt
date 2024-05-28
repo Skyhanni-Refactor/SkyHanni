@@ -19,6 +19,7 @@ import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.steps.ObtainCrys
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.steps.PartialProgressItemsStep
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.steps.ProgressionStep
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.steps.SkillLevelStep
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -30,6 +31,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 
+@SkyHanniModule
 object BingoNextStepHelper {
 
     private val config get() = SkyHanniMod.feature.event.bingo.bingoCard

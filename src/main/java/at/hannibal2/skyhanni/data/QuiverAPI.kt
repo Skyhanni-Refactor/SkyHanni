@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.events.inventory.OwnInventoryItemUpdateEvent
 import at.hannibal2.skyhanni.events.skyblock.QuiverUpdateEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -30,6 +31,7 @@ import net.minecraft.item.ItemBow
 
 private var infinityQuiverLevelMultiplier = 0.03f
 
+@SkyHanniModule
 object QuiverAPI {
     private val storage get() = ProfileStorageData.profileSpecific
     var currentArrow: ArrowType?

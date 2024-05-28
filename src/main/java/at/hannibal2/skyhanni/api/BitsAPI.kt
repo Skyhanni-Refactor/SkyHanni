@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.skyblock.BitsUpdateEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -26,6 +27,7 @@ import at.hannibal2.skyhanni.utils.datetime.TimeUtils
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import kotlin.time.Duration.Companion.days
 
+@SkyHanniModule
 object BitsAPI {
     private val profileStorage get() = ProfileStorageData.profileSpecific?.bits
     private val playerStorage get() = SkyHanniMod.feature.storage

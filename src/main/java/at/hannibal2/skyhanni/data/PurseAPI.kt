@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.skyblock.PurseChangeCause
 import at.hannibal2.skyhanni.events.skyblock.PurseChangeEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.million
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
@@ -13,6 +14,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object PurseAPI {
     private val patternGroup = RepoPattern.group("data.purse")
     val coinsPattern by patternGroup.pattern(

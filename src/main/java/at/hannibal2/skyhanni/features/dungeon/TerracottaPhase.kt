@@ -6,8 +6,10 @@ import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import net.minecraft.entity.EntityLivingBase
 
+@SkyHanniModule
 object TerracottaPhase {
 
     private val config get() = SkyHanniMod.feature.dungeon.terracottaPhase

@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -14,6 +15,7 @@ import at.hannibal2.skyhanni.utils.mc.McPlayer
 import kotlin.time.Duration.Companion.minutes
 
 // https://wiki.hypixel.net/Pablo
+@SkyHanniModule
 object PabloHelper {
 
     private val config get() = SkyHanniMod.feature.crimsonIsle

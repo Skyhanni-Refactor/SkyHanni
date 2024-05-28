@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
 import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils.getBlockInHand
 import at.hannibal2.skyhanni.utils.EntityUtils.hasNameTagWith
@@ -18,6 +19,7 @@ import net.minecraft.entity.monster.EntityEnderman
 import net.minecraft.entity.monster.EntitySpider
 import net.minecraft.init.Blocks
 
+@SkyHanniModule
 object MobHighlight {
 
     private val config get() = SkyHanniMod.feature.combat.mobs

@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.equalsOneOf
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -25,6 +26,7 @@ import net.minecraft.init.Blocks
 import net.minecraft.item.EnumDyeColor
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object MiningCommissionsBlocksColor {
 
     private val config get() = SkyHanniMod.feature.mining.commissionsBlocksColor

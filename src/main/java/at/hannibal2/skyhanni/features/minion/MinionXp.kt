@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.events.skyblock.minion.MinionOpenEvent
 import at.hannibal2.skyhanni.events.skyblock.minion.MinionStorageOpenEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.skillprogress.SkillType
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -25,6 +26,7 @@ import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import java.util.EnumMap
 
+@SkyHanniModule
 object MinionXp {
 
     private val config get() = SkyHanniMod.feature.misc.minions

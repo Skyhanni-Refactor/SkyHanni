@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayerIgnoreY
@@ -28,6 +29,7 @@ import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.seconds
 
 // TODO delete workaround class PestParticleLine when this class works again
+@SkyHanniModule
 object PestParticleWaypoint {
 
     private val config get() = SkyHanniMod.feature.garden.pests.pestWaypoint

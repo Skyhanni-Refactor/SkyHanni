@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.sorted
 import at.hannibal2.skyhanni.utils.EntityUtils.getNameTagWith
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
@@ -16,6 +17,7 @@ import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.item.EntityArmorStand
 
+@SkyHanniModule
 object SummoningSoulsName {
 
     // TODO repo

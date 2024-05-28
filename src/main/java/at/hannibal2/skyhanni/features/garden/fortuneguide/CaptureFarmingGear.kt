@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.features.garden.FarmingFortuneDisplay
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.GardenAPI.getCropType
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
@@ -27,6 +28,7 @@ import net.minecraft.item.ItemStack
 import kotlin.math.round
 import kotlin.time.Duration.Companion.days
 
+@SkyHanniModule
 object CaptureFarmingGear {
     private val farmingItems get() = GardenAPI.storage?.fortune?.farmingItems
     private val outdatedItems get() = GardenAPI.storage?.fortune?.outdatedItems

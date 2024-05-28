@@ -8,6 +8,7 @@ import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.GardenPlotAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.LocationUtils
@@ -22,6 +23,7 @@ import net.minecraft.util.EnumParticleTypes
 import kotlin.time.Duration.Companion.seconds
 
 // TODO remove this workaround once PestParticleWaypoint does work again
+@SkyHanniModule
 object PestParticleLine {
     private val config get() = SkyHanniMod.feature.garden.pests.pestWaypoint
 

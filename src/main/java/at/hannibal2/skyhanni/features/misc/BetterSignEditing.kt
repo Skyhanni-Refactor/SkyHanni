@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiEditSign
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.mc.McScreen.addTextIntoSign
 import at.hannibal2.skyhanni.utils.mc.McScreen.setTextIntoSign
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
 
+@SkyHanniModule
 object BetterSignEditing {
 
     private var pasteLastClicked = false

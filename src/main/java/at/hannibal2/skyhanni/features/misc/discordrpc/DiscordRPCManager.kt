@@ -17,6 +17,7 @@ import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils
@@ -32,6 +33,7 @@ import com.jagrosh.discordipc.entities.pipe.PipeStatus
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object DiscordRPCManager : IPCListener {
 
     private const val APPLICATION_ID = 1093298182735282176L

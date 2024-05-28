@@ -5,12 +5,14 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.monster.EntityEnderman
 import net.minecraft.util.EnumParticleTypes
 
+@SkyHanniModule
 object EndermanSlayerHideParticles {
 
     private var endermanLocations = listOf<LorenzVec>()

@@ -3,8 +3,9 @@ package at.hannibal2.skyhanni.features.misc.update
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.About.UpdateStream
-import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
 import at.hannibal2.skyhanni.utils.LorenzLogger
@@ -24,6 +25,7 @@ import net.minecraftforge.common.MinecraftForge
 import java.util.concurrent.CompletableFuture
 import javax.net.ssl.HttpsURLConnection
 
+@SkyHanniModule
 object UpdateManager {
 
     private val logger = LorenzLogger("update_manager")

@@ -5,9 +5,11 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.events.minecraft.click.WorldClickEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
 
+@SkyHanniModule
 object PrivateIslandNoPickaxeAbility {
 
     private val config get() = SkyHanniMod.feature.mining

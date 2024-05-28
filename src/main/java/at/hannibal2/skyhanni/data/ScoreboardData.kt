@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.RawScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.network.play.server.S3CPacketUpdateScore
@@ -12,6 +13,7 @@ import net.minecraft.network.play.server.S3EPacketTeams
 import net.minecraft.scoreboard.Score
 import net.minecraft.scoreboard.ScorePlayerTeam
 
+@SkyHanniModule
 object ScoreboardData {
 
     private val minecraftColorCodesPattern = "(?i)[0-9a-fkmolnr]".toPattern()

@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.features.garden.FarmingFortuneDisplay.getAbilityFortune
 import at.hannibal2.skyhanni.features.garden.GardenAPI.getCropType
 import at.hannibal2.skyhanni.features.garden.fortuneguide.FFGuideGUI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
@@ -16,6 +17,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
+@SkyHanniModule
 object ToolTooltipTweaks {
 
     // TODO repo patterns

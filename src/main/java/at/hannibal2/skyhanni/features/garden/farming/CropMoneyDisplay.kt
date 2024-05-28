@@ -18,6 +18,7 @@ import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed.isSpeedData
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.getBazaarData
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.isBazaarItem
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarData
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
@@ -39,6 +40,7 @@ import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getReforgeName
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import kotlinx.coroutines.launch
 
+@SkyHanniModule
 object CropMoneyDisplay {
 
     var multipliers = mapOf<NEUInternalName, Int>()

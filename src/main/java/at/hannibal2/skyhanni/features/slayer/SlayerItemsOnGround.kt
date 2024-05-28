@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
@@ -16,6 +17,7 @@ import net.minecraft.entity.item.EntityItem
 import net.minecraft.init.Items
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object SlayerItemsOnGround {
 
     private val config get() = SkyHanniMod.feature.slayer.itemsOnGround

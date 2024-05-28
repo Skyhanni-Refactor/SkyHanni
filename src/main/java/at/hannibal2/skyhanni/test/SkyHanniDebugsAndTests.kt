@@ -17,6 +17,7 @@ import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.garden.GardenNextJacobContest
 import at.hannibal2.skyhanni.features.garden.visitor.GardenVisitorColorNames
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.getBazaarData
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -61,6 +62,7 @@ import net.minecraftforge.common.MinecraftForge
 import java.io.File
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object SkyHanniDebugsAndTests {
 
     private val config get() = SkyHanniMod.feature.dev

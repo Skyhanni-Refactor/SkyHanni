@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUItems
@@ -16,6 +17,7 @@ import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.Minecraft
 import kotlin.time.Duration.Companion.milliseconds
 
+@SkyHanniModule
 object ParkourWaypointSaver {
 
     private val config get() = SkyHanniMod.feature.dev.waypoint

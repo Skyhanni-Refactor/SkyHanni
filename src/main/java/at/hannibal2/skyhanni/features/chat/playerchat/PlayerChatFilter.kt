@@ -3,9 +3,11 @@ package at.hannibal2.skyhanni.features.chat.playerchat
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.PlayerChatFilterJson
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.MultiFilter
 import net.minecraft.util.IChatComponent
 
+@SkyHanniModule
 object PlayerChatFilter {
 
     private val filters = mutableMapOf<String, MultiFilter>()

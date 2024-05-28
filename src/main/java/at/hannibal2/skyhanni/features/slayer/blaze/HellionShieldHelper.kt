@@ -5,9 +5,11 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import net.minecraft.entity.EntityLiving
 
+@SkyHanniModule
 object HellionShieldHelper {
     val hellionShieldMobs = mutableMapOf<EntityLiving, HellionShield>()
 

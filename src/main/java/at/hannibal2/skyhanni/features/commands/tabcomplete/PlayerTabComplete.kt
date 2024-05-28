@@ -6,8 +6,10 @@ import at.hannibal2.skyhanni.data.FriendAPI
 import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.VipVisitsJson
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.mc.McWorld
 
+@SkyHanniModule
 object PlayerTabComplete {
 
     private val config get() = SkyHanniMod.feature.misc.commands.tabComplete

@@ -4,8 +4,10 @@ import at.hannibal2.skyhanni.data.MinecraftData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.DisabledEventsJson
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import java.lang.reflect.Method
 
+@SkyHanniModule
 object SkyHanniEvents {
 
     private val handlers: MutableMap<Class<*>, EventHandler<*>> = mutableMapOf()

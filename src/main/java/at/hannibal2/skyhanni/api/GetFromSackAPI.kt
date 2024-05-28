@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.features.commands.tabcomplete.GetFromSacksTabComplete
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ChatUtils.isCommand
@@ -29,6 +30,7 @@ import java.util.Deque
 import java.util.LinkedList
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object GetFromSackAPI {
     private val config get() = SkyHanniMod.feature.inventory.gfs
 

@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
@@ -15,6 +16,7 @@ import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.item.ItemStack
 import java.net.URLEncoder
 
+@SkyHanniModule
 object WikiManager {
     private const val OFFICIAL_URL_PREFIX = "https://wiki.hypixel.net/"
     private const val OFFICIAL_SEARCH_PREFIX = "index.php?search="

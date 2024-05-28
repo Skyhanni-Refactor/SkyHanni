@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils
@@ -11,6 +12,7 @@ import at.hannibal2.skyhanni.utils.math.BoundingBox
 import net.minecraft.client.Minecraft
 import java.awt.Color
 
+@SkyHanniModule
 object CrystalHollowsWalls {
 
     private val config get() = SkyHanniMod.feature.mining.crystalHollowsAreaWalls

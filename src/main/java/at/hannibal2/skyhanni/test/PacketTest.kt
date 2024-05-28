@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.test
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzVec
@@ -34,6 +35,7 @@ import net.minecraft.network.play.server.S20PacketEntityProperties
 import net.minecraft.network.play.server.S28PacketEffect
 import net.minecraft.network.play.server.S2APacketParticles
 
+@SkyHanniModule
 object PacketTest {
 
     private var enabled = false

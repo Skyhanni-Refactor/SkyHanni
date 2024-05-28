@@ -5,8 +5,10 @@ import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object GardenBurrowingSporesNotifier {
 
     // TODO use a repo pattern

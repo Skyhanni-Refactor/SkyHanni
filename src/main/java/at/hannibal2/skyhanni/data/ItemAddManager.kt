@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
 import at.hannibal2.skyhanni.events.inventory.ItemAddInInventoryEvent
 import at.hannibal2.skyhanni.events.inventory.SackChangeEvent
 import at.hannibal2.skyhanni.features.inventory.SuperCraftFeatures.craftedPattern
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -18,6 +19,7 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object ItemAddManager {
     private var lastDiceRoll = SimpleTimeMark.farPast()
     private var superCraftedItems = TimeLimitedSet<NEUInternalName>(30.seconds)

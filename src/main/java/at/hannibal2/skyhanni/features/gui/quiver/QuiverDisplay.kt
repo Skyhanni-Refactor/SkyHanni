@@ -11,6 +11,7 @@ import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.skyblock.QuiverUpdateEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.NEUItems
@@ -22,6 +23,7 @@ import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 
+@SkyHanniModule
 object QuiverDisplay {
 
     private val config get() = SkyHanniMod.feature.combat.quiverConfig.quiverDisplay

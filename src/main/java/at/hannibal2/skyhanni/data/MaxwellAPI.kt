@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard
 import at.hannibal2.skyhanni.features.gui.customscoreboard.ScoreboardElement
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -26,6 +27,7 @@ import com.google.gson.annotations.Expose
 import net.minecraft.item.ItemStack
 import java.util.regex.Pattern
 
+@SkyHanniModule
 object MaxwellAPI {
 
     private val storage get() = ProfileStorageData.profileSpecific

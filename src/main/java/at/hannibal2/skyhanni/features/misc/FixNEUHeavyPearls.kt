@@ -5,10 +5,12 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates
 import kotlin.time.Duration.Companion.hours
 
+@SkyHanniModule
 object FixNEUHeavyPearls {
 
     private val config get() = SkyHanniMod.feature.misc

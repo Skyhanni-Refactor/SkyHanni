@@ -4,6 +4,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.toRoman
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
@@ -15,6 +16,7 @@ import at.hannibal2.skyhanni.utils.system.OS
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
 
+@SkyHanniModule
 object ChocolateFactoryStats {
 
     private val config get() = ChocolateFactoryAPI.config

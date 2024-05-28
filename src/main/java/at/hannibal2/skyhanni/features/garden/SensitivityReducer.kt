@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.features.misc.LockMouseLook
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
@@ -19,6 +20,7 @@ import net.minecraft.client.Minecraft
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object SensitivityReducer {
     private val config get() = SkyHanniMod.feature.garden.sensitivityReducerConfig
     private val storage get() = SkyHanniMod.feature.storage

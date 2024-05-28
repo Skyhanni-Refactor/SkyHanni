@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
 import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.features.garden.GardenNextJacobContest
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils.getUpperItems
@@ -32,6 +33,7 @@ import net.minecraft.inventory.Slot
 import java.text.SimpleDateFormat
 import java.util.Locale
 
+@SkyHanniModule
 object JacobFarmingContestsInventory {
 
     private val realTime = mutableMapOf<Int, String>()

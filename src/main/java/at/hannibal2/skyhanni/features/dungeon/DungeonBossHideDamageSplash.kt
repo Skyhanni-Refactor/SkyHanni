@@ -5,8 +5,10 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import net.minecraft.entity.EntityLivingBase
 
+@SkyHanniModule
 object DungeonBossHideDamageSplash {
 
     @HandleEvent(onlyOnIsland = IslandType.CATACOMBS, priority = HandleEvent.HIGH, generic = EntityLivingBase::class)

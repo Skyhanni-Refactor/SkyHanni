@@ -13,6 +13,7 @@ import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.drainForEach
 import at.hannibal2.skyhanni.utils.CollectionUtils.drainTo
 import at.hannibal2.skyhanni.utils.CollectionUtils.put
@@ -36,6 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 private const val MAX_RETRIES = 20 * 5
 
+@SkyHanniModule
 object MobDetection {
 
     /* Unsupported "Mobs"

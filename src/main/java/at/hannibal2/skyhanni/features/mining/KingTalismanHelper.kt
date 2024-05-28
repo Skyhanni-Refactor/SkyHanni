@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.sorted
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
@@ -24,6 +25,7 @@ import net.minecraft.entity.item.EntityArmorStand
 import java.util.Collections
 import kotlin.time.Duration.Companion.milliseconds
 
+@SkyHanniModule
 object KingTalismanHelper {
 
     private val config get() = SkyHanniMod.feature.mining.kingTalisman

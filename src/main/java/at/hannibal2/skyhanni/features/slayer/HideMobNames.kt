@@ -5,10 +5,12 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import net.minecraft.entity.item.EntityArmorStand
 import java.util.regex.Pattern
 
+@SkyHanniModule
 object HideMobNames {
 
     private val lastMobName = mutableMapOf<EntityArmorStand, String>()

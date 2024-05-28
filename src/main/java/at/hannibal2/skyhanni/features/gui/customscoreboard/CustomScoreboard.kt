@@ -29,6 +29,7 @@ import at.hannibal2.skyhanni.events.render.gui.GuiPositionMovedEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
 import at.hannibal2.skyhanni.utils.DelayedRun.runDelayed
@@ -46,6 +47,7 @@ import kotlin.time.Duration.Companion.seconds
 
 typealias ScoreboardElementType = Pair<String, HorizontalAlignment>
 
+@SkyHanniModule
 object CustomScoreboard {
 
     private var display = emptyList<ScoreboardElementType>()

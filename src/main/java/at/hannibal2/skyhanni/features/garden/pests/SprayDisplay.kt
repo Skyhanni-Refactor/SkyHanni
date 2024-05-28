@@ -13,12 +13,14 @@ import at.hannibal2.skyhanni.features.garden.GardenPlotAPI.isSprayExpired
 import at.hannibal2.skyhanni.features.garden.GardenPlotAPI.markExpiredSprayAsNotified
 import at.hannibal2.skyhanni.features.garden.GardenPlotAPI.name
 import at.hannibal2.skyhanni.features.garden.GardenPlotAPI.plots
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.StringUtils.createCommaSeparatedList
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.timerColor
 
+@SkyHanniModule
 object SprayDisplay {
 
     private val config get() = PestAPI.config.spray
