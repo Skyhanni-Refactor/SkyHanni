@@ -1,10 +1,11 @@
-package at.hannibal2.skyhanni.features.mining.eventtracker
+package at.hannibal2.skyhanni.compat.soopy.data
 
 import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.features.mining.eventtracker.MiningEventType
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class MiningEventDataSend(
+data class MiningEventBody(
     @Expose @SerializedName("server_type") val serverType: IslandType,
     @Expose @SerializedName("server_id") val serverId: String,
     @Expose val event: MiningEventType,
@@ -12,7 +13,7 @@ data class MiningEventDataSend(
     @Expose @SerializedName("reporter_uuid") val uuid: String
 )
 
-data class MiningEventDataReceive(
+data class MiningEventResponse(
     @Expose val success: Boolean,
     @Expose val data: MiningEventData,
     @Expose val cause: String
