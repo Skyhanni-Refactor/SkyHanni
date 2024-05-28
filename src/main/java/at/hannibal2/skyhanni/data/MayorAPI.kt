@@ -4,7 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.compat.hypixel.HypixelWebAPI
-import at.hannibal2.skyhanni.compat.hypixel.data.HypixelMayorData
+import at.hannibal2.skyhanni.compat.hypixel.data.HypixelMayor
 import at.hannibal2.skyhanni.data.Mayor.Companion.setAssumeMayor
 import at.hannibal2.skyhanni.data.Mayor.Companion.setAssumeMayorJson
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
@@ -19,7 +19,6 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import kotlinx.coroutines.Dispatchers
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
@@ -39,10 +38,9 @@ object MayorAPI {
     private var lastMayor: Mayor? = null
 
     var lastUpdate = SimpleTimeMark.farPast()
-    private var dispatcher = Dispatchers.IO
 
-    private var rawMayorData: HypixelMayorData? = null
-    var candidates = mapOf<Int, HypixelMayorData.Candidate>()
+    private var rawMayorData: HypixelMayor? = null
+    var candidates = mapOf<Int, HypixelMayor.Candidate>()
         private set
     var currentMayor: Mayor? = null
         private set
@@ -117,7 +115,7 @@ object MayorAPI {
         HypixelWebAPI.getElection {
             onSuccess { data ->
                 rawMayorData = data
-                candidates = mutableMapOf<Int, HypixelMayorData.Candidate>().apply {
+                candidates = mutableMapOf<Int, HypixelMayor.Candidate>().apply {
                     put(data.mayor.election.year + 1 to data.mayor.election.winner)
                     data.current?.apply { put(year + 1 to winner) }
                 }

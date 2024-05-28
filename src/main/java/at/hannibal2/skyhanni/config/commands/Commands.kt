@@ -81,7 +81,6 @@ import at.hannibal2.skyhanni.test.command.SoundCommand
 import at.hannibal2.skyhanni.test.command.TestChatCommand
 import at.hannibal2.skyhanni.test.command.TrackParticlesCommand
 import at.hannibal2.skyhanni.test.command.TrackSoundsCommand
-import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.chat.ChatClickActionManager
@@ -374,10 +373,6 @@ object Commands {
             "shresetburrowwarps",
             "Manually resetting disabled diana burrow warp points"
         ) { BurrowWarpHelper.resetDisabledWarps() }
-        registerCommand(
-            "shtogglehypixelapierrors",
-            "Show/hide hypixel api error messages in chat"
-        ) { APIUtil.toggleApiErrorMessages() }
         registerCommand(
             "shclearcropspeed",
             "Reset garden crop speed data and best crop time data"

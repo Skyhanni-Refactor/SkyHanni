@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.compat.hypixel.data
 
 import com.google.gson.annotations.Expose
 
-data class HypixelMayorData(
+data class HypixelMayor(
     @Expose val mayor: MayorInfo,
     @Expose val current: Election?,
 ) {
