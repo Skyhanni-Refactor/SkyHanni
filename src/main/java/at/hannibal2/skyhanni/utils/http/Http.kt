@@ -37,6 +37,16 @@ object Http {
         return connection
     }
 
+    /**
+     * This will perform a GET request on a provided url and return a response that is processed by a provided handler.
+     *
+     * @param url: The URL to send the GET request to
+     * @param queries: The queries to append to the URL
+     * @param timeout: The timeout in milliseconds
+     * @param headers: The headers to send with the request
+     * @param handler: The handler to process the response
+     * @return: The data returned by the handler
+     */
     suspend fun <T : Any> get(
         url: String,
         queries: Map<String, Any> = mapOf(),
@@ -54,6 +64,48 @@ object Http {
         return data
     }
 
+    /**
+     * This will perform a GET request on a provided url and return data as a Result.
+     *
+     * @param url: The URL to send the GET request to
+     * @param gson: The Gson instance to parse the response
+     * @param errorFactory: The factory to create an error from the response if it is not successful
+     * @param queries: The queries to append to the URL
+     * @param timeout: The timeout in milliseconds
+     * @param headers: The headers to send with the request
+     * @return: The data returned by the handler
+     */
+    suspend inline fun <reified T : Any> getResult(
+        url: String,
+        gson: Gson,
+        crossinline errorFactory: (String) -> Exception,
+        queries: Map<String, Any> = mapOf(),
+        timeout: Int = 10000,
+        headers: Map<String, String> = mapOf(),
+    ): Result<T> {
+        return try {
+            get(url = url, queries = queries, timeout = timeout, headers = headers) {
+                if (isOk) {
+                    Result.success(asJson<T>(gson))
+                } else {
+                    Result.failure(errorFactory(asText()))
+                }
+            }
+        } catch (e: Exception) {
+            Result.failure(errorFactory(e.message ?: "Unknown error"))
+        }
+    }
+
+    /**
+     * This will perform a POST request on a provided url and return a response that is processed by a provided handler.
+     *
+     * @param url: The URL to send the POST request to
+     * @param timeout: The timeout in milliseconds
+     * @param queries: The queries to append to the URL
+     * @param headers: The headers to send with the request
+     * @param body: The body to send with the request
+     * @param handler: The handler to process the response
+     */
     suspend fun <T : Any> post(
         url: String,
         timeout: Int = 10000,
@@ -75,6 +127,18 @@ object Http {
         return data
     }
 
+    /**
+     * This will perform a POST request on a provided url and return a response that is processed by a provided handler.
+     *
+     * @param url: The URL to send the POST request to
+     * @param timeout: The timeout in milliseconds
+     * @param queries: The queries to append to the URL
+     * @param headers: The headers to send with the request
+     * @param gson: The Gson instance to parse the response
+     * @param body: The body to send with the request
+     * @param handler: The handler to process the response
+     * @return: The data returned by the handler
+     */
     suspend fun <T : Any> post(
         url: String,
         timeout: Int = 10000,
