@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.HypixelAPI
-import at.hannibal2.skyhanni.utils.LorenzUtils.formatCurrentTime
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
@@ -30,6 +29,8 @@ class LorenzLogger(filePath: String) {
             val format = SimpleDateFormat("yyyy_MM_dd/HH_mm_ss").formatCurrentTime()
             PREFIX_PATH = "config/skyhanni/logs/$format/"
         }
+
+        private fun SimpleDateFormat.formatCurrentTime(): String = this.format(System.currentTimeMillis())
     }
 
     private lateinit var logger: Logger

@@ -11,13 +11,10 @@ import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.SharedMonsterAttributes
-import java.text.SimpleDateFormat
 
 object LorenzUtils {
 
     val debug: Boolean = HypixelAPI.onHypixel && SkyHanniMod.feature.dev.debug.enabled
-
-    fun SimpleDateFormat.formatCurrentTime(): String = this.format(System.currentTimeMillis())
 
     // TODO use derpy() on every use case
     val EntityLivingBase.baseMaxHealth: Int
