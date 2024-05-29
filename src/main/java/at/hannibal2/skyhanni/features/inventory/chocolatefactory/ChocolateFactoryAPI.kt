@@ -120,7 +120,7 @@ object ChocolateFactoryAPI {
         }
     }
 
-    fun isEnabled() = config.enabled
+    fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
 
     fun isHoppityEvent() = SkyblockSeason.getCurrentSeason() == SkyblockSeason.SPRING
 

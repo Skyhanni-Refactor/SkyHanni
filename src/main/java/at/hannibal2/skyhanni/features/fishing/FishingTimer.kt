@@ -58,8 +58,8 @@ object FishingTimer {
 
         val passedSince = startTime.passedSince()
         val barnTimerAlertTime = (config.alertTime * 1_000).milliseconds
-        if (passedSince > barnTimerAlertTime && passedSince < barnTimerAlertTime + 3.seconds) {
-            McSound.BEEP.play()
+        if (passedSince in barnTimerAlertTime..(barnTimerAlertTime + 3.seconds)) {
+            SoundUtils.playBeepSound()
         }
     }
 

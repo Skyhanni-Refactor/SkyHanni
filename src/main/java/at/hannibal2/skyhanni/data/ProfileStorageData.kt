@@ -38,7 +38,7 @@ object ProfileStorageData {
         val sackPlayers = sackPlayers
         val profileName = event.name
         if (playerSpecific == null) {
-            ErrorManager.skyHanniError("playerSpecific is null in ProfileJoinEvent!  If you have a mod that auto-joins SkyBlock, disable it!")
+            ErrorManager.skyHanniError("playerSpecific is null in ProfileJoinEvent!")
         }
         if (sackPlayers == null) {
             ErrorManager.skyHanniError("sackPlayers is null in ProfileJoinEvent!")
@@ -48,7 +48,8 @@ object ProfileStorageData {
         ConfigLoadEvent().post()
     }
 
-    private fun workaroundIn10Seconds(profileName: String) {
+    private fun workaroundIn10SecondsProfileStorage(profileName: String) {
+        println("workaroundIn10SecondsProfileStorage")
         val playerSpecific = playerSpecific
         val sackPlayers = sackPlayers
 
@@ -57,7 +58,7 @@ object ProfileStorageData {
                 "failed to load your profile data a second time",
                 "workaround in 10 seconds did not work"
             )
-            ErrorManager.skyHanniError("playerSpecific is null in ProfileJoinEvent!")
+            ErrorManager.skyHanniError("playerSpecific is still null in ProfileJoinEvent!")
         }
         if (sackPlayers == null) {
             ErrorManager.skyHanniError("sackPlayers is null in ProfileJoinEvent!")

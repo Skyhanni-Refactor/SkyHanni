@@ -25,7 +25,7 @@ import kotlin.time.Duration.Companion.minutes
 object VerminHighlighter {
     private val config get() = RiftAPI.config.area.westVillage.verminHighlight
 
-    private val checkedEntites = TimeLimitedSet<Int>(1.minutes)
+    private val checkedEntities = TimeLimitedSet<Int>(1.minutes)
 
     // TODO repo
     private const val FLY_TEXTURE =
@@ -39,8 +39,8 @@ object VerminHighlighter {
 
         for (entity in McWorld.getEntitiesOf<EntityLivingBase>()) {
             val id = entity.entityId
-            if (id in checkedEntites) continue
-            checkedEntites.add(id)
+            if (id in checkedEntities) continue
+            checkedEntities.add(id)
 
             if (!isVermin(entity)) continue
             val color = config.color.get().toChromaColour().withAlpha(60)
@@ -52,7 +52,7 @@ object VerminHighlighter {
     fun onConfigLoad(event: ConfigLoadEvent) {
         ConditionalUtils.onToggle(config.color) {
             // running setEntityColorWithNoHurtTime() again
-            checkedEntites.clear()
+            checkedEntities.clear()
         }
     }
 

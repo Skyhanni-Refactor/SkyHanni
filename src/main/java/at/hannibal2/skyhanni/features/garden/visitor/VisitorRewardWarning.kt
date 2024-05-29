@@ -70,7 +70,7 @@ object VisitorRewardWarning {
             return
         }
 
-        // all but shift clicktypes work for accepting visitor
+        // all but shift click types work for accepting visitor
         if (event.clickTypeEnum == SlotClickEvent.ClickType.SHIFT) return
         if (isRefuseSlot) {
             VisitorAPI.changeStatus(visitor, VisitorAPI.VisitorStatus.REFUSED, "refused")

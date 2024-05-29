@@ -32,16 +32,21 @@ object EntityUtils {
         return getNameTagWith(y, contains, debugRightEntity, inaccuracy, debugWrongEntity) != null
     }
 
+    fun getPlayerEntities(): MutableList<EntityOtherPlayerMP> {
+        val list = mutableListOf<EntityOtherPlayerMP>()
+        for (entity in Minecraft.getMinecraft().theWorld.playerEntities) {
+            if (!entity.isNPC() && entity is EntityOtherPlayerMP) {
+                list.add(entity)
+            }
+        }
+        return list
+    }
+
     fun EntityLivingBase.getAllNameTagsInRadiusWith(
         contains: String,
         radius: Double = 3.0,
-    ): List<EntityArmorStand> {
-        val center = getLorenzVec().add(y = 3)
-        val found = getArmorStandsInRadius(center, radius)
-        return found.filter {
-            val result = it.name.contains(contains)
-            result
-        }
+    ): List<EntityArmorStand> = getArmorStandsInRadius(getLorenzVec().add(y = 3), radius).filter {
+        it.name.contains(contains)
     }
 
     fun EntityLivingBase.getNameTagWith(
@@ -60,8 +65,7 @@ object EntityUtils {
         debugWrongEntity: Boolean = false,
     ): List<EntityArmorStand> {
         val center = getLorenzVec().add(y = y)
-        val found = getArmorStandsInRadius(center, inaccuracy)
-        return found.filter {
+        return getArmorStandsInRadius(center, inaccuracy).filter {
             val result = it.name.contains(contains)
             if (debugWrongEntity && !result) {
                 SkyHanniMod.logger.info("wrong entity in aabb: '" + it.name + "'")

@@ -9,9 +9,13 @@ import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils.getBlockInHand
 import at.hannibal2.skyhanni.utils.EntityUtils.hasNameTagWith
+import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.LorenzUtils.ignoreDerpy
+import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
+import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
+import at.hannibal2.skyhanni.utils.getLorenzVec
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.monster.EntityCaveSpider
@@ -23,6 +27,7 @@ import net.minecraft.init.Blocks
 object MobHighlight {
 
     private val config get() = SkyHanniMod.feature.combat.mobs
+    private var arachne: EntityLivingBase? = null
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onEntityHealthUpdate(event: EntityHealthUpdateEvent) {
@@ -92,12 +97,40 @@ object MobHighlight {
             }
         }
 
-        if (config.arachneBossHighlighter && entity is EntitySpider) {
+        if (entity is EntitySpider) {
             checkArachne(entity)
         }
     }
 
+    @SubscribeEvent
+    fun onWorldRender(event: LorenzRenderWorldEvent) {
+        if (!LorenzUtils.inSkyBlock || !config.lineToArachne) return
+
+        val arachne = arachne ?: return
+        if (arachne.isDead || arachne.health <= 0) {
+            this.arachne = null
+            return
+        }
+
+        if (arachne.distanceToPlayer() > 10) return
+
+        event.draw3DLine(
+            event.exactPlayerEyeLocation(),
+            arachne.getLorenzVec().add(y = 1),
+            LorenzColor.RED.toColor(),
+            5,
+            true
+        )
+    }
+
+    @SubscribeEvent
+    fun onWorldChange(event: LorenzWorldChangeEvent) {
+        arachne = null
+    }
+
     private fun checkArachne(entity: EntitySpider) {
+        if (!config.arachneBossHighlighter && !config.lineToArachne) return
+
         if (!entity.hasNameTagWith(1, "[§7Lv300§8] §cArachne") &&
             !entity.hasNameTagWith(1, "[§7Lv300§8] §lArachne") &&
             !entity.hasNameTagWith(1, "[§7Lv500§8] §cArachne") &&
@@ -107,6 +140,7 @@ object MobHighlight {
         if (entity is EntityCaveSpider) {
             markArachneMinis(entity)
         } else if (entity.baseMaxHealth == 20_000 || entity.baseMaxHealth == 100_000) {
+            this.arachne = entity
             markArachne(entity)
         }
     }

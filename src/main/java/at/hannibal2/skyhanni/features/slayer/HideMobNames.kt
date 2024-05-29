@@ -9,12 +9,13 @@ import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import net.minecraft.entity.item.EntityArmorStand
 import java.util.regex.Pattern
+import kotlin.time.Duration.Companion.minutes
 
 @SkyHanniModule
 object HideMobNames {
 
-    private val lastMobName = mutableMapOf<EntityArmorStand, String>()
-    private val mobNamesHidden = mutableListOf<EntityArmorStand>()
+    private val lastMobName = TimeLimitedCache<Int, String>(2.minutes)
+    private val mobNamesHidden = mutableListOf<Int>()
     private val patterns = mutableListOf<Pattern>()
 
     private fun addMobToHide(bossName: String) {
@@ -26,7 +27,7 @@ object HideMobNames {
         patterns.clear()
         event.getConstant<Array<String>>("MobToHide").forEach { addMobToHide(it) }
     }
-    
+
     @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
         if (!SkyHanniMod.feature.slayer.hideMobNames) return
@@ -35,19 +36,19 @@ object HideMobNames {
         if (!entity.hasCustomName()) return
 
         val name = entity.name
-        if (lastMobName.getOrDefault(entity, "abc") == name) {
+        if (lastMobName.getOrNull(id) == name) {
             if (entity in mobNamesHidden) {
                 event.cancel()
             }
             return
         }
 
-        lastMobName[entity] = name
-        mobNamesHidden.remove(entity)
+        lastMobName.put(id, name)
+        mobNamesHidden.remove(id)
 
         if (shouldNameBeHidden(name)) {
             event.cancel()
-            mobNamesHidden.add(entity)
+            mobNamesHidden.add(id)
         }
     }
 

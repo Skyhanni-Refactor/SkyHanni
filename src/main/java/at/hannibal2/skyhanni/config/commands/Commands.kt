@@ -422,7 +422,7 @@ object Commands {
             "Shows the status of all the mods constants"
         ) { SkyHanniMod.repo.displayRepoStatus(false) }
         registerCommand(
-            "shclearksimet",
+            "shclearkismet",
             "Cleares the saved values of the applied kismet feathers in Croesus"
         ) { CroesusChestTracker.resetChest() }
         registerCommand(
@@ -553,6 +553,10 @@ object Commands {
             "Tracks the particles for the specified duration (in seconds) and copies it to the clipboard"
         ) { TrackParticlesCommand.command(it) }
         registerCommand(
+            "shtrackparticles",
+            "Tracks the particles for the specified duration (in seconds) and copies it to the clipboard"
+        ) { TrackParticlesCommand.command(it) }
+        registerCommand(
             "shcopytablist",
             "Copies the tab list data to the clipboard"
         ) { TabListData.copyCommand(it) }
@@ -627,30 +631,12 @@ object Commands {
     }
 
     private fun shortenedCommands() {
-        registerCommand(
-            "pko",
-            "Kicks offline party members"
-        ) { PartyCommands.kickOffline() }
-        registerCommand(
-            "pw",
-            "Warps your party"
-        ) { PartyCommands.warp() }
-        registerCommand(
-            "pk",
-            "Kick a specific party member"
-        ) { PartyCommands.kick(it) }
-        registerCommand(
-            "pt",
-            "Transfer the party to another party member"
-        ) { PartyCommands.transfer(it) }
-        registerCommand(
-            "pp",
-            "Promote a specific party member"
-        ) { PartyCommands.promote(it) }
-        registerCommand(
-            "pd",
-            "Disbands the party"
-        ) { PartyCommands.disband() }
+        registerCommand("pko", "Kicks offline party members") { PartyCommands.kickOffline() }
+        registerCommand("pw", "Warps your party") { PartyCommands.warp() }
+        registerCommand("pk", "Kick a specific party member") { PartyCommands.kick(it) }
+        registerCommand("pt", "Transfer the party to another party member") { PartyCommands.transfer(it) }
+        registerCommand("pp", "Promote a specific party member") { PartyCommands.promote(it) }
+        registerCommand("pd", "Disbands the party") { PartyCommands.disband() }
     }
 
     @JvmStatic

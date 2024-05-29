@@ -73,7 +73,7 @@ object DianaFixChat {
                     lastToggleMusicPrompt = SimpleTimeMark.now()
                     ChatUtils.clickableChat(
                         "§cError detecting Diana Guess! Changing the Particle Quality has not worked :( " +
-                                "§eClick here to disable hypixel music!",
+                            "§eClick here to disable hypixel music!",
                         onClick = {
                             hasSetToggleMusic = true
                             HypixelCommands.toggleMusic()

@@ -22,7 +22,7 @@ import net.minecraft.item.ItemStack
 @SkyHanniModule
 object TestCopyBestiaryValues {
 
-    class BestiaryObject {
+    class BestiaryObject { // TODO fix typo
 
         @Expose
         var name: String = ""

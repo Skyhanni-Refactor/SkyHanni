@@ -71,6 +71,7 @@ object InquisitorWaypointShare {
     private var lastInquisitor = -1
     private var lastShareTime = SimpleTimeMark.farPast()
     private var inquisitorsNearby = emptyList<EntityOtherPlayerMP>()
+    private val soonRange = (-500).milliseconds..1.5.seconds
 
     private val logger = LorenzLogger("diana/waypoints")
 
@@ -123,9 +124,7 @@ object InquisitorWaypointShare {
                 logger.log("reverse!")
                 logger.log("diff: $passedSince")
             }
-            if (passedSince > 1.5.seconds || passedSince < (-500).milliseconds) {
-                return
-            }
+            if (passedSince in soonRange) return
             foundInquisitor(lastInquisitor)
         }
 
@@ -157,9 +156,9 @@ object InquisitorWaypointShare {
         lastInquisitor = entity.entityId
 
         logger.log("diff: $passedSince")
-        if (passedSince > 1.5.seconds || passedSince < (-500).milliseconds) {
+        if (passedSince in soonRange) {
             val testDiff = testTime.passedSince()
-            if (testDiff > 1.5.seconds || testDiff < (-500).milliseconds) {
+            if (testDiff in soonRange) {
                 logger.log("testDiff: $passedSince")
                 return
             } else {

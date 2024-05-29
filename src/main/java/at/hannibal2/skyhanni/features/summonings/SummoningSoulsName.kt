@@ -12,6 +12,7 @@ import at.hannibal2.skyhanni.utils.EntityUtils.getNameTagWith
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
+import at.hannibal2.skyhanni.utils.TimeLimitedCache
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.EntityLiving
@@ -29,8 +30,8 @@ object SummoningSoulsName {
             "NjkxNzc4ZDVlOTU4NDAxNzAyMjdlYjllM2UyOTQzYmVhODUzOTI5Y2U5MjNjNTk4OWFkIgogICAgfQogIH0KfQ"
 
     private val souls = mutableMapOf<EntityArmorStand, String>()
-    private val mobsLastLocation = mutableMapOf<EntityLiving, LorenzVec>()
-    private val mobsName = mutableMapOf<EntityLiving, String>()
+    private val mobsLastLocation = TimeLimitedCache<Int, LorenzVec>(6.minutes)
+    private val mobsName = TimeLimitedCache<Int, String>(6.minutes)
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
@@ -47,7 +48,7 @@ object SummoningSoulsName {
             if (entity.hasSkullTexture(TEXTURE)) {
                 val soulLocation = entity.getLorenzVec()
 
-                val map = mutableMapOf<EntityLiving, Double>()
+                val map = mutableMapOf<Int, Double>()
                 for ((mob, loc) in mobsLastLocation) {
                     val distance = loc.distance(soulLocation)
                     map[mob] = distance
@@ -55,16 +56,17 @@ object SummoningSoulsName {
 
                 val nearestMob = map.sorted().firstNotNullOfOrNull { it.key }
                 if (nearestMob != null) {
-                    souls[entity] = mobsName[nearestMob]!!
+                    souls[entity] = mobsName.getOrNull(nearestMob)!!
                 }
             }
         }
 
         for (entity in McWorld.getEntitiesOf<EntityLiving>()) {
+            val id = entity.entityId
             val consumer = entity.getNameTagWith(2, "§c❤")
             if (consumer != null && !consumer.name.contains("§e0")) {
-                mobsLastLocation[entity] = entity.getLorenzVec()
-                mobsName[entity] = consumer.name
+                mobsLastLocation.put(id, entity.getLorenzVec())
+                mobsName.put(id, consumer.name)
             }
         }
 

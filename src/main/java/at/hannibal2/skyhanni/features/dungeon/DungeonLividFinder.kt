@@ -59,6 +59,23 @@ object DungeonLividFinder {
 
         lividArmorStand = McWorld.getEntitiesOf<EntityArmorStand>()
             .firstOrNull { it.name.startsWith("${chatColor}﴾ ${chatColor}§lLivid") }
+
+        if (event.isMod(20)) {
+            if (lividArmorStand == null) {
+            val amountArmorStands = EntityUtils.getEntities<EntityArmorStand>().filter { it.name.contains("Livid") }.count()
+                if (amountArmorStands >= 8) {
+                    ErrorManager.logErrorStateWithData(
+                        "Could not find livid",
+                        "could not find lividArmorStand",
+                        "dyeColor" to dyeColor,
+                        "color" to color,
+                        "chatColor" to chatColor,
+                        "amountArmorStands" to amountArmorStands,
+                    )
+                }
+            }
+        }
+
         val lividArmorStand = lividArmorStand ?: return
 
         val box = with(lividArmorStand) {

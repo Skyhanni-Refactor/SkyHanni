@@ -163,7 +163,7 @@ object DiscordRPCManager : IPCListener {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        // the mod has already started the connection process. this variable is my way of running a function when
+        // The mod has already started the connection process. this variable is my way of running a function when
         // the player joins SkyBlock but only running it again once they join and leave.
         if (started || !isEnabled()) return
         if (SkyBlockAPI.isConnected) {

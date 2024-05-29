@@ -91,8 +91,16 @@ object HypixelCommands {
         send("party transfer $player")
     }
 
-    fun particleQuality(quality: String) {
-        send("pq $quality")
+    fun partyDisband() {
+        send("party disband")
+    }
+
+    fun partyKick(player: String) {
+        send("party kick $player")
+    }
+
+    fun partyKickOffline() {
+        send("party kickoffline")
     }
 
     fun partyDisband() {
@@ -121,6 +129,10 @@ object HypixelCommands {
 
     fun allChat(message: String) {
         send("ac $message")
+    }
+
+    fun particleQuality(quality: String) {
+        send("pq $quality")
     }
 
     fun showRng(major: String? = null, minor: String? = null) = when {
