@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
+import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceSqToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
@@ -62,7 +63,7 @@ object DungeonLividFinder {
 
         if (event.isMod(20)) {
             if (lividArmorStand == null) {
-            val amountArmorStands = EntityUtils.getEntities<EntityArmorStand>().filter { it.name.contains("Livid") }.count()
+                val amountArmorStands = McWorld.getEntitiesOf<EntityArmorStand>().count { it.name.contains("Livid") }
                 if (amountArmorStands >= 8) {
                     ErrorManager.logErrorStateWithData(
                         "Could not find livid",

@@ -103,18 +103,6 @@ object HypixelCommands {
         send("party kickoffline")
     }
 
-    fun partyDisband() {
-        send("party disband")
-    }
-
-    fun partyKick(player: String) {
-        send("party kick $player")
-    }
-
-    fun partyKickOffline() {
-        send("party kickoffline")
-    }
-
     fun partyAllInvite() {
         send("party settings allinvite")
     }

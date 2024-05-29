@@ -24,7 +24,6 @@ object RegexUtils {
         for (line in this) {
             pattern.matcher(line).let { if (it.find()) consumer(it) }
         }
-        return null
     }
 
     inline fun <T> List<Pattern>.matchMatchers(text: String, consumer: Matcher.() -> T): T? {

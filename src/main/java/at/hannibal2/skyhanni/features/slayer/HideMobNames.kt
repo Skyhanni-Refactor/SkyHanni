@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.TimeLimitedCache
 import net.minecraft.entity.item.EntityArmorStand
 import java.util.regex.Pattern
 import kotlin.time.Duration.Companion.minutes
@@ -36,8 +37,9 @@ object HideMobNames {
         if (!entity.hasCustomName()) return
 
         val name = entity.name
+        val id = entity.entityId
         if (lastMobName.getOrNull(id) == name) {
-            if (entity in mobNamesHidden) {
+            if (id in mobNamesHidden) {
                 event.cancel()
             }
             return

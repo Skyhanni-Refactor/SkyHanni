@@ -553,10 +553,6 @@ object Commands {
             "Tracks the particles for the specified duration (in seconds) and copies it to the clipboard"
         ) { TrackParticlesCommand.command(it) }
         registerCommand(
-            "shtrackparticles",
-            "Tracks the particles for the specified duration (in seconds) and copies it to the clipboard"
-        ) { TrackParticlesCommand.command(it) }
-        registerCommand(
             "shcopytablist",
             "Copies the tab list data to the clipboard"
         ) { TabListData.copyCommand(it) }

@@ -32,16 +32,6 @@ object EntityUtils {
         return getNameTagWith(y, contains, debugRightEntity, inaccuracy, debugWrongEntity) != null
     }
 
-    fun getPlayerEntities(): MutableList<EntityOtherPlayerMP> {
-        val list = mutableListOf<EntityOtherPlayerMP>()
-        for (entity in Minecraft.getMinecraft().theWorld.playerEntities) {
-            if (!entity.isNPC() && entity is EntityOtherPlayerMP) {
-                list.add(entity)
-            }
-        }
-        return list
-    }
-
     fun EntityLivingBase.getAllNameTagsInRadiusWith(
         contains: String,
         radius: Double = 3.0,

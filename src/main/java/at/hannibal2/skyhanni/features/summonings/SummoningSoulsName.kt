@@ -17,6 +17,7 @@ import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.item.EntityArmorStand
+import kotlin.time.Duration.Companion.minutes
 
 @SkyHanniModule
 object SummoningSoulsName {
