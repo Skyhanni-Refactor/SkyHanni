@@ -48,27 +48,6 @@ object ProfileStorageData {
         ConfigLoadEvent().post()
     }
 
-    private fun workaroundIn10SecondsProfileStorage(profileName: String) {
-        println("workaroundIn10SecondsProfileStorage")
-        val playerSpecific = playerSpecific
-        val sackPlayers = sackPlayers
-
-        if (playerSpecific == null) {
-            ErrorManager.skyHanniError(
-                "failed to load your profile data delayed ",
-                "onHypixel" to LorenzUtils.onHypixel,
-                "HypixelData.hypixelLive" to HypixelData.hypixelLive,
-                "HypixelData.hypixelAlpha" to HypixelData.hypixelAlpha,
-                "sidebarLinesFormatted" to ScoreboardData.sidebarLinesFormatted,
-            )
-        }
-        if (sackPlayers == null) {
-            ErrorManager.skyHanniError("sackPlayers is null in ProfileJoinEvent!")
-        }
-        loadProfileSpecific(playerSpecific, sackPlayers, profileName)
-        ConfigLoadEvent().post()
-    }
-
     @HandleEvent(onlyOnSkyblock = true)
     fun onTabListUpdate(event: TabListUpdateEvent) {
         event.tabList.matchFirst(UtilsPatterns.tabListProfilePattern) {

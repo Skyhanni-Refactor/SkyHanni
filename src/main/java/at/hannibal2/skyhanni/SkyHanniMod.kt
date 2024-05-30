@@ -9,6 +9,7 @@ import at.hannibal2.skyhanni.config.Features
 import at.hannibal2.skyhanni.config.SackData
 import at.hannibal2.skyhanni.config.commands.Commands
 import at.hannibal2.skyhanni.data.ActionBarStatsData
+import at.hannibal2.skyhanni.data.HotmData
 import at.hannibal2.skyhanni.data.OtherInventoryData
 import at.hannibal2.skyhanni.data.jsonobjects.local.FriendsJson
 import at.hannibal2.skyhanni.data.jsonobjects.local.JacobContestsJson
@@ -61,6 +62,7 @@ class SkyHanniMod {
         loadModule(ActionBarStatsData)
 //         loadModule(Year300RaffleEvent)
         loadModule(CrimsonIsleReputationHelper(this))
+        loadModule(HotmData)
         loadModule(IslandArea)
         loadModule(SkyblockGuideHighlightFeature)
 

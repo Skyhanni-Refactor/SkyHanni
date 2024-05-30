@@ -7,6 +7,7 @@ import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDis
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDisplayConfig.TextPart
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDisplayConfig.TrophySorting
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDisplayConfig.WhenToShow
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.fishing.TrophyFishCaughtEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
@@ -25,7 +26,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
@@ -241,9 +241,9 @@ object TrophyFishDisplay {
                 return internalName
             }
         }
-        if (rawName.endsWith("1")) return "OBFUSCATED_FISH_1_BRONZE".asInternalName()
-        if (rawName.endsWith("2")) return "OBFUSCATED_FISH_2_BRONZE".asInternalName()
-        if (rawName.endsWith("3")) return "OBFUSCATED_FISH_3_BRONZE".asInternalName()
+        if (rawName.endsWith("1")) return SkyhanniItems.OBFUSCATED_FISH_1_BRONZE()
+        if (rawName.endsWith("2")) return SkyhanniItems.OBFUSCATED_FISH_2_BRONZE()
+        if (rawName.endsWith("3")) return SkyhanniItems.OBFUSCATED_FISH_3_BRONZE()
 
         return null
     }

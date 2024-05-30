@@ -8,6 +8,7 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.compat.soopy.data.MiningEventData
 import at.hannibal2.skyhanni.compat.soopy.data.RunningEventType
 import at.hannibal2.skyhanni.config.features.mining.MiningEventConfig
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
@@ -15,7 +16,6 @@ import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.features.mining.eventtracker.MiningEventType.Companion.CompressFormat
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
@@ -78,11 +78,11 @@ object MiningEventDisplay {
                             listOf(
                                 when (islandType) {
                                     IslandType.DWARVEN_MINES -> Renderable.itemStack(
-                                        "PERFECT_RUBY_GEM".asInternalName().getItemStack()
+                                        SkyhanniItems.PERFECT_RUBY_GEM().getItemStack()
                                     )
 
                                     IslandType.CRYSTAL_HOLLOWS -> Renderable.itemStack(
-                                        "MITHRIL_ORE".asInternalName().getItemStack()
+                                        SkyhanniItems.MITHRIL_ORE().getItemStack()
                                     )
 
                                     IslandType.MINESHAFT -> Renderable.itemStack(ItemStack(Blocks.packed_ice))

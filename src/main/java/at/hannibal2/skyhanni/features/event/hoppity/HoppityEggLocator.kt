@@ -109,7 +109,7 @@ object HoppityEggLocator {
         event.drawDuplicateEggs(islandEggsLocations)
     }
 
-    private fun LorenzRenderWorldEvent.drawGuessLocations() {
+    private fun SkyHanniRenderWorldEvent.drawGuessLocations() {
         val eyeLocation = exactPlayerEyeLocation()
         for ((index, eggLocation) in possibleEggLocations.withIndex()) {
             drawEggWaypoint(eggLocation, "§aGuess #${index + 1}")
@@ -119,7 +119,7 @@ object HoppityEggLocator {
         }
     }
 
-    private fun LorenzRenderWorldEvent.drawDuplicateEggs(islandEggsLocations: List<LorenzVec>, ) {
+    private fun SkyHanniRenderWorldEvent.drawDuplicateEggs(islandEggsLocations: List<LorenzVec>) {
         if (!config.highlightDuplicateEggLocations || !config.showNearbyDuplicateEggLocations) return
         for (eggLocation in islandEggsLocations) {
             val dist = eggLocation.distanceToPlayer()
@@ -131,7 +131,7 @@ object HoppityEggLocator {
         }
     }
 
-    private fun LorenzRenderWorldEvent.drawGuessImmediately() {
+    private fun SkyHanniRenderWorldEvent.drawGuessImmediately() {
         if (config.waypointsImmediately && lastClick.passedSince() < 5.seconds) {
             lastParticlePositionForever?.let {
                 if (lastChange.passedSince() < 300.milliseconds) {
@@ -154,7 +154,7 @@ object HoppityEggLocator {
         }
     }
 
-    private fun LorenzRenderWorldEvent.drawEggWaypoint(location: LorenzVec, label: String) {
+    private fun SkyHanniRenderWorldEvent.drawEggWaypoint(location: LorenzVec, label: String) {
         val shouldMarkDuplicate = config.highlightDuplicateEggLocations
             && HoppityUniqueEggLocations.hasCollectedEgg(location)
         val possibleDuplicateLabel = if (shouldMarkDuplicate) "$label §c(Duplicate Location)" else label

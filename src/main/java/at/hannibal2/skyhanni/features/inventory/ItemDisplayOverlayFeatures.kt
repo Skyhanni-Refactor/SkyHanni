@@ -247,7 +247,7 @@ object ItemDisplayOverlayFeatures {
             return "§a${(seconds / 3600)}"
         }
 
-        if (DARK_CACAO_TRUFFLE.isSelected() && internalName == "DARK_CACAO_TRUFFLE".asInternalName()) {
+        if (DARK_CACAO_TRUFFLE.isSelected() && internalName == SkyhanniItems.DARK_CACAO_TRUFFLE()) {
             val seconds = item.getSecondsHeld() ?: 0
             return "§a${(seconds / 3600)}"
         }

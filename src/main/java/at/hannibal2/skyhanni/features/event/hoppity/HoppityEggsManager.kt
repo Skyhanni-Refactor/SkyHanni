@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.TitleManager
@@ -194,7 +195,7 @@ object HoppityEggsManager {
             .toMutableList()
         displayList.add(0, "§bUnclaimed Eggs:")
 
-        if (config.showCollectedLocationCount && LorenzUtils.inSkyBlock) {
+        if (config.showCollectedLocationCount && SkyBlockAPI.isConnected) {
             val totalEggs = HoppityEggLocator.getCurrentIslandEggLocations()?.size
             if (totalEggs != null) {
                 val collectedEggs = HoppityUniqueEggLocations.collectedEggsThisIsland()
@@ -243,7 +244,7 @@ object HoppityEggsManager {
         val amount = HoppityEggType.entries.size
         val message = "All $amount Hoppity Eggs are ready to be found!"
         if (config.warpUnclaimedEggs) {
-            if (LorenzUtils.inSkyBlock) {
+            if (SkyBlockAPI.isConnected) {
                 ChatUtils.clickableChat(
                     message,
                     onClick = { HypixelCommands.warp(config.warpDestination) },
@@ -273,6 +274,6 @@ object HoppityEggsManager {
         event.move(44, "event.chocolateFactory.hoppityEggs", "event.hoppityEggs")
     }
 
-    fun isActive() = (SkyBlockAPI.isConnected || (LorenzUtils.onHypixel && config.showOutsideSkyblock)) &&
+    fun isActive() = (SkyBlockAPI.isConnected || (HypixelAPI.onHypixel && config.showOutsideSkyblock)) &&
         ChocolateFactoryAPI.isHoppityEvent()
 }
