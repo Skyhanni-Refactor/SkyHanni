@@ -8,11 +8,14 @@ plugins {
 
 repositories {
     mavenCentral()
+    maven("https://repo.spongepowered.org/maven/")
 }
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("com.google.devtools.ksp:symbol-processing-api:1.8.0-1.0.8")
+    implementation("org.spongepowered:mixin:0.8.4-SNAPSHOT")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
 }
 
 tasks.withType<JavaCompile> {
