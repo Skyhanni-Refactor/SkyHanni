@@ -45,7 +45,7 @@ object HideMobNames {
             return
         }
 
-        lastMobName.put(id, name)
+        lastMobName[id] = name
         mobNamesHidden.remove(id)
 
         if (shouldNameBeHidden(name)) {

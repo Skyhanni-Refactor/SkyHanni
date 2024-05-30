@@ -33,7 +33,7 @@ object SlayerItemsOnGround {
             if (itemStack.getInternalName() == SkyhanniItems.NONE()) continue
             val (name, price) = SlayerAPI.getItemNameAndPrice(itemStack.getInternalName(), itemStack.stackSize)
             if (config.minimumPrice > price) continue
-            itemsOnGround.put(entityItem, name)
+            itemsOnGround[entityItem] = name
         }
     }
 

@@ -31,7 +31,7 @@ object SeaCreatureManager {
             }
             doubleHook = true
         } else {
-            val seaCreature = getSeaCreature(event.message)
+            val seaCreature = getSeaCreatureFromMessage(event.message)
             if (seaCreature != null) {
                 SeaCreatureFishEvent(seaCreature, event, doubleHook).post()
             }

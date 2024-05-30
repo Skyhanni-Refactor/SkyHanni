@@ -113,6 +113,7 @@ object TunnelsMaps {
     private val commissionInvPattern by RepoPattern.pattern(
         "mining.commission.inventory", "Commissions"
     )
+
     /**
      * REGEX-TEST: §7- §b277 Glacite Powder
      * REGEX-TEST: §7- §b1,010 Glacite Powder
@@ -415,6 +416,7 @@ object TunnelsMaps {
     @HandleEvent
     fun onKeyPress(event: KeyPressEvent) {
         if (!isEnabled()) return
+        if (Minecraft.getMinecraft().currentScreen != null) return
         campfireKey(event)
         nextSpotKey(event)
     }

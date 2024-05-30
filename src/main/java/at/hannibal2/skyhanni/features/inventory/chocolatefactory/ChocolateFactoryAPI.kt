@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.data.jsonobjects.repo.HoppityEggLocationsJson
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.features.event.hoppity.HoppityCollectionStats
 import at.hannibal2.skyhanni.features.event.hoppity.HoppityEggLocator
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
@@ -22,6 +23,7 @@ import at.hannibal2.skyhanni.utils.UtilsPatterns
 import at.hannibal2.skyhanni.utils.datetime.SkyblockSeason
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
 
 @SkyHanniModule
@@ -127,20 +129,27 @@ object ChocolateFactoryAPI {
 
     fun isMaxPrestige() = currentPrestige >= maxPrestige
 
+    fun timeTowerChargeDuration() =
+        if (HoppityCollectionStats.hasFoundRabbit("Einstein")) 7.hours else 8.hours
+
+    private fun timeTowerMultiplier(): Double {
+        var multiplier = (profileStorage?.timeTowerLevel ?: 0) * 0.1
+        if (HoppityCollectionStats.hasFoundRabbit("Mu")) multiplier += 0.7
+        return multiplier
+    }
+
     fun timeUntilNeed(goal: Long): Duration {
         var needed = goal
         val profileStorage = profileStorage ?: return Duration.ZERO
 
         val baseMultiplier = profileStorage.rawChocolateMultiplier
         val rawChocolatePerSecond = profileStorage.rawChocPerSecond
-        var timeTowerMultiplier = baseMultiplier + profileStorage.timeTowerLevel * 0.1
-        if (profileStorage.hasMuRabbit) timeTowerMultiplier += 0.7
 
         if (rawChocolatePerSecond == 0) return Duration.INFINITE
 
         val secondsUntilTowerExpires = ChocolateFactoryTimeTowerManager.timeTowerActiveDuration().inWholeSeconds
 
-        val timeTowerChocPerSecond = rawChocolatePerSecond * timeTowerMultiplier
+        val timeTowerChocPerSecond = rawChocolatePerSecond * (baseMultiplier + timeTowerMultiplier())
 
         val secondsAtRate = needed / timeTowerChocPerSecond
         if (secondsAtRate < secondsUntilTowerExpires) {

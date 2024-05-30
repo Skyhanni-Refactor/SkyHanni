@@ -38,6 +38,7 @@ object LimboPlaytime {
     private var hoursString: String = ""
 
     private val storage get() = ProfileStorageData.playerSpecific?.limbo
+    private val enabled get() = SkyHanniMod.feature.misc.showLimboTimeInPlaytimeDetailed
 
     private const val LIMBO_ITEM_NAME = "§aLimbo"
     private lateinit var limboItem: ItemStack
@@ -45,6 +46,7 @@ object LimboPlaytime {
 
     @HandleEvent
     fun replaceItem(event: ReplaceItemEvent) {
+        if (!enabled) return
         if (event.inventory !is ContainerLocalMenu) return
         if (event.inventory.name != "Detailed /playtime") return
         if (event.slot != 43) return
@@ -75,6 +77,7 @@ object LimboPlaytime {
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: SkyHanniToolTipEvent) {
+        if (!enabled) return
         if (!event.slot.inventory.name.startsWith("Detailed /playtime")) return
         if (event.slot.slotIndex != 4) return
         val playtime = storage?.playtime ?: 0

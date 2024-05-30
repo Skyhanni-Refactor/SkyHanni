@@ -18,10 +18,11 @@ object TestChatCommand {
 
         SkyHanniMod.launchCoroutine {
             val mutArgs = args.toMutableList()
-            val isComplex = mutArgs.remove("-complex")
-            val isClipboard = mutArgs.remove("-clipboard")
-            val isHidden = mutArgs.remove("-s")
             val multiLines = mutArgs.remove("-lines")
+            val isComplex = mutArgs.remove("-complex")
+            // cant use multi lines without clipboard
+            val isClipboard = mutArgs.remove("-clipboard") || multiLines
+            val isHidden = mutArgs.remove("-s")
             val text = if (isClipboard) { OS.readFromClipboard() } else mutArgs.joinToString(" ")
             if (multiLines) {
                 for (line in text.split("\n")) {

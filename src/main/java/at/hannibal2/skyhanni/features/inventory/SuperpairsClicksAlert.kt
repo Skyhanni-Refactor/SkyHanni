@@ -1,4 +1,4 @@
-package at.hannibal2.skyhanni.features.misc
+package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
@@ -14,7 +14,7 @@ import at.hannibal2.skyhanni.utils.mc.McSound.play
 @SkyHanniModule
 object SuperpairsClicksAlert {
 
-    private val config get() = SkyHanniMod.feature.misc
+    private val config get() = SkyHanniMod.feature.inventory.helper.enchanting
 
     private var roundsNeeded = -1
     private val roundsNeededRegex = Regex("""(?:Chain|Series) of (\d+):""")
@@ -61,5 +61,10 @@ object SuperpairsClicksAlert {
             ChatUtils.chat("You have reached the maximum possible clicks!")
             roundsNeeded = -1
         }
+    }
+
+    @SubscribeEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.move(46, "misc.superpairsClicksAlert", "inventory.helper.enchanting.superpairsClicksAlert")
     }
 }

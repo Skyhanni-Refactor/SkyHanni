@@ -36,15 +36,8 @@ object SeaCreatureTracker {
 
     private val config get() = SkyHanniMod.feature.fishing.seaCreatureTracker
 
-    private val trophyArmorNames by RepoPattern.pattern(
-        "fishing.trophyfishing.armor",
-        "(BRONZE|SILVER|GOLD|DIAMOND)_HUNTER_(HELMET|CHESTPLATE|LEGGINGS|BOOTS)"
-    )
-
     private val tracker = SkyHanniTracker("Sea Creature Tracker", { Data() }, { it.fishing.seaCreatureTracker })
     { drawDisplay(it) }
-    private var lastArmorCheck = SimpleTimeMark.farPast()
-    private var isTrophyFishing = false
 
     class Data : TrackerData() {
 
@@ -175,16 +168,6 @@ object SeaCreatureTracker {
         tracker.resetCommand()
     }
 
-    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled && !isTrophyFishing && !KuudraAPI.inKuudra
-
-    private fun isWearingTrophyArmor(): Boolean = McPlayer.armor.all {
-        trophyArmorNames.matches(it?.getInternalName()?.asString())
-    }
-
-    @HandleEvent
-    fun onTick(event: ClientTickEvent) {
-        if (lastArmorCheck.passedSince() < 3.seconds) return
-        lastArmorCheck = SimpleTimeMark.now()
-        isTrophyFishing = isWearingTrophyArmor()
-    }
+    private fun isEnabled() =
+        SkyBlockAPI.isConnected && config.enabled && !FishingAPI.wearingTrophyArmor && !KuudraAPI.inKuudra
 }

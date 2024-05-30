@@ -227,6 +227,10 @@ object CroesusChestTracker {
         if ((croesusChests?.size ?: 0) > MAX_CHESTS) {
             croesusChests?.dropLast(1)
         }
+
+        if (config.croesusLimit && getLastActiveChest() >= 55) {
+            ChatUtils.chat("You are close to the Croesus Limit. Please open your chests!")
+        }
     }
 
     private fun Int.getRun() = getRun0(this)
@@ -258,10 +262,10 @@ object CroesusChestTracker {
         ChatUtils.chat("Kismet State was cleared!")
     }
 
-    fun generateMaxChest() = generateSequence { DungeonRunInfo() }.take(MAX_CHESTS)
+    fun generateMaxChest(): Sequence<DungeonRunInfo> = generateSequence { DungeonRunInfo() }.take(MAX_CHESTS)
 
     @JvmStatic
-    fun generateMaxChestAsList() = generateMaxChest().toList()
+    fun generateMaxChestAsList(): List<DungeonRunInfo> = generateMaxChest().toList()
 
     fun getLastActiveChest(includeDungeonKey: Boolean = false) =
         (croesusChests?.indexOfLast {

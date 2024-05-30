@@ -8,7 +8,7 @@ import com.google.gson.JsonPrimitive
 object ConfigUpdaterMigrator {
 
     val logger = LorenzLogger("ConfigMigration")
-    const val CONFIG_VERSION = 45
+    const val CONFIG_VERSION = 46
 
     private fun merge(originalObject: JsonObject, overrideObject: JsonObject): Int {
         var count = 0
@@ -61,6 +61,4 @@ object ConfigUpdaterMigrator {
             logger.log("Final config: $it")
         }
     }
-
-    // Extension Functions
 }

@@ -18,7 +18,7 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 @SkyHanniModule
 object MiningEventDisplay {
     private val config get() = SkyHanniMod.feature.mining.miningEvent
-    private var display = listOf<String>()
+    private var display = listOf<Renderable>()
 
     private val islandEventData: MutableMap<IslandType, MiningIslandEventInfo> = mutableMapOf()
 
@@ -30,7 +30,7 @@ object MiningEventDisplay {
     @HandleEvent
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!shouldDisplay()) return
-        config.position.renderStrings(display, posLabel = "Upcoming Events Display")
+        config.position.renderRenderables(display, posLabel = "Upcoming Events Display")
     }
 
     private fun updateDisplay() {
@@ -39,12 +39,12 @@ object MiningEventDisplay {
     }
 
     private fun updateEvents() {
-        val list = mutableListOf<String>()
+        val list = mutableListOf<Renderable>()
 
         if (MiningEventTracker.apiError) {
             val count = MiningEventTracker.apiErrorCount
-            list.add("§cMining Event API Error! ($count)")
-            list.add("§cSwap servers to try again!")
+            list.add(Renderable.string("§cMining Event API Error! ($count)"))
+            list.add(Renderable.string("§cSwap servers to try again!"))
         }
 
         islandEventData.forEach { (islandType, eventDetails) ->
@@ -64,19 +64,52 @@ object MiningEventDisplay {
 
             if (shouldShow) {
                 val upcomingEvents = formatUpcomingEvents(eventDetails.islandEvents, eventDetails.lastEvent)
-                list.add("§a${islandType.displayName}§8: $upcomingEvents")
+                val island =
+                    if (!config.islandAsIcon) Renderable.string("§a${islandType.displayName}§8:") else
+                        Renderable.horizontalContainer(
+                            listOf(
+                                when (islandType) {
+                                    IslandType.DWARVEN_MINES -> Renderable.itemStack(
+                                        "PERFECT_RUBY_GEM".asInternalName().getItemStack()
+                                    )
+
+                                    IslandType.CRYSTAL_HOLLOWS -> Renderable.itemStack(
+                                        "MITHRIL_ORE".asInternalName().getItemStack()
+                                    )
+
+                                    IslandType.MINESHAFT -> Renderable.itemStack(ItemStack(Blocks.packed_ice))
+                                    else -> unknownDisplay
+                                },
+                                Renderable.string("§8:")
+                            )
+                        )
+                list.add(
+                    Renderable.horizontalContainer(
+                        listOf(
+                            island,
+                            *upcomingEvents
+                        ), 3
+                    )
+                )
             }
         }
         display = list
     }
 
-    private fun formatUpcomingEvents(events: List<RunningEventType>, lastEvent: MiningEventType?): String {
-        val upcoming = events.filter { !it.endsAt.asTimeMark().isInPast() }
-            .map { if (it.isDoubleEvent) "${it.event} §8-> ${it.event}" else it.event.toString() }.toMutableList()
+    private val unknownDisplay = Renderable.string("§7???")
+    private val transitionDisplay = Renderable.string("§8->")
 
-        if (upcoming.isEmpty()) upcoming.add("§7???")
-        if (config.passedEvents && upcoming.size < 4) lastEvent?.let { upcoming.add(0, it.toPastString()) }
-        return upcoming.joinToString(" §8-> ")
+    private fun formatUpcomingEvents(events: List<RunningEventType>, lastEvent: MiningEventType?): Array<Renderable> {
+        val upcoming = events.filter { !it.endsAt.asTimeMark().isInPast() }
+            .flatMap {
+                if (it.isDoubleEvent) listOf(it.event, it.event) else listOf(it.event)
+                /* if (it.isDoubleEvent) "${it.event} §8-> ${it.event}" else it.event.toString() */
+            }.map { it.getRenderable() }.toMutableList()
+
+        if (upcoming.isEmpty()) upcoming.add(unknownDisplay)
+        if (config.passedEvents && upcoming.size < 4) lastEvent?.let { upcoming.add(0, it.getRenderableAsPast()) }
+        return upcoming.flatMap { listOf(it, transitionDisplay) }.dropLast(1).toTypedArray()
+        /* return upcoming.joinToString(" §8-> ") */
     }
 
     fun updateData(eventData: MiningEventData) {
@@ -97,7 +130,14 @@ object MiningEventDisplay {
     }
 
     private fun shouldDisplay() =
-        SkyBlockAPI.isConnected && config.enabled && !ReminderUtils.isBusy() && !(!config.outsideMining && !IslandTypeTag.ADVANCED_MINING.inAny())
+        SkyBlockAPI.isConnected && config.enabled && !ReminderUtils.isBusy() && !(!config.outsideMining && !LorenzUtils.inAdvancedMiningIsland())
+
+    @HandleEvent
+    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+        event.transform(46, "mining.miningEvent.compressedFormat") {
+            ConfigUtils.migrateBooleanToEnum(it, CompressFormat.COMPACT_TEXT, CompressFormat.DEFAULT)
+        }
+    }
 }
 
 private class MiningIslandEventInfo(var islandEvents: List<RunningEventType>, var lastEvent: MiningEventType? = null)

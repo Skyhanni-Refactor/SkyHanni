@@ -18,6 +18,7 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.StringUtils.matches
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import net.minecraft.client.Minecraft
@@ -28,6 +29,11 @@ import net.minecraft.item.ItemStack
 
 @SkyHanniModule
 object FishingAPI {
+
+    private val trophyArmorNames by RepoPattern.pattern(
+        "fishing.trophyfishing.armor",
+        "(BRONZE|SILVER|GOLD|DIAMOND)_HUNTER_(HELMET|CHESTPLATE|LEGGINGS|BOOTS)"
+    )
 
     val lavaBlocks = listOf(Blocks.lava, Blocks.flowing_lava)
     private val waterBlocks = listOf(Blocks.water, Blocks.flowing_water)
@@ -42,6 +48,8 @@ object FishingAPI {
 
     var bobber: EntityFishHook? = null
     var bobberHasTouchedWater = false
+
+    var wearingTrophyArmor = false
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onJoinWorld(event: EntityEnterWorldEvent) {
@@ -68,6 +76,11 @@ object FishingAPI {
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
+
+        if (event.isMod(5)) {
+            wearingTrophyArmor = isWearingTrophyArmor()
+        }
+
         val bobber = bobber ?: return
         if (bobber.isDead) {
             resetBobber()
@@ -142,5 +155,9 @@ object FishingAPI {
             return 2
         }
         return 1
+    }
+
+    private fun isWearingTrophyArmor(): Boolean = InventoryUtils.getArmor().all {
+        trophyArmorNames.matches(it?.getInternalName()?.asString())
     }
 }
