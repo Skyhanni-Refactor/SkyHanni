@@ -6,21 +6,32 @@ import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.NEUItems
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 @SkyHanniModule
 object ViewRecipeCommand {
 
     private val config get() = SkyHanniMod.feature.misc.commands
 
+    /**
+     * REGEX-TEST: /viewrecipe aspect of the end
+     * REGEX-TEST: /viewrecipe aspect_of_the_end
+     * REGEX-TEST: /viewrecipe ASPECT_OF_THE_END
+     */
+    private val pattern by RepoPattern.pattern(
+        "commands.viewrecipe",
+        "\\/viewrecipe (?<item>.*)"
+    )
+
     @HandleEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
         if (!config.viewRecipeLowerCase) return
-        val message = event.message
-        if (!message.startsWith("/viewrecipe ", ignoreCase = true)) return
+        if (event.senderIsSkyhanni()) return
 
-        if (message == message.uppercase()) return
-        val item = message.uppercase().substringAfter("viewrecipe").trim()
-        if (item.isEmpty()) return
+        val item = pattern.matchMatcher(event.message.lowercase()) {
+            group("item").uppercase().replace(" ", "_")
+        } ?: return
+
         event.cancel()
         HypixelCommands.viewRecipe(item)
     }
