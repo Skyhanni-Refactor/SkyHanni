@@ -1,15 +1,17 @@
 package at.hannibal2.skyhanni.features.gui
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.GuiEditManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RenderUtils.transform
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class MovableHotBar {
+@SkyHanniModule
+object MovableHotBar {
 
     private val config get() = SkyHanniMod.feature.gui.hotbar
 
@@ -36,6 +38,6 @@ class MovableHotBar {
     }
 
     fun isEnabled(): Boolean =
-        (LorenzUtils.inSkyBlock || (Minecraft.getMinecraft().thePlayer != null && config.showOutsideSkyblock))
+        (SkyBlockAPI.isConnected || (Minecraft.getMinecraft().thePlayer != null && config.showOutsideSkyblock))
             && config.editable
 }

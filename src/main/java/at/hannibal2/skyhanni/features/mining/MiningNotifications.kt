@@ -86,7 +86,7 @@ object MiningNotifications {
             sendNotification(MiningNotificationList.COLD)
         }
         if (IslandType.MINESHAFT.isInIsland() && config.getAscensionRope && config.coldAmount == event.cold) {
-            runDelayed(0.5.seconds) {
+            DelayedRun.runDelayed(0.5.seconds) {
                 GetFromSackAPI.getFromChatMessageSackItems(ASCENSION_ROPE)
             }
         }

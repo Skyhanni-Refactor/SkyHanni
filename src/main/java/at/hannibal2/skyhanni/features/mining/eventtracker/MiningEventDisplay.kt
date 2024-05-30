@@ -9,11 +9,19 @@ import at.hannibal2.skyhanni.compat.soopy.data.MiningEventData
 import at.hannibal2.skyhanni.compat.soopy.data.RunningEventType
 import at.hannibal2.skyhanni.config.features.mining.MiningEventConfig
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
+import at.hannibal2.skyhanni.features.mining.eventtracker.MiningEventType.Companion.CompressFormat
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
-import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
+import at.hannibal2.skyhanni.utils.ConfigUtils
+import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
+import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
+import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
+import at.hannibal2.skyhanni.utils.renderables.Renderable
+import net.minecraft.init.Blocks
+import net.minecraft.item.ItemStack
 
 @SkyHanniModule
 object MiningEventDisplay {
@@ -130,10 +138,10 @@ object MiningEventDisplay {
     }
 
     private fun shouldDisplay() =
-        SkyBlockAPI.isConnected && config.enabled && !ReminderUtils.isBusy() && !(!config.outsideMining && !LorenzUtils.inAdvancedMiningIsland())
+        SkyBlockAPI.isConnected && config.enabled && !ReminderUtils.isBusy() && !(!config.outsideMining && !IslandTypeTag.ADVANCED_MINING.inAny())
 
     @HandleEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+    fun onConfigFix(event: ConfigFixEvent) {
         event.transform(46, "mining.miningEvent.compressedFormat") {
             ConfigUtils.migrateBooleanToEnum(it, CompressFormat.COMPACT_TEXT, CompressFormat.DEFAULT)
         }

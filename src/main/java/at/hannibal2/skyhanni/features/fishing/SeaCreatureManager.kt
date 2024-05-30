@@ -71,7 +71,7 @@ object SeaCreatureManager {
         allVariants = variants
     }
 
-    private fun getSeaCreature(message: String): SeaCreature? {
+    private fun getSeaCreatureFromMessage(message: String): SeaCreature? {
         return seaCreatureMap.getOrDefault(message, null)
     }
 }

@@ -1,6 +1,8 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.config.features.garden.CropStartLocationConfig.CropLocationMode
+import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.events.minecraft.click.CropClickEvent
 import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI

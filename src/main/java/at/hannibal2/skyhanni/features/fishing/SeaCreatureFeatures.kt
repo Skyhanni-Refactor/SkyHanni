@@ -2,34 +2,25 @@ package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.config.features.combat.damageindicator.DamageIndicatorConfig
 import at.hannibal2.skyhanni.data.TitleManager
-import at.hannibal2.skyhanni.events.entity.EntityMaxHealthUpdateEvent
+import at.hannibal2.skyhanni.events.entity.MobEvent
 import at.hannibal2.skyhanni.events.fishing.SeaCreatureFishEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
-import at.hannibal2.skyhanni.features.combat.damageindicator.DamageIndicatorManager
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
-import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
-import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils.hasMaxHealth
-import at.hannibal2.skyhanni.utils.EntityUtils.hasNameTagWith
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.TimeLimitedSet
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
-import net.minecraft.entity.monster.EntityGuardian
-import net.minecraft.entity.monster.EntityIronGolem
-import net.minecraft.entity.monster.EntitySkeleton
-import net.minecraft.entity.monster.EntityZombie
-import net.minecraft.entity.passive.EntitySquid
-import net.minecraft.entity.player.EntityPlayer
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 @SkyHanniModule
@@ -41,7 +32,7 @@ object SeaCreatureFeatures {
     private var lastRareCatch = SimpleTimeMark.farPast()
     private var armorStandIds = TimeLimitedSet<Int>(6.minutes)
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMobSpawn(event: MobEvent.Spawn.SkyblockMob) {
         if (!isEnabled()) return
         val creature = SeaCreatureManager.allFishingMobs[event.mob.name] ?: return
@@ -63,12 +54,12 @@ object SeaCreatureFeatures {
         if (config.alertOtherCatches) {
             val text = if (config.creatureName) "${creature.displayName} NEARBY!"
             else "${creature.rarity.chatColorCode}RARE SEA CREATURE!"
-            LorenzUtils.sendTitle(text, 1.5.seconds, 3.6, 7f)
-            if (config.playSound) SoundUtils.playBeepSound()
+            TitleManager.sendTitle(text, 1.5.seconds, 3.6, 7f)
+            if (config.playSound) McSound.BEEP.play()
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMobDeSpawn(event: MobEvent.DeSpawn.SkyblockMob) {
         rareSeaCreatures.filter { it != event.mob.baseEntity }
     }

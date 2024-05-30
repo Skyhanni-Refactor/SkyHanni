@@ -1,18 +1,20 @@
 package at.hannibal2.skyhanni.features.fishing.trophy
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDisplayConfig.HideCaught
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDisplayConfig.TextPart
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDisplayConfig.TrophySorting
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDisplayConfig.WhenToShow
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.IslandChangeEvent
-import at.hannibal2.skyhanni.events.ProfileJoinEvent
 import at.hannibal2.skyhanni.events.fishing.TrophyFishCaughtEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI
 import at.hannibal2.skyhanni.features.misc.items.EstimatedItemValue
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.addSingleString
 import at.hannibal2.skyhanni.utils.CollectionUtils.addString
@@ -22,7 +24,6 @@ import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
@@ -34,10 +35,10 @@ import at.hannibal2.skyhanni.utils.TimeLimitedCache
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiInventory
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object TrophyFishDisplay {
     private val config get() = SkyHanniMod.feature.fishing.trophyFishing.display
 
@@ -46,7 +47,7 @@ object TrophyFishDisplay {
 
     private var display = emptyList<Renderable>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         if (event.newIsland == IslandType.CRIMSON_ISLE) {
             DelayedRun.runDelayed(200.milliseconds) {
@@ -55,7 +56,7 @@ object TrophyFishDisplay {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onTrophyFishCaught(event: TrophyFishCaughtEvent) {
         recentlyDroppedTrophies[getInternalName(event.trophyFishName)] = event.rarity
         update()
@@ -64,13 +65,13 @@ object TrophyFishDisplay {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onProfileJoin(event: ProfileJoinEvent) {
         display = emptyList()
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigReload(event: ConfigLoadEvent) {
         with(config) {
             ConditionalUtils.onToggle(
@@ -247,7 +248,7 @@ object TrophyFishDisplay {
         return null
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onGuiRender(event: GuiRenderEvent) {
         if (!isEnabled()) return
         if (!canRender()) return
@@ -262,7 +263,7 @@ object TrophyFishDisplay {
         )
     }
 
-    fun canRender(): Boolean = when (config.whenToShow.get()!!) {
+    private fun canRender(): Boolean = when (config.whenToShow.get()!!) {
         WhenToShow.ALWAYS -> true
         WhenToShow.ONLY_IN_INVENTORY -> Minecraft.getMinecraft().currentScreen is GuiInventory
         WhenToShow.ONLY_WITH_ROD_IN_HAND -> FishingAPI.holdingLavaRod

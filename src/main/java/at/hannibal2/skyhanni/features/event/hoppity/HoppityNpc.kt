@@ -1,17 +1,23 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.features.fame.ReminderUtils
+import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
+import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
+import kotlin.time.Duration.Companion.seconds
 
 @SkyHanniModule
 object HoppityNpc {
@@ -38,7 +44,7 @@ object HoppityNpc {
         inShop = true
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isReminderEnabled()) return
         if (ReminderUtils.isBusy()) return
@@ -79,7 +85,7 @@ object HoppityNpc {
         }
     }
 
-    @HandleEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         if (!isHighlightEnabled()) return
         if (!inShop) return
@@ -90,8 +96,8 @@ object HoppityNpc {
         }
     }
 
-    private fun isHighlightEnabled() = LorenzUtils.inSkyBlock && config.highlightHoppityShop
-    private fun isReminderEnabled() = LorenzUtils.inSkyBlock && config.hoppityShopReminder
+    private fun isHighlightEnabled() = config.highlightHoppityShop
+    private fun isReminderEnabled() = config.hoppityShopReminder
 
     private fun clear() {
         inShop = false
