@@ -8,6 +8,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.transform
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraftforge.client.event.RenderGameOverlayEvent
+import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 @SkyHanniModule
@@ -17,7 +18,7 @@ object MovableHotBar {
 
     private var post = false
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     fun onRenderHotbar(event: RenderGameOverlayEvent.Pre) {
         if (event.type != RenderGameOverlayEvent.ElementType.HOTBAR || !isEnabled()) return
         post = true
@@ -30,7 +31,7 @@ object MovableHotBar {
         GuiEditManager.add(config.hotbar, "Hotbar", 182 - 1, 22 - 1) // -1 since the editor for some reason add +1
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     fun onRenderHotbar(event: RenderGameOverlayEvent.Post) {
         if (event.type != RenderGameOverlayEvent.ElementType.HOTBAR || !post) return
         GlStateManager.popMatrix()
