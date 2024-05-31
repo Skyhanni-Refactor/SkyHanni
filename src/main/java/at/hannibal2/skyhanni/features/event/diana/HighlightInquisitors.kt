@@ -2,11 +2,10 @@ package at.hannibal2.skyhanni.features.event.diana
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
-import at.hannibal2.skyhanni.events.entity.EntityEnterWorldEvent
+import at.hannibal2.skyhanni.events.diana.InquisitorFoundEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColourInt
-import net.minecraft.entity.player.EntityPlayer
 
 @SkyHanniModule
 object HighlightInquisitors {
@@ -19,7 +18,7 @@ object HighlightInquisitors {
 
         val inquisitor = event.inquisitorEntity
 
-        val color = config.color.toChromaColorInt()
+        val color = config.color.toChromaColourInt()
         RenderLivingEntityHelper.setEntityColorWithNoHurtTime(inquisitor, color) { config.highlightInquisitors }
     }
 }

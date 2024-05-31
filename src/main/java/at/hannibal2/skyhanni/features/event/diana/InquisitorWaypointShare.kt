@@ -4,7 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
-import at.hannibal2.skyhanni.events.entity.EntityEnterWorldEvent
+import at.hannibal2.skyhanni.events.diana.InquisitorFoundEvent
 import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
@@ -16,7 +16,6 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.KeyboardManager
-import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RegexUtils.hasGroup
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -88,6 +87,8 @@ object InquisitorWaypointShare {
 
     private var test = false
 
+    private val inquisitorTime = mutableListOf<SimpleTimeMark>()
+
     fun test() {
         test = !test
         ChatUtils.chat("Inquisitor Test " + if (test) "Enabled" else "Disabled")
@@ -110,9 +111,8 @@ object InquisitorWaypointShare {
         inquisitorsNearby = emptyList()
     }
 
-    val inquisitorTime = mutableListOf<SimpleTimeMark>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInquisitorFound(event: InquisitorFoundEvent) {
         val inquisitor = event.inquisitorEntity
         inquisitorsNearby = inquisitorsNearby.editCopy { add(inquisitor) }
@@ -136,8 +136,8 @@ object InquisitorWaypointShare {
         }
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         val message = event.message
 

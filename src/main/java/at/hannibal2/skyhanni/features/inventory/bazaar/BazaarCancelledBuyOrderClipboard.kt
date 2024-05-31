@@ -5,6 +5,7 @@ import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -12,6 +13,7 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
+import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
@@ -79,8 +81,8 @@ object BazaarCancelledBuyOrderClipboard {
         )
     }
 
-    @SubscribeEvent
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent
+    fun onSlotClick(event: SlotClickEvent) {
         if (!BazaarOrderHelper.isBazaarOrderInventory(InventoryUtils.openInventoryName())) return
         val item = event.slot?.stack ?: return
 
@@ -90,8 +92,8 @@ object BazaarCancelledBuyOrderClipboard {
         lastClickedItem = NEUInternalName.fromItemName(name)
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         val coins = cancelledMessagePattern.matchMatcher(event.message) {
             group("coins").formatInt().addSeparators()
@@ -106,7 +108,7 @@ object BazaarCancelledBuyOrderClipboard {
         ChatUtils.clickableChat(message, onClick = {
             BazaarApi.searchForBazaarItem(lastClicked, latestAmount)
         })
-        OSUtils.copyToClipboard(latestAmount.toString())
+        OS.copyToClipboard(latestAmount.toString())
         this.latestAmount = null
     }
 

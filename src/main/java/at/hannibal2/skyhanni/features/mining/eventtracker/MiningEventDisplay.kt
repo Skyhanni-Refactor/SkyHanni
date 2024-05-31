@@ -12,7 +12,6 @@ import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
-import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.features.mining.eventtracker.MiningEventType.Companion.CompressFormat
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ConfigUtils
@@ -83,10 +82,6 @@ object MiningEventDisplay {
 
                                     IslandType.CRYSTAL_HOLLOWS -> Renderable.itemStack(
                                         SkyhanniItems.PERFECT_RUBY_GEM().getItemStack()
-                                    )
-
-                                    IslandType.CRYSTAL_HOLLOWS -> Renderable.itemStack(
-                                        "PERFECT_RUBY_GEM".asInternalName().getItemStack()
                                     )
 
                                     IslandType.MINESHAFT -> Renderable.itemStack(ItemStack(Blocks.packed_ice))

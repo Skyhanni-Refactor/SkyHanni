@@ -5,10 +5,10 @@ import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.neu.NeuSkillLevelJson
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
+import at.hannibal2.skyhanni.events.skyblock.skill.SkillExpGainEvent
 import at.hannibal2.skyhanni.events.skyblock.skill.SkillOverflowLevelupEvent
 import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
-import at.hannibal2.skyhanni.events.SkillExpGainEvent
 import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
 import at.hannibal2.skyhanni.features.skillprogress.SkillProgress
 import at.hannibal2.skyhanni.features.skillprogress.SkillType
@@ -29,8 +29,8 @@ import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLongOrUserError
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimalIfNecessary
+import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.StringUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
@@ -129,7 +129,7 @@ object SkillAPI {
                     skillMultiplierPattern -> handleSkillPatternMultiplier(matcher, skillType, skillInfo)
                 }
 
-                SkillExpGainEvent(skillType, matcher.group("gained").formatDouble()).postAndCatch()
+                SkillExpGainEvent(skillType, matcher.group("gained").formatDouble()).post()
 
                 showDisplay = true
                 lastUpdate = SimpleTimeMark.now()
@@ -296,13 +296,13 @@ object SkillAPI {
                 if (group("type") == skillType.displayName) {
                     tablistLevel = group("level").toInt()
                     isPercentPatternFound = true
-                    if (group("type").lowercase() != activeSkill?.lowercaseName) tablistLevel = null
+                    if (group("type").lowercase() != activeSkill?.name?.lowercase()) tablistLevel = null
                 }
             }
 
             maxSkillTabPattern.matchMatcher(line) {
                 tablistLevel = group("level").toInt()
-                if (group("type").lowercase() != activeSkill?.lowercaseName) tablistLevel = null
+                if (group("type").lowercase() != activeSkill?.name?.lowercase()) tablistLevel = null
             }
 
             skillTabNoPercentPattern.matchMatcher(line) {
