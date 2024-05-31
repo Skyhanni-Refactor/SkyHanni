@@ -78,11 +78,15 @@ object MiningEventDisplay {
                             listOf(
                                 when (islandType) {
                                     IslandType.DWARVEN_MINES -> Renderable.itemStack(
+                                        SkyhanniItems.MITHRIL_ORE().getItemStack()
+                                    )
+
+                                    IslandType.CRYSTAL_HOLLOWS -> Renderable.itemStack(
                                         SkyhanniItems.PERFECT_RUBY_GEM().getItemStack()
                                     )
 
                                     IslandType.CRYSTAL_HOLLOWS -> Renderable.itemStack(
-                                        SkyhanniItems.MITHRIL_ORE().getItemStack()
+                                        "PERFECT_RUBY_GEM".asInternalName().getItemStack()
                                     )
 
                                     IslandType.MINESHAFT -> Renderable.itemStack(ItemStack(Blocks.packed_ice))
@@ -138,7 +142,7 @@ object MiningEventDisplay {
     }
 
     private fun shouldDisplay() =
-        SkyBlockAPI.isConnected && config.enabled && !ReminderUtils.isBusy() && !(!config.outsideMining && !IslandTypeTag.ADVANCED_MINING.inAny())
+        SkyBlockAPI.isConnected && config.enabled && !(!config.outsideMining && !IslandTypeTag.ADVANCED_MINING.inAny())
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

@@ -8,6 +8,8 @@ import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.item.ItemStack
+import net.minecraftforge.event.entity.EntityJoinWorldEvent
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 object DianaAPI {
 
@@ -23,4 +25,16 @@ object DianaAPI {
     fun isDoingDiana() = IslandType.HUB.isInIsland() && isRitualActive() && McPlayer.has(spade, true)
 
     val ItemStack.isDianaSpade get() = getInternalName() == spade
+
+    private fun hasSpadeInInventory() = InventoryUtils.getItemsInOwnInventory().any { it.isDianaSpade }
+
+    @HandleEvent
+    fun onJoinWorld(event: EntityJoinWorldEvent) {
+        if (!LorenzUtils.inSkyBlock) return
+
+        val entity = event.entity
+        if (entity is EntityOtherPlayerMP && entity.name == "Minos Inquisitor") {
+            InquisitorFoundEvent(entity).postAndCatch()
+        }
+    }
 }

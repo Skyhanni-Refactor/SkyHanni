@@ -12,7 +12,6 @@ import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getPrice
@@ -63,7 +62,7 @@ object PowerStoneGuideFeatures {
         if (!inInventory) return
         val internalName = missing[event.slotId] ?: return
 
-        BazaarApi.searchForBazaarItem(internalName.itemName, 9)
+        BazaarApi.searchForBazaarItem(internalName, 9)
     }
 
     @HandleEvent

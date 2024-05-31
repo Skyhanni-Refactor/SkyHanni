@@ -177,6 +177,10 @@ object ItemAbilityCooldown {
             event.soundName == "mob.bat.idle" && event.pitch == 0.4920635f && event.volume == 1.0f -> {
                 ItemAbility.ROYAL_PIGEON.sound()
             }
+
+            event.soundName == "random.eat" && event.pitch == 0.4920635f && event.volume == 1.0f -> {
+                ItemAbility.WAND_OF_STRENGTH.sound()
+            }
         }
     }
 

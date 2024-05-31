@@ -19,6 +19,7 @@ import at.hannibal2.skyhanni.utils.InventoryUtils.getAllItems
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
+import at.hannibal2.skyhanni.utils.ItemUtils.itemNameWithoutColor
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.NEUInternalName
@@ -52,14 +53,18 @@ object BazaarApi {
 
     fun NEUInternalName.isBazaarItem() = getBazaarData() != null
 
-    fun searchForBazaarItem(displayName: String, amount: Int = -1) {
-        if (!SkyBlockAPI.isConnected) return
-        if (NEUItems.neuHasFocus()) return
-        if (SkyBlockAPI.gamemode.noTrade) return
-        if (DungeonAPI.inDungeon() || KuudraAPI.inKuudra) return
-        HypixelCommands.bazaar(displayName.removeColor())
-        if (amount != -1) OS.copyToClipboard(amount.toString())
-        currentSearchedItem = displayName.removeColor()
+        fun searchForBazaarItem(internalName: NEUInternalName, amount: Int = -1) {
+            searchForBazaarItem(internalName.itemNameWithoutColor, amount)
+        }
+        fun searchForBazaarItem(displayName: String, amount: Int = -1) {
+            if (!LorenzUtils.inSkyBlock) return
+            if (NEUItems.neuHasFocus()) return
+            if (LorenzUtils.noTradeMode) return
+            if (DungeonAPI.inDungeon() || LorenzUtils.inKuudraFight) return
+            HypixelCommands.bazaar(displayName.removeColor())
+            if (amount != -1) OSUtils.copyToClipboard(amount.toString())
+            currentSearchedItem = displayName.removeColor()
+        }
     }
 
     @HandleEvent

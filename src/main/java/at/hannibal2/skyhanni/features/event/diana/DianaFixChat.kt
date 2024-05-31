@@ -17,11 +17,14 @@ import kotlin.time.Duration.Companion.seconds
 @SkyHanniModule
 object DianaFixChat {
 
+    private val config get() = SkyHanniMod.feature.event.diana
+
     private var hasSetParticleQuality = false
     private var hasSetToggleMusic = false
     private var lastParticleQualityPrompt = SimpleTimeMark.farPast()
     private var lastToggleMusicPrompt = SimpleTimeMark.farPast()
     private var errorCounter = 0
+    private var successfulCounter = 0
 
     private var lastSpadeUse = SimpleTimeMark.farPast()
     private var lastErrorTime = SimpleTimeMark.farPast()
@@ -50,7 +53,9 @@ object DianaFixChat {
     private fun noGuessFound() {
         errorCounter++
         if (errorCounter == 1) {
-            ChatUtils.chat("Could not find Diana Guess using sound and particles, please try again. (Was this a funny sound easter egg?)")
+            if (successfulCounter < 5) {
+                ChatUtils.chat("Could not find Diana Guess using sound and particles, please try again. (Was this a funny sound easter egg?)")
+            }
             return
         }
 
@@ -85,7 +90,8 @@ object DianaFixChat {
                 ErrorManager.logErrorStateWithData(
                     "Could not find diana guess point",
                     "diana guess point failed to load after /pq and /togglemusic",
-                    "errorCounter" to errorCounter
+                    "errorCounter" to errorCounter,
+                    "successfulCounter" to successfulCounter,
                 )
             }
         }
@@ -117,7 +123,13 @@ object DianaFixChat {
         hasSetParticleQuality = false
         hasSetToggleMusic = false
         errorCounter = 0
+        successfulCounter++
     }
 
-    private fun isEnabled() = DianaAPI.isDoingDiana()
+    @SubscribeEvent
+    fun onWorldChange(event: LorenzWorldChangeEvent) {
+        successfulCounter = 0
+    }
+
+    private fun isEnabled() = DianaAPI.isDoingDiana() && config.burrowsSoopyGuess
 }

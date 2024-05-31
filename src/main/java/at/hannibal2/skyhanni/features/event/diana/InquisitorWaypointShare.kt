@@ -20,6 +20,7 @@ import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RegexUtils.hasGroup
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
@@ -33,7 +34,6 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.network.play.server.S02PacketChat
 import java.util.regex.Matcher
-import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 @SkyHanniModule
@@ -64,16 +64,18 @@ object InquisitorWaypointShare {
         "(?<party>§9Party §8> )?(?<playerName>.*)§f: §rInquisitor dead!"
     )
 
-    private var inquisitorTime = SimpleTimeMark.farPast()
-    private var testTime = SimpleTimeMark.farPast()
-    private var lastInquisitorMessage = ""
+    /**
+     * REGEX-TEST: §c§lUh oh! §r§eYou dug out a §r§2Minos Inquisitor§r§e!
+     */
+    private val inquisitorFoundChatPattern by patternGroup.pattern(
+        "inquisitor.dug",
+        ".* §r§eYou dug out a §r§2Minos Inquisitor§r§e!"
+    )
+
     private var inquisitor = -1
     private var lastInquisitor = -1
     private var lastShareTime = SimpleTimeMark.farPast()
     private var inquisitorsNearby = emptyList<EntityOtherPlayerMP>()
-    private val soonRange = (-500).milliseconds..1.5.seconds
-
-    private val logger = LorenzLogger("diana/waypoints")
 
     var waypoints = mapOf<String, SharedInquisitor>()
 
@@ -108,68 +110,44 @@ object InquisitorWaypointShare {
         inquisitorsNearby = emptyList()
     }
 
-    @HandleEvent
-    fun onChat(event: SkyHanniChatEvent) {
-        if (!isEnabled()) return
-        val message = event.message
-        // TODO repo pattern
-        if (message.contains("§eYou dug out")) {
-            testTime = SimpleTimeMark.now()
-            lastInquisitorMessage = message
+    val inquisitorTime = mutableListOf<SimpleTimeMark>()
 
-            val passedSince = inquisitorTime.passedSince()
+    @SubscribeEvent
+    fun onInquisitorFound(event: InquisitorFoundEvent) {
+        val inquisitor = event.inquisitorEntity
+        inquisitorsNearby = inquisitorsNearby.editCopy { add(inquisitor) }
+        GriffinBurrowHelper.update()
 
-            if (passedSince < 10.seconds) {
-                logger.log(" ")
-                logger.log("reverse!")
-                logger.log("diff: $passedSince")
-            }
-            if (passedSince in soonRange) return
+        lastInquisitor = inquisitor.entityId
+        checkInquisFound()
+    }
+
+    // We do not know if the chat message or the entity spawn happens first.
+    // We only want to run foundInquisitor when both happens in under 1.5 seconds
+    private fun checkInquisFound() {
+        inquisitorTime.add(SimpleTimeMark.now())
+
+        val lastTwo = inquisitorTime.takeLast(2)
+        if (lastTwo.size != 2) return
+
+        if (lastTwo.all { it.passedSince() < 1.5.seconds }) {
+            inquisitorTime.clear()
             foundInquisitor(lastInquisitor)
-        }
-
-        // TODO: Change the check to only one line once we have a confirmed inquis message line
-        if (message.contains("§r§eYou dug out ") && message.contains("Inquis")) {
-            inquisitorTime = SimpleTimeMark.now()
-            logger.log("found Inquisitor")
         }
     }
 
-    @HandleEvent
-    fun onJoinWorld(event: EntityEnterWorldEvent) {
+    @SubscribeEvent
+    fun onChat(event: LorenzChatEvent) {
         if (!isEnabled()) return
-        val entity = event.entity
-        if (entity !is EntityOtherPlayerMP) return
-        val name = entity.name
-        if (test) {
-            if (name != "Minos Inquisitor" && name != "Minotaur " && name != "Minos Champion") return
-        } else {
-            if (name != "Minos Inquisitor") return
+        val message = event.message
+
+        if (inquisitorFoundChatPattern.matches(message)) {
+            checkInquisFound()
         }
-        logger.log("FOUND: $name")
-
-        inquisitorsNearby = inquisitorsNearby.editCopy { add(entity) }
-        GriffinBurrowHelper.update()
-
-        val passedSince = inquisitorTime.passedSince()
-        inquisitorTime = SimpleTimeMark.now()
-        lastInquisitor = entity.entityId
-
-        logger.log("diff: $passedSince")
-        if (passedSince in soonRange) {
-            val testDiff = testTime.passedSince()
-            if (testDiff in soonRange) {
-                logger.log("testDiff: $passedSince")
-                return
-            } else {
-                logger.log("wrong Inquisitor message!")
-            }
-        }
-        foundInquisitor(entity.entityId)
     }
 
     private fun foundInquisitor(inquisId: Int) {
-        logger.log("lastInquisitorMessage: '$lastInquisitorMessage'")
+        lastShareTime = SimpleTimeMark.farPast()
         inquisitor = inquisId
 
         if (config.instantShare) {
@@ -210,20 +188,17 @@ object InquisitorWaypointShare {
 
     private fun sendDeath() {
         if (!isEnabled()) return
-        if (lastShareTime.passedSince() > 5.seconds) return
-        lastShareTime = SimpleTimeMark.now()
+        if (lastShareTime.passedSince() < 5.seconds) return
 
-        if (inquisitor == -1) {
-            logger.log("Inquisitor is already null!")
-            return
-        }
+        // already dead
+        if (inquisitor == -1) return
         inquisitor = -1
         HypixelCommands.partyChat("Inquisitor dead!")
     }
 
     private fun sendInquisitor() {
         if (!isEnabled()) return
-        if (lastShareTime.passedSince() > 5.seconds) return
+        if (lastShareTime.passedSince() < 5.seconds) return
         lastShareTime = SimpleTimeMark.now()
 
         if (inquisitor == -1) {
@@ -272,10 +247,8 @@ object InquisitorWaypointShare {
             if (block()) return
             val rawName = group("playerName")
             val name = rawName.cleanPlayerName()
-            val displayName = rawName.cleanPlayerName(displayName = true)
             waypoints = waypoints.editCopy { remove(name) }
             GriffinBurrowHelper.update()
-            logger.log("Inquisitor died from '$displayName'")
         }
     }
 

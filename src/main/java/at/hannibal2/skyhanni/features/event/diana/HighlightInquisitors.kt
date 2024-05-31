@@ -14,14 +14,12 @@ object HighlightInquisitors {
     private val config get() = SkyHanniMod.feature.event.diana
 
     @HandleEvent(onlyOnSkyblock = true)
-    fun onJoinWorld(event: EntityEnterWorldEvent) {
+    fun onInquisitorFound(event: InquisitorFoundEvent) {
         if (!config.highlightInquisitors) return
 
-        val entity = event.entity
+        val inquisitor = event.inquisitorEntity
 
-        if (entity is EntityPlayer && entity.name == "Minos Inquisitor") {
-            val color = config.color.toChromaColourInt()
-            RenderLivingEntityHelper.setEntityColorWithNoHurtTime(entity, color) { config.highlightInquisitors }
-        }
+        val color = config.color.toChromaColorInt()
+        RenderLivingEntityHelper.setEntityColorWithNoHurtTime(inquisitor, color) { config.highlightInquisitors }
     }
 }
