@@ -23,7 +23,7 @@ object SkyHanniTypeAdapters {
     )
 
     val INTERNAL_NAME: TypeAdapter<NEUInternalName> = SimpleStringTypeAdapter(
-        { this.toString() },
+        { this.asString() },
         { this.asInternalName() }
     )
 
