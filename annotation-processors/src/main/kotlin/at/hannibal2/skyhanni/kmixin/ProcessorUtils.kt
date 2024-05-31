@@ -1,55 +1,54 @@
 package at.hannibal2.skyhanni.kmixin
 
-import com.google.devtools.ksp.symbol.*
+import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSType
+import com.google.devtools.ksp.symbol.KSValueParameter
 
 object ProcessorUtils {
 
-    fun KSFunctionDeclaration.asJavaMethodString(): String {
-        return "${this.simpleName.asString()}(${this.parameters.joinToString(", ") {
-            "${it.type.resolve().declaration.qualifiedName!!.asString()} ${it.name!!.asString()}"
-        }})"
+    private val typeToJava = mapOf(
+        "kotlin.Unit" to "void",
+        "kotlin.Unit?" to "Void",
+        "kotlin.Boolean" to "boolean",
+        "kotlin.Boolean?" to "Boolean",
+        "kotlin.Byte" to "byte",
+        "kotlin.Byte?" to "Byte",
+        "kotlin.Short" to "short",
+        "kotlin.Short?" to "Short",
+        "kotlin.Int" to "int",
+        "kotlin.Int?" to "Integer",
+        "kotlin.Long" to "long",
+        "kotlin.Long?" to "Long",
+        "kotlin.Float" to "float",
+        "kotlin.Float?" to "Float",
+        "kotlin.Double" to "double",
+        "kotlin.Double?" to "Double",
+        "kotlin.Char" to "char",
+        "kotlin.Char?" to "Character",
+        "kotlin.String" to "String"
+    )
+
+    fun KSType.toJavaString(): String {
+        val name = this.declaration.qualifiedName!!.asString()
+        if (this.isMarkedNullable && typeToJava["$name?"] != null) {
+            return typeToJava["$name?"]!!
+        }
+        return typeToJava[name] ?: name
+    }
+
+    fun KSFunctionDeclaration.asJavaMethodString(filter: (KSValueParameter) -> Boolean): String {
+        val params = this.parameters
+            .filter(filter)
+            .joinToString(", ") {
+                "${it.type.resolve().toJavaString()} ${it.name!!.asString()}"
+            }
+        return "${this.simpleName.asString()}($params)"
     }
 
     fun KSFunctionDeclaration.asJavaCallString(): String {
-        return "${this.qualifiedName!!.asString()}(${this.parameters.joinToString(", ") {
+        val qualified = this.qualifiedName!!
+        return "${qualified.getQualifier()}.INSTANCE.${qualified.getShortName()}(${this.parameters.joinToString(", ") {
             it.name!!.asString()
         }});"
-    }
-
-    fun KSClassDeclaration.asJavaObjectReferenceString(): String {
-        require(this.classKind == ClassKind.OBJECT)
-        return "${this.qualifiedName!!.asString()}.INSTANCE"
-    }
-
-    private fun toJavaArgument(value: Any): String {
-        return when (value) {
-            is String -> "\"$value\""
-            is KSAnnotation -> value.asJavaString()
-            is KSType -> {
-                if (value.declaration.modifiers.contains(Modifier.ENUM)) {
-                    value.declaration.qualifiedName!!.asString()
-                } else {
-                    "${value.declaration.qualifiedName!!.asString()}.class"
-                }
-            }
-            is Enum<*> -> "${value::class.simpleName}.${value.name}"
-            is List<*> -> value.joinToString(", ", "{", "}") { toJavaArgument(it!!) }
-            else -> value.toString()
-        }
-    }
-
-    fun KSAnnotation.asJavaString(): String {
-        val arguments = mutableListOf<String>()
-
-        val args = this.arguments.associateBy { it.name?.asString() }
-        val defaultArgs = this.defaultArguments.associateBy { it.name?.asString() }
-
-        for ((name, value) in args) {
-            if (defaultArgs[name] == value) continue
-            val javaValue = toJavaArgument(value.value!!)
-            arguments.add("$name = $javaValue")
-        }
-
-        return "$this(${arguments.joinToString(", ")})"
     }
 }

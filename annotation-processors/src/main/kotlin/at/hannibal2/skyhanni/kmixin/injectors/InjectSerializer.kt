@@ -1,20 +1,48 @@
 package at.hannibal2.skyhanni.kmixin.injectors
 
-import at.hannibal2.skyhanni.kmixin.ProcessorUtils.asJavaCallString
-import at.hannibal2.skyhanni.kmixin.ProcessorUtils.asJavaMethodString
-import at.hannibal2.skyhanni.kmixin.ProcessorUtils.asJavaObjectReferenceString
-import at.hannibal2.skyhanni.kmixin.ProcessorUtils.asJavaString
-import com.google.devtools.ksp.symbol.KSAnnotation
+import at.hannibal2.skyhanni.kmixin.addParameter
+import at.hannibal2.skyhanni.kmixin.annotations.KShadow
+import at.hannibal2.skyhanni.kmixin.annotations.KStatic
+import at.hannibal2.skyhanni.kmixin.toJava
+import com.google.devtools.ksp.KspExperimental
+import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
-import java.io.OutputStreamWriter
+import com.google.devtools.ksp.symbol.KSValueParameter
+import com.squareup.javapoet.MethodSpec
+import javax.lang.model.element.Modifier
 
-object InjectSerializer : InjectorSerializer {
+object InjectSerializer : InjectionSerializer {
 
-    override fun write(klass: KSClassDeclaration, function: KSFunctionDeclaration, annotation: KSAnnotation, writer: OutputStreamWriter) {
-        writer.write("    ${annotation.asJavaString()}\n")
-        writer.write("    private static void ${function.asJavaMethodString()} {\n")
-        writer.write("        ${function.asJavaCallString()}\n")
-        writer.write("    }\n")
+    @OptIn(KspExperimental::class)
+    override fun write(
+        klass: KSClassDeclaration,
+        function: KSFunctionDeclaration,
+        funWriter: (String) -> Unit,
+        shadowWriter: (KSValueParameter) -> Unit
+    ) {
+        val method = MethodSpec.methodBuilder(function.simpleName.asString())
+            .addModifiers(Modifier.PRIVATE)
+            .returns(Void.TYPE)
+
+        if (function.isAnnotationPresent(KStatic::class)) {
+            method.addModifiers(Modifier.STATIC)
+        }
+
+        function.parameters
+            .filter { !it.isAnnotationPresent(KShadow::class) }
+            .forEach {
+                require(!it.hasDefault) { "Default parameters are not supported" }
+                method.addParameter(it)
+            }
+
+        method.addStatement(
+            "\$T.INSTANCE.${function.simpleName.asString()}(${function.parameters.joinToString(", ") {
+                it.name!!.asString()
+            }});",
+            klass.toJava()
+        )
+
+        funWriter(method.build().toString())
     }
 }

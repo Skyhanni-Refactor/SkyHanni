@@ -1,18 +1,21 @@
 package at.hannibal2.skyhanni.kmixin
 
-import at.hannibal2.skyhanni.kmixin.ProcessorUtils.asJavaString
-import at.hannibal2.skyhanni.kmixin.injectors.InjectSerializer
-import com.google.devtools.ksp.processing.*
+import at.hannibal2.skyhanni.kmixin.ProcessorUtils.toJavaString
+import at.hannibal2.skyhanni.kmixin.annotations.InjectionMapping.getInjection
+import at.hannibal2.skyhanni.kmixin.annotations.InjectionMapping.getMixin
+import at.hannibal2.skyhanni.kmixin.annotations.KMixin
+import com.google.devtools.ksp.getDeclaredFunctions
+import com.google.devtools.ksp.processing.CodeGenerator
+import com.google.devtools.ksp.processing.Dependencies
+import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
-import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.validate
 import java.io.OutputStreamWriter
-
-private val injectors = mapOf(
-    "Inject" to InjectSerializer
-)
 
 class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logger: KSPLogger) : SymbolProcessor {
 
@@ -57,32 +60,39 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
                     "java"
             )
 
-            val mixin = symbol.findAnnotation("KMixin")!!
-                    .arguments.find { it.name?.asString() == "value" }!!
-                    .value as KSAnnotation
-
             OutputStreamWriter(file).use {
-                it.write("package at.hannibal2.skyhanni.mixins.transformers.generated;\n\n")
-                it.write("import org.spongepowered.asm.mixin.Mixin;\n\n")
-                it.write("import org.spongepowered.asm.mixin.injection.*;\n\n")
-                it.write("${mixin.asJavaString()}\n")
+                it.write("package at.hannibal2.skyhanni.mixins.transformers.generated;\n")
+                it.write("\n")
+                it.write("import org.spongepowered.asm.mixin.*;\n")
+                it.write("import org.spongepowered.asm.mixin.injection.*;\n")
+                it.write("\n")
+                it.write("${symbol.getMixin()}\n")
                 it.write("class ${symbol.simpleName.asString()} {\n")
 
-                symbol.getAllFunctions().forEach { function ->
-                    it.write("\n")
-                    for ((annotation, serializer) in injectors) {
-                        function.findAnnotation(annotation)?.let { a ->
-                            serializer.write(symbol, function, a, it)
-                        }
-                    }
+                val functionDeclarations = mutableListOf<String>()
+                val shadowDeclarations = mutableMapOf<String, KSType>()
+
+                symbol.getDeclaredFunctions().forEach { function ->
+                    functionDeclarations.add("\n")
+                    val injector = function.getInjection() ?: return@forEach
+                    functionDeclarations.add("    ${injector.first}\n")
+                    injector.second.write(
+                        symbol,
+                        function,
+                        { str -> functionDeclarations.add("    $str\n") },
+                        { param -> shadowDeclarations[param.name!!.asString()] = param.type.resolve() }
+                    )
                 }
 
-                it.write("\n}\n")
+                shadowDeclarations.forEach { (name, type) ->
+                    it.write("\n")
+                    it.write("    @Shadow private ${type.toJavaString()} $name;\n")
+                }
+
+                functionDeclarations.forEach { str -> it.write(str) }
+
+                it.write("}\n")
             }
         }
-    }
-
-    private fun KSAnnotated.findAnnotation(name: String): KSAnnotation? {
-        return annotations.find { it.shortName.asString() == name }
     }
 }
