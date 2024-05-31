@@ -24,7 +24,6 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderSingleLineWithItems
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
@@ -197,7 +196,7 @@ object GardenNextJacobContest {
         if (!config.display) return
         monthPattern.matchMatcher(event.inventoryName) {
             inCalendar = true
-            val month = LorenzUtils.getSBMonthByName(group("month"))
+            val month = SkyBlockTime.getSBMonthByName(group("month"))
             val year = group("year").toInt()
 
             readCalendar(event.inventoryItems.values, year, month)
