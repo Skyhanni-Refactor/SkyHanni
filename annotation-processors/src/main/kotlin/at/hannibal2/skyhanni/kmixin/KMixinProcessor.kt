@@ -1,21 +1,20 @@
 package at.hannibal2.skyhanni.kmixin
 
-import at.hannibal2.skyhanni.kmixin.ProcessorUtils.toJavaString
 import at.hannibal2.skyhanni.kmixin.annotations.InjectionMapping.getInjection
-import at.hannibal2.skyhanni.kmixin.annotations.InjectionMapping.getMixin
+import at.hannibal2.skyhanni.kmixin.annotations.InjectionMapping.getMixinAnnotation
 import at.hannibal2.skyhanni.kmixin.annotations.KMixin
 import com.google.devtools.ksp.getDeclaredFunctions
-import com.google.devtools.ksp.processing.CodeGenerator
-import com.google.devtools.ksp.processing.Dependencies
-import com.google.devtools.ksp.processing.KSPLogger
-import com.google.devtools.ksp.processing.Resolver
-import com.google.devtools.ksp.processing.SymbolProcessor
+import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
-import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.validate
+import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.JavaFile
+import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.TypeSpec
 import java.io.OutputStreamWriter
+import javax.lang.model.element.Modifier
 
 class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logger: KSPLogger) : SymbolProcessor {
 
@@ -53,6 +52,32 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
     private fun generateFile(symbols: List<KSClassDeclaration>, logger: KSPLogger) {
 
         for (symbol in symbols) {
+
+            val type = TypeSpec.classBuilder(symbol.simpleName.asString())
+                .addAnnotation(symbol.getMixinAnnotation())
+                .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC)
+
+            val fields = mutableListOf<FieldSpec>()
+            val methods = mutableListOf<MethodSpec>()
+
+            symbol.getDeclaredFunctions().forEach { function ->
+                val injector = function.getInjection() ?: return@forEach
+
+                injector.second.write(
+                        symbol,
+                        function,
+                        { method ->
+                            methods.add(method.addAnnotation(injector.first).build())
+                        },
+                        { field ->
+                            fields.add(field.build())
+                        }
+                )
+            }
+
+            fields.distinct().forEach { type.addField(it) }
+            methods.distinct().forEach { type.addMethod(it) }
+
             val file = codeGenerator.createNewFile(
                     Dependencies(true, symbol.containingFile!!),
                     "at.hannibal2.skyhanni.mixins.transformers.generated",
@@ -61,37 +86,10 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
             )
 
             OutputStreamWriter(file).use {
-                it.write("package at.hannibal2.skyhanni.mixins.transformers.generated;\n")
-                it.write("\n")
-                it.write("import org.spongepowered.asm.mixin.*;\n")
-                it.write("import org.spongepowered.asm.mixin.injection.*;\n")
-                it.write("\n")
-                it.write("${symbol.getMixin()}\n")
-                it.write("class ${symbol.simpleName.asString()} {\n")
-
-                val functionDeclarations = mutableListOf<String>()
-                val shadowDeclarations = mutableMapOf<String, KSType>()
-
-                symbol.getDeclaredFunctions().forEach { function ->
-                    functionDeclarations.add("\n")
-                    val injector = function.getInjection() ?: return@forEach
-                    functionDeclarations.add("    ${injector.first}\n")
-                    injector.second.write(
-                        symbol,
-                        function,
-                        { str -> functionDeclarations.add("    $str\n") },
-                        { param -> shadowDeclarations[param.name!!.asString()] = param.type.resolve() }
-                    )
-                }
-
-                shadowDeclarations.forEach { (name, type) ->
-                    it.write("\n")
-                    it.write("    @Shadow private ${type.toJavaString()} $name;\n")
-                }
-
-                functionDeclarations.forEach { str -> it.write(str) }
-
-                it.write("}\n")
+                JavaFile.builder(
+                        "at.hannibal2.skyhanni.mixins.transformers.generated",
+                        type.build()
+                ).build().writeTo(it)
             }
         }
     }

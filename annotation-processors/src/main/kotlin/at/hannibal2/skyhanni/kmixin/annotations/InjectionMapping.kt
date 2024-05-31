@@ -2,25 +2,29 @@ package at.hannibal2.skyhanni.kmixin.annotations
 
 import at.hannibal2.skyhanni.kmixin.injectors.InjectSerializer
 import at.hannibal2.skyhanni.kmixin.injectors.InjectionSerializer
+import at.hannibal2.skyhanni.kmixin.toJava
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.squareup.javapoet.AnnotationSpec
 import kotlin.reflect.KClass
 
 object InjectionMapping {
 
-    private val injections = mapOf<KClass<*>, KSAnnotation.() -> String>(
+    private val injections = mapOf<KClass<*>, KSAnnotation.() -> AnnotationSpec>(
         KInject::class to {
-            construct("Inject") {
-                add("method = \"${getAsString("method")}\"")
-                add("at = @At(value = \"${getAsInjectionKind("kind").name}\")")
-                if (getAsBoolean("cancellable")) {
-                    add("cancellable = true")
+            AnnotationSpec.builder(INJECT_CLASS)
+                .addMember("method", "\"${getAsString("method")}\"")
+                .addMember("at", "@\$T(value = \"${getAsInjectionKind("kind").name}\")", AT_CLASS)
+                .apply {
+                    if (getAsBoolean("cancellable")) {
+                        addMember("cancellable", "true")
+                    }
+                    if (getAsBoolean("captureLocals")) {
+                        addMember("locals", "org.spongepowered.asm.mixin.injection.callback.LocalCapture.CAPTURE_FAILHARD")
+                    }
                 }
-                if (getAsBoolean("captureLocals"))  {
-                    add("locals = org.spongepowered.asm.mixin.injection.callback.LocalCapture.CAPTURE_FAILHARD")
-                }
-            }
+                .build()
         }
     )
 
@@ -28,7 +32,7 @@ object InjectionMapping {
         KInject::class to InjectSerializer
     )
 
-    fun KSFunctionDeclaration.getInjection(): Pair<String, InjectionSerializer>? {
+    fun KSFunctionDeclaration.getInjection(): Pair<AnnotationSpec, InjectionSerializer>? {
         val annotations = this.annotations.associateBy { it.annotationType.resolve().declaration.qualifiedName!!.asString() }
         for ((klass, mapper) in injections) {
             val annotation = annotations[klass.qualifiedName] ?: continue
@@ -37,7 +41,7 @@ object InjectionMapping {
         return null
     }
 
-    fun KSClassDeclaration.getMixin(): String {
+    fun KSClassDeclaration.getMixinAnnotation(): AnnotationSpec {
         val annotation = this.annotations.first {
             it.annotationType.resolve().declaration.qualifiedName!!.asString() == KMixin::class.qualifiedName
         }
@@ -46,20 +50,11 @@ object InjectionMapping {
             val priority = getAsInt("priority")
             val remap = getAsBoolean("remap")
 
-            construct("Mixin") {
-                add("value = ${value.declaration.qualifiedName!!.asString()}.class")
-                add("priority = $priority")
-                add("remap = $remap")
-            }
+            AnnotationSpec.builder(MIXIN_CLASS)
+                .addMember("value", "\$T.class", value.toJava())
+                .addMember("priority", "\$L", priority)
+                .addMember("remap", "\$L", remap)
+                .build()
         }
-    }
-
-    private fun construct(annotation: String, handle: MutableList<String>.() -> Unit): String {
-        var result = "@$annotation("
-        val args = mutableListOf<String>()
-        args.handle()
-        result += args.joinToString(", ")
-        result += ")"
-        return result
     }
 }

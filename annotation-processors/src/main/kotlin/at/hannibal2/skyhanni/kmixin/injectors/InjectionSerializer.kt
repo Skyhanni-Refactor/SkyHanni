@@ -6,12 +6,15 @@ import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.google.devtools.ksp.symbol.KSValueParameter
+import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.MethodSpec
 
 interface InjectionSerializer {
 
     fun write(
         klass: KSClassDeclaration, function: KSFunctionDeclaration,
-        funWriter: (String) -> Unit, shadowWriter: (KSValueParameter) -> Unit
+        methodWriter: (MethodSpec.Builder) -> Unit,
+        fieldWriter: (FieldSpec.Builder) -> Unit,
     )
 
     @OptIn(KspExperimental::class)
