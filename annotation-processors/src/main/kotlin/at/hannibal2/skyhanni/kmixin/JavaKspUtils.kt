@@ -9,9 +9,11 @@ import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeReference
 import com.google.devtools.ksp.symbol.KSValueParameter
+import com.squareup.javapoet.ArrayTypeName
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeName
-import com.squareup.kotlinpoet.ClassName
+import com.squareup.kotlinpoet.ARRAY
+import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.javapoet.KotlinPoetJavaPoetPreview
 import com.squareup.kotlinpoet.javapoet.toJClassName
 import com.squareup.kotlinpoet.javapoet.toJTypeName
@@ -20,15 +22,15 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 import javax.lang.model.element.Modifier
 import kotlin.reflect.KClass
 
-private val UNIT = ClassName("kotlin", "Unit")
 
 fun KSAnnotated.hasAnnotation(klass: KClass<out Annotation>): Boolean {
     return this.isAnnotationPresent(klass)
 }
 
 fun KSType.toJava(): TypeName {
-    return when (this.toTypeName()) {
-        UNIT -> TypeName.VOID
+    return when {
+        this.toTypeName() == UNIT -> TypeName.VOID
+        this.toTypeName() == ARRAY -> ArrayTypeName.of(this.arguments.first().type!!.toJava())
         else -> this.toTypeName().toJTypeName()
     }
 }

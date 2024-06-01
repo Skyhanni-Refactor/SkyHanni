@@ -1,4 +1,4 @@
-package at.hannibal2.skyhanni.mixins.kotlin
+package at.hannibal2.skyhanni.mixins.kotlin.renderer
 
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderGuiItemOverlayEvent

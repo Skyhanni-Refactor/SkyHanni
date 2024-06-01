@@ -16,7 +16,9 @@ annotation class KStatic
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
-annotation class KShadow
+annotation class KShadow(
+    val final: Boolean = false,
+)
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
