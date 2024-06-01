@@ -15,7 +15,6 @@ import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.isAnyOf
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
@@ -119,7 +118,7 @@ object FarmingContestAPI {
 
     fun getSbTimeFor(text: String): Long? {
         val (year, month, day) = getSbDateFromItemName(text) ?: return null
-        val monthNr = LorenzUtils.getSBMonthByName(month)
+        val monthNr = SkyBlockTime.getSBMonthByName(month)
 
         return SkyBlockTime(year.toInt(), monthNr, day.toInt()).toMillis()
     }

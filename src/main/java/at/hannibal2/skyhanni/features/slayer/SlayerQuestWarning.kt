@@ -136,7 +136,9 @@ object SlayerQuestWarning {
                 )
             }
         }
-        return (getSlayerData().lastSlayerType == slayerType) && slayerType.clazz.isInstance(entity)
+        // workaround for rift mob that is unrelated to slayer
+        val isSlayer = slayerType.clazz.isInstance(entity) && entity.name != "Oubliette Guard"
+        return (getSlayerData().lastSlayerType == slayerType) && isSlayer
     }
 
     @HandleEvent

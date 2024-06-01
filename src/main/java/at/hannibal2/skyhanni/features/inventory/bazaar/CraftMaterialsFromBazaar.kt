@@ -11,7 +11,6 @@ import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.CollectionUtils.addString
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
-import at.hannibal2.skyhanni.utils.ItemUtils.itemNameWithoutColor
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getPrice
@@ -111,7 +110,7 @@ object CraftMaterialsFromBazaar {
                 val text = "§8${priceMultiplier.addSeparators()}x " + material.itemName +
                     " §6${NumberUtil.format(material.getPrice() * priceMultiplier)}"
                 add(Renderable.optionalLink(text, onClick = {
-                    BazaarApi.searchForBazaarItem(material.itemNameWithoutColor, priceMultiplier)
+                    BazaarApi.searchForBazaarItem(material, priceMultiplier)
                 }))
             }
             add(

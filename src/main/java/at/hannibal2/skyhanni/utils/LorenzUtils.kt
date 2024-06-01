@@ -5,7 +5,6 @@ import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.utils.ChatUtils.lastButtonClicked
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
-import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
@@ -19,17 +18,6 @@ object LorenzUtils {
     // TODO use derpy() on every use case
     val EntityLivingBase.baseMaxHealth: Int
         get() = this.getEntityAttribute(SharedMonsterAttributes.maxHealth).baseValue.toInt()
-
-    fun getSBMonthByName(month: String): Int {
-        var monthNr = 0
-        for (i in 1..12) {
-            val monthName = SkyBlockTime.monthName(i)
-            if (month == monthName) {
-                monthNr = i
-            }
-        }
-        return monthNr
-    }
 
     fun fillTable(
         data: List<DisplayTableEntry>,

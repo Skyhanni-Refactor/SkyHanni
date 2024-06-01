@@ -19,6 +19,7 @@ import at.hannibal2.skyhanni.utils.InventoryUtils.getAllItems
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
+import at.hannibal2.skyhanni.utils.ItemUtils.itemNameWithoutColor
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.NEUInternalName
@@ -51,6 +52,10 @@ object BazaarApi {
     fun isBazaarItem(stack: ItemStack): Boolean = stack.getInternalName().isBazaarItem()
 
     fun NEUInternalName.isBazaarItem() = getBazaarData() != null
+
+    fun searchForBazaarItem(internalName: NEUInternalName, amount: Int = -1) {
+        searchForBazaarItem(internalName.itemNameWithoutColor, amount)
+    }
 
     fun searchForBazaarItem(displayName: String, amount: Int = -1) {
         if (!SkyBlockAPI.isConnected) return

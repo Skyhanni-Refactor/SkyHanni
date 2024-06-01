@@ -12,7 +12,6 @@ import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
-import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.features.mining.eventtracker.MiningEventType.Companion.CompressFormat
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ConfigUtils
@@ -78,11 +77,11 @@ object MiningEventDisplay {
                             listOf(
                                 when (islandType) {
                                     IslandType.DWARVEN_MINES -> Renderable.itemStack(
-                                        SkyhanniItems.PERFECT_RUBY_GEM().getItemStack()
+                                        SkyhanniItems.MITHRIL_ORE().getItemStack()
                                     )
 
                                     IslandType.CRYSTAL_HOLLOWS -> Renderable.itemStack(
-                                        SkyhanniItems.MITHRIL_ORE().getItemStack()
+                                        SkyhanniItems.PERFECT_RUBY_GEM().getItemStack()
                                     )
 
                                     IslandType.MINESHAFT -> Renderable.itemStack(ItemStack(Blocks.packed_ice))
@@ -138,7 +137,7 @@ object MiningEventDisplay {
     }
 
     private fun shouldDisplay() =
-        SkyBlockAPI.isConnected && config.enabled && !ReminderUtils.isBusy() && !(!config.outsideMining && !IslandTypeTag.ADVANCED_MINING.inAny())
+        SkyBlockAPI.isConnected && config.enabled && !(!config.outsideMining && !IslandTypeTag.ADVANCED_MINING.inAny())
 
     @HandleEvent
     fun onConfigFix(event: ConfigFixEvent) {

@@ -26,73 +26,6 @@ object SkillExperience {
         "inventory",
         ".* §e(?<number>.*)§6/.*"
     )
-    private val actionBarLowLevelPattern by patternGroup.pattern(
-        "actionbarlow",
-        ".*§3+(?<add>.+) (?<skill>.*) \\((?<percentage>.*)%\\).*"
-    )
-
-    private val levelingExp = listOf(
-        50,
-        125,
-        200,
-        300,
-        500,
-        750,
-        1000,
-        1500,
-        2000,
-        3500,
-        5000,
-        7500,
-        10000,
-        15000,
-        20000,
-        30000,
-        50000,
-        75000,
-        100000,
-        200000,
-        300000,
-        400000,
-        500000,
-        600000,
-        700000,
-        800000,
-        900000,
-        1000000,
-        1100000,
-        1200000,
-        1300000,
-        1400000,
-        1500000,
-        1600000,
-        1700000,
-        1800000,
-        1900000,
-        2000000,
-        2100000,
-        2200000,
-        2300000,
-        2400000,
-        2500000,
-        2600000,
-        2750000,
-        2900000,
-        3100000,
-        3400000,
-        3700000,
-        4000000,
-        4300000,
-        4600000,
-        4900000,
-        5200000,
-        5500000,
-        5800000,
-        6100000,
-        6400000,
-        6700000,
-        7000000
-    )
 
     @HandleEvent
     fun onProfileJoin(event: ProfileJoinEvent) {
@@ -109,11 +42,6 @@ object SkillExperience {
             val baseExp = getExpForLevel(nextLevel - 1)
             val totalExp = baseExp + overflow
             skillExp[skill] = totalExp
-            SkillExpGainEvent(skill).post()
-        }
-        actionBarLowLevelPattern.matchMatcher(event.actionBar) {
-            val skill = group("skill").lowercase()
-            SkillExpGainEvent(skill).post()
         }
     }
 
@@ -182,4 +110,67 @@ object SkillExperience {
 
     // TODO create additional event
     fun getExpForSkill(skillName: String) = skillExp[skillName.lowercase()] ?: 0
+
+    private val levelingExp = listOf(
+        50,
+        125,
+        200,
+        300,
+        500,
+        750,
+        1000,
+        1500,
+        2000,
+        3500,
+        5000,
+        7500,
+        10000,
+        15000,
+        20000,
+        30000,
+        50000,
+        75000,
+        100000,
+        200000,
+        300000,
+        400000,
+        500000,
+        600000,
+        700000,
+        800000,
+        900000,
+        1000000,
+        1100000,
+        1200000,
+        1300000,
+        1400000,
+        1500000,
+        1600000,
+        1700000,
+        1800000,
+        1900000,
+        2000000,
+        2100000,
+        2200000,
+        2300000,
+        2400000,
+        2500000,
+        2600000,
+        2750000,
+        2900000,
+        3100000,
+        3400000,
+        3700000,
+        4000000,
+        4300000,
+        4600000,
+        4900000,
+        5200000,
+        5500000,
+        5800000,
+        6100000,
+        6400000,
+        6700000,
+        7000000
+    )
 }

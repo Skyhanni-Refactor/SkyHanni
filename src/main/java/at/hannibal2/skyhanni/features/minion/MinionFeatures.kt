@@ -181,7 +181,6 @@ object MinionFeatures {
         val minions = minions ?: return
         val entity = lastClickedEntity ?: return
 
-
         val openInventory = event.inventoryName
         val name = getMinionName(openInventory)
         if (!minions.contains(entity) && SkyBlockAPI.island != IslandType.HUB) {
@@ -204,7 +203,7 @@ object MinionFeatures {
         lastMinionOpened = 0
     }
 
-    private fun removeBuggedMinions() {
+    fun removeBuggedMinions(isCommand: Boolean = false) {
         if (!IslandType.PRIVATE_ISLAND.isInIsland()) return
         val minions = minions ?: return
 
@@ -218,7 +217,12 @@ object MinionFeatures {
         }
 
         val size = removedEntities.size
-        if (size == 0) return
+        if (size == 0) {
+            if (isCommand) {
+                ChatUtils.chat("No bugged minions found nearby.")
+            }
+            return
+        }
         this.minions = minions.editCopy {
             for (removedEntity in removedEntities) {
                 remove(removedEntity)

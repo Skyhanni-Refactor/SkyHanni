@@ -59,7 +59,7 @@ object SuperpairsClicksAlert {
                 .any { it.value.stackSize > roundsNeeded })
         ) {
             McSound.BEEP.play()
-            ChatUtils.chat("You have reached the maximum possible clicks!")
+            ChatUtils.chat("You have reached the maximum extra Superpairs clicks from this add-on!")
             roundsNeeded = -1
         }
     }
