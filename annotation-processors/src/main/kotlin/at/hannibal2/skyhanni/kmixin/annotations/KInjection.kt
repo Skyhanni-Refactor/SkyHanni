@@ -1,9 +1,16 @@
 package at.hannibal2.skyhanni.kmixin.annotations
 
+// Inject
 enum class InjectionKind {
     HEAD,
     TAIL,
     RETURN,
+}
+
+enum class TargetShift {
+    NONE,
+    BEFORE,
+    AFTER,
 }
 
 @Target(AnnotationTarget.FUNCTION)
@@ -13,4 +20,27 @@ annotation class KInject(
     val kind: InjectionKind,
     val cancellable: Boolean = false,
     val captureLocals: Boolean = false,
+    val remap: Boolean = false,
+)
+
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class KInjectAt(
+    val method: String,
+    val target: String,
+    val shift: TargetShift = TargetShift.NONE,
+    val ordinal: Int = -1,
+    val cancellable: Boolean = false,
+    val captureLocals: Boolean = false,
+    val remap: Boolean = false,
+)
+
+// Redirect
+
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class KRedirectCall(
+    val method: String,
+    val target: String,
+    val remap: Boolean = false,
 )

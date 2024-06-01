@@ -4,7 +4,12 @@ import at.hannibal2.skyhanni.kmixin.annotations.InjectionMapping.getInjection
 import at.hannibal2.skyhanni.kmixin.annotations.InjectionMapping.getMixinAnnotation
 import at.hannibal2.skyhanni.kmixin.annotations.KMixin
 import com.google.devtools.ksp.getDeclaredFunctions
-import com.google.devtools.ksp.processing.*
+import com.google.devtools.ksp.isPublic
+import com.google.devtools.ksp.processing.CodeGenerator
+import com.google.devtools.ksp.processing.Dependencies
+import com.google.devtools.ksp.processing.KSPLogger
+import com.google.devtools.ksp.processing.Resolver
+import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
@@ -62,16 +67,12 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
 
             symbol.getDeclaredFunctions().forEach { function ->
                 val injector = function.getInjection() ?: return@forEach
+                require(function.isPublic()) { "Mixin functions must be public" }
 
                 injector.second.write(
-                        symbol,
-                        function,
-                        { method ->
-                            methods.add(method.addAnnotation(injector.first).build())
-                        },
-                        { field ->
-                            fields.add(field.build())
-                        }
+                    symbol, function,
+                    { method -> methods.add(method.addAnnotation(injector.first).build()) },
+                    { field -> fields.add(field.build()) }
                 )
             }
 
@@ -79,16 +80,16 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
             methods.distinct().forEach { type.addMethod(it) }
 
             val file = codeGenerator.createNewFile(
-                    Dependencies(true, symbol.containingFile!!),
-                    "at.hannibal2.skyhanni.mixins.transformers.generated",
-                    symbol.simpleName.asString(),
-                    "java"
+                Dependencies(true, symbol.containingFile!!),
+                "at.hannibal2.skyhanni.mixins.transformers.generated",
+                symbol.simpleName.asString(),
+                "java"
             )
 
             OutputStreamWriter(file).use {
                 JavaFile.builder(
-                        "at.hannibal2.skyhanni.mixins.transformers.generated",
-                        type.build()
+                    "at.hannibal2.skyhanni.mixins.transformers.generated",
+                    type.build()
                 ).build().writeTo(it)
             }
         }

@@ -15,13 +15,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 object RenderItemMixin {
 
     @KInject(method = "renderItemOverlayIntoGUI", kind = InjectionKind.RETURN)
-    fun renderItemOverlayPost(fr: FontRenderer, stack: ItemStack, x: Int, y: Int, text: String, ci: CallbackInfo) {
+    fun renderItemOverlayPost(fr: FontRenderer, stack: ItemStack?, x: Int, y: Int, text: String?, ci: CallbackInfo) {
         if (!SkyHanniDebugsAndTests.globalRender) return
         GuiRenderItemEvent.RenderOverlayEvent.GuiRenderItemPost(fr, stack, x, y, text).post()
     }
 
     @KInject(method = "renderItemIntoGUI", kind = InjectionKind.RETURN)
-    fun renderItemReturn(stack: ItemStack, x: Int, y: Int, ci: CallbackInfo) {
+    fun renderItemReturn(stack: ItemStack?, x: Int, y: Int, ci: CallbackInfo) {
         if (!SkyHanniDebugsAndTests.globalRender) return
         RenderGuiItemOverlayEvent(stack, x, y).post()
     }

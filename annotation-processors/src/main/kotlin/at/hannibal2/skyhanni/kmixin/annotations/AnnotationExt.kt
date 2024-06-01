@@ -24,6 +24,11 @@ fun KSAnnotation.getAsInjectionKind(id: String): InjectionKind {
     return InjectionKind.valueOf(type.declaration.simpleName.asString())
 }
 
+fun KSAnnotation.getAsTargetLocation(id: String): TargetShift {
+    val type = this.get(id) as KSType
+    return TargetShift.valueOf(type.declaration.simpleName.asString())
+}
+
 fun KSAnnotation.getAsClass(id: String): KSType {
     return this.get(id) as KSType
 }

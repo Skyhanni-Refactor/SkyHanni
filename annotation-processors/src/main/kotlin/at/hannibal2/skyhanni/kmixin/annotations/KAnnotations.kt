@@ -10,7 +10,6 @@ annotation class KMixin(
     val remap: Boolean = true,
 )
 
-
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
 annotation class KStatic
@@ -18,3 +17,7 @@ annotation class KStatic
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.SOURCE)
 annotation class KShadow
+
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.SOURCE)
+annotation class KSelf
