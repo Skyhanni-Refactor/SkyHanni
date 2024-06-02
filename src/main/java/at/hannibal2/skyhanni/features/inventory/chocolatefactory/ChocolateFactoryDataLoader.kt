@@ -1,17 +1,14 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryUpdatedEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI.specialRabbitTextures
-import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI.specialRabbitTextures
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
+import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
@@ -29,6 +26,7 @@ import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.mc.McSound.playOnRepeat
 import net.minecraft.item.ItemStack
 
 @SkyHanniModule
@@ -137,8 +135,8 @@ object ChocolateFactoryDataLoader {
         clearData()
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(
             47,
             "inventory.chocolateFactory.rabbitWarning",
@@ -146,11 +144,11 @@ object ChocolateFactoryDataLoader {
         )
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         val soundProperty = config.rabbitWarning.specialRabbitSound
         ConditionalUtils.onToggle(soundProperty) {
-            ChocolateFactoryAPI.warningSound = SoundUtils.createSound(soundProperty.get(), 1f)
+            ChocolateFactoryAPI.warningSound = McSound.create(soundProperty.get(), 1f)
         }
     }
 
@@ -424,7 +422,7 @@ object ChocolateFactoryDataLoader {
             if (warningConfig.specialRabbitWarning
                 && (isGoldenRabbit || item.getSkullTexture() in specialRabbitTextures)
             ) {
-                SoundUtils.repeatSound(100, warningConfig.repeatSound, ChocolateFactoryAPI.warningSound)
+                ChocolateFactoryAPI.warningSound.playOnRepeat(100, warningConfig.repeatSound)
             }
 
             ChocolateFactoryAPI.clickRabbitSlot = slotIndex

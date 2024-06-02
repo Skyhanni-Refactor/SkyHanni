@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.config.features.inventory.chocolatefactory;
 
-import at.hannibal2.skyhanni.utils.OSUtils;
+import at.hannibal2.skyhanni.utils.system.OS;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorBoolean;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorButton;
@@ -36,6 +36,6 @@ public class ChocolateFactoryRabbitWarningConfig {
 
     @ConfigOption(name = "Sounds", desc = "Click to open the list of available sounds.")
     @ConfigEditorButton(buttonText = "OPEN")
-    public Runnable sounds = () -> OSUtils.openBrowser("https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/mapping-and-modding-tutorials/2213619-1-8-all-playsound-sound-arguments");
+    public Runnable sounds = () -> OS.openUrl("https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/mapping-and-modding-tutorials/2213619-1-8-all-playsound-sound-arguments");
 
 }

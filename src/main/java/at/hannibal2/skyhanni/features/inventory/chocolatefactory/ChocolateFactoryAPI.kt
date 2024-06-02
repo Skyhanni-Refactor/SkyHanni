@@ -18,11 +18,10 @@ import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
-import at.hannibal2.skyhanni.utils.SkyblockSeason
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.UtilsPatterns
 import at.hannibal2.skyhanni.utils.datetime.SkyblockSeason
+import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
@@ -76,7 +75,7 @@ object ChocolateFactoryAPI {
     var bestPossibleSlot = -1
 
     var specialRabbitTextures = listOf<String>()
-    var warningSound = SoundUtils.createSound("note.pling", 1f)
+    var warningSound = McSound.PLING
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {

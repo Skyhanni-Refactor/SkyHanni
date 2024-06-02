@@ -29,7 +29,7 @@ object ConfigUpdaterMigrator {
     }
 
     fun fixConfig(config: JsonObject): JsonObject {
-        val lastVersion = (config["lastVersion"] as? JsonPrimitive)?.asIntOrNull ?: -1
+        val lastVersion = (config["lastVersion"] as? JsonPrimitive)?.takeIf { it.isNumber }?.asInt ?: -1
         if (lastVersion > CONFIG_VERSION) {
             error("Cannot downgrade config")
         }
