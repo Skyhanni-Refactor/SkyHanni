@@ -4,7 +4,7 @@ import at.hannibal2.skyhanni.kmixin.annotations.KSelf
 import at.hannibal2.skyhanni.kmixin.annotations.KShadow
 import at.hannibal2.skyhanni.kmixin.annotations.SHADOW_CLASS
 import at.hannibal2.skyhanni.kmixin.annotations.ShadowKind
-import at.hannibal2.skyhanni.kmixin.annotations.getAsEnum
+import at.hannibal2.skyhanni.kmixin.getAsEnum
 import at.hannibal2.skyhanni.kmixin.hasAnnotation
 import at.hannibal2.skyhanni.kmixin.toJava
 import com.google.devtools.ksp.symbol.KSAnnotated
@@ -33,7 +33,7 @@ object InjectionUtils {
             .forEach {
                 val annotation = it.getAnnotation(KShadow::class)
 
-                when (val kind = annotation.getAsEnum("kind", ShadowKind::class)) {
+                when (val kind = annotation.getAsEnum<ShadowKind>("kind")) {
                     ShadowKind.FIELD, ShadowKind.FINAL_FIELD -> {
                         val spec = FieldSpec.builder(it.type.toJava(), it.name!!.asString())
                             .addModifiers(Modifier.PRIVATE)
@@ -75,7 +75,7 @@ object InjectionUtils {
             when {
                 it.hasAnnotation(KSelf::class) -> "(${it.type.toJava()}) (Object) this"
                 it.hasAnnotation(KShadow::class) -> {
-                    val kind = it.getAnnotation(KShadow::class).getAsEnum("kind", ShadowKind::class)
+                    val kind = it.getAnnotation(KShadow::class).getAsEnum<ShadowKind>("kind")
                     when (kind) {
                         ShadowKind.FIELD, ShadowKind.FINAL_FIELD -> it.name!!.asString()
                         ShadowKind.METHOD -> "this::${it.name!!.asString()}"

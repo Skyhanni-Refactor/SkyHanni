@@ -31,9 +31,7 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
         val symbols = resolver.getSymbolsWithAnnotation(KMixin::class.qualifiedName!!).toList() + resolver.getSymbolsWithAnnotation(KPseudoMixin::class.qualifiedName!!).toList()
         val validSymbols = symbols.mapNotNull { validateSymbol(it) }
 
-        if (validSymbols.isNotEmpty()) {
-            generateFile(validSymbols, logger)
-        }
+        generateFile(validSymbols)
 
         return emptyList()
     }
@@ -44,21 +42,15 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
             return null
         }
 
-        if (symbol !is KSClassDeclaration) {
-            logger.error("@KMixin is only valid on class declarations", symbol)
-            return null
-        }
-
-        if (symbol.classKind != ClassKind.OBJECT) {
-            logger.error("@KMixin is only valid on kotlin objects", symbol)
+        if (symbol !is KSClassDeclaration || symbol.classKind != ClassKind.OBJECT) {
+            logger.error("@KMixin is only valid on object declarations", symbol)
             return null
         }
 
         return symbol
     }
 
-    private fun generateFile(symbols: List<KSClassDeclaration>, logger: KSPLogger) {
-
+    private fun generateFile(symbols: List<KSClassDeclaration>) {
         for (symbol in symbols) {
 
             val type = TypeSpec.classBuilder(symbol.simpleName.asString())

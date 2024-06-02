@@ -5,6 +5,7 @@ package at.hannibal2.skyhanni.kmixin
 import com.google.devtools.ksp.KspExperimental
 import com.google.devtools.ksp.isAnnotationPresent
 import com.google.devtools.ksp.symbol.KSAnnotated
+import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSTypeReference
@@ -24,46 +25,36 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 import javax.lang.model.element.Modifier
 import kotlin.reflect.KClass
 
+@Suppress("UNCHECKED_CAST")
+fun <T> KSAnnotation.getAs(id: String) =
+    this.arguments.first { it.name?.asString() == id }.value as T
 
-fun KSAnnotated.hasAnnotation(klass: KClass<out Annotation>): Boolean {
-    return this.isAnnotationPresent(klass)
+inline fun <reified T : Enum<T>> KSAnnotation.getAsEnum(id: String): T =
+    enumValueOf<T>(this.getAs<KSType>(id).declaration.simpleName.asString())
+
+fun KSAnnotated.hasAnnotation(klass: KClass<out Annotation>) = this.isAnnotationPresent(klass)
+
+fun KSType.toJava(): TypeName = when {
+    this.toTypeName() == UNIT -> TypeName.VOID
+    this.toTypeName() == ARRAY -> ArrayTypeName.of(this.arguments.first().type!!.toJava())
+    else -> this.toTypeName().toJTypeName()
 }
 
-fun KSType.isType(type: TypeName): Boolean {
-    return this.toJava() == type
+fun KSTypeReference.isType(type: TypeName) = this.toJava() == type
+fun KSTypeReference.toJava() = this.resolve().toJava()
+fun KSClassDeclaration.toJava(): TypeName = when (this.toClassName()) {
+    UNIT -> TypeName.VOID
+    else -> this.toClassName().toJClassName()
 }
 
-fun KSType.toJava(): TypeName {
-    return when {
-        this.toTypeName() == UNIT -> TypeName.VOID
-        this.toTypeName() == ARRAY -> ArrayTypeName.of(this.arguments.first().type!!.toJava())
-        else -> this.toTypeName().toJTypeName()
-    }
-}
+fun MethodSpec.Builder.addParameter(parameter: KSValueParameter): MethodSpec.Builder =
+    this.addParameter(parameter.type.toJava(), parameter.name!!.asString())
 
-fun KSTypeReference.isType(type: TypeName): Boolean {
-    return this.toJava() == type
-}
+fun MethodSpec.Builder.addModifiers(add: Boolean, vararg modifiers: Modifier): MethodSpec.Builder =
+    if (add) this.addModifiers(*modifiers) else this
 
-fun KSTypeReference.toJava(): TypeName {
-    return this.resolve().toJava()
-}
-
-fun KSClassDeclaration.toJava(): TypeName {
-    return when (this.toClassName()) {
-        UNIT -> TypeName.VOID
-        else -> this.toClassName().toJClassName()
-    }
-}
-
-fun MethodSpec.Builder.addParameter(parameter: KSValueParameter): MethodSpec.Builder {
-    return this.addParameter(parameter.type.toJava(), parameter.name!!.asString())
-}
-
-fun MethodSpec.Builder.addModifiers(add: Boolean, vararg modifiers: Modifier): MethodSpec.Builder {
-    if (!add) return this
-    return this.addModifiers(*modifiers)
-}
+fun AnnotationSpec.Builder.addMember(add: Boolean, name: String, format: String, vararg args: Any): AnnotationSpec.Builder =
+    if (add) this.addMember(name, format, *args) else this
 
 fun AnnotationSpec.Builder.addAnnotation(
     name: String,

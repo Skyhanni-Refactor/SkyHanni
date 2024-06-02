@@ -8,9 +8,7 @@ import at.hannibal2.skyhanni.kmixin.annotations.KShadow
 import at.hannibal2.skyhanni.kmixin.annotations.KStatic
 import at.hannibal2.skyhanni.kmixin.annotations.OPCODES_CLASS
 import at.hannibal2.skyhanni.kmixin.annotations.REDIRECT_CLASS
-import at.hannibal2.skyhanni.kmixin.annotations.getAsBoolean
-import at.hannibal2.skyhanni.kmixin.annotations.getAsInt
-import at.hannibal2.skyhanni.kmixin.annotations.getAsString
+import at.hannibal2.skyhanni.kmixin.getAs
 import at.hannibal2.skyhanni.kmixin.hasAnnotation
 import at.hannibal2.skyhanni.kmixin.injectors.InjectionSerializer
 import at.hannibal2.skyhanni.kmixin.injectors.InjectionUtils
@@ -30,14 +28,14 @@ object RedirectFieldSerializer : InjectionSerializer {
     override fun readAnnotation(function: KSFunctionDeclaration, annotation: KSAnnotation): AnnotationSpec = with(annotation) {
         val opcode = if (function.returnType!!.isType(TypeName.VOID)) "PUTFIELD" else "GETFIELD"
         AnnotationSpec.builder(REDIRECT_CLASS)
-            .addMember("method", "\$S", getAsString("method"))
+            .addMember("method", "\$S", getAs<String>("method"))
             .addAnnotation("at", AT_CLASS) {
                 add("value", "\$S", "FIELD")
-                add("target", "\$S", getAsString("target"))
-                add("ordinal", "\$L", getAsInt("ordinal"))
+                add("target", "\$S", getAs<String>("target"))
+                add("ordinal", "\$L", getAs<Int>("ordinal"))
                 add("opcode", "\$T.${opcode}", OPCODES_CLASS)
             }
-            .addMember("remap", "\$L", getAsBoolean("remap"))
+            .addMember("remap", "\$L", getAs<Boolean>("remap"))
             .build()
     }
 

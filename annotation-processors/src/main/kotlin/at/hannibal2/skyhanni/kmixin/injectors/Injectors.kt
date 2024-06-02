@@ -8,10 +8,7 @@ import at.hannibal2.skyhanni.kmixin.annotations.KRedirectCall
 import at.hannibal2.skyhanni.kmixin.annotations.KRedirectField
 import at.hannibal2.skyhanni.kmixin.annotations.MIXIN_CLASS
 import at.hannibal2.skyhanni.kmixin.annotations.PSEUDO_CLASS
-import at.hannibal2.skyhanni.kmixin.annotations.getAsBoolean
-import at.hannibal2.skyhanni.kmixin.annotations.getAsClass
-import at.hannibal2.skyhanni.kmixin.annotations.getAsInt
-import at.hannibal2.skyhanni.kmixin.annotations.getAsString
+import at.hannibal2.skyhanni.kmixin.getAs
 import at.hannibal2.skyhanni.kmixin.hasAnnotation
 import at.hannibal2.skyhanni.kmixin.injectors.InjectionUtils.getAnnotation
 import at.hannibal2.skyhanni.kmixin.injectors.inject.InjectAtSerializer
@@ -21,6 +18,7 @@ import at.hannibal2.skyhanni.kmixin.injectors.redirect.RedirectMethodSerializer
 import at.hannibal2.skyhanni.kmixin.toJava
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
+import com.google.devtools.ksp.symbol.KSType
 import com.squareup.javapoet.AnnotationSpec
 import com.squareup.javapoet.TypeSpec
 import kotlin.reflect.KClass
@@ -50,9 +48,9 @@ object Injectors {
             addAnnotation(PSEUDO_CLASS)
             addAnnotation(with(annotation) {
                 AnnotationSpec.builder(MIXIN_CLASS)
-                    .addMember("targets", "\$S", getAsString("value"))
-                    .addMember("priority", "\$L", getAsInt("priority"))
-                    .addMember("remap", "\$L", getAsBoolean("remap"))
+                    .addMember("targets", "\$S", getAs<String>("value"))
+                    .addMember("priority", "\$L", getAs<Int>("priority"))
+                    .addMember("remap", "\$L", getAs<Boolean>("remap"))
                     .build()
             })
 
@@ -60,9 +58,9 @@ object Injectors {
             val annotation = symbol.getAnnotation(KMixin::class)
             addAnnotation(with(annotation) {
                 AnnotationSpec.builder(MIXIN_CLASS)
-                    .addMember("value", "\$T.class", getAsClass("value").toJava())
-                    .addMember("priority", "\$L", getAsInt("priority"))
-                    .addMember("remap", "\$L", getAsBoolean("remap"))
+                    .addMember("value", "\$T.class", getAs<KSType>("value").toJava())
+                    .addMember("priority", "\$L", getAs<Int>("priority"))
+                    .addMember("remap", "\$L", getAs<Boolean>("remap"))
                     .build()
             })
         } else {
