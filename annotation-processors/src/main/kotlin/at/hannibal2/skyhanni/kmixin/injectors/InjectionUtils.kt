@@ -3,13 +3,15 @@ package at.hannibal2.skyhanni.kmixin.injectors
 import at.hannibal2.skyhanni.kmixin.annotations.KSelf
 import at.hannibal2.skyhanni.kmixin.annotations.KShadow
 import at.hannibal2.skyhanni.kmixin.annotations.SHADOW_CLASS
-import at.hannibal2.skyhanni.kmixin.annotations.getAsBoolean
+import at.hannibal2.skyhanni.kmixin.annotations.ShadowKind
+import at.hannibal2.skyhanni.kmixin.annotations.getAsEnum
 import at.hannibal2.skyhanni.kmixin.hasAnnotation
 import at.hannibal2.skyhanni.kmixin.toJava
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSAnnotation
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration
 import com.squareup.javapoet.FieldSpec
+import com.squareup.javapoet.MethodSpec
 import javax.lang.model.element.Modifier
 import kotlin.reflect.KClass
 
@@ -21,25 +23,50 @@ object InjectionUtils {
         }
     }
 
-    fun gatherShadows(function: KSFunctionDeclaration, fieldWriter: (FieldSpec.Builder) -> Unit) {
+    fun gatherShadows(
+        function: KSFunctionDeclaration,
+        fieldWriter: (FieldSpec.Builder) -> Unit,
+        methodWriter: (MethodSpec.Builder) -> Unit,
+    ) {
         function.parameters
             .filter { it.hasAnnotation(KShadow::class) }
             .forEach {
                 val annotation = it.getAnnotation(KShadow::class)
 
-                val spec = FieldSpec.builder(it.type.toJava(), it.name!!.asString())
-                    .addModifiers(Modifier.PRIVATE)
-                    .addAnnotation(SHADOW_CLASS)
+                when (val kind = annotation.getAsEnum("kind", ShadowKind::class)) {
+                    ShadowKind.FIELD, ShadowKind.FINAL_FIELD -> {
+                        val spec = FieldSpec.builder(it.type.toJava(), it.name!!.asString())
+                            .addModifiers(Modifier.PRIVATE)
+                            .addAnnotation(SHADOW_CLASS)
 
-                if (annotation.getAsBoolean("final")) {
-                    spec.addModifiers(Modifier.FINAL)
+                        if (kind == ShadowKind.FINAL_FIELD) {
+                            spec.addModifiers(Modifier.FINAL)
+                        }
+
+                        fieldWriter(
+                            FieldSpec.builder(it.type.toJava(), it.name!!.asString())
+                                .addModifiers(Modifier.PRIVATE)
+                                .addAnnotation(SHADOW_CLASS)
+                        )
+                    }
+                    ShadowKind.METHOD -> {
+                        require(it.type.resolve().isFunctionType) { "Shadow method must be a function" }
+
+                        val types = it.type.resolve().arguments.map { it.type!!.toJava() }
+                        val parameters = types.dropLast(1)
+                        val returnType = types.last()
+
+                        val method = MethodSpec.methodBuilder(it.name!!.asString())
+                            .addModifiers(Modifier.ABSTRACT)
+                            .apply {
+                                parameters.forEachIndexed { index, type -> addParameter(type, "arg$index") }
+                            }
+                            .addAnnotation(SHADOW_CLASS)
+                            .returns(returnType)
+
+                        methodWriter(method)
+                    }
                 }
-
-                fieldWriter(
-                    FieldSpec.builder(it.type.toJava(), it.name!!.asString())
-                        .addModifiers(Modifier.PRIVATE)
-                        .addAnnotation(SHADOW_CLASS)
-                )
             }
     }
 
@@ -47,7 +74,13 @@ object InjectionUtils {
         return function.parameters.joinToString(", ") {
             when {
                 it.hasAnnotation(KSelf::class) -> "(${it.type.toJava()}) (Object) this"
-                it.hasAnnotation(KShadow::class) -> it.name!!.asString()
+                it.hasAnnotation(KShadow::class) -> {
+                    val kind = it.getAnnotation(KShadow::class).getAsEnum("kind", ShadowKind::class)
+                    when (kind) {
+                        ShadowKind.FIELD, ShadowKind.FINAL_FIELD -> it.name!!.asString()
+                        ShadowKind.METHOD -> "this::${it.name!!.asString()}"
+                    }
+                }
                 else -> it.name!!.asString()
             }
         }

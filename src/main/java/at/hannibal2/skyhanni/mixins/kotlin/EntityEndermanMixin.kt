@@ -10,7 +10,10 @@ import net.minecraft.world.World
 @KMixin(EntityEnderman::class)
 object EntityEndermanMixin {
 
-    @KRedirectCall(method = "onLivingUpdate", target = "Lnet/minecraft/world/World;spawnParticle(Lnet/minecraft/util/EnumParticleTypes;DDDDDD[I)V")
+    @KRedirectCall(
+        method = "onLivingUpdate",
+        target = "Lnet/minecraft/world/World;spawnParticle(Lnet/minecraft/util/EnumParticleTypes;DDDDDD[I)V"
+    )
     fun onLivingUpdate(
         world: World,
         particleType: EnumParticleTypes,

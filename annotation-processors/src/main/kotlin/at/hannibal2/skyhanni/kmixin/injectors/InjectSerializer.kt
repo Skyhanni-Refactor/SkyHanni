@@ -24,7 +24,7 @@ object InjectSerializer : InjectionSerializer {
 
     private const val CAPTURE_FAILHARD = "org.spongepowered.asm.mixin.injection.callback.LocalCapture.CAPTURE_FAILHARD"
 
-    override fun readAnnotation(annotation: KSAnnotation): AnnotationSpec = with(annotation) {
+    override fun readAnnotation(function: KSFunctionDeclaration, annotation: KSAnnotation): AnnotationSpec = with(annotation) {
         AnnotationSpec.builder(INJECT_CLASS)
             .addMember("method", "\"${getAsString("method")}\"")
             .addMember("at", "@\$T(value = \"${getAsInjectionKind("kind").name}\")", AT_CLASS)
@@ -38,6 +38,7 @@ object InjectSerializer : InjectionSerializer {
 
     override fun write(
         klass: KSClassDeclaration,
+        annotation: AnnotationSpec,
         function: KSFunctionDeclaration,
         methodWriter: (MethodSpec.Builder) -> Unit,
         fieldWriter: (FieldSpec.Builder) -> Unit,
@@ -45,6 +46,7 @@ object InjectSerializer : InjectionSerializer {
         val method = MethodSpec.methodBuilder(function.simpleName.asString())
             .addModifiers(Modifier.PRIVATE)
             .addModifiers(function.hasAnnotation(KStatic::class), Modifier.STATIC)
+            .addAnnotation(annotation)
             .returns(Void.TYPE)
 
         function.parameters
@@ -60,6 +62,6 @@ object InjectSerializer : InjectionSerializer {
         )
 
         methodWriter(method)
-        InjectionUtils.gatherShadows(function, fieldWriter)
+        InjectionUtils.gatherShadows(function, fieldWriter, methodWriter)
     }
 }

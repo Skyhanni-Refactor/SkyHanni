@@ -20,7 +20,7 @@ annotation class KInject(
     val kind: InjectionKind,
     val cancellable: Boolean = false,
     val captureLocals: Boolean = false,
-    val remap: Boolean = false,
+    val remap: Boolean = true,
 )
 
 @Target(AnnotationTarget.FUNCTION)
@@ -32,7 +32,7 @@ annotation class KInjectAt(
     val ordinal: Int = -1,
     val cancellable: Boolean = false,
     val captureLocals: Boolean = false,
-    val remap: Boolean = false,
+    val remap: Boolean = true,
 )
 
 // Redirect
@@ -42,5 +42,15 @@ annotation class KInjectAt(
 annotation class KRedirectCall(
     val method: String,
     val target: String,
-    val remap: Boolean = false,
+    val ordinal: Int = -1,
+    val remap: Boolean = true,
+)
+
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class KRedirectField(
+    val method: String,
+    val target: String,
+    val ordinal: Int = -1,
+    val remap: Boolean = true,
 )

@@ -1,8 +1,9 @@
 package at.hannibal2.skyhanni.kmixin
 
-import at.hannibal2.skyhanni.kmixin.annotations.InjectionMapping.getInjection
-import at.hannibal2.skyhanni.kmixin.annotations.InjectionMapping.getMixinAnnotation
 import at.hannibal2.skyhanni.kmixin.annotations.KMixin
+import at.hannibal2.skyhanni.kmixin.annotations.KPseudoMixin
+import at.hannibal2.skyhanni.kmixin.injectors.Injectors.addMixinAnnotations
+import at.hannibal2.skyhanni.kmixin.injectors.Injectors.getInjection
 import com.google.devtools.ksp.getDeclaredFunctions
 import com.google.devtools.ksp.isPublic
 import com.google.devtools.ksp.processing.CodeGenerator
@@ -10,6 +11,8 @@ import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.KSPLogger
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
+import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
+import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
@@ -25,7 +28,7 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
 
-        val symbols = resolver.getSymbolsWithAnnotation(KMixin::class.qualifiedName!!).toList()
+        val symbols = resolver.getSymbolsWithAnnotation(KMixin::class.qualifiedName!!).toList() + resolver.getSymbolsWithAnnotation(KPseudoMixin::class.qualifiedName!!).toList()
         val validSymbols = symbols.mapNotNull { validateSymbol(it) }
 
         if (validSymbols.isNotEmpty()) {
@@ -59,8 +62,8 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
         for (symbol in symbols) {
 
             val type = TypeSpec.classBuilder(symbol.simpleName.asString())
-                .addAnnotation(symbol.getMixinAnnotation())
                 .addModifiers(Modifier.ABSTRACT, Modifier.PUBLIC)
+                .addMixinAnnotations(symbol)
 
             val fields = mutableListOf<FieldSpec>()
             val methods = mutableListOf<MethodSpec>()
@@ -70,8 +73,8 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
                 require(function.isPublic()) { "Mixin functions must be public" }
 
                 injector.second.write(
-                    symbol, function,
-                    { method -> methods.add(method.addAnnotation(injector.first).build()) },
+                    symbol, injector.first, function,
+                    { method -> methods.add(method.build()) },
                     { field -> fields.add(field.build()) }
                 )
             }
@@ -93,5 +96,11 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
                 ).build().writeTo(it)
             }
         }
+    }
+}
+
+class KMixinProvider : SymbolProcessorProvider {
+    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
+        return KMixinProcessor(environment.codeGenerator, environment.logger)
     }
 }

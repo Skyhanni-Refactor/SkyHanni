@@ -9,7 +9,9 @@ import at.hannibal2.skyhanni.kmixin.annotations.KInject
 import at.hannibal2.skyhanni.kmixin.annotations.KInjectAt
 import at.hannibal2.skyhanni.kmixin.annotations.KMixin
 import at.hannibal2.skyhanni.kmixin.annotations.KRedirectCall
+import at.hannibal2.skyhanni.kmixin.annotations.KRedirectField
 import at.hannibal2.skyhanni.kmixin.annotations.TargetShift
+import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper.internalSetColorMultiplier
 import at.hannibal2.skyhanni.utils.EntityOutlineRenderer
 import at.hannibal2.skyhanni.utils.datetime.DateUtils
@@ -23,12 +25,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 @KMixin(RendererLivingEntity::class, priority = 1001)
 object RendererLivingEntityMixin {
 
-    @KInject(method = "getColorMultiplier", kind = InjectionKind.HEAD)
+    @KRedirectField(
+        method = "setBrightness",
+        target = "Lnet/minecraft/entity/EntityLivingBase;hurtTime:I"
+    )
+    fun changeHurtTime(entity: EntityLivingBase): Int {
+        return RenderLivingEntityHelper.internalChangeHurtTime(entity)
+    }
+
+    @KInject(
+        method = "getColorMultiplier",
+        kind = InjectionKind.HEAD,
+        cancellable = true
+    )
     fun setColorMultiplier(entity: EntityLivingBase, light: Float, partialTicks: Float, cir: CallbackInfoReturnable<Int>) {
         cir.returnValue = internalSetColorMultiplier(entity)
     }
 
-    @KInject(method = "renderLayers", kind = InjectionKind.HEAD, cancellable = true)
+    @KInject(
+        method = "renderLayers",
+        kind = InjectionKind.HEAD,
+        cancellable = true
+    )
     fun onRenderLayersPre(entity: EntityLivingBase, p_177093_2_: Float, p_177093_3_: Float, partialTicks: Float, p_177093_5_: Float, p_177093_6_: Float, p_177093_7_: Float, p_177093_8_: Float, ci: CallbackInfo) {
         if (EntityRenderLayersEvent.Pre(entity).post()) {
             ci.cancel()

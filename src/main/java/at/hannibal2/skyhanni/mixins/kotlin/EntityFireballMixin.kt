@@ -10,7 +10,10 @@ import net.minecraft.world.World
 @KMixin(EntityFireball::class)
 object EntityFireballMixin {
 
-    @KRedirectCall(method = "onUpdate", target = "Lnet/minecraft/world/World;spawnParticle(Lnet/minecraft/util/EnumParticleTypes;DDDDDD[I)V")
+    @KRedirectCall(
+        method = "onUpdate",
+        target = "Lnet/minecraft/world/World;spawnParticle(Lnet/minecraft/util/EnumParticleTypes;DDDDDD[I)V"
+    )
     fun onLivingUpdate(
         world: World,
         particleType: EnumParticleTypes,

@@ -9,10 +9,12 @@ import com.squareup.javapoet.MethodSpec
 
 interface InjectionSerializer {
 
-    fun readAnnotation(annotation: KSAnnotation): AnnotationSpec
+    fun readAnnotation(function: KSFunctionDeclaration, annotation: KSAnnotation): AnnotationSpec
 
     fun write(
-        klass: KSClassDeclaration, function: KSFunctionDeclaration,
+        klass: KSClassDeclaration,
+        annotation: AnnotationSpec,
+        function: KSFunctionDeclaration,
         methodWriter: (MethodSpec.Builder) -> Unit,
         fieldWriter: (FieldSpec.Builder) -> Unit,
     )
