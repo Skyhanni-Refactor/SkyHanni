@@ -26,6 +26,9 @@ import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.gui.inventory.GuiEditSign
 import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraftforge.fml.common.eventhandler.EventPriority
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
 import java.util.UUID
 import kotlin.time.Duration.Companion.milliseconds
@@ -44,6 +47,10 @@ object GuiEditManager {
     @HandleEvent
     fun onKeyClick(event: KeyPressEvent) {
         if (event.keyCode != SkyHanniMod.feature.gui.keyBindOpen) return
+        if (event.keyCode == Keyboard.KEY_RETURN) {
+            ChatUtils.chat("You can't use Enter as a keybind to open the gui editor!")
+            return
+        }
         if (isInGui()) return
 
         Minecraft.getMinecraft().currentScreen?.let {

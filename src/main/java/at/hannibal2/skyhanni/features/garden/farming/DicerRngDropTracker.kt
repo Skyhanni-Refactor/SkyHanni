@@ -2,6 +2,7 @@ package at.hannibal2.skyhanni.features.garden.farming
 
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
@@ -11,9 +12,11 @@ import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
+import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import at.hannibal2.skyhanni.utils.tracker.TrackerData
@@ -86,11 +89,11 @@ object DicerRngDropTracker {
         itemDrops.add(ItemDrop(CropType.PUMPKIN, DropRarity.PRAY_TO_RNGESUS, pumpkinRngesusDropPattern))
     }
 
-    enum class DropRarity(val displayName: String) {
-        UNCOMMON("§a§lUNCOMMON DROP"),
-        RARE("§9§lRARE DROP"),
-        CRAZY_RARE("§d§lCRAZY RARE DROP"),
-        PRAY_TO_RNGESUS("§5§lPRAY TO RNGESUS DROP"),
+    enum class DropRarity(val colorCode: Char, val displayName: String) {
+        UNCOMMON('a', "UNCOMMON"),
+        RARE('9', "RARE"),
+        CRAZY_RARE('d', "CRAZY RARE"),
+        PRAY_TO_RNGESUS('5', "PRAY TO RNGESUS"),
     }
 
     @HandleEvent(onlyOnIsland = IslandType.GARDEN)
@@ -109,13 +112,37 @@ object DicerRngDropTracker {
         }
     }
 
-    private fun drawDisplay(data: Data) = buildList<List<Any>> {
+    @SubscribeEvent
+    fun onConfigLoad(event: ConfigLoadEvent) {
+        ConditionalUtils.onToggle(config.compact) {
+            tracker.update()
+        }
+    }
+
+    private fun drawDisplay(data: Data) = buildList {
         val cropInHand = cropInHand ?: return@buildList
         val items = data.drops.getOrPut(cropInHand) { mutableMapOf() }
-        addAsSingletonList("§7Dicer RNG Drop Tracker for $toolName§7:")
-        for ((rarity, amount) in items.sortedDesc()) {
-            val displayName = rarity.displayName
-            addAsSingletonList(" §7- §e${amount.addSeparators()}x $displayName")
+        val list = mutableListOf<Renderable>()
+        val topLine = mutableListOf<Renderable>()
+
+        topLine.add(Renderable.itemStack(cropInHand.icon))
+        topLine.add(Renderable.string("§7Dicer Tracker:"))
+        add(listOf(Renderable.horizontalContainer(topLine)))
+        if (config.compact.get()) {
+
+            val compactLine = items.sortedDesc().map { (rarity, amount) ->
+                "§${rarity.colorCode}${amount.addSeparators()}"
+            }.joinToString("§7/")
+            list.add(Renderable.string(compactLine))
+            add(listOf(Renderable.verticalContainer(list)))
+
+        } else {
+            for ((rarity, amount) in items.sortedDesc()) {
+                val colorCode = rarity.colorCode
+                val displayName = rarity.displayName
+                list.add(Renderable.string(" §7- §e${amount.addSeparators()}x §$colorCode$displayName"))
+            }
+            add(listOf(Renderable.verticalContainer(list)))
         }
 
     }

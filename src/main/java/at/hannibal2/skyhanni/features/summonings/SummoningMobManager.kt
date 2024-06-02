@@ -50,9 +50,14 @@ object SummoningMobManager {
         "health",
         "§a§o(.+)'s (.+)§r §[ae]([\\dkm]+)§c❤"
     )
-    private val seraphRecallPattern by patternGroup.pattern( //§cThe Seraph recalled your 3 summoned allies!
+
+    /**
+     * REGEX-TEST: §cThe Seraph recalled your 3 summoned allies!
+     * REGEX-TEST: §cThe Seraph recalled your 10 summoned allies!
+     */
+    private val seraphRecallPattern by patternGroup.pattern(
         "seraphrecall",
-        "§cThe Seraph recalled your (\\d) summoned allies!"
+        "§cThe Seraph recalled your (\\d+) summoned allies!"
     )
 
     @HandleEvent(onlyOnSkyblock = true)

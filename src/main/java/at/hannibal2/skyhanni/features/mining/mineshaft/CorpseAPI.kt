@@ -40,7 +40,7 @@ object CorpseAPI {
     private var inLoot = false
     private val loot = mutableListOf<Pair<String, Int>>()
 
-    private var corpeType: CorpeType? = null
+    private var corpseType: CorpseType? = null
 
     @HandleEvent(onlyOnIsland = IslandType.MINESHAFT)
     fun onChat(event: SkyHanniChatEvent) {
@@ -49,17 +49,17 @@ object CorpseAPI {
         startPattern.matchMatcher(message) {
             inLoot = true
             val name = group("name")
-            corpeType = CorpeType.valueOf(name)
+            corpseType = CorpseType.valueOf(name)
             return
         }
 
         if (!inLoot) return
 
         if (endPattern.matches(message)) {
-            corpeType?.let {
+            corpseType?.let {
                 CorpseLootedEvent(it, loot.toList()).post()
             }
-            corpeType = null
+            corpseType = null
             loot.clear()
             inLoot = false
             return

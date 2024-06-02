@@ -8,7 +8,7 @@ import com.google.gson.JsonPrimitive
 object ConfigUpdaterMigrator {
 
     val logger = LorenzLogger("ConfigMigration")
-    const val CONFIG_VERSION = 46
+    const val CONFIG_VERSION = 47
 
     private fun merge(originalObject: JsonObject, overrideObject: JsonObject): Int {
         var count = 0
@@ -29,7 +29,7 @@ object ConfigUpdaterMigrator {
     }
 
     fun fixConfig(config: JsonObject): JsonObject {
-        val lastVersion = (config["lastVersion"] as? JsonPrimitive)?.takeIf { it.isNumber }?.asInt ?: -1
+        val lastVersion = (config["lastVersion"] as? JsonPrimitive)?.asIntOrNull ?: -1
         if (lastVersion > CONFIG_VERSION) {
             error("Cannot downgrade config")
         }

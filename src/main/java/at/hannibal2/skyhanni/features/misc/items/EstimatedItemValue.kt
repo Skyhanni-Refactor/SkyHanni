@@ -67,14 +67,13 @@ object EstimatedItemValue {
     @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: ItemHoverEvent) {
         if (!config.enabled) return
+        if (Minecraft.getMinecraft().currentScreen !is GuiProfileViewer) return
 
-        if (Minecraft.getMinecraft().currentScreen is GuiProfileViewer) {
-            if (renderedItems == 0) {
-                updateItem(event.itemStack)
-            }
-            tryRendering()
-            renderedItems++
+        if (renderedItems == 0) {
+            updateItem(event.itemStack)
         }
+        tryRendering()
+        renderedItems++
     }
 
     /**
