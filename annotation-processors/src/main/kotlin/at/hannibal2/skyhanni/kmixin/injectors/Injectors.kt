@@ -14,6 +14,10 @@ import at.hannibal2.skyhanni.kmixin.annotations.getAsInt
 import at.hannibal2.skyhanni.kmixin.annotations.getAsString
 import at.hannibal2.skyhanni.kmixin.hasAnnotation
 import at.hannibal2.skyhanni.kmixin.injectors.InjectionUtils.getAnnotation
+import at.hannibal2.skyhanni.kmixin.injectors.inject.InjectAtSerializer
+import at.hannibal2.skyhanni.kmixin.injectors.inject.InjectSerializer
+import at.hannibal2.skyhanni.kmixin.injectors.redirect.RedirectFieldSerializer
+import at.hannibal2.skyhanni.kmixin.injectors.redirect.RedirectMethodSerializer
 import at.hannibal2.skyhanni.kmixin.toJava
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFunctionDeclaration

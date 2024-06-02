@@ -8,7 +8,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    maven("https://repo.spongepowered.org/maven/")
 }
 
 dependencies {

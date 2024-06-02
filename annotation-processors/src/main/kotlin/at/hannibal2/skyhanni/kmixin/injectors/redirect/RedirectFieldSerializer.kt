@@ -1,4 +1,4 @@
-package at.hannibal2.skyhanni.kmixin.injectors
+package at.hannibal2.skyhanni.kmixin.injectors.redirect
 
 import at.hannibal2.skyhanni.kmixin.addAnnotation
 import at.hannibal2.skyhanni.kmixin.addModifiers
@@ -12,6 +12,8 @@ import at.hannibal2.skyhanni.kmixin.annotations.getAsBoolean
 import at.hannibal2.skyhanni.kmixin.annotations.getAsInt
 import at.hannibal2.skyhanni.kmixin.annotations.getAsString
 import at.hannibal2.skyhanni.kmixin.hasAnnotation
+import at.hannibal2.skyhanni.kmixin.injectors.InjectionSerializer
+import at.hannibal2.skyhanni.kmixin.injectors.InjectionUtils
 import at.hannibal2.skyhanni.kmixin.isType
 import at.hannibal2.skyhanni.kmixin.toJava
 import com.google.devtools.ksp.symbol.KSAnnotation
@@ -61,9 +63,17 @@ object RedirectFieldSerializer : InjectionSerializer {
             }
 
         if (returnType == TypeName.VOID) {
-            method.addStatement("\$T.INSTANCE.${function.simpleName.asString()}(${InjectionUtils.createParameterList(function)})", klass.toJava())
+            method.addStatement("\$T.INSTANCE.${function.simpleName.asString()}(${
+                InjectionUtils.createParameterList(
+                    function
+                )
+            })", klass.toJava())
         } else {
-            method.addStatement("return \$T.INSTANCE.${function.simpleName.asString()}(${InjectionUtils.createParameterList(function)})", klass.toJava())
+            method.addStatement("return \$T.INSTANCE.${function.simpleName.asString()}(${
+                InjectionUtils.createParameterList(
+                    function
+                )
+            })", klass.toJava())
         }
 
         methodWriter(method)
