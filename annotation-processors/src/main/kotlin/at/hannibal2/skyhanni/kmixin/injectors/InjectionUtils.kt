@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.kmixin.injectors
 
+import at.hannibal2.skyhanni.kmixin.annotations.FINAL_CLASS
 import at.hannibal2.skyhanni.kmixin.annotations.KSelf
 import at.hannibal2.skyhanni.kmixin.annotations.KShadow
 import at.hannibal2.skyhanni.kmixin.annotations.SHADOW_CLASS
@@ -40,7 +41,7 @@ object InjectionUtils {
                             .addAnnotation(SHADOW_CLASS)
 
                         if (kind == ShadowKind.FINAL_FIELD) {
-                            spec.addModifiers(Modifier.FINAL)
+                            spec.addAnnotation(FINAL_CLASS)
                         }
 
                         fieldWriter(

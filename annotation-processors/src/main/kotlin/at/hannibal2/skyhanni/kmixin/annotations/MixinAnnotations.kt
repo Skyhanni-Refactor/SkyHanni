@@ -10,3 +10,4 @@ val REDIRECT_CLASS: ClassName = ClassName.get("org.spongepowered.asm.mixin.injec
 val OPCODES_CLASS: ClassName = ClassName.get("org.objectweb.asm", "Opcodes")
 val PSEUDO_CLASS: ClassName = ClassName.get("org.spongepowered.asm.mixin", "Pseudo")
 val LOCAL_CAPTURE_CLASS: ClassName = ClassName.get("org.spongepowered.asm.mixin.injection.callback", "LocalCapture")
+val FINAL_CLASS: ClassName = ClassName.get("org.spongepowered.asm.mixin", "Final")
