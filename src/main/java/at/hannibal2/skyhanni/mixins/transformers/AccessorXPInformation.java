@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Pseudo
 @Mixin(targets = "io.github.moulberry.notenoughupdates.util.XPInformation$SkillInfo")
-public interface MixinXPInformation {
+public interface AccessorXPInformation {
 
     @Accessor(value = "totalXp")
     double getTotalXp();

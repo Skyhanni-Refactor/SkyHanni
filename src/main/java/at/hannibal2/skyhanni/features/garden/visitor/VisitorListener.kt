@@ -19,7 +19,7 @@ import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.ACCEPT_SLOT
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.INFO_SLOT
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.lastClickedNpc
-import at.hannibal2.skyhanni.mixins.transformers.gui.AccessorGuiContainer
+import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiContainer
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -124,7 +124,8 @@ object VisitorListener {
     fun onKeybind(event: GuiKeyPressEvent) {
         if (!VisitorAPI.inInventory) return
         if (!config.acceptHotkey.isKeyHeld()) return
-        val inventory = event.guiContainer as? AccessorGuiContainer ?: return
+        val inventory = event.guiContainer as? AccessorGuiContainer
+            ?: return
         inventory as GuiContainer
         val slot = inventory.inventorySlots.getSlot(29)
         inventory.handleMouseClick_skyhanni(slot, slot.slotIndex, 0, 0)

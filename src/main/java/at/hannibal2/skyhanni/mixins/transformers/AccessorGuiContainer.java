@@ -1,4 +1,4 @@
-package at.hannibal2.skyhanni.mixins.transformers.gui;
+package at.hannibal2.skyhanni.mixins.transformers;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.inventory.Slot;

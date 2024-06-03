@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(RenderGlobal.class)
-public interface CustomRenderGlobal {
+public interface AccessorRenderGlobal {
     @Accessor("entityOutlineFramebuffer")
     Framebuffer getEntityOutlineFramebuffer_skyhanni();
 
