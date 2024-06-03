@@ -6,7 +6,7 @@ import at.hannibal2.skyhanni.events.render.gui.DrawScreenAfterEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
-import at.hannibal2.skyhanni.mixins.transformers.gui.AccessorGuiContainer
+import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiContainer
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import at.hannibal2.skyhanni.utils.InventoryUtils.getInventoryName

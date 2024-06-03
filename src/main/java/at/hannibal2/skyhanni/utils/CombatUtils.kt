@@ -2,7 +2,7 @@ package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostCounter
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostData
-import at.hannibal2.skyhanni.mixins.transformers.MixinXPInformation
+import at.hannibal2.skyhanni.mixins.transformers.AccessorXPInformation
 import io.github.moulberry.notenoughupdates.core.util.lerp.LerpUtils
 import io.github.moulberry.notenoughupdates.util.XPInformation
 
@@ -28,7 +28,7 @@ object CombatUtils {
 
     private fun getSkillInfo(xpInformation: XPInformation.SkillInfo?): Float {
         return try {
-            val a = xpInformation as? MixinXPInformation
+            val a = xpInformation as? AccessorXPInformation
             a!!.getTotalXp().toFloat()
         } catch (e: Error) {
             val xpInfo = xpInformation ?: return -1f

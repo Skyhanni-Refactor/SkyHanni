@@ -6,7 +6,7 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
-import at.hannibal2.skyhanni.mixins.transformers.CustomRenderGlobal
+import at.hannibal2.skyhanni.mixins.transformers.AccessorRenderGlobal
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.mc.McClient
@@ -49,8 +49,8 @@ object EntityOutlineRenderer {
     private val mc get() = Minecraft.getMinecraft()
     private val BUF_FLOAT_4: java.nio.FloatBuffer = org.lwjgl.BufferUtils.createFloatBuffer(4)
 
-    private val CustomRenderGlobal.frameBuffer get() = entityOutlineFramebuffer_skyhanni
-    private val CustomRenderGlobal.shader get() = entityOutlineShader_skyhanni
+    private val AccessorRenderGlobal.frameBuffer get() = entityOutlineFramebuffer_skyhanni
+    private val AccessorRenderGlobal.shader get() = entityOutlineShader_skyhanni
 
     /**
      * @return a new framebuffer with the size of the main framebuffer
@@ -69,7 +69,7 @@ object EntityOutlineRenderer {
         if (swapBuffer.framebufferWidth != width || swapBuffer.framebufferHeight != height) {
             swapBuffer.createBindFramebuffer(width, height)
         }
-        val renderGlobal = mc.renderGlobal as CustomRenderGlobal
+        val renderGlobal = mc.renderGlobal as AccessorRenderGlobal
         val outlineBuffer = renderGlobal.frameBuffer
         if (outlineBuffer.framebufferWidth != width || outlineBuffer.framebufferHeight != height) {
             outlineBuffer.createBindFramebuffer(width, height)
@@ -92,7 +92,7 @@ object EntityOutlineRenderer {
             return !shouldRenderOutlines
         }
 
-        val renderGlobal = mc.renderGlobal as CustomRenderGlobal
+        val renderGlobal = mc.renderGlobal as AccessorRenderGlobal
         val renderManager = mc.renderManager
         mc.theWorld.theProfiler.endStartSection("entityOutlines")
         updateFramebufferSize()
@@ -230,7 +230,7 @@ object EntityOutlineRenderer {
         if (!isEnabled()) return false
 
         // Vanilla Conditions
-        val renderGlobal = mc.renderGlobal as CustomRenderGlobal
+        val renderGlobal = mc.renderGlobal as AccessorRenderGlobal
         if (renderGlobal.frameBuffer == null || renderGlobal.shader == null || mc.thePlayer == null) return false
 
         // Optifine Conditions
@@ -361,7 +361,7 @@ object EntityOutlineRenderer {
         if (!isEnabled()) return
 
         val renderGlobal = try {
-            mc.renderGlobal as CustomRenderGlobal
+            mc.renderGlobal as AccessorRenderGlobal
         } catch (e: NoClassDefFoundError) {
             ErrorManager.logErrorWithData(e, "Unable to enable entity outlines, the required mixin is not loaded")
             isMissingMixin = true

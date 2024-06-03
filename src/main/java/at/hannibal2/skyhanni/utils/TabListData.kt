@@ -6,7 +6,7 @@ import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.TablistFooterUpdateEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
-import at.hannibal2.skyhanni.mixins.hooks.tabListGuard
+import at.hannibal2.skyhanni.mixins.kotlin.gui.GuiPlayerTabOverlayMixin
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiPlayerTabOverlay
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ConditionalUtils.conditionalTransform
@@ -104,12 +104,12 @@ object TabListData {
         val thePlayer = Minecraft.getMinecraft()?.thePlayer ?: return null
         val players = playerOrdering.sortedCopy(thePlayer.sendQueue.playerInfoMap)
         val result = mutableListOf<String>()
-        tabListGuard = true
+        GuiPlayerTabOverlayMixin.tabListGuard = true
         for (info in players) {
             val name = Minecraft.getMinecraft().ingameGUI.tabList.getPlayerName(info)
             result.add(name.stripHypixelMessage())
         }
-        tabListGuard = false
+        GuiPlayerTabOverlayMixin.tabListGuard = false
         return result.dropLast(1)
     }
 

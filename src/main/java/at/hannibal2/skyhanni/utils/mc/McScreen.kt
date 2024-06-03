@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.utils.mc
 
+import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiContainer
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiEditSign
-import at.hannibal2.skyhanni.mixins.transformers.gui.AccessorGuiContainer
 import at.hannibal2.skyhanni.utils.StringUtils.capAtMinecraftLength
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.inventory.GuiChest

@@ -24,7 +24,7 @@ import at.hannibal2.skyhanni.data.GuiEditManager.getAbsX
 import at.hannibal2.skyhanni.data.GuiEditManager.getAbsY
 import at.hannibal2.skyhanni.data.GuiEditManager.getDummySize
 import at.hannibal2.skyhanni.data.OtherInventoryData
-import at.hannibal2.skyhanni.mixins.transformers.gui.AccessorGuiContainer
+import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiContainer
 import at.hannibal2.skyhanni.utils.GuiRenderUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
