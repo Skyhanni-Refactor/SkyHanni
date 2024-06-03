@@ -8,7 +8,7 @@ import com.google.gson.JsonPrimitive
 object ConfigUpdaterMigrator {
 
     val logger = LorenzLogger("ConfigMigration")
-    const val CONFIG_VERSION = 46
+    const val CONFIG_VERSION = 47
 
     private fun merge(originalObject: JsonObject, overrideObject: JsonObject): Int {
         var count = 0

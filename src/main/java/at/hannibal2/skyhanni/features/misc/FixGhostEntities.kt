@@ -3,9 +3,12 @@ package at.hannibal2.skyhanni.features.misc
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
 import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
+import at.hannibal2.skyhanni.utils.MobUtils.isDefaultValue
+import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.network.play.server.S0CPacketSpawnPlayer
 import net.minecraft.network.play.server.S0FPacketSpawnMob
 import net.minecraft.network.play.server.S13PacketDestroyEntities
@@ -58,6 +61,15 @@ object FixGhostEntities {
                     }
                 }
             }
+        }
+    }
+
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onCheckRender(event: CheckRenderEntityEvent<*>) {
+        if (!config.hideTemporaryArmorstands) return
+        if (event.entity !is EntityArmorStand) return
+        with(event.entity) {
+            if (ticksExisted < 10 && isDefaultValue() && inventory.all { it == null }) event.cancel()
         }
     }
 

@@ -37,4 +37,9 @@ object LocationUtils {
         val inFov = true // TODO add Frustum "Frustum().isBoundingBoxInFrustum(entity.entityBoundingBox)"
         return noBlocks && notTooFar && inFov
     }
+
+    fun LorenzVec.canBeSeen(yOffsetRange: IntRange, radius: Double = 150.0): Boolean =
+        yOffsetRange.any { offset ->
+            this.add(y = offset).canBeSeen(radius)
+        }
 }
