@@ -44,11 +44,7 @@ object InjectionUtils {
                             spec.addAnnotation(FINAL_CLASS)
                         }
 
-                        fieldWriter(
-                            FieldSpec.builder(it.type.toJava(), it.name!!.asString())
-                                .addModifiers(Modifier.PRIVATE)
-                                .addAnnotation(SHADOW_CLASS)
-                        )
+                        fieldWriter(spec)
                     }
                     ShadowKind.METHOD -> {
                         require(it.type.resolve().isFunctionType) { "Shadow method must be a function" }

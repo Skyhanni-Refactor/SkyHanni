@@ -61,11 +61,11 @@ class KMixinProcessor(private val codeGenerator: CodeGenerator, private val logg
             val methods = mutableListOf<MethodSpec>()
 
             symbol.getDeclaredFunctions().forEach { function ->
-                val injector = function.getInjection() ?: return@forEach
+                val (annotation, serializer) = function.getInjection() ?: return@forEach
                 require(function.isPublic()) { "Mixin functions must be public" }
 
-                injector.second.write(
-                    symbol, injector.first, function,
+                serializer.write(
+                    symbol, annotation, function,
                     { method -> methods.add(method.build()) },
                     { field -> fields.add(field.build()) }
                 )
