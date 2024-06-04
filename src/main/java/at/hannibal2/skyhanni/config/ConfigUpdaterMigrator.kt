@@ -2,6 +2,9 @@ package at.hannibal2.skyhanni.config
 
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.utils.LorenzLogger
+import at.hannibal2.skyhanni.utils.LorenzUtils.asIntOrNull
+import at.hannibal2.skyhanni.utils.json.shDeepCopy
+import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 
@@ -31,7 +34,8 @@ object ConfigUpdaterMigrator {
     fun fixConfig(config: JsonObject): JsonObject {
         val lastVersion = (config["lastVersion"] as? JsonPrimitive)?.takeIf { it.isNumber }?.asInt ?: -1
         if (lastVersion > CONFIG_VERSION) {
-            error("Cannot downgrade config")
+            logger.log("Attempted to downgrade config version")
+            return config
         }
         if (lastVersion == CONFIG_VERSION) return config
         return (lastVersion until CONFIG_VERSION).fold(config) { accumulator, i ->

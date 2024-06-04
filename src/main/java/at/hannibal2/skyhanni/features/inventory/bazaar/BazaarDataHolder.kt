@@ -8,6 +8,8 @@ import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
+import at.hannibal2.skyhanni.utils.json.fromJson
+import kotlinx.coroutines.launch
 
 @SkyHanniModule
 object BazaarDataHolder {

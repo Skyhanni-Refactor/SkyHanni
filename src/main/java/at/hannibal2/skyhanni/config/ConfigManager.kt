@@ -7,34 +7,24 @@ import at.hannibal2.skyhanni.data.jsonobjects.local.FriendsJson
 import at.hannibal2.skyhanni.data.jsonobjects.local.JacobContestsJson
 import at.hannibal2.skyhanni.data.jsonobjects.local.KnownFeaturesJson
 import at.hannibal2.skyhanni.data.jsonobjects.local.VisualWordsJson
-import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
+import at.hannibal2.skyhanni.events.LorenzEvent
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.IdentityCharacteristics
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzRarity
-import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.NEUInternalName
+import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
-import at.hannibal2.skyhanni.utils.json.SkyHanniTypeAdapters
-import at.hannibal2.skyhanni.utils.system.PlatformUtils
-import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
+import at.hannibal2.skyhanni.utils.json.BaseGsonBuilder
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
-import com.google.gson.TypeAdapter
 import com.google.gson.TypeAdapterFactory
-import com.google.gson.stream.JsonReader
-import com.google.gson.stream.JsonWriter
 import io.github.notenoughupdates.moulconfig.annotations.ConfigLink
-import io.github.notenoughupdates.moulconfig.observer.PropertyTypeAdapterFactory
 import io.github.notenoughupdates.moulconfig.processor.BuiltinMoulConfigGuis
 import io.github.notenoughupdates.moulconfig.processor.ConfigProcessorDriver
 import io.github.notenoughupdates.moulconfig.processor.MoulConfigProcessor
-import net.minecraft.item.ItemStack
 import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.File
@@ -46,10 +36,9 @@ import java.io.OutputStreamWriter
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
-import java.util.UUID
 import kotlin.concurrent.fixedRateTimer
 
-private fun GsonBuilder.reigsterIfBeta(create: TypeAdapterFactory): GsonBuilder {
+private fun GsonBuilder.registerIfBeta(create: TypeAdapterFactory): GsonBuilder {
     return if (UpdateManager.isCurrentlyBeta()) {
         registerTypeAdapterFactory(create)
     } else this
@@ -57,46 +46,12 @@ private fun GsonBuilder.reigsterIfBeta(create: TypeAdapterFactory): GsonBuilder 
 
 class ConfigManager {
     companion object {
-        fun createBaseGsonBuilder(): GsonBuilder = GsonBuilder().setPrettyPrinting()
-            .excludeFieldsWithoutExposeAnnotation()
-            .serializeSpecialFloatingPointValues()
-            .registerTypeAdapterFactory(PropertyTypeAdapterFactory())
-            .registerTypeAdapter(UUID::class.java, SkyHanniTypeAdapters.UUID.nullSafe())
-            .registerTypeAdapter(LorenzVec::class.java, SkyHanniTypeAdapters.VEC_STRING.nullSafe())
-            .registerTypeAdapter(TrophyRarity::class.java, SkyHanniTypeAdapters.TROPHY_RARITY.nullSafe())
-            .registerTypeAdapter(ItemStack::class.java, SkyHanniTypeAdapters.NEU_ITEMSTACK.nullSafe())
-            .registerTypeAdapter(NEUInternalName::class.java, SkyHanniTypeAdapters.INTERNAL_NAME.nullSafe())
-            .registerTypeAdapter(LorenzRarity::class.java, SkyHanniTypeAdapters.RARITY.nullSafe())
-            .registerTypeAdapter(IslandType::class.java, SkyHanniTypeAdapters.ISLAND_TYPE.nullSafe())
-            .registerTypeAdapter(SkyHanniTracker.DefaultDisplayMode::class.java, SkyHanniTypeAdapters.TRACKER_DISPLAY_MODE.nullSafe())
-            .registerTypeAdapter(SimpleTimeMark::class.java, object : TypeAdapter<SimpleTimeMark>() {
-                override fun write(out: JsonWriter, value: SimpleTimeMark) {
-                    out.value(value.toMillis())
-                }
 
-                override fun read(reader: JsonReader): SimpleTimeMark {
-                    return reader.nextString().toLong().asTimeMark()
-                }
-            }.nullSafe())
-            .enableComplexMapKeySerialization()
-
-        val gson: Gson = createBaseGsonBuilder()
-            // TODO reenable with toggle that is default disabled
-//             .reigsterIfBeta(FeatureTogglesByDefaultAdapter)
+        val gson: Gson = BaseGsonBuilder.gson()
+//             .registerIfBeta(FeatureTogglesByDefaultAdapter)
             .create()
 
         var configDirectory = File("config/skyhanni")
-
-        inline fun <reified T> GsonBuilder.registerTypeAdapter(
-            crossinline write: (JsonWriter, T) -> Unit,
-            crossinline read: (JsonReader) -> T,
-        ): GsonBuilder {
-            this.registerTypeAdapter(T::class.java, object : TypeAdapter<T>() {
-                override fun write(out: JsonWriter, value: T) = write(out, value)
-                override fun read(reader: JsonReader) = read(reader)
-            }.nullSafe())
-            return this
-        }
     }
 
     val features get() = jsonHolder[ConfigFileType.FEATURES] as Features
@@ -206,13 +161,14 @@ class ConfigManager {
             try {
                 val inputStreamReader = InputStreamReader(FileInputStream(file), StandardCharsets.UTF_8)
                 val bufferedReader = BufferedReader(inputStreamReader)
+                val lenientGson = BaseGsonBuilder.lenientGson().create()
 
                 logger.log("load-$fileName-now")
 
                 output = if (fileType == ConfigFileType.FEATURES) {
-                    val jsonObject = gson.fromJson(bufferedReader.readText(), JsonObject::class.java)
+                    val jsonObject = lenientGson.fromJson(bufferedReader.readText(), JsonObject::class.java)
                     val newJsonObject = ConfigUpdaterMigrator.fixConfig(jsonObject)
-                    val run = { gson.fromJson(newJsonObject, defaultValue.javaClass) }
+                    val run = { lenientGson.fromJson(newJsonObject, defaultValue.javaClass) }
                     if (PlatformUtils.isDevEnvironment) {
                         try {
                             run()
@@ -224,7 +180,7 @@ class ConfigManager {
                         run()
                     }
                 } else {
-                    gson.fromJson(bufferedReader.readText(), defaultValue.javaClass)
+                    lenientGson.fromJson(bufferedReader.readText(), defaultValue.javaClass)
                 }
 
                 logger.log("Loaded $fileName from file")

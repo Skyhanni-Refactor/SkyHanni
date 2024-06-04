@@ -28,7 +28,7 @@ class DailyKuudraBossHelper(private val reputationHelper: CrimsonIsleReputationH
 
     @HandleEvent(onlyOnIsland = IslandType.CRIMSON_ISLE)
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
-        if (!config.enabled) return
+        if (!config.enabled.get()) return
         if (!reputationHelper.showLocations()) return
         if (allKuudraDone) return
 

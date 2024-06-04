@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacksOrNull
+import at.hannibal2.skyhanni.events.ConfigLoadEvent
 import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
@@ -29,6 +30,8 @@ import at.hannibal2.skyhanni.features.nether.reputationhelper.dailyquest.quest.U
 import at.hannibal2.skyhanni.features.nether.reputationhelper.miniboss.CrimsonMiniBoss
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
+import at.hannibal2.skyhanni.utils.ConditionalUtils
+import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils.getInventoryName
 import at.hannibal2.skyhanni.utils.InventoryUtils.getUpperItems
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -73,6 +76,16 @@ class DailyQuestHelper(val reputationHelper: CrimsonIsleReputationHelper) {
         questLoader.checkInventory(event)
     }
 
+    @HandleEvent
+    fun onConfigLoad(event: ConfigLoadEvent) {
+        ConditionalUtils.onToggle(config.enabled) {
+            if (IslandType.CRIMSON_ISLE.isInIsland()) {
+                questLoader.loadFromTabList()
+            }
+        }
+    }
+
+    // TODO use WidgetUpdateEvent once its merged
     @HandleEvent
     fun onTabListUpdate(event: TabListUpdateEvent) {
         if (!isEnabled()) return
@@ -316,5 +329,5 @@ class DailyQuestHelper(val reputationHelper: CrimsonIsleReputationHelper) {
         }
     }
 
-    private fun isEnabled() = IslandType.CRIMSON_ISLE.isInIsland() && config.enabled
+    private fun isEnabled() = IslandType.CRIMSON_ISLE.isInIsland() && config.enabled.get()
 }
