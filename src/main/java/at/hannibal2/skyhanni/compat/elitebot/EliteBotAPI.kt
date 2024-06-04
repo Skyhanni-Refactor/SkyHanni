@@ -4,11 +4,11 @@ import at.hannibal2.skyhanni.compat.elitebot.data.EliteBotContests
 import at.hannibal2.skyhanni.compat.elitebot.data.EliteBotLeaderboardRank
 import at.hannibal2.skyhanni.compat.elitebot.data.EliteBotPlayerWeights
 import at.hannibal2.skyhanni.compat.elitebot.data.EliteBotWeights
-import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.pests.PestType
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.http.Http
+import at.hannibal2.skyhanni.utils.json.BaseGsonBuilder
 import at.hannibal2.skyhanni.utils.json.SkyHanniTypeAdapters
 
 object EliteBotAPI {
@@ -16,16 +16,13 @@ object EliteBotAPI {
     private const val URL = "https://api.elitebot.dev/"
 
     private val gson by lazy {
-        ConfigManager.createBaseGsonBuilder()
+        BaseGsonBuilder.gson()
             .registerTypeAdapter(CropType::class.java, SkyHanniTypeAdapters.CROP_TYPE.nullSafe())
             .registerTypeAdapter(PestType::class.java, SkyHanniTypeAdapters.PEST_TYPE.nullSafe())
             .create()
     }
 
-    private suspend inline fun <reified T : Any> get(
-        path: String,
-        queries: Map<String, Any> = mapOf(),
-    ): Result<T> {
+    private suspend inline fun <reified T : Any> get(path: String, queries: Map<String, Any> = mapOf()): Result<T> {
         return try {
             Http.get("$URL$path", queries = queries) {
                 if (isOk) {
@@ -82,6 +79,4 @@ object EliteBotAPI {
             Result.failure(EliteBotError(e.message ?: "Unknown error"))
         }
     }
-
-
 }

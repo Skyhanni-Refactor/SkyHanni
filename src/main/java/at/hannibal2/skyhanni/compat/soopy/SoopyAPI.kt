@@ -2,16 +2,15 @@ package at.hannibal2.skyhanni.compat.soopy
 
 import at.hannibal2.skyhanni.compat.soopy.data.MiningEventBody
 import at.hannibal2.skyhanni.compat.soopy.data.MiningEventResponse
-import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.utils.http.Http
+import at.hannibal2.skyhanni.utils.json.BaseGsonBuilder
 
 object SoopyAPI {
 
     private const val URL = "https://api.soopy.dev/"
 
     private val gson by lazy {
-        ConfigManager.createBaseGsonBuilder()
-            .create()
+        BaseGsonBuilder.gson().create()
     }
 
     suspend fun getMiningEvent(): Result<MiningEventResponse> {
@@ -55,5 +54,4 @@ object SoopyAPI {
             Result.failure(SoopyError(e.message ?: "Unknown error"))
         }
     }
-
 }

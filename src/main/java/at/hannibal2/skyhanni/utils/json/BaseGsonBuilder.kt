@@ -1,8 +1,7 @@
 package at.hannibal2.skyhanni.utils.json
 
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
-import at.hannibal2.skyhanni.utils.KotlinTypeAdapterFactory
 import at.hannibal2.skyhanni.utils.LorenzRarity
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
@@ -11,14 +10,13 @@ import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import com.google.gson.GsonBuilder
 import io.github.notenoughupdates.moulconfig.observer.PropertyTypeAdapterFactory
 import net.minecraft.item.ItemStack
-import java.util.UUID
+import java.util.*
 
 object BaseGsonBuilder {
     fun gson(): GsonBuilder = GsonBuilder().setPrettyPrinting()
         .excludeFieldsWithoutExposeAnnotation()
         .serializeSpecialFloatingPointValues()
         .registerTypeAdapterFactory(PropertyTypeAdapterFactory())
-        .registerTypeAdapterFactory(KotlinTypeAdapterFactory())
         .registerTypeAdapter(UUID::class.java, SkyHanniTypeAdapters.UUID.nullSafe())
         .registerTypeAdapter(LorenzVec::class.java, SkyHanniTypeAdapters.VEC_STRING.nullSafe())
         .registerTypeAdapter(TrophyRarity::class.java, SkyHanniTypeAdapters.TROPHY_RARITY.nullSafe())

@@ -2,9 +2,6 @@ package at.hannibal2.skyhanni.config
 
 import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils.asIntOrNull
-import at.hannibal2.skyhanni.utils.json.shDeepCopy
-import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 
