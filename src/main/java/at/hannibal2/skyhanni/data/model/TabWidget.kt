@@ -325,10 +325,11 @@ enum class TabWidget(
     private var gotChecked = false
 
     /** A [matchMatcher] for the first line using the pattern from the widget*/
-    inline fun <T> matchMatcherFirstLine(consumer: Matcher.() -> T) =
-        if (isActive)
-            pattern.matchMatcher(lines.first(), consumer)
-        else null
+    inline fun <T> matchMatcherFirstLine(consumer: Matcher.() -> T) = if (isActive) {
+        pattern.matchMatcher(lines.first(), consumer)
+    } else {
+        null
+    }
 
     private fun postNewEvent(lines: List<String>) {
         // Prevent Post if lines are equal
@@ -412,11 +413,17 @@ enum class TabWidget(
             val removeIndexes = mutableListOf<Int>()
 
             for ((index, header) in headers) when {
-                PLAYER_LIST.pattern.matches(header) -> if (playerListFound) removeIndexes.add(index - removeIndexes.size) else playerListFound =
-                    true
+                PLAYER_LIST.pattern.matches(header) -> if (playerListFound) {
+                    removeIndexes.add(index - removeIndexes.size)
+                } else {
+                    playerListFound = true
+                }
 
-                INFO.pattern.matches(header) -> if (infoFound) removeIndexes.add(index - removeIndexes.size) else infoFound =
-                    true
+                INFO.pattern.matches(header) -> if (infoFound) {
+                    removeIndexes.add(index - removeIndexes.size)
+                } else {
+                    infoFound = true
+                }
             }
 
             return tabList.transformIf({ size > 81 }, { dropLast(size - 80) }).editCopy {

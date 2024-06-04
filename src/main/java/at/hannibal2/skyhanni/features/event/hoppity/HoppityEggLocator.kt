@@ -94,7 +94,7 @@ object HoppityEggLocator {
             }
         }
 
-        val islandEggsLocations = HoppityEggLocations.islandLocations ?: return
+        val islandEggsLocations = HoppityEggLocations.islandLocations
 
         if (shouldShowAllEggs()) {
             for (eggLocation in islandEggsLocations) {
@@ -152,8 +152,7 @@ object HoppityEggLocator {
     }
 
     private fun SkyHanniRenderWorldEvent.drawEggWaypoint(location: LorenzVec, label: String) {
-        val shouldMarkDuplicate = config.highlightDuplicateEggLocations
-            && HoppityEggLocations.hasCollectedEgg(location)
+        val shouldMarkDuplicate = config.highlightDuplicateEggLocations && HoppityEggLocations.hasCollectedEgg(location)
         val possibleDuplicateLabel = if (shouldMarkDuplicate) "$label §c(Duplicate Location)" else label
         if (!shouldMarkDuplicate) {
             drawWaypointFilled(location, LorenzColor.GREEN.toColor(), seeThroughBlocks = true)
@@ -163,8 +162,7 @@ object HoppityEggLocator {
         drawDynamicText(location.add(y = 1), possibleDuplicateLabel, 1.5)
     }
 
-    private fun shouldShowAllEggs() =
-        config.showAllWaypoints && !hasLocatorInHotbar() && HoppityEggType.eggsRemaining()
+    private fun shouldShowAllEggs() = config.showAllWaypoints && !hasLocatorInHotbar() && HoppityEggType.eggsRemaining()
 
     fun eggFound() {
         resetData()
@@ -264,17 +262,14 @@ object HoppityEggLocator {
         drawLocations = true
     }
 
-    fun isValidEggLocation(location: LorenzVec): Boolean =
-        HoppityEggLocations.islandLocations?.any { it.distance(location) < 5.0 } ?: false
+    fun isValidEggLocation(location: LorenzVec): Boolean = HoppityEggLocations.islandLocations.any { it.distance(location) < 5.0 }
 
-    private fun ReceiveParticleEvent.isVillagerParticle() =
-        type == EnumParticleTypes.VILLAGER_HAPPY && speed == 0.0f && count == 1
+    private fun ReceiveParticleEvent.isVillagerParticle() = type == EnumParticleTypes.VILLAGER_HAPPY && speed == 0.0f && count == 1
 
-    private fun ReceiveParticleEvent.isEnchantmentParticle() =
-        type == EnumParticleTypes.ENCHANTMENT_TABLE && speed == -2.0f && count == 10
+    private fun ReceiveParticleEvent.isEnchantmentParticle() = type == EnumParticleTypes.ENCHANTMENT_TABLE && speed == -2.0f && count == 10
 
-    fun isEnabled() = SkyBlockAPI.isConnected && config.waypoints && !GardenAPI.inGarden()
-        && !ReminderUtils.isBusy(true) && ChocolateFactoryAPI.isHoppityEvent()
+    fun isEnabled() =
+        SkyBlockAPI.isConnected && config.waypoints && !GardenAPI.inGarden() && !ReminderUtils.isBusy(true) && ChocolateFactoryAPI.isHoppityEvent()
 
     private val ItemStack.isLocatorItem get() = getInternalName() == locatorItem
 

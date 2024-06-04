@@ -76,10 +76,10 @@ object TabListData {
         val tabHeader = header.conditionalTransform(noColor, { this.removeColor() }, { this })
         val tabFooter = footer.conditionalTransform(noColor, { this.removeColor() }, { this })
 
-            val widgets = TabWidget.entries.filter { it.isActive }
-                .joinToString("\n") { "\n${it.name} : \n${it.lines.joinToString("\n")}" }
-            val string =
-                "Header:\n\n$tabHeader\n\nBody:\n\n${resultList.joinToString("\n")}\n\nFooter:\n\n$tabFooter\n\nWidgets:$widgets"
+        val widgets = TabWidget.entries.filter { it.isActive }
+            .joinToString("\n") { "\n${it.name} : \n${it.lines.joinToString("\n")}" }
+        val string =
+            "Header:\n\n$tabHeader\n\nBody:\n\n${resultList.joinToString("\n")}\n\nFooter:\n\n$tabFooter\n\nWidgets:$widgets"
 
         OS.copyToClipboard(string)
         ChatUtils.chat("Tab list copied into the clipboard!")
@@ -147,7 +147,7 @@ object TabListData {
         footer = tabFooter
     }
 
-    //TODO see why this needs to exist
+    // TODO see why this needs to exist
     @HandleEvent(priority = HandleEvent.HIGHEST)
     fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
         fullyLoaded = false
