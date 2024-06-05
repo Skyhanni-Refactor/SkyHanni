@@ -29,7 +29,7 @@ object HideMobNames {
         event.getConstant<Array<String>>("MobToHide").forEach { addMobToHide(it) }
     }
 
-    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
         if (!SkyHanniMod.feature.slayer.hideMobNames) return
 

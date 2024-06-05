@@ -29,7 +29,7 @@ object TerracottaPhase {
         }
     }
 
-    @HandleEvent(priority = HandleEvent.HIGH, generic = EntityLivingBase::class)
+    @HandleEvent(priority = HandleEvent.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityLivingBase>) {
         if (isActive() && config.hideDamageSplash && DamageIndicatorManager.isDamageSplash(event.entity)) {
             event.cancel()

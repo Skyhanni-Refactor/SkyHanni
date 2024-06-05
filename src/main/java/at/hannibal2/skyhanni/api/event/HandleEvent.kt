@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.api.event
 
 import at.hannibal2.skyhanni.api.skyblock.IslandType
-import kotlin.reflect.KClass
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)
@@ -25,11 +24,6 @@ annotation class HandleEvent(
      * If the event is cancelled & receiveCancelled is true, then the method will still invoke.
      */
     val receiveCancelled: Boolean = false,
-
-    /**
-     * The base generic class that it can receive, i.e. if it can receive Entity it will also receive LivingEntity.
-     */
-    val generic: KClass<*> = Nothing::class,
 ) {
 
     companion object {

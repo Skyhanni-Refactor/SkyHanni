@@ -33,7 +33,7 @@ object HideArmor {
         }
     }
 
-    @HandleEvent(onlyOnSkyblock = true, generic = EntityPlayer::class)
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderLivingPre(event: SkyHanniRenderEntityEvent.Pre<EntityPlayer>) {
         val entity = event.entity
         if (!shouldHideArmor(entity)) return
@@ -51,7 +51,7 @@ object HideArmor {
         }
     }
 
-    @HandleEvent(onlyOnSkyblock = true, generic = EntityPlayer::class)
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderLivingPost(event: SkyHanniRenderEntityEvent.Post<EntityPlayer>) {
         val entity = event.entity
         if (!shouldHideArmor(entity)) return

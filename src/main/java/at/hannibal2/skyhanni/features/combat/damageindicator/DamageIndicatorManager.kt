@@ -56,7 +56,7 @@ import net.minecraft.entity.monster.EntityEnderman
 import net.minecraft.entity.monster.EntityMagmaCube
 import net.minecraft.entity.monster.EntityZombie
 import net.minecraft.entity.passive.EntityWolf
-import java.util.UUID
+import java.util.*
 import kotlin.math.max
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -854,7 +854,7 @@ object DamageIndicatorManager {
 
     private val dummyDamageCache = mutableListOf<UUID>()
 
-    @HandleEvent(priority = HandleEvent.HIGH, generic = EntityLivingBase::class)
+    @HandleEvent(priority = HandleEvent.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityLivingBase>) {
         val entity = event.entity
 

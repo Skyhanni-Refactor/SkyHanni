@@ -21,11 +21,7 @@ object TeleportPadCompactName {
         "§.✦ §cNo Destination"
     )
 
-    @HandleEvent(
-        onlyOnIsland = IslandType.PRIVATE_ISLAND,
-        priority = HandleEvent.HIGH,
-        generic = EntityArmorStand::class
-    )
+    @HandleEvent(onlyOnIsland = IslandType.PRIVATE_ISLAND, priority = HandleEvent.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
         if (!SkyHanniMod.feature.misc.teleportPad.compactName) return
         val entity = event.entity

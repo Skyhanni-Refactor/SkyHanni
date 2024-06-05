@@ -8,6 +8,7 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ReflectionUtils
 import at.hannibal2.skyhanni.utils.chat.Text
 import java.lang.reflect.Method
+import java.lang.reflect.ParameterizedType
 import java.util.function.Consumer
 
 class EventHandler<T : SkyHanniEvent> private constructor(val name: String, private val isGeneric: Boolean) {
@@ -27,8 +28,13 @@ class EventHandler<T : SkyHanniEvent> private constructor(val name: String, priv
 
     fun addListener(method: Method, instance: Any, options: HandleEvent) {
         if (isFrozen) throw IllegalStateException("Cannot add listener to frozen event handler")
-        if (isGeneric && options.generic == Nothing::class) {
-            throw IllegalArgumentException("Generic event handler must have a generic type")
+        val generic: Class<*>? = if (isGeneric) {
+            method.genericParameterTypes
+                .firstNotNullOfOrNull { it as? ParameterizedType }
+                ?.let { it.actualTypeArguments.firstOrNull() as? Class<*> }
+                ?: throw IllegalArgumentException("Generic event handler must have a generic type")
+        } else {
+            null
         }
         val name = "${method.declaringClass.name}.${method.name}${
             method.parameterTypes.joinTo(
@@ -41,7 +47,7 @@ class EventHandler<T : SkyHanniEvent> private constructor(val name: String, priv
         }"
         val invoker = ReflectionUtils.createConsumer(instance, method)
             ?: throw IllegalArgumentException("Method $name is not a valid consumer")
-        listeners.add(Listener(name, invoker, options))
+        listeners.add(Listener(name, invoker, options, generic))
     }
 
     fun freeze() {
@@ -91,9 +97,20 @@ class EventHandler<T : SkyHanniEvent> private constructor(val name: String, priv
         if (listener.options.onlyOnSkyblock && !SkyBlockAPI.isConnected) return false
         if (listener.options.onlyOnIsland != IslandType.ANY && !listener.options.onlyOnIsland.isInIsland()) return false
         if (event.isCancelled && !listener.options.receiveCancelled) return false
-        if (event is GenericSkyHanniEvent<*> && !listener.options.generic.java.isAssignableFrom(event.type)) return false
+        if (
+            event is GenericSkyHanniEvent<*> &&
+            listener.generic != null &&
+            !listener.generic.isAssignableFrom(event.type)
+        ) {
+            return false
+        }
         return true
     }
 
-    private class Listener(val name: String, val invoker: Consumer<Any>, val options: HandleEvent)
+    private class Listener(
+        val name: String,
+        val invoker: Consumer<Any>,
+        val options: HandleEvent,
+        val generic: Class<*>?
+    )
 }

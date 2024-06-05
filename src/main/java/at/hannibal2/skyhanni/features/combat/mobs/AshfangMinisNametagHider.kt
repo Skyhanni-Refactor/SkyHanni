@@ -12,7 +12,7 @@ object AshfangMinisNametagHider {
 
     private val config get() = SkyHanniMod.feature.combat.mobs
 
-    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH, generic = EntityLivingBase::class)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityLivingBase>) {
         if (!config.hideNameTagArachneMinis) return
 

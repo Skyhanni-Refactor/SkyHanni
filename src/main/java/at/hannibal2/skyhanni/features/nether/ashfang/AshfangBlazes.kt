@@ -78,7 +78,7 @@ object AshfangBlazes {
         nearAshfang = McWorld.getEntitiesOf<EntityArmorStand>().any { it.name.contains("Ashfang") }
     }
 
-    @HandleEvent(priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
+    @HandleEvent(priority = HandleEvent.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
         if (!isEnabled()) return
         if (!config.hide.fullNames) return

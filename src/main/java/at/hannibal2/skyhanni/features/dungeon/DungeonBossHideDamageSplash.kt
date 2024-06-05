@@ -11,7 +11,7 @@ import net.minecraft.entity.EntityLivingBase
 @SkyHanniModule
 object DungeonBossHideDamageSplash {
 
-    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS, priority = HandleEvent.HIGH, generic = EntityLivingBase::class)
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS, priority = HandleEvent.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityLivingBase>) {
         if (!DungeonAPI.inDungeon()) return
         if (!SkyHanniMod.feature.dungeon.damageSplashBoss) return

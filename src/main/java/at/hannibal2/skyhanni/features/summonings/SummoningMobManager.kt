@@ -172,7 +172,7 @@ object SummoningMobManager {
         despawned()
     }
 
-    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH, generic = EntityArmorStand::class)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
         if (!config.summoningMobHideNametag) return
 

@@ -24,7 +24,7 @@ object HoppityEggDisplayManager {
         return config.playerOpacity < 100
     }
 
-    @HandleEvent(generic = EntityPlayer::class)
+    @HandleEvent
     fun onPreRenderPlayer(event: SkyHanniRenderEntityEvent.Pre<EntityPlayer>) {
         if (!canChangeOpacity(event.entity)) return
 
@@ -39,7 +39,7 @@ object HoppityEggDisplayManager {
         GlStateManager.color(1.0f, 1.0f, 1.0f, config.playerOpacity / 100f)
     }
 
-    @HandleEvent(generic = EntityPlayer::class)
+    @HandleEvent
     fun onPostRenderPlayer(event: SkyHanniRenderEntityEvent.Post<EntityPlayer>) {
         if (!canChangeOpacity(event.entity)) return
 
@@ -47,7 +47,7 @@ object HoppityEggDisplayManager {
         GlStateManager.disableBlend()
     }
 
-    @HandleEvent(generic = EntityPlayer::class)
+    @HandleEvent
     fun onRenderPlayerLayers(event: EntityRenderLayersEvent.Pre<EntityPlayer>) {
         if (!canChangeOpacity(event.entity)) return
         if (!shouldHidePlayer) return

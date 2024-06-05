@@ -10,7 +10,7 @@ import net.minecraft.entity.EntityLivingBase
 @SkyHanniModule
 object HideDamageSplash {
 
-    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH, generic = EntityLivingBase::class)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityLivingBase>) {
         if (!SkyHanniMod.feature.combat.hideDamageSplash) return
 
