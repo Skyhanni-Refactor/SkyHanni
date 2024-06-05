@@ -24,17 +24,12 @@ object SkyHanniEvents {
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T : SkyHanniEvent> getEventHandler(event: Class<T>): EventHandler<T> {
-        return handlers.getOrPut(event) { EventHandler(event) } as EventHandler<T>
-    }
+    fun <T : SkyHanniEvent> getEventHandler(event: Class<T>): EventHandler<T> = handlers.getOrPut(event) {
+        EventHandler(event)
+    } as EventHandler<T>
 
-    fun isDisabledHandler(handler: String): Boolean {
-        return handler in disabledHandlers
-    }
-
-    fun isDisabledInvoker(invoker: String): Boolean {
-        return invoker in disabledHandlerInvokers
-    }
+    fun isDisabledHandler(handler: String): Boolean = handler in disabledHandlers
+    fun isDisabledInvoker(invoker: String): Boolean = invoker in disabledHandlerInvokers
 
     @Suppress("UNCHECKED_CAST")
     private fun registerMethod(method: Method, instance: Any) {
