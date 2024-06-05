@@ -20,10 +20,10 @@ import at.hannibal2.skyhanni.utils.RenderUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockStateAt
 import net.minecraft.block.BlockStainedGlass
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.entity.item.EntityArmorStand
@@ -48,7 +48,9 @@ object DungeonLividFinder {
         if (!gotBlinded) {
             gotBlinded = isCurrentlyBlind
             return
-        } else if (isCurrentlyBlind) return
+        } else if (isCurrentlyBlind) {
+            return
+        }
 
         if (!config.enabled) return
 
@@ -124,9 +126,7 @@ object DungeonLividFinder {
         }
     }
 
-    private fun isCurrentlyBlind() = if (Minecraft.getMinecraft().thePlayer.isPotionActive(Potion.blindness)) {
-        Minecraft.getMinecraft().thePlayer.getActivePotionEffect(Potion.blindness).duration > 10
-    } else false
+    private fun isCurrentlyBlind() = McPlayer.getEffect(Potion.blindness)?.takeIf { it.duration > 10 } != null
 
     @HandleEvent
     fun onRenderWorld(event: SkyHanniRenderWorldEvent) {

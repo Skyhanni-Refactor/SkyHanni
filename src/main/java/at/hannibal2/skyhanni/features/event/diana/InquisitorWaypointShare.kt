@@ -25,11 +25,11 @@ import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.network.play.server.S02PacketChat
 import java.util.regex.Matcher
@@ -182,7 +182,7 @@ object InquisitorWaypointShare {
     @HandleEvent
     fun onKeyClick(event: KeyPressEvent) {
         if (!isEnabled()) return
-        if (Minecraft.getMinecraft().currentScreen != null) return
+        if (McScreen.isOpen) return
         if (event.keyCode == config.keyBindShare) sendInquisitor()
     }
 

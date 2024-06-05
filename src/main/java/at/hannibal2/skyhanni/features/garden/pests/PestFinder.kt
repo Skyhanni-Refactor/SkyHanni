@@ -28,8 +28,8 @@ import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraft.client.Minecraft
 import kotlin.time.Duration.Companion.seconds
 
 @SkyHanniModule
@@ -158,7 +158,7 @@ object PestFinder {
 
     @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onKeyClick(event: KeyPressEvent) {
-        if (Minecraft.getMinecraft().currentScreen != null) return
+        if (McScreen.isOpen) return
         if (NEUItems.neuHasFocus()) return
 
         if (event.keyCode != config.teleportHotkey) return

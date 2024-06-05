@@ -15,7 +15,6 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.monster.EntityGuardian
@@ -89,13 +88,13 @@ object DungeonCleanEnd {
 
         val entity = event.entity
 
-        if (entity == Minecraft.getMinecraft().thePlayer) return
+        if (entity == McPlayer.player) return
 
-        if (config.F3IgnoreGuardians
-            && DungeonAPI.isOneOf("F3", "M3")
-            && entity is EntityGuardian
-            && entity.entityId != lastBossId
-            && McPlayer.isSneaking
+        if (config.F3IgnoreGuardians &&
+            DungeonAPI.isOneOf("F3", "M3") &&
+            entity is EntityGuardian &&
+            entity.entityId != lastBossId &&
+            McPlayer.isSneaking
         ) {
             return
         }

@@ -6,7 +6,7 @@ import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyClicked
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.mc.McScreen.sendSlotClick
 import net.minecraft.client.gui.inventory.GuiChest
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -30,13 +30,7 @@ object ChocolateFactoryKeybinds {
 
             event.cancel()
 
-            Minecraft.getMinecraft().playerController.windowClick(
-                chest.inventorySlots.windowId,
-                28 + index,
-                2,
-                3,
-                Minecraft.getMinecraft().thePlayer
-            )
+            chest.sendSlotClick(28 + index, 2, 3)
             break
         }
     }

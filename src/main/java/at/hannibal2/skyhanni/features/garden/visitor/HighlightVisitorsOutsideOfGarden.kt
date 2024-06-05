@@ -19,7 +19,6 @@ import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import io.github.moulberry.notenoughupdates.util.SBInfo
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
@@ -85,20 +84,20 @@ object HighlightVisitorsOutsideOfGarden {
             null -> false
         }
 
-    private fun isVisitorNearby(entity: Entity) =
-        McWorld.getEntitiesNear<EntityLivingBase>(entity, 2.0).any(::isVisitor)
+    private fun isVisitorNearby(entity: Entity) = McWorld.getEntitiesNear<EntityLivingBase>(entity, 2.0).any(::isVisitor)
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onClickEntity(event: SendPacketEvent) {
         if (!shouldBlock) return
-        val world = Minecraft.getMinecraft().theWorld ?: return
+        val world = McWorld.world ?: return
         if (McPlayer.isSneaking) return
         val packet = event.packet as? C02PacketUseEntity ?: return
         val entity = packet.getEntityFromWorld(world) ?: return
         if (isVisitor(entity) || (entity is EntityArmorStand && isVisitorNearby(entity))) {
             event.cancel()
             if (packet.action == C02PacketUseEntity.Action.INTERACT) {
-                ChatUtils.chatAndOpenConfig("Blocked you from interacting with a visitor. Sneak to bypass or click here to change settings.",
+                ChatUtils.chatAndOpenConfig(
+                    "Blocked you from interacting with a visitor. Sneak to bypass or click here to change settings.",
                     GardenAPI.config.visitors::blockInteracting
                 )
             }

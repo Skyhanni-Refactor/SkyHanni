@@ -26,6 +26,7 @@ import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -63,8 +64,7 @@ object MinionCraftHelper {
         if (!config.minionCraftHelperEnabled) return
 
         if (event.isMod(10)) {
-            val mainInventory = Minecraft.getMinecraft()?.thePlayer?.inventory?.mainInventory ?: return
-            hasMinionInInventory = mainInventory.mapNotNull { it?.name }.any { isMinionName(it) }
+            hasMinionInInventory = McPlayer.inventory.any { isMinionName(it.name) }
         }
 
         if (event.repeatSeconds(2)) {

@@ -19,7 +19,6 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
-import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
 import net.minecraft.util.EnumParticleTypes
 import java.awt.Color
@@ -50,7 +49,7 @@ object RiftWiltedBerberisHelper {
 
         hasFarmingToolInHand = McPlayer.heldItem?.getInternalName() == SkyhanniItems.FARMING_WAND()
 
-        if (Minecraft.getMinecraft().thePlayer.onGround) {
+        if (McPlayer.onGround) {
             val block = LocationUtils.playerLocation().add(y = -1).getBlockAt()
             val currentY = LocationUtils.playerLocation().y
             isOnFarmland = block == Blocks.farmland && (currentY % 1 == 0.0)

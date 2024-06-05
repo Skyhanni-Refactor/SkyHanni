@@ -17,12 +17,11 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.tracker.ItemTrackerData
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniItemTracker
 import com.google.gson.annotations.Expose
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiChest
 
 @SkyHanniModule
 object ExcavatorProfitTracker {
@@ -194,8 +193,7 @@ object ExcavatorProfitTracker {
     @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent) {
         if (!isEnabled()) return
-        val inChest = Minecraft.getMinecraft().currentScreen is GuiChest
-        if (inChest) {
+        if (McScreen.isChestOpen) {
             // Only show in excavation menu
             if (!FossilExcavatorAPI.inExcavatorMenu) {
                 return
@@ -212,6 +210,6 @@ object ExcavatorProfitTracker {
         }
     }
 
-    fun isEnabled() = IslandType.DWARVEN_MINES.isInIsland() && config.enabled
-        && IslandArea.FOSSIL_RESEARCH_CENTER.isInside()
+    fun isEnabled() = IslandType.DWARVEN_MINES.isInIsland() && config.enabled &&
+        IslandArea.FOSSIL_RESEARCH_CENTER.isInside()
 }

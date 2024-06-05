@@ -16,11 +16,10 @@ import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.minutes
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiChest
 
 @SkyHanniModule
 object ChocolateFactoryCustomReminder {
@@ -79,7 +78,7 @@ object ChocolateFactoryCustomReminder {
     @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent) {
         if (!isEnabled()) return
-        if (Minecraft.getMinecraft().currentScreen is GuiChest && !configReminder.always) return
+        if (McScreen.isChestOpen && !configReminder.always) return
         if (ReminderUtils.isBusy()) return
 
         configReminder.position.renderRenderables(display, posLabel = "Chocolate Factory Custom Reminder")

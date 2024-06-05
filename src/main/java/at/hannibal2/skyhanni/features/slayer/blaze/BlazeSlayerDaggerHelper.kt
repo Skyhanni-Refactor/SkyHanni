@@ -18,8 +18,9 @@ import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -56,8 +57,7 @@ object BlazeSlayerDaggerHelper {
     fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
 
-        val player = Minecraft.getMinecraft().thePlayer
-        val dagger = getDaggerFromStack(player.inventory.mainInventory[player.inventory.currentItem])
+        val dagger = getDaggerFromStack(McPlayer.heldItem)
         if (dagger != null) {
             setDaggerText(dagger)
             return
@@ -146,8 +146,7 @@ object BlazeSlayerDaggerHelper {
     }
 
     private fun readFromInventory(dagger: Dagger): HellionShield? {
-        val player = Minecraft.getMinecraft().thePlayer
-        for (stack in player.inventory.mainInventory) {
+        for (stack in McPlayer.inventory) {
             val otherDagger = getDaggerFromStack(stack) ?: continue
             if (dagger != otherDagger) continue
             for (line in stack.getLore()) {
@@ -244,7 +243,7 @@ object BlazeSlayerDaggerHelper {
         if (!isEnabled()) return
 
         if (textTop == "") return
-        val currentScreen = Minecraft.getMinecraft().currentScreen
+        val currentScreen = McScreen.screen
         if (currentScreen != null && currentScreen !is GuiPositionEditor) return
 
         config.positionTop.renderString(textTop, posLabel = "Blaze Slayer Dagger Top")

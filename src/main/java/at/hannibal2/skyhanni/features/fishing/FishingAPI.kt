@@ -24,7 +24,6 @@ import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.projectile.EntityFishHook
 import net.minecraft.init.Blocks
@@ -59,7 +58,7 @@ object FishingAPI {
         if (!holdingRod) return
         val entity = event.entity
         if (entity !is EntityFishHook) return
-        if (entity.angler != Minecraft.getMinecraft().thePlayer) return
+        if (entity.angler != McPlayer.player) return
 
         lastCastTime = SimpleTimeMark.now()
         bobber = entity

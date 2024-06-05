@@ -6,13 +6,14 @@ import at.hannibal2.skyhanni.events.render.gui.DrawScreenAfterEvent
 import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
 import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
-import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiContainer
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import at.hannibal2.skyhanni.utils.InventoryUtils.getInventoryName
 import at.hannibal2.skyhanni.utils.RenderUtils.drawSlotText
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiChest
+import at.hannibal2.skyhanni.utils.mc.McFont
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McScreen.left
+import at.hannibal2.skyhanni.utils.mc.McScreen.top
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.inventory.ContainerChest
 
@@ -42,14 +43,9 @@ object ItemTipHelper {
     fun onRenderInventoryItemOverlayPost(event: DrawScreenAfterEvent) {
         if (!SkyHanniDebugsAndTests.globalRender) return
 
-        val gui = Minecraft.getMinecraft().currentScreen
-        if (gui !is GuiChest) return
+        val gui = McScreen.asChest ?: return
         val chest = gui.inventorySlots as ContainerChest
         val inventoryName = chest.getInventoryName()
-
-        val guiLeft = (gui as AccessorGuiContainer).guiLeft
-        val guiTop = (gui as AccessorGuiContainer).guiTop
-        val fontRenderer = Minecraft.getMinecraft().fontRendererObj
 
         GlStateManager.disableLighting()
         GlStateManager.disableDepth()
@@ -65,12 +61,14 @@ object ItemTipHelper {
             val xDisplayPosition = slot.xDisplayPosition
             val yDisplayPosition = slot.yDisplayPosition
 
-            val x = guiLeft + xDisplayPosition + 17 + itemTipEvent.offsetX - if (itemTipEvent.alignLeft) {
-                fontRenderer.getStringWidth(stackTip)
-            } else 0
-            val y = guiTop + yDisplayPosition + 9 + itemTipEvent.offsetY
+            val x = gui.left + xDisplayPosition + 17 + itemTipEvent.offsetX - if (itemTipEvent.alignLeft) {
+                McFont.width(stackTip)
+            } else {
+                0
+            }
+            val y = gui.top + yDisplayPosition + 9 + itemTipEvent.offsetY
 
-            fontRenderer.drawStringWithShadow(stackTip, x.toFloat(), y.toFloat(), 16777215)
+            McFont.draw(stackTip, x.toFloat(), y.toFloat(), 16777215)
         }
         GlStateManager.enableLighting()
         GlStateManager.enableDepth()

@@ -18,6 +18,7 @@ import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.ReflectionUtils.getPropertiesWithType
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import io.github.moulberry.notenoughupdates.itemeditor.GuiElementTextField
 import io.github.moulberry.notenoughupdates.profileviewer.GuiProfileViewer
 import net.minecraft.client.Minecraft
@@ -26,11 +27,9 @@ import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.gui.inventory.GuiEditSign
 import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
-import java.util.UUID
+import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -130,7 +129,7 @@ object GuiEditManager {
         GlStateManager.translate(0f, 0f, -200f)
     }
 
-    fun isInGui() = Minecraft.getMinecraft().currentScreen is GuiPositionEditor
+    fun isInGui() = McScreen.screen is GuiPositionEditor
 
     fun Position.getDummySize(random: Boolean = false): Vector2i {
         if (random) return Vector2i(5, 5)
@@ -142,8 +141,7 @@ object GuiEditManager {
 
     fun Position.getAbsY() = getAbsY0(getDummySize(true).y)
 
-    fun GuiProfileViewer.anyTextBoxFocused() =
-        this.getPropertiesWithType<GuiElementTextField>().any { it.focus }
+    fun GuiProfileViewer.anyTextBoxFocused() = this.getPropertiesWithType<GuiElementTextField>().any { it.focus }
 
     fun handleGuiPositionMoved(guiName: String) {
         lastMovedGui = guiName

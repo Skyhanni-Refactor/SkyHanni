@@ -11,7 +11,9 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
-import java.util.UUID
+import net.minecraft.potion.Potion
+import net.minecraft.potion.PotionEffect
+import java.util.*
 
 typealias Player = EntityPlayer
 
@@ -20,9 +22,12 @@ object McPlayer {
     val player: EntityPlayerSP? get() = Minecraft.getMinecraft().thePlayer
     val name: String get() = player?.name ?: McClient.profileName
     val uuid: UUID get() = player?.uniqueID ?: McClient.profileUUID
+    val hasPlayer: Boolean get() = player != null
 
     val isSneaking: Boolean get() = player?.isSneaking ?: false
     val onGround: Boolean get() = player?.onGround ?: false
+    val inWater: Boolean get() = player?.isInWater ?: false
+    val isOnFire: Boolean get() = player?.isBurning ?: false
 
     val pos: LorenzVec get() = LorenzVec(player?.posX ?: 0.0, player?.posY ?: 0.0, player?.posZ ?: 0.0)
     val eyePos: LorenzVec get() = pos.up(player?.eyeHeight?.toDouble() ?: 0.0)
@@ -42,8 +47,10 @@ object McPlayer {
     val heldItem: ItemStack? get() = player?.inventory?.getCurrentItem()
     val armor: Array<ItemStack?> get() = player?.inventory?.armorInventory ?: arrayOfNulls(4)
     val inventory: List<ItemStack> get() = mainInventory.filterNotNull()
-    val hotbar: List<ItemStack> get() = mainInventory.sliceArray(0..8).filterNotNull()
+
     // TODO use this instead of inventory for many cases, e.g. vermin tracker, diana spade, etc
+    val hotbar: List<ItemStack> get() = mainInventory.sliceArray(0..8).filterNotNull()
+    val cursor: ItemStack? get() = player?.inventory?.itemStack
 
     val helmet: ItemStack? get() = armor[3]
     val chestplate: ItemStack? get() = armor[2]
@@ -60,6 +67,5 @@ object McPlayer {
     fun has(category: ItemCategory, onlyHotBar: Boolean = false) =
         (if (onlyHotBar) hotbar else inventory).any { it.getItemCategoryOrNull() == category }
 
-    @JvmStatic
-    fun closeContainer() = player?.closeScreen()
+    fun getEffect(effect: Potion): PotionEffect? = player?.getActivePotionEffect(effect)
 }

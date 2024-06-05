@@ -14,13 +14,12 @@ import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.renderXYAligned
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.renderer.GlStateManager
 import java.awt.Color
 import kotlin.time.Duration.Companion.seconds
@@ -60,7 +59,7 @@ object UltraRareBookAlert {
         if (!config.ultraRareBookAlert) return
         if (!superpairsGui.matches(InventoryUtils.openInventoryName())) return
         if (lastNotificationTime.passedSince() > 5.seconds) return
-        val gui = Minecraft.getMinecraft().currentScreen as? GuiContainer ?: return
+        val gui = McScreen.asContainer ?: return
 
         GlStateManager.pushMatrix()
         GlStateManager.translate(0f, -150f, 500f)

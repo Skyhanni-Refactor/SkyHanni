@@ -16,9 +16,8 @@ import at.hannibal2.skyhanni.utils.NEUItems.getNpcPriceOrNull
 import at.hannibal2.skyhanni.utils.NEUItems.getPriceOrNull
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiInventory
 import kotlin.time.Duration.Companion.seconds
 
 open class SkyHanniTracker<Data : TrackerData>(
@@ -78,7 +77,7 @@ open class SkyHanniTracker<Data : TrackerData>(
     fun renderDisplay(position: Position) {
         if (config.hideInEstimatedItemValue && EstimatedItemValue.isCurrentlyShowing()) return
 
-        val currentlyOpen = Minecraft.getMinecraft().currentScreen is GuiInventory
+        val currentlyOpen = McScreen.isInventoryOpen
         if (!currentlyOpen && config.hideItemTrackersOutsideInventory && this is SkyHanniItemTracker) {
             return
         }

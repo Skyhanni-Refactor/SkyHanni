@@ -12,7 +12,7 @@ import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.RenderUtils.outlineTopFace
 import at.hannibal2.skyhanni.utils.math.BoundingBox
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import java.awt.Color
 import kotlin.time.Duration.Companion.seconds
 
@@ -56,9 +56,8 @@ class ParkourHelper(
 
                 if (visible) {
                     for ((index, location) in locations.withIndex()) {
-                        val onGround = Minecraft.getMinecraft().thePlayer.onGround
                         val closeEnough = location.offsetCenter().distanceToPlayer() < detectionRange
-                        if (closeEnough && onGround) {
+                        if (closeEnough && McPlayer.onGround) {
                             current = index
                         }
                     }

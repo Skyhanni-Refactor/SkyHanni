@@ -80,9 +80,7 @@ object LorenzUtils {
                 add("§a[$display]")
             } else {
                 add("§e[")
-                add(Renderable.link("§e$display") {
-                    onChange(entry)
-                })
+                add(Renderable.link("§e$display") { onChange(entry) })
                 add("§e]")
             }
             add(" ")

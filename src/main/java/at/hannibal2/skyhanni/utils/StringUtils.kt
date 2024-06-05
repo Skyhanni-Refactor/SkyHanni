@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.mixins.transformers.AccessorChatComponentText
 import at.hannibal2.skyhanni.utils.GuiRenderUtils.darkenColor
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
+import at.hannibal2.skyhanni.utils.mc.McFont
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiUtilRenderComponents
 import net.minecraft.event.ClickEvent
@@ -14,10 +15,8 @@ import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
 import net.minecraft.util.EnumChatFormatting
 import net.minecraft.util.IChatComponent
-import java.util.Base64
-import java.util.NavigableMap
 import java.text.DecimalFormat
-import java.util.UUID
+import java.util.*
 import java.util.function.Predicate
 import java.util.regex.Matcher
 
@@ -145,15 +144,15 @@ object StringUtils {
         }
     }
 
-    fun String.cleanPlayerName(displayName: Boolean = false): String {
-        return if (displayName) {
-            if (SkyHanniMod.feature.chat.playerMessage.playerRankHider) {
-                // TODO custom color
-                "§b" + internalCleanPlayerName()
-            } else this
+    fun String.cleanPlayerName(displayName: Boolean = false): String = if (displayName) {
+        if (SkyHanniMod.feature.chat.playerMessage.playerRankHider) {
+            // TODO custom color
+            "§b" + internalCleanPlayerName()
         } else {
-            internalCleanPlayerName()
+            this
         }
+    } else {
+        internalCleanPlayerName()
     }
 
     fun getColor(string: String, default: Int, darker: Boolean = true): Int {
@@ -193,18 +192,19 @@ object StringUtils {
 
     fun String.removeWordsAtEnd(i: Int) = split(" ").dropLast(i).joinToString(" ")
 
-    fun String.splitLines(width: Int): String {
-        val fr = Minecraft.getMinecraft().fontRendererObj
-        return GuiUtilRenderComponents.splitText(
-            ChatComponentText(this), width, fr, false, false
-        ).joinToString("\n") {
-            val text = it.formattedText
-            val formatCode = Regex("(?:§[a-f0-9l-or]|\\s)*")
-            formatCode.matchAt(text, 0)?.let { matcher ->
-                val codes = matcher.value.replace("\\s".toRegex(), "")
-                codes + text.removeRange(matcher.range)
-            } ?: text
-        }
+    fun String.splitLines(width: Int) = GuiUtilRenderComponents.splitText(
+        ChatComponentText(this),
+        width,
+        McFont.font,
+        false,
+        false
+    ).joinToString("\n") {
+        val text = it.formattedText
+        val formatCode = Regex("(?:§[a-f0-9l-or]|\\s)*")
+        formatCode.matchAt(text, 0)?.let { matcher ->
+            val codes = matcher.value.replace("\\s".toRegex(), "")
+            codes + text.removeRange(matcher.range)
+        } ?: text
     }
 
     /**
@@ -257,8 +257,7 @@ object StringUtils {
         return builder.toString()
     }
 
-    fun String.capAtMinecraftLength(limit: Int) =
-        capAtLength(limit) { Minecraft.getMinecraft().fontRendererObj.getCharWidth(it) }
+    fun String.capAtMinecraftLength(limit: Int) = capAtLength(limit) { McFont.width(it) }
 
     private fun String.capAtLength(limit: Int, lengthJudger: (Char) -> Int): String {
         var i = 0
@@ -337,17 +336,11 @@ object StringUtils {
 
     fun generateRandomId() = UUID.randomUUID().toString()
 
-    fun replaceIfNeeded(
-        original: ChatComponentText,
-        newText: String,
-    ): ChatComponentText? {
-        return replaceIfNeeded(original, ChatComponentText(newText))
-    }
+    fun replaceIfNeeded(original: ChatComponentText, newText: String,): ChatComponentText? =
+        replaceIfNeeded(original, ChatComponentText(newText))
 
     private val colorMap = EnumChatFormatting.entries.associateBy { it.toString()[1] }
-    fun enumChatFormattingByCode(char: Char): EnumChatFormatting? {
-        return colorMap[char]
-    }
+    fun enumChatFormattingByCode(char: Char): EnumChatFormatting? = colorMap[char]
 
     fun doLookTheSame(left: IChatComponent, right: IChatComponent): Boolean {
         class ChatIterator(var component: IChatComponent) {
@@ -407,10 +400,7 @@ object StringUtils {
         }
     }
 
-    fun <T : IChatComponent> replaceIfNeeded(
-        original: T,
-        newText: T,
-    ): T? {
+    fun <T : IChatComponent> replaceIfNeeded(original: T, newText: T,): T? {
         if (doLookTheSame(original, newText)) return null
         return newText
     }
@@ -444,10 +434,7 @@ object StringUtils {
         if (hoverEvents.size == 1) chatComponent.chatStyle.chatHoverEvent = hoverEvents.first()
     }
 
-    private fun IChatComponent.findAllEvents(
-        clickEvents: MutableList<ClickEvent>,
-        hoverEvents: MutableList<HoverEvent>,
-    ) {
+    private fun IChatComponent.findAllEvents(clickEvents: MutableList<ClickEvent>, hoverEvents: MutableList<HoverEvent>,) {
         siblings.forEach { it.findAllEvents(clickEvents, hoverEvents) }
 
         val clickEvent = chatStyle.chatClickEvent
@@ -505,8 +492,4 @@ object StringUtils {
         formattedText.cleanPlayerName(displayName).applyFormattingFrom(this)
 
     fun IChatComponent.contains(string: String): Boolean = formattedText.contains(string)
-
-    fun String.width(): Int {
-        return Minecraft.getMinecraft().fontRendererObj.getStringWidth(this)
-    }
 }

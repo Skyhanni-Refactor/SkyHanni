@@ -27,9 +27,10 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McFont
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 
@@ -112,13 +113,14 @@ object ChestValue {
             if (rendered >= config.itemToShow) continue
             if (total < config.hideBelow) continue
             val textAmount = " §7x${amount.addSeparators()}:"
-            val width = Minecraft.getMinecraft().fontRendererObj.getStringWidth(textAmount)
+            val width = McFont.width(textAmount)
             val name = "${stack.itemName.reduceStringLength((config.nameLength - width), ' ')} $textAmount"
             val price = "§6${(total).formatPrice()}"
-            val text = if (config.alignedDisplay)
+            val text = if (config.alignedDisplay) {
                 "$name $price"
-            else
+            } else {
                 "${stack.itemName} §7x$amount: §6${total.formatPrice()}"
+            }
             newDisplay.add(buildList {
                 val renderable = Renderable.hoverTips(
                     text,
@@ -229,7 +231,7 @@ object ChestValue {
 
     private fun isValidStorage(): Boolean {
         val name = InventoryUtils.openInventoryName().removeColor()
-        if (Minecraft.getMinecraft().currentScreen !is GuiChest) return false
+        if (!McScreen.isChestOpen) return false
         if (BazaarApi.inBazaarInventory) return false
         if (MinionFeatures.minionInventoryOpen) return false
         if (MinionFeatures.minionStorageInventoryOpen) return false
@@ -246,15 +248,14 @@ object ChestValue {
     }
 
     private fun String.reduceStringLength(targetLength: Int, char: Char): String {
-        val mc = Minecraft.getMinecraft()
-        val spaceWidth = mc.fontRendererObj.getCharWidth(char)
+        val spaceWidth = McFont.width(char)
 
         var currentString = this
-        var currentLength = mc.fontRendererObj.getStringWidth(currentString)
+        var currentLength = McFont.width(currentString)
 
         while (currentLength > targetLength) {
             currentString = currentString.dropLast(1)
-            currentLength = mc.fontRendererObj.getStringWidth(currentString)
+            currentLength = McFont.width(currentString)
         }
 
         val difference = targetLength - currentLength

@@ -7,9 +7,9 @@ import at.hannibal2.skyhanni.data.GuiEditManager.getAbsY
 import at.hannibal2.skyhanni.data.GuiEditManager.getDummySize
 import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.RenderUtils
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
@@ -31,8 +31,8 @@ class RenderBackground {
 
         // Update the position to the alignment options
         if (
-            alignmentConfig.horizontalAlignment != RenderUtils.HorizontalAlignment.DONT_ALIGN
-            || alignmentConfig.verticalAlignment != RenderUtils.VerticalAlignment.DONT_ALIGN
+            alignmentConfig.horizontalAlignment != RenderUtils.HorizontalAlignment.DONT_ALIGN ||
+            alignmentConfig.verticalAlignment != RenderUtils.VerticalAlignment.DONT_ALIGN
         ) {
             position.set(updatePosition(position))
         }
@@ -96,8 +96,8 @@ class RenderBackground {
         val elementWidth = position.getDummySize().x
         val elementHeight = position.getDummySize().y
 
-        val scaledWidth = ScaledResolution(Minecraft.getMinecraft()).scaledWidth
-        val scaledHeight = ScaledResolution(Minecraft.getMinecraft()).scaledHeight
+        val scaledWidth = McScreen.width
+        val scaledHeight = McScreen.height
 
 
         var newX = when (alignmentConfig.horizontalAlignment) {

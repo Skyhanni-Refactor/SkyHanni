@@ -20,8 +20,9 @@ import at.hannibal2.skyhanni.utils.NumberUtil.percentWithColorCode
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.mc.McPlayer
-import net.minecraft.client.Minecraft
-import java.util.Collections
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McWorld
+import java.util.*
 
 @SkyHanniModule
 object CollectionTracker {
@@ -184,8 +185,8 @@ object CollectionTracker {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        val thePlayer = Minecraft.getMinecraft().thePlayer ?: return
-        thePlayer.worldObj ?: return
+        if (!McPlayer.hasPlayer) return
+        if (!McWorld.hasWorld) return
 
         compareInventory()
         updateGain()
@@ -193,7 +194,7 @@ object CollectionTracker {
 
     private fun compareInventory() {
         if (lastAmountInInventory == -1) return
-        if (Minecraft.getMinecraft().currentScreen != null) return
+        if (McScreen.isOpen) return
 
         val currentlyInInventory = countCurrentlyInInventory()
         val diff = currentlyInInventory - lastAmountInInventory

@@ -22,6 +22,7 @@ package at.hannibal2.skyhanni.config.core.config;
 import at.hannibal2.skyhanni.SkyHanniMod;
 import at.hannibal2.skyhanni.config.ConfigGuiManager;
 import at.hannibal2.skyhanni.config.Features;
+import at.hannibal2.skyhanni.utils.mc.McScreen;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigLink;
 import io.github.notenoughupdates.moulconfig.gui.GuiScreenElementWrapper;
@@ -124,15 +125,11 @@ public class Position {
     }
 
     public int getAbsX0(int objWidth) {
-        int width = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
-
-        return calcAbs0(x, width, objWidth);
+        return calcAbs0(x, McScreen.INSTANCE.getWidth(), objWidth);
     }
 
     public int getAbsY0(int objHeight) {
-        int height = new ScaledResolution(Minecraft.getMinecraft()).getScaledHeight();
-
-        return calcAbs0(y, height, objHeight);
+        return calcAbs0(y, McScreen.INSTANCE.getHeight(), objHeight);
     }
 
     private int calcAbs0(int axis, int length, int objLength) {
@@ -148,7 +145,7 @@ public class Position {
     }
 
     public int moveX(int deltaX, int objWidth) {
-        int screenWidth = new ScaledResolution(Minecraft.getMinecraft()).getScaledWidth();
+        int screenWidth = McScreen.INSTANCE.getWidth();
         boolean wasPositiveX = this.x >= 0;
         this.x += deltaX;
 

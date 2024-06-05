@@ -7,11 +7,11 @@ import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiEditSign
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.KeyboardManager
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.mc.McScreen.addTextIntoSign
 import at.hannibal2.skyhanni.utils.mc.McScreen.setTextIntoSign
 import at.hannibal2.skyhanni.utils.system.OS
 import kotlinx.coroutines.launch
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
 
 @SkyHanniModule
@@ -26,10 +26,9 @@ object BetterSignEditing {
         if (!HypixelAPI.onHypixel) return
         if (!SkyHanniMod.feature.misc.betterSignEditing) return
 
-        val gui = Minecraft.getMinecraft().currentScreen
         checkPaste()
-        checkCopying(gui)
-        checkDeleting(gui)
+        checkCopying(McScreen.screen)
+        checkDeleting(McScreen.screen)
     }
 
     private fun checkDeleting(gui: GuiScreen?) {
@@ -62,8 +61,7 @@ object BetterSignEditing {
     private fun checkPaste() {
         val pasteClicked = KeyboardManager.isPastingKeysDown()
         if (!pasteLastClicked && pasteClicked) {
-            val gui = Minecraft.getMinecraft().currentScreen
-            gui.addTextIntoSign(OS.readFromClipboard())
+            McScreen.screen?.addTextIntoSign(OS.readFromClipboard())
         }
         pasteLastClicked = pasteClicked
     }

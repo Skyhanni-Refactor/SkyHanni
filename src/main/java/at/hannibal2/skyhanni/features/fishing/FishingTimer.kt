@@ -17,10 +17,10 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.datetime.TimeUnit
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.mc.McWorld
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.item.EntityArmorStand
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -48,7 +48,7 @@ object FishingTimer {
 
         if (event.isMod(5)) checkMobs()
         if (event.isMod(7)) tryPlaySound()
-        if (config.manualResetTimer.isKeyHeld() && Minecraft.getMinecraft().currentScreen == null) {
+        if (config.manualResetTimer.isKeyHeld() && !McScreen.isOpen) {
             startTime = SimpleTimeMark.now()
         }
     }

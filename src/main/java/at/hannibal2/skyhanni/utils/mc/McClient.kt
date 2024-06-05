@@ -5,8 +5,10 @@ import com.google.common.util.concurrent.ListenableFuture
 import net.minecraft.client.Minecraft
 import net.minecraft.client.network.NetHandlerPlayClient
 import net.minecraft.client.settings.GameSettings
+import net.minecraft.util.ResourceLocation
 import net.minecraft.util.Timer
-import java.util.UUID
+import java.io.InputStream
+import java.util.*
 
 object McClient {
 
@@ -24,5 +26,7 @@ object McClient {
     val profileUUID: UUID get() = minecraft.session.profile.id
 
     fun schedule(task: () -> Unit): ListenableFuture<Any> = minecraft.addScheduledTask(task)
+
+    fun getResource(id: ResourceLocation): InputStream = minecraft.resourceManager.getResource(id).inputStream
 }
 

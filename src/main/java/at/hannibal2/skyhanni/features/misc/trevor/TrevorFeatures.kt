@@ -33,11 +33,11 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
 import kotlin.time.Duration.Companion.milliseconds
@@ -282,7 +282,7 @@ object TrevorFeatures {
     @HandleEvent
     fun onKeyClick(event: KeyPressEvent) {
         if (!onFarmingIsland()) return
-        if (Minecraft.getMinecraft().currentScreen != null) return
+        if (McScreen.isOpen) return
         if (NEUItems.neuHasFocus()) return
 
         if (event.keyCode != config.keyBindWarpTrapper) return

@@ -42,8 +42,8 @@ import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.isMuseumDonated
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.isRiftExportable
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.isRiftTransferable
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.inventory.ContainerChest
 import net.minecraft.item.ItemStack
@@ -115,8 +115,7 @@ object HideNotClickableItems {
         if (!isEnabled()) return
         if (bypassActive()) return
 
-        val guiChest = Minecraft.getMinecraft().currentScreen
-        if (guiChest !is GuiChest) return
+        val guiChest = McScreen.asChest ?: return
         val chestName = (guiChest.inventorySlots as ContainerChest).getInventoryName()
 
         val stack = event.itemStack

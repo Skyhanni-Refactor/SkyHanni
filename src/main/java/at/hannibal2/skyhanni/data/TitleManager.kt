@@ -8,9 +8,9 @@ import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McFont
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import io.github.notenoughupdates.moulconfig.internal.TextRenderUtils
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.network.play.server.S45PacketTitle
 import org.lwjgl.opengl.GL11
@@ -75,19 +75,17 @@ object TitleManager {
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (endTime.isInPast()) return
 
-        val scaledResolution = ScaledResolution(Minecraft.getMinecraft())
-        val width = scaledResolution.scaledWidth
-        val height = scaledResolution.scaledHeight
+        val width = McScreen.width
+        val height = McScreen.height
 
         GlStateManager.enableBlend()
         GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, GL11.GL_ONE, GL11.GL_ZERO)
-        val renderer = Minecraft.getMinecraft().fontRendererObj
 
         GlStateManager.pushMatrix()
         GlStateManager.translate((width / 2).toFloat(), (height / heightModifier).toFloat(), 3.0f)
         GlStateManager.scale(fontSizeModifier, fontSizeModifier, 1f)
         // TODO dont use neu text method
-        TextRenderUtils.drawStringCenteredScaledMaxWidth(display, renderer, 0f, 0f, true, 75, 0)
+        TextRenderUtils.drawStringCenteredScaledMaxWidth(display, McFont.font, 0f, 0f, true, 75, 0)
         GlStateManager.popMatrix()
     }
 }

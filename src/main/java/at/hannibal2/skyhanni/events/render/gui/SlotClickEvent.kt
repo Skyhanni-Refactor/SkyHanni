@@ -25,7 +25,11 @@ data class SlotClickEvent(
         if (this.clickedButton == 2 && this.clickTypeEnum == ClickType.MIDDLE) return
         slot?.slotNumber?.let { slotNumber ->
             Minecraft.getMinecraft().playerController.windowClick(
-                container.windowId, slotNumber, 2, 3, Minecraft.getMinecraft().thePlayer
+                container.windowId,
+                slotNumber,
+                2,
+                3,
+                Minecraft.getMinecraft().thePlayer
             )
             cancel()
         }

@@ -16,6 +16,7 @@ import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
 import at.hannibal2.skyhanni.utils.chat.Text.send
+import at.hannibal2.skyhanni.utils.mc.McFont
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ChatLine
 import net.minecraft.client.gui.GuiNewChat
@@ -38,9 +39,9 @@ object ChatManager {
     private val loggerFilteredTypes = mutableMapOf<String, LorenzLogger>()
     private val messageHistory =
         object : LinkedHashMap<IdentityCharacteristics<IChatComponent>, MessageFilteringResult>() {
-            override fun removeEldestEntry(eldest: MutableMap.MutableEntry<IdentityCharacteristics<IChatComponent>, MessageFilteringResult>?): Boolean {
-                return size > 100
-            }
+            override fun removeEldestEntry(
+                eldest: MutableMap.MutableEntry<IdentityCharacteristics<IChatComponent>, MessageFilteringResult>?
+            ): Boolean = size > 100
         }
 
     private fun getRecentMessageHistory(): List<MessageFilteringResult> = messageHistory.toList().map { it.second }
@@ -63,7 +64,7 @@ object ChatManager {
         companion object {
 
             val maxLength by lazy {
-                entries.maxOf { Minecraft.getMinecraft().fontRendererObj.getStringWidth(it.renderedString) }
+                entries.maxOf { McFont.width(it.renderedString) }
             }
         }
     }
@@ -96,7 +97,10 @@ object ChatManager {
                     if (it.fileName == null) "" else "(§b${it.fileName}§7:§3${it.lineNumber}§7)"
             }
         val result = MessageFilteringResult(
-            component, ActionKind.OUTGOING, null, null,
+            component,
+            ActionKind.OUTGOING,
+            null,
+            null,
             hoverInfo = hoverInfo,
             hoverExtraInfo = hoverInfo + listOf("") + stackTrace
         )

@@ -11,8 +11,8 @@ import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import kotlin.time.Duration.Companion.seconds
 
 @SkyHanniModule
@@ -55,7 +55,7 @@ object GardenWarpCommands {
 
     @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onKeyClick(event: KeyPressEvent) {
-        if (Minecraft.getMinecraft().currentScreen != null) return
+        if (McScreen.isOpen) return
         if (NEUItems.neuHasFocus()) return
 
         if (lastWarpTime.passedSince() < 2.seconds) return

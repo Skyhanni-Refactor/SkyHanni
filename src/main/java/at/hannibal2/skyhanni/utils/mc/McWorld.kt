@@ -11,7 +11,7 @@ import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.tileentity.TileEntity
-import java.util.UUID
+import java.util.*
 
 typealias BlockState = IBlockState
 typealias BlockEntity = TileEntity
@@ -54,8 +54,7 @@ object McWorld {
 
     fun getEntity(id: Int): Entity? = world?.getEntityByID(id)
 
-    inline fun <reified R : Entity> getEntitiesOf(): List<R> =
-        entities.filterIsInstance<R>()
+    inline fun <reified R : Entity> getEntitiesOf(): List<R> = entities.filterIsInstance<R>()
 
     inline fun <reified T : Entity> getEntitiesNear(entity: Entity, radius: Double): List<T> =
         getEntitiesOf<T>().filter { it.distanceTo(entity) < radius }

@@ -7,7 +7,7 @@ import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RenderUtils.drawSlotText
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getPetItem
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.mc.McFont
 
 @SkyHanniModule
 object PetItemDisplay {
@@ -23,7 +23,7 @@ object PetItemDisplay {
         val petItem = stack.getPetItem() ?: return
         val icon = config.petItemDisplay.firstOrNull { it.item == petItem }?.icon ?: return
 
-        val width = (Minecraft.getMinecraft().fontRendererObj.getStringWidth(icon) * config.petItemDisplayScale).toInt()
+        val width = (McFont.width(icon) * config.petItemDisplayScale).toInt()
         val x = event.x + 22 - width
         val y = event.y - 1
 

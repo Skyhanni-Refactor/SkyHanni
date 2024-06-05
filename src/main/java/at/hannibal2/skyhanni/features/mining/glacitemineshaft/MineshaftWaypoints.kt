@@ -15,6 +15,7 @@ import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import net.minecraft.client.Minecraft
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -58,7 +59,7 @@ object MineshaftWaypoints {
 
     @HandleEvent
     fun onKeyPress(event: KeyPressEvent) {
-        if (Minecraft.getMinecraft().currentScreen != null) return
+        if (McScreen.isOpen) return
         if (event.keyCode != config.shareWaypointLocation) return
         if (timeLastShared.passedSince() < 500.milliseconds) return
 

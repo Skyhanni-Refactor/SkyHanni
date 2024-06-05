@@ -12,6 +12,8 @@ import at.hannibal2.skyhanni.utils.KeyboardManager.isActive
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.mc.McClient
+import at.hannibal2.skyhanni.utils.mc.McFont
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
@@ -51,7 +53,7 @@ object TabListRenderer {
     fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!config.enabled.get()) return
         if (!config.toggleTab) return
-        if (Minecraft.getMinecraft().currentScreen != null) return
+        if (McScreen.isOpen) return
 
         if (McClient.options.keyBindPlayerList.isActive()) {
             if (!isPressed) {
@@ -117,9 +119,9 @@ object TabListRenderer {
         var headerY = y
         if (header.isNotEmpty()) {
             for (line in header) {
-                minecraft.fontRendererObj.drawStringWithShadow(
+                McFont.draw(
                     line,
-                    x + totalWidth / 2f - minecraft.fontRendererObj.getStringWidth(line) / 2f,
+                    x + totalWidth / 2f - McFont.width(line) / 2f,
                     headerY.toFloat(),
                     0xFFFFFF
                 )
@@ -174,14 +176,14 @@ object TabListRenderer {
                 var text = if (AdvancedPlayerList.ignoreCustomTabList()) tabLine.text else tabLine.customName
                 if (text.contains("§l")) text = "§r$text"
                 if (tabLine.type == TabStringType.TITLE) {
-                    minecraft.fontRendererObj.drawStringWithShadow(
+                    McFont.draw(
                         text,
                         middleX + column.getMaxWidth() / 2f - tabLine.getWidth() / 2f,
                         middleY.toFloat(),
                         0xFFFFFF
                     )
                 } else {
-                    minecraft.fontRendererObj.drawStringWithShadow(
+                    McFont.draw(
                         text,
                         middleX.toFloat(),
                         middleY.toFloat(),
@@ -197,9 +199,9 @@ object TabListRenderer {
         if (footer.isNotEmpty()) {
             var footerY = y + totalHeight - footer.size * LINE_HEIGHT + TAB_PADDING / 2 + 1
             for (line in footer) {
-                minecraft.fontRendererObj.drawStringWithShadow(
+                McFont.draw(
                     line,
-                    x + totalWidth / 2f - minecraft.fontRendererObj.getStringWidth(line) / 2f,
+                    x + totalWidth / 2f - McFont.width(line) / 2f,
                     footerY.toFloat(),
                     -0x1
                 )

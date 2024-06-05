@@ -19,6 +19,8 @@ import at.hannibal2.skyhanni.utils.RegexUtils.anyMatches
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McClient
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McScreen.sendSlotClick
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
@@ -69,13 +71,12 @@ object HarpFeatures {
 
             event.cancel()
 
-            Minecraft.getMinecraft().playerController.windowClick(
-                chest.inventorySlots.windowId,
+            chest.sendSlotClick(
                 37 + index,
                 2,
-                3,
-                Minecraft.getMinecraft().thePlayer
-            ) // middle clicks > left clicks
+                3
+            )
+            // middle clicks > left clicks
             lastClick = SimpleTimeMark.now()
             break
         }
@@ -106,7 +107,7 @@ object HarpFeatures {
     }
 
     private fun updateScale() {
-        if (Minecraft.getMinecraft().currentScreen == null) {
+        if (!McScreen.isOpen) {
             DelayedRun.runNextTick {
                 updateScale()
             }

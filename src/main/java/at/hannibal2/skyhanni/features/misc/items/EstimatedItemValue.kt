@@ -30,6 +30,7 @@ import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import io.github.moulberry.notenoughupdates.profileviewer.GuiProfileViewer
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Items
@@ -48,7 +49,7 @@ object EstimatedItemValue {
     var bookBundleAmount = mapOf<String, Int>()
     private var currentlyShowing = false
 
-    fun isCurrentlyShowing() = currentlyShowing && Minecraft.getMinecraft().currentScreen != null
+    fun isCurrentlyShowing() = currentlyShowing && McScreen.isOpen
 
     @HandleEvent
     fun onNeuRepoReload(event: NeuRepositoryReloadEvent) {

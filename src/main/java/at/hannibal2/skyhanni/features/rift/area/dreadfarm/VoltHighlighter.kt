@@ -14,8 +14,8 @@ import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
@@ -36,9 +36,10 @@ object VoltHighlighter {
     @HandleEvent
     fun onArmorChange(event: EntityEquipmentChangeEvent) {
         if (!RiftAPI.inRift() || !config.voltWarning) return
-        val player = Minecraft.getMinecraft().thePlayer ?: return
-        if (event.isHead && getVoltState(event.entity) == VoltState.DOING_LIGHTNING
-            && event.entity.positionVector.squareDistanceTo(player.positionVector) <= LIGHTNING_DISTANCE * LIGHTNING_DISTANCE
+        val player = McPlayer.player ?: return
+        if (
+            event.isHead && getVoltState(event.entity) == VoltState.DOING_LIGHTNING &&
+            event.entity.positionVector.squareDistanceTo(player.positionVector) <= LIGHTNING_DISTANCE * LIGHTNING_DISTANCE
         ) {
             chargingSince = chargingSince.editCopy {
                 this[event.entity] = SimpleTimeMark.now()
@@ -53,15 +54,17 @@ object VoltHighlighter {
             val state = getVoltState(entity)
             if (state == VoltState.NO_VOLT) continue
 
-            if (config.voltMoodMeter)
+            if (config.voltMoodMeter) {
                 RenderLivingEntityHelper.setEntityColorWithNoHurtTime(
-                    entity, when (state) {
+                    entity,
+                    when (state) {
                         VoltState.FRIENDLY -> 0x8000FF00.toInt()
                         VoltState.DOING_LIGHTNING -> 0x800000FF.toInt()
                         VoltState.HOSTILE -> 0x80FF0000.toInt()
                         else -> 0
                     }
                 ) { config.voltMoodMeter }
+            }
             if (state == VoltState.DOING_LIGHTNING && config.voltRange) {
                 RenderUtils.drawCylinderInWorld(
                     config.voltColour.toChromaColour(),
@@ -90,7 +93,6 @@ object VoltHighlighter {
         FRIENDLY,
         HOSTILE,
         DOING_LIGHTNING,
-        ;
     }
 
     private fun getVoltState(itemStack: ItemStack): VoltState {

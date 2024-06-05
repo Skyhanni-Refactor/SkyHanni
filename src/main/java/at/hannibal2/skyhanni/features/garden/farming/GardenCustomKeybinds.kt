@@ -6,13 +6,12 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McClient
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiEditSign
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import net.minecraft.client.settings.KeyBinding
 import org.lwjgl.input.Keyboard
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
-import java.util.IdentityHashMap
+import java.util.*
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -41,8 +40,8 @@ object GardenCustomKeybinds {
         if (!isEnabled()) return false
         if (GardenAPI.toolInHand == null) return false
 
-        if (Minecraft.getMinecraft().currentScreen != null) {
-            if (Minecraft.getMinecraft().currentScreen is GuiEditSign) {
+        if (McScreen.isOpen) {
+            if (McScreen.isSignOpen) {
                 lastWindowOpenTime = SimpleTimeMark.now()
             }
             return false

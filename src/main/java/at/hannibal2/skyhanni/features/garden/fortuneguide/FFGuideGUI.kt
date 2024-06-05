@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.GuiRenderUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.datetime.DateUtils
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.system.OS
@@ -95,7 +96,7 @@ open class FFGuideGUI : GuiScreen() {
 
         var tooltipToDisplay = mutableListOf<String>()
 
-        fun isInGui() = Minecraft.getMinecraft().currentScreen is FFGuideGUI
+        fun isInGui() = McScreen.screen is FFGuideGUI
 
         fun FarmingItems.getItem(): ItemStack {
             val fortune = GardenAPI.storage?.fortune ?: return getFallbackItem(this)

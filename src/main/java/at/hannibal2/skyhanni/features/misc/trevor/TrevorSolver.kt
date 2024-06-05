@@ -11,7 +11,6 @@ import at.hannibal2.skyhanni.utils.LorenzUtils.derpy
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.EntityLivingBase
 import kotlin.time.Duration.Companion.seconds
@@ -49,7 +48,7 @@ object TrevorSolver {
     }
 
     fun findMob() {
-        Minecraft.getMinecraft().theWorld ?: return
+        if (!McWorld.hasWorld) return
         for (entity in McWorld.entities) {
             if (entity is EntityOtherPlayerMP) continue
             val name = entity.name

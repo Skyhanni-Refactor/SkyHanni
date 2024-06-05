@@ -11,8 +11,8 @@ import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.Entity
 
 @SkyHanniModule
@@ -33,7 +33,7 @@ object EntityMovementData {
 
     @HandleEvent(onlyOnSkyblock = true)
     fun onTick(event: ClientTickEvent) {
-        addToTrack(Minecraft.getMinecraft().thePlayer)
+        McPlayer.player?.let(::addToTrack)
 
         for (entity in entityLocation.keys) {
             if (entity.isDead) continue

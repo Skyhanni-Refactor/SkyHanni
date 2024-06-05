@@ -16,6 +16,8 @@ import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McClient
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import net.minecraft.client.Minecraft
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.seconds
@@ -42,7 +44,7 @@ object SensitivityReducer {
             return
         }
         if (isManualToggle) return
-        if (isToggled && config.onGround.get() && !mc.thePlayer.onGround) {
+        if (isToggled && config.onGround.get() && !McPlayer.onGround) {
             restoreSensitivity()
             isToggled = false
             return
@@ -70,7 +72,7 @@ object SensitivityReducer {
                 isToggled = false
                 restoreSensitivity()
             }
-            if (!mc.thePlayer.onGround && config.onGround.get()) {
+            if (!McPlayer.onGround && config.onGround.get()) {
                 isToggled = false
                 restoreSensitivity()
             }
@@ -90,7 +92,7 @@ object SensitivityReducer {
             }
         }
         config.onGround.afterChange {
-            if (isToggled && config.onGround.get() && mc.thePlayer.onGround) {
+            if (isToggled && config.onGround.get() && McPlayer.onGround) {
                 restoreSensitivity()
                 isToggled = false
             }
@@ -112,17 +114,9 @@ object SensitivityReducer {
         config.position.renderString("§eSensitivity Lowered", posLabel = "Sensitivity Lowered")
     }
 
-    private fun isHoldingTool(): Boolean {
-        return GardenAPI.toolInHand != null
-    }
-
-    private fun isHoldingKey(): Boolean {
-        return config.keybind.isKeyHeld() && mc.currentScreen == null
-    }
-
-    fun isEnabled(): Boolean {
-        return isToggled || isManualToggle
-    }
+    private fun isHoldingTool(): Boolean = GardenAPI.toolInHand != null
+    private fun isHoldingKey(): Boolean = config.keybind.isKeyHeld() && !McScreen.isOpen
+    fun isEnabled(): Boolean = isToggled || isManualToggle
 
     fun manualToggle() {
         if (isToggled) {
@@ -156,10 +150,12 @@ object SensitivityReducer {
 
     private fun toggle(state: Boolean) {
         if (config.onlyPlot.get() && GardenAPI.onBarnPlot) return
-        if (config.onGround.get() && !mc.thePlayer.onGround) return
+        if (config.onGround.get() && !McPlayer.onGround) return
         if (!isToggled) {
             lowerSensitivity()
-        } else restoreSensitivity()
+        } else {
+            restoreSensitivity()
+        }
         isToggled = state
     }
 
@@ -198,7 +194,7 @@ object SensitivityReducer {
         event.addData {
             add("Current Sensitivity: ${McClient.options.mouseSensitivity}")
             add("Stored Sensitivity: ${storage.savedMouseloweredSensitivity}")
-            add("onGround: ${mc.thePlayer.onGround}")
+            add("onGround: ${McPlayer.onGround}")
             add("onBarn: ${GardenAPI.onBarnPlot}")
             add("enabled: ${isToggled || isManualToggle}")
             add("--- config ---")

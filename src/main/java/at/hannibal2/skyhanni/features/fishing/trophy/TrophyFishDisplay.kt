@@ -34,9 +34,8 @@ import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiInventory
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -120,11 +119,7 @@ object TrophyFishDisplay {
         return table
     }
 
-    private fun addRow(
-        rawName: String,
-        data: MutableMap<TrophyRarity, Int>,
-        table: MutableList<List<Renderable>>,
-    ) {
+    private fun addRow(rawName: String, data: MutableMap<TrophyRarity, Int>, table: MutableList<List<Renderable>>) {
         get(config.onlyShowMissing.get())?.let { atLeast ->
             val list = TrophyRarity.entries.filter { it == atLeast }
             if (list.all { (data[it] ?: 0) > 0 }) {
@@ -147,7 +142,9 @@ object TrophyFishDisplay {
         for (rarity in TrophyRarity.entries) {
             val amount = data[rarity] ?: 0
             val recentlyDropped = rarity == recentlyDroppedRarity
-            val format = if (config.showCross.get() && amount == 0) "§c✖" else {
+            val format = if (config.showCross.get() && amount == 0) {
+                "§c✖"
+            } else {
                 val color = if (recentlyDropped) "§a" else rarity.formatCode
                 val numberFormat = if (config.showCheckmark.get() && amount >= 1) "§l✔" else amount.addSeparators()
                 "$color$numberFormat"
@@ -211,9 +208,8 @@ object TrophyFishDisplay {
             }
         }
 
-    private fun count(
-        trophyFishes: Map<String, MutableMap<TrophyRarity, Int>>, rarity: TrophyRarity,
-    ) = trophyFishes.entries.sortedBy { it.value[rarity] ?: 0 }
+    private fun count(trophyFishes: Map<String, MutableMap<TrophyRarity, Int>>, rarity: TrophyRarity) =
+        trophyFishes.entries.sortedBy { it.value[rarity] ?: 0 }
 
     private fun getItemName(rawName: String): String {
         val name = getInternalName(rawName).itemName
@@ -267,7 +263,7 @@ object TrophyFishDisplay {
 
     private fun canRender(): Boolean = when (config.whenToShow.get()!!) {
         WhenToShow.ALWAYS -> true
-        WhenToShow.ONLY_IN_INVENTORY -> Minecraft.getMinecraft().currentScreen is GuiInventory
+        WhenToShow.ONLY_IN_INVENTORY -> McScreen.isInventoryOpen
         WhenToShow.ONLY_WITH_ROD_IN_HAND -> FishingAPI.holdingLavaRod
         WhenToShow.ONLY_WITH_KEYBIND -> config.keybind.isKeyHeld()
     }

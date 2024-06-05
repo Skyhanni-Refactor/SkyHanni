@@ -6,9 +6,10 @@ import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
 import at.hannibal2.skyhanni.features.misc.visualwords.VisualWordGui
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McScreen.isChest
+import at.hannibal2.skyhanni.utils.mc.McScreen.isInventory
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiChest
-import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.client.event.RenderGameOverlayEvent
@@ -35,8 +36,8 @@ object RenderData {
         if (!canRender()) return
         if (!SkyHanniDebugsAndTests.globalRender) return
         if (GuiEditManager.isInGui() || VisualWordGui.isInGui()) return
-        val currentScreen = Minecraft.getMinecraft().currentScreen ?: return
-        if (currentScreen !is GuiInventory && currentScreen !is GuiChest) return
+        val currentScreen = McScreen.screen ?: return
+        if (!currentScreen.isInventory && !currentScreen.isChest) return
 
         GlStateManager.pushMatrix()
         GlStateManager.enableDepth()

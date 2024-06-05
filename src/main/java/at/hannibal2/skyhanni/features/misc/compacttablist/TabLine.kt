@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.features.misc.compacttablist
 
+import at.hannibal2.skyhanni.utils.mc.McFont
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.Minecraft
 import net.minecraft.client.network.NetworkPlayerInfo
@@ -8,8 +9,7 @@ import net.minecraft.entity.player.EntityPlayer
 class TabLine(val text: String, val type: TabStringType, val customName: String = text) {
 
     fun getWidth(): Int {
-        val mc = Minecraft.getMinecraft()
-        var width = mc.fontRendererObj.getStringWidth(customName)
+        var width = McFont.width(customName)
         if (type === TabStringType.PLAYER) {
             width += 8 + 2 // Player head
         }

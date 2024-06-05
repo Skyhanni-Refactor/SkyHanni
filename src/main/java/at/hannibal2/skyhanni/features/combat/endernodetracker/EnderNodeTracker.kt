@@ -26,7 +26,6 @@ import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import at.hannibal2.skyhanni.utils.tracker.TrackerData
 import com.google.gson.annotations.Expose
-import net.minecraft.client.Minecraft
 
 @SkyHanniModule
 object EnderNodeTracker {
@@ -104,8 +103,8 @@ object EnderNodeTracker {
     @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         if (!isEnabled()) return
-        miteGelInInventory = Minecraft.getMinecraft().thePlayer.inventory.mainInventory
-            .filter { it?.getInternalNameOrNull() == EnderNode.MITE_GEL.internalName }
+        miteGelInInventory = McPlayer.inventory
+            .filter { it.getInternalNameOrNull() == EnderNode.MITE_GEL.internalName }
             .sumOf { it.stackSize }
     }
 
@@ -128,8 +127,8 @@ object EnderNodeTracker {
         if (!isEnabled()) return
         if (!ProfileStorageData.loaded) return
 
-        val newMiteGelInInventory = Minecraft.getMinecraft().thePlayer.inventory.mainInventory
-            .filter { it?.getInternalNameOrNull() == EnderNode.MITE_GEL.internalName }
+        val newMiteGelInInventory = McPlayer.inventory
+            .filter { it.getInternalNameOrNull() == EnderNode.MITE_GEL.internalName }
             .sumOf { it.stackSize }
         val change = newMiteGelInInventory - miteGelInInventory
         if (change > 0) {

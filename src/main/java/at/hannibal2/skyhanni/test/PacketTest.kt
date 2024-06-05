@@ -11,9 +11,9 @@ import at.hannibal2.skyhanni.utils.NumberUtil.isInt
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.Entity
 import net.minecraft.network.Packet
 import net.minecraft.network.play.client.C03PacketPlayer
@@ -173,7 +173,7 @@ object PacketTest {
             val distance = getDistance(getLocation(this@print, entity))
 
             if (entity != null) {
-                if (entity == Minecraft.getMinecraft().thePlayer) {
+                if (entity == McPlayer.player) {
                     append(" own")
                     return@buildString
                 } else {
@@ -221,15 +221,14 @@ object PacketTest {
     }
 
     private fun getEntity(packet: Packet<*>, id: Int?): Entity? {
-        val world = Minecraft.getMinecraft().theWorld
         if (packet is S14PacketEntity) {
-            return packet.getEntity(world)
+            return packet.getEntity(McWorld.world)
         }
         if (packet is S19PacketEntityHeadLook) {
-            return packet.getEntity(world)
+            return packet.getEntity(McWorld.world)
         }
         if (packet is S19PacketEntityStatus) {
-            return packet.getEntity(world)
+            return packet.getEntity(McWorld.world)
         }
         if (id != null) {
             return McWorld.getEntity(id)

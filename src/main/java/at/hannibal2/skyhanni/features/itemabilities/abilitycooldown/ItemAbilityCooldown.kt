@@ -32,8 +32,8 @@ import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getAbilityScrolls
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemId
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemUuid
 import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
 import kotlin.math.max
 
@@ -302,12 +302,11 @@ object ItemAbilityCooldown {
 
         val stack = event.stack
 
-        val guiOpen = Minecraft.getMinecraft().currentScreen != null
         val uuid = stack.getIdentifier() ?: return
         val list = items[uuid] ?: return
 
         for (itemText in list) {
-            if (guiOpen && !itemText.onCooldown) continue
+            if (McScreen.isOpen && !itemText.onCooldown) continue
             val color = itemText.color
             val renderObject = RenderObject(color.getChatColor() + itemText.text)
             if (itemText.alternativePosition) {
@@ -323,7 +322,7 @@ object ItemAbilityCooldown {
         if (!isEnabled()) return
         if (!config.itemAbilityCooldownBackground) return
 
-        val guiOpen = Minecraft.getMinecraft().currentScreen != null
+        val guiOpen = McScreen.isOpen
         val stack = event.stack
 
         val uuid = stack?.getIdentifier() ?: return
@@ -353,8 +352,9 @@ object ItemAbilityCooldown {
         if (message == "§dCreeper Veil §r§aActivated!") {
             ItemAbility.WITHER_CLOAK.activate(LorenzColor.LIGHT_PURPLE)
         }
-        if (message == "§dCreeper Veil §r§cDe-activated! §r§8(Expired)"
-            || message == "§cNot enough mana! §r§dCreeper Veil §r§cDe-activated!"
+        if (
+            message == "§dCreeper Veil §r§cDe-activated! §r§8(Expired)" ||
+            message == "§cNot enough mana! §r§dCreeper Veil §r§cDe-activated!"
         ) {
             ItemAbility.WITHER_CLOAK.activate()
         }

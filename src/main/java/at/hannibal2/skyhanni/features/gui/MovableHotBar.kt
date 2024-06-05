@@ -5,7 +5,7 @@ import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.GuiEditManager
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RenderUtils.transform
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.EventPriority
@@ -38,7 +38,5 @@ object MovableHotBar {
         post = false
     }
 
-    fun isEnabled(): Boolean =
-        (SkyBlockAPI.isConnected || (Minecraft.getMinecraft().thePlayer != null && config.showOutsideSkyblock))
-            && config.editable
+    fun isEnabled(): Boolean = (SkyBlockAPI.isConnected || (McPlayer.hasPlayer && config.showOutsideSkyblock)) && config.editable
 }

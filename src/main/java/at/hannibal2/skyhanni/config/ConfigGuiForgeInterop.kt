@@ -1,5 +1,6 @@
 package at.hannibal2.skyhanni.config
 
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import io.github.notenoughupdates.moulconfig.gui.GuiScreenElementWrapper
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
@@ -25,7 +26,7 @@ class ConfigGuiForgeInterop : IModGuiFactory {
         @Throws(IOException::class)
         override fun handleKeyboardInput() {
             if (Keyboard.getEventKeyState() && Keyboard.getEventKey() == Keyboard.KEY_ESCAPE) {
-                Minecraft.getMinecraft().displayGuiScreen(parent)
+                McScreen.screen = parent
                 return
             }
             super.handleKeyboardInput()

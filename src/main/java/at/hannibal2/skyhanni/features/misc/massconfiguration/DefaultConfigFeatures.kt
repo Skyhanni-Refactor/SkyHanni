@@ -6,8 +6,8 @@ import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import io.github.notenoughupdates.moulconfig.processor.ConfigProcessorDriver
-import net.minecraft.client.Minecraft
 import net.minecraft.command.CommandBase
 
 @SkyHanniModule
@@ -17,8 +17,7 @@ object DefaultConfigFeatures {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        if (didNotifyOnce) return
-        Minecraft.getMinecraft().thePlayer ?: return
+        if (didNotifyOnce || !McPlayer.hasPlayer) return
         didNotifyOnce = true
 
         val knownToggles = SkyHanniMod.knownFeaturesData.knownFeatures

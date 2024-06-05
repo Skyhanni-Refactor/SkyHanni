@@ -32,7 +32,6 @@ import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
 import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.client.renderer.GlStateManager
@@ -56,6 +55,7 @@ object VampireSlayerFeatures {
     private val entityList = mutableListOf<EntityLivingBase>()
     private val taggedEntityList = mutableListOf<Int>()
     private var standList = mapOf<EntityArmorStand, EntityOtherPlayerMP>()
+
     // Nicked support
     private val username get() = McWorld.getEntitiesOf<EntityPlayerSP>().firstOrNull()?.name ?: error("own player is null")
     private const val BLOOD_ICHOR_TEXTURE =
@@ -88,7 +88,7 @@ object VampireSlayerFeatures {
                     if (distance <= 15) {
                         RenderLivingEntityHelper.setEntityColor(
                             stand,
-                            color
+                            color,
                         ) { isEnabled() }
                         if (isIchor)
                             entityList.add(stand)
@@ -133,7 +133,7 @@ object VampireSlayerFeatures {
                                 TitleManager.sendTitle(
                                     "§6§lTWINCLAWS",
                                     (1750 - config.twinclawsDelay).milliseconds,
-                                    2.6
+                                    2.6,
                                 )
                                 nextClawSend = System.currentTimeMillis() + 5_000
                             }
@@ -257,8 +257,9 @@ object VampireSlayerFeatures {
         val start = LocationUtils.playerLocation()
 
         if (config.drawLine) {
-            Minecraft.getMinecraft().theWorld.loadedEntityList.filterIsInstance<EntityOtherPlayerMP>().forEach {
-                if (it.isHighlighted()) {
+            McWorld.getEntitiesOf<EntityOtherPlayerMP>()
+                .filter { it.isHighlighted() }
+                .forEach {
                     val vec = event.exactLocation(it)
                     val distance = start.distance(vec)
                     if (distance <= 15) {
@@ -267,14 +268,13 @@ object VampireSlayerFeatures {
                             vec.add(y = 1.54),
                             config.lineColor.toChromaColour(),
                             config.lineWidth,
-                            true
+                            true,
                         )
                     }
                 }
-            }
         }
         if (configBloodIchor.highlight || configKillerSpring.highlight) {
-            Minecraft.getMinecraft().theWorld.loadedEntityList.filterIsInstance<EntityArmorStand>().forEach { stand ->
+            McWorld.getEntitiesOf<EntityArmorStand>().forEach { stand ->
                 val vec = stand.position.toLorenzVec()
                 val distance = start.distance(vec)
                 val isIchor = stand.hasSkullTexture(BLOOD_ICHOR_TEXTURE)
@@ -285,7 +285,7 @@ object VampireSlayerFeatures {
                     if (distance <= 15) {
                         RenderLivingEntityHelper.setEntityColor(
                             stand,
-                            color
+                            color,
                         ) { isEnabled() }
 
                         val linesColorStart =
@@ -294,13 +294,13 @@ object VampireSlayerFeatures {
                         event.drawColor(
                             stand.position.toLorenzVec().add(y = 2.0),
                             LorenzColor.DARK_RED,
-                            alpha = 1f
+                            alpha = 1f,
                         )
                         event.drawDynamicText(
                             stand.position.toLorenzVec().add(0.5, 2.5, 0.5),
                             text,
                             1.5,
-                            ignoreBlocks = false
+                            ignoreBlocks = false,
                         )
                         for ((player, stand2) in standList) {
                             if ((configBloodIchor.showLines && isIchor) || (configKillerSpring.showLines && isSpring))
@@ -310,7 +310,7 @@ object VampireSlayerFeatures {
                                     // stand2.position.toLorenzVec().add(0.0, 1.5, 0.0),
                                     linesColorStart,
                                     3,
-                                    true
+                                    true,
                                 )
                         }
                     }
@@ -318,7 +318,7 @@ object VampireSlayerFeatures {
                         event.drawWaypointFilled(
                             event.exactLocation(stand).add(0, y = -2, 0),
                             configBloodIchor.color.toChromaColour(),
-                            beacon = true
+                            beacon = true,
                         )
                     }
                 }

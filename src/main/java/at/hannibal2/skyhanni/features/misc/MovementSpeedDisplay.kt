@@ -11,8 +11,8 @@ import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
-import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
 import kotlin.concurrent.fixedRateTimer
 
@@ -40,7 +40,7 @@ object MovementSpeedDisplay {
     private fun checkSpeed() {
         if (!HypixelAPI.onHypixel) return
 
-        speed = with(Minecraft.getMinecraft().thePlayer) {
+        speed = with(McPlayer.player!!) {
             val oldPos = LorenzVec(prevPosX, prevPosY, prevPosZ)
             val newPos = LorenzVec(posX, posY, posZ)
 

@@ -15,7 +15,7 @@ import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import kotlin.time.Duration.Companion.seconds
 
 @SkyHanniModule
@@ -30,7 +30,7 @@ object BurrowWarpHelper {
         if (!config.burrowNearestWarp) return
 
         if (event.keyCode != config.keyBindWarp) return
-        if (Minecraft.getMinecraft().currentScreen != null) return
+        if (McScreen.isOpen) return
 
         currentWarp?.let {
             if (lastWarpTime.passedSince() > 5.seconds) {

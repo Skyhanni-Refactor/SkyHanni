@@ -23,10 +23,8 @@ import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiChat
-import net.minecraft.client.gui.inventory.GuiInventory
 import kotlin.time.Duration.Companion.days
 
 @SkyHanniModule
@@ -173,7 +171,9 @@ object BingoCardDisplay {
         val filter = showOnlyHighlighted && !editDisplay
         val finalGoal = if (filter) {
             goals.filter { it.highlight }
-        } else goals
+        } else {
+            goals
+        }
 
         finalGoal.mapTo(this) {
             val currentlyHighlighted = it.highlight
@@ -234,7 +234,7 @@ object BingoCardDisplay {
             displayMode = 2
         }
         if (displayMode == 0) {
-            if (Minecraft.getMinecraft().currentScreen !is GuiChat) {
+            if (!McScreen.isChatOpen) {
                 config.bingoCardPos.renderRenderables(display, posLabel = "Bingo Card")
             }
         } else if (displayMode == 1) {
@@ -242,8 +242,7 @@ object BingoCardDisplay {
         }
     }
 
-    private fun canEditDisplay() =
-        Minecraft.getMinecraft().currentScreen is GuiInventory || InventoryUtils.openInventoryName() == "Bingo Card"
+    private fun canEditDisplay() = McScreen.isInventoryOpen || InventoryUtils.openInventoryName() == "Bingo Card"
 
     @HandleEvent
     fun onBingoCardUpdate(event: BingoCardUpdateEvent) {

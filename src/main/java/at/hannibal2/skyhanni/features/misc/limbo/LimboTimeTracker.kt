@@ -18,7 +18,6 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.mc.McPlayer
-import net.minecraft.client.Minecraft
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
@@ -43,7 +42,7 @@ object LimboTimeTracker {
     fun onLocationChange(event: HypixelLocationEvent) {
         if (event.server == "limbo") {
             limboJoinTime = SimpleTimeMark.now()
-            onFire = Minecraft.getMinecraft().thePlayer.isBurning
+            onFire = McPlayer.isOnFire
         } else if (!limboJoinTime.isFarPast()) {
             leaveLimbo()
         }
