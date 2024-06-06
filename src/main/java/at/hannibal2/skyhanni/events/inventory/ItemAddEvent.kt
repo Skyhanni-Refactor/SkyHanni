@@ -1,0 +1,8 @@
+package at.hannibal2.skyhanni.events.inventory
+
+import at.hannibal2.skyhanni.api.event.SkyHanniEvent
+import at.hannibal2.skyhanni.data.ItemAddManager
+import at.hannibal2.skyhanni.utils.NEUInternalName
+
+class ItemAddEvent(val internalName: NEUInternalName, val amount: Int, val source: ItemAddManager.Source) :
+    SkyHanniEvent()

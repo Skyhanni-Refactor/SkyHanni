@@ -1,22 +1,24 @@
 package at.hannibal2.skyhanni.features.rift.everywhere
 
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.ConditionalUtils
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NumberUtil.roundToPrecision
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object CruxTalismanDisplay {
 
     private val config get() = RiftAPI.config.cruxTalisman
@@ -26,15 +28,15 @@ object CruxTalismanDisplay {
         ".*(?<tier>§[0-9a-z][IV1-4-]+)\\s+(?<name>§[0-9a-z]\\w+)§[0-9a-z]:\\s*(?<progress>§[0-9a-z](?:§[0-9a-z])?MAXED|§[0-9a-z]\\d+§[0-9a-z]/§[0-9a-z]\\d+).*"
     )
 
-    private val partialName = "CRUX_TALISMAN"
+    private const val PARTIAL_NAME = "CRUX_TALISMAN"
     private var display = emptyList<List<Any>>()
     private val displayLine = mutableListOf<Crux>()
     private val bonusesLine = mutableListOf<String>()
     private var maxed = false
     private var percentValue = 0.0
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
         config.position.renderStringsAndItems(
             display,
@@ -78,25 +80,24 @@ object CruxTalismanDisplay {
                 }
             }
         }
-        percentValue = ((percent.toDouble() / 600) * 100).roundToPrecision(1)
+        percentValue = ((percent.toDouble() / 600) * 100).roundTo(1)
         if (bonusesLine.isNotEmpty() && config.showBonuses.get()) {
             addAsSingletonList("§7Bonuses:")
             bonusesLine.forEach { addAsSingletonList("  $it") }
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         if (!event.repeatSeconds(2)) return
-        if (!InventoryUtils.getItemsInOwnInventory().any { it.getInternalName().startsWith(partialName) }) return
+        if (!McPlayer.inventory.any { it.getInternalName().startsWith(PARTIAL_NAME) }) return
 
         displayLine.clear()
         bonusesLine.clear()
         maxed = false
         var bonusFound = false
-        val inventoryStack = InventoryUtils.getItemsInOwnInventory()
-        for (stack in inventoryStack) {
+        for (stack in McPlayer.inventory) {
             line@ for (line in stack.getLore()) {
                 progressPattern.matchMatcher(line) {
                     val tier = group("tier").replace("-", "0")
@@ -121,12 +122,12 @@ object CruxTalismanDisplay {
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         ConditionalUtils.onToggle(config.showBonuses) { update() }
     }
 
     data class Crux(val name: String, val tier: String, val progress: String, val maxed: Boolean)
 
-    fun isEnabled() = RiftAPI.inRift() && config.enabled && LorenzUtils.skyBlockArea != "Mirrorverse"
+    fun isEnabled() = RiftAPI.inRift() && config.enabled && !IslandArea.MIRRORVERSE.isInside()
 }

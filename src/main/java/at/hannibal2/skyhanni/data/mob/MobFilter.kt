@@ -1,18 +1,17 @@
 package at.hannibal2.skyhanni.data.mob
 
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.mob.MobData.MobResult
 import at.hannibal2.skyhanni.data.mob.MobData.MobResult.Companion.makeMobResult
-import at.hannibal2.skyhanni.events.MobEvent
+import at.hannibal2.skyhanni.events.entity.MobEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.utils.CollectionUtils.takeWhileInclusive
 import at.hannibal2.skyhanni.utils.EntityUtils.cleanName
 import at.hannibal2.skyhanni.utils.EntityUtils.isNPC
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.LorenzUtils.derpy
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.MobUtils
 import at.hannibal2.skyhanni.utils.MobUtils.isDefaultValue
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -56,7 +55,7 @@ object MobFilter {
     val slayerNameFilter by repoGroup.pattern("filter.slayer", "^. (?<name>.*) (?<tier>[IV]+) \\d+.*")
 
     /** REGEX-TEST: ﴾ Storm ﴿
-     *  REGEX-TEST: ﴾ [Lv200] aMage Outlawa 70M/70M❤ ﴿
+     *  REGEX-TEST: ﴾ [Lv200] Mage Outlaw 70M/70M❤ ﴿
      *  REGEX-TEST: ﴾ [Lv500] Magma Boss █████████████████████████ ﴿
      *  REGEX-TEST: ﴾ [Lv200] Bladesoul 50M/50M❤ ﴿
      *  REGEX-TEST: ﴾ [Lv300] Arachne 20,000/20,000❤ ﴿
@@ -162,7 +161,7 @@ object MobFilter {
             listOfClickArmorStand.contains(armorStand.name)
         } ?: return false
         val armorStand = MobUtils.getArmorStand(clickArmorStand, -1) ?: return false
-        MobEvent.Spawn.DisplayNPC(MobFactories.displayNPC(entity, armorStand, clickArmorStand)).postAndCatch()
+        MobEvent.Spawn.DisplayNPC(MobFactories.displayNPC(entity, armorStand, clickArmorStand)).post()
         return true
     }
 
@@ -220,7 +219,7 @@ object MobFilter {
         baseEntity is EntityBat -> createBat(baseEntity)
 
         baseEntity.isFarmMob() -> createFarmMobs(baseEntity)?.let { MobResult.found(it) }
-        baseEntity is EntityDragon -> when (LorenzUtils.skyBlockIsland) {
+        baseEntity is EntityDragon -> when (SkyBlockAPI.island) {
             IslandType.CATACOMBS -> (8..16).map { MobUtils.getArmorStand(baseEntity, it) }
                 .makeMobResult {
                     MobFactories.boss(baseEntity, it.first(), it.drop(1))
@@ -303,7 +302,7 @@ object MobFilter {
                 (baseEntity is EntityEnderman || baseEntity is EntityGiantZombie) && extraEntityList.lastOrNull()?.name == "§e﴾ §c§lLivid§r§r §a7M§c❤ §e﴿" -> MobResult.illegal // Livid Start Animation
                 else -> null
             }
-        } else when (LorenzUtils.skyBlockIsland) {
+        } else when (SkyBlockAPI.island) {
             IslandType.CRIMSON_ISLE -> when {
                 else -> null
             }
@@ -329,7 +328,7 @@ object MobFilter {
 
     fun EntityLivingBase.isFarmMob() =
         this is EntityAnimal && this.baseMaxHealth.derpy()
-            .let { it == 50 || it == 20 || it == 130 } && LorenzUtils.skyBlockIsland != IslandType.PRIVATE_ISLAND
+            .let { it == 50 || it == 20 || it == 130 } && SkyBlockAPI.island != IslandType.PRIVATE_ISLAND
 
     private fun createFarmMobs(baseEntity: EntityLivingBase): Mob? = when (baseEntity) {
         is EntityMooshroom -> MobFactories.basic(baseEntity, "Farm Mooshroom")

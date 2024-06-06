@@ -1,29 +1,32 @@
 package at.hannibal2.skyhanni.features.fishing
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
 import at.hannibal2.skyhanni.utils.LocationUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils
-import at.hannibal2.skyhanni.utils.TimeUnit
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.datetime.TimeUnit
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-class FishingTimer {
+@SkyHanniModule
+object FishingTimer {
 
     private val config get() = SkyHanniMod.feature.fishing.barnTimer
     private val barnLocation = LorenzVec(108, 89, -252)
@@ -33,9 +36,8 @@ class FishingTimer {
     private var startTime = SimpleTimeMark.farPast()
     private var inHollows = false
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTick(event: ClientTickEvent) {
         if (!config.enabled) return
 
         if (event.repeatSeconds(3)) {
@@ -46,7 +48,7 @@ class FishingTimer {
 
         if (event.isMod(5)) checkMobs()
         if (event.isMod(7)) tryPlaySound()
-        if (config.manualResetTimer.isKeyHeld() && Minecraft.getMinecraft().currentScreen == null) {
+        if (config.manualResetTimer.isKeyHeld() && !McScreen.isOpen) {
             startTime = SimpleTimeMark.now()
         }
     }
@@ -57,7 +59,7 @@ class FishingTimer {
         val passedSince = startTime.passedSince()
         val barnTimerAlertTime = (config.alertTime * 1_000).milliseconds
         if (passedSince in barnTimerAlertTime..(barnTimerAlertTime + 3.seconds)) {
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
         }
     }
 
@@ -74,18 +76,17 @@ class FishingTimer {
         }
 
         if (inHollows && newCount >= 60 && config.wormLimitAlert) {
-            SoundUtils.playBeepSound()
-            LorenzUtils.sendTitle("§cWORM CAP FULL!!!", 2.seconds)
+            McSound.BEEP.play()
+            TitleManager.sendTitle("§cWORM CAP FULL!!!", 2.seconds)
         }
     }
 
-    private fun countMobs() =
-        EntityUtils.getEntities<EntityArmorStand>().map { entity -> FishingAPI.seaCreatureCount(entity) }.sum()
+    private fun countMobs() = McWorld.getEntitiesOf<EntityArmorStand>().map(FishingAPI::seaCreatureCount).sum()
 
     private fun isRightLocation(): Boolean {
         inHollows = false
 
-        if (config.forStranded && LorenzUtils.isStrandedProfile) return true
+        if (config.forStranded && SkyBlockAPI.gamemode == Gamemode.STRANDED) return true
 
         if (config.crystalHollows && IslandType.CRYSTAL_HOLLOWS.isInIsland()) {
             inHollows = true
@@ -103,9 +104,8 @@ class FishingTimer {
         return false
     }
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!config.enabled) return
         if (!rightLocation) return
         if (currentCount == 0) return
@@ -119,16 +119,5 @@ class FishingTimer {
         val text = "$color$timeFormat §8(§e$currentCount §b$name§8)"
 
         config.pos.renderString(text, posLabel = "BarnTimer")
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "fishing.barnTimer", "fishing.barnTimer.enabled")
-        event.move(3, "fishing.barnTimerAlertTime", "fishing.barnTimer.alertTime")
-        event.move(3, "fishing.barnTimerCrystalHollows", "fishing.barnTimer.crystalHollows")
-        event.move(3, "fishing.barnTimerForStranded", "fishing.barnTimer.forStranded")
-        event.move(3, "fishing.wormLimitAlert", "fishing.barnTimer.wormLimitAlert")
-        event.move(3, "fishing.manualResetTimer", "fishing.barnTimer.manualResetTimer")
-        event.move(3, "fishing.barnTimerPos", "fishing.barnTimer.pos")
     }
 }

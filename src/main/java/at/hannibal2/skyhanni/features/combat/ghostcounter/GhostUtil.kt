@@ -3,10 +3,11 @@ package at.hannibal2.skyhanni.features.combat.ghostcounter
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.data.ProfileStorageData
+import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
-import at.hannibal2.skyhanni.utils.NumberUtil.roundToPrecision
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import io.github.moulberry.notenoughupdates.util.Utils
 import java.io.FileReader
 
@@ -84,8 +85,9 @@ object GhostUtil {
             GhostData.Option.TOTALDROPS.add(json["TotalDrops"].asDouble)
             c.ctDataImported = true
             ChatUtils.chat("§aImported data successfully!")
-        } else
-            ChatUtils.error("GhostCounterV3 ChatTriggers module not found!")
+        } else {
+            ErrorManager.skyHanniError("GhostCounterV3 ChatTriggers module not found!")
+        }
     }
 
     fun String.formatText(option: GhostData.Option) = formatText(option.getInt(), option.getInt(true))
@@ -114,8 +116,8 @@ object GhostUtil {
     }
 
     fun String.formatText(value: Double, session: Double) = Utils.chromaStringByColourCode(
-        this.replace("%value%", value.roundToPrecision(2).addSeparators())
-            .replace("%session%", session.roundToPrecision(2).addSeparators())
+        this.replace("%value%", value.roundTo(2).addSeparators())
+            .replace("%session%", session.roundTo(2).addSeparators())
             .replace("&", "§")
     )
 
@@ -140,5 +142,5 @@ object GhostUtil {
     }
 
     private fun percent(number: Double) =
-        100.0.coerceAtMost(((number / 250_000) * 100).roundToPrecision(4)).toString()
+        100.0.coerceAtMost(((number / 250_000) * 100).roundTo(4)).toString()
 }

@@ -1,11 +1,15 @@
 package at.hannibal2.skyhanni.features.garden.visitor
 
-import at.hannibal2.skyhanni.events.GuiContainerEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.render.gui.ForegroundDrawnEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.ACCEPT_SLOT
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.REFUSE_SLOT
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.VisitorBlockReason
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.lastClickedNpc
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -17,17 +21,15 @@ import at.hannibal2.skyhanni.utils.RenderUtils.drawBorder
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import net.minecraft.inventory.Slot
-import net.minecraftforge.event.entity.player.ItemTooltipEvent
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.seconds
 
-class VisitorRewardWarning {
+@SkyHanniModule
+object VisitorRewardWarning {
     private val config get() = VisitorAPI.config.rewardWarning
 
-    @SubscribeEvent
-    fun onForegroundDrawn(event: GuiContainerEvent.ForegroundDrawnEvent) {
+    @HandleEvent
+    fun onForegroundDrawn(event: ForegroundDrawnEvent) {
         if (!VisitorAPI.inInventory) return
 
         val visitor = VisitorAPI.getVisitor(lastClickedNpc) ?: return
@@ -44,15 +46,15 @@ class VisitorRewardWarning {
 
     private fun renderColor(backgroundSlot: Slot?, outlineSlot: Slot?, outlineColor: LorenzColor) {
         if (!config.bypassKey.isKeyHeld() && backgroundSlot != null) {
-            backgroundSlot highlight LorenzColor.DARK_GRAY.addOpacity(config.opacity)
+            backgroundSlot.highlight(LorenzColor.DARK_GRAY.addOpacity(config.opacity))
         }
         if (config.optionOutline && outlineSlot != null) {
-            outlineSlot drawBorder outlineColor.addOpacity(200)
+            outlineSlot.drawBorder(outlineColor.addOpacity(200))
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onSlotClick(event: SlotClickEvent) {
         if (!VisitorAPI.inInventory) return
         val stack = event.slot?.stack ?: return
 
@@ -64,12 +66,12 @@ class VisitorRewardWarning {
 
         val shouldBlock = blockReason?.run { blockRefusing && isRefuseSlot || !blockRefusing && isAcceptSlot } ?: false
         if (!config.bypassKey.isKeyHeld() && shouldBlock) {
-            event.isCanceled = true
+            event.cancel()
             return
         }
 
         // all but shift click types work for accepting visitor
-        if (event.clickTypeEnum == GuiContainerEvent.ClickType.SHIFT) return
+        if (event.clickTypeEnum == SlotClickEvent.ClickType.SHIFT) return
         if (isRefuseSlot) {
             VisitorAPI.changeStatus(visitor, VisitorAPI.VisitorStatus.REFUSED, "refused")
             // fallback if tab list is disabled
@@ -84,8 +86,8 @@ class VisitorRewardWarning {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onTooltip(event: ItemTooltipEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!GardenAPI.onBarnPlot) return
         if (!VisitorAPI.inInventory) return
         val visitor = VisitorAPI.getVisitor(lastClickedNpc) ?: return

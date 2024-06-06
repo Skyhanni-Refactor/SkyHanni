@@ -1,10 +1,12 @@
 package at.hannibal2.skyhanni.features.garden
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.DisplayTableEntry
 import at.hannibal2.skyhanni.utils.InventoryUtils
@@ -17,23 +19,19 @@ import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getPrice
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class AnitaMedalProfit {
+@SkyHanniModule
+object AnitaMedalProfit {
 
     private val config get() = GardenAPI.config.anitaShop
     private var display = emptyList<Renderable>()
 
-    companion object {
-
-        var inInventory = false
-    }
+    var inInventory = false
 
     enum class MedalType(val displayName: String, val factorBronze: Int) {
         GOLD("§6Gold medal", 8),
@@ -44,12 +42,12 @@ class AnitaMedalProfit {
 
     private fun getMedal(name: String) = MedalType.entries.firstOrNull { it.displayName == name }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         inInventory = false
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (!config.medalProfitEnabled) return
         if (event.inventoryName != "Anita") return
@@ -78,7 +76,7 @@ class AnitaMedalProfit {
     }
 
     private fun readItem(slot: Int, item: ItemStack, table: MutableList<DisplayTableEntry>) {
-        val itemName = getItemName(item) ?: return
+        val itemName = getItemName(item)
         if (itemName == " ") return
         if (itemName == "§cClose") return
         if (itemName == "§eUnique Gold Medals") return
@@ -130,7 +128,7 @@ class AnitaMedalProfit {
     }
 
     private fun getFullCost(requiredItems: MutableList<String>): Double {
-        val jacobTicketPrice = "JACOBS_TICKET".asInternalName().getPrice()
+        val jacobTicketPrice = SkyhanniItems.JACOBS_TICKET().getPrice()
         var otherItemsPrice = 0.0
         for (rawItemName in requiredItems) {
             val pair = ItemUtils.readItemAmount(rawItemName)
@@ -174,8 +172,8 @@ class AnitaMedalProfit {
         return items
     }
 
-    @SubscribeEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (inInventory) {
             config.medalProfitPos.renderRenderables(
                 display,
@@ -183,11 +181,5 @@ class AnitaMedalProfit {
                 posLabel = "Anita Medal Profit"
             )
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.anitaMedalProfitEnabled", "garden.anitaShop.medalProfitEnabled")
-        event.move(3, "garden.anitaMedalProfitPos", "garden.anitaShop.medalProfitPos")
     }
 }

@@ -1,32 +1,32 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.data.jsonobjects.repo.ArmorDropInfo
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ArmorDropsJson
-import at.hannibal2.skyhanni.data.jsonobjects.repo.ArmorDropsJson.DropInfo
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.IslandChangeEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import at.hannibal2.skyhanni.utils.tracker.TrackerData
-import com.google.gson.JsonObject
 import com.google.gson.annotations.Expose
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object ArmorDropTracker {
 
     private val config get() = GardenAPI.config.farmingArmorDrop
@@ -58,13 +58,13 @@ object ArmorDropTracker {
         FERMENTO("§6Fermento", "§6§lRARE CROP! §r§f§r§6Fermento §r§b(Armor Set Bonus)"),
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onProfileJoin(event: ProfileJoinEvent) {
         hasArmor = false
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
         for (dropType in ArmorDropType.entries) {
             if (dropType.chatMessage == event.message) {
                 addDrop(dropType)
@@ -89,9 +89,8 @@ object ArmorDropTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onRenderOverlay(event: GuiRenderEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.enabled) return
         if (!hasArmor) return
         if (!GardenAPI.hasFarmingToolInHand()) return
@@ -99,35 +98,34 @@ object ArmorDropTracker {
         tracker.renderDisplay(config.pos)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         if (event.newIsland == IslandType.GARDEN) {
             tracker.firstUpdate()
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!GardenAPI.inGarden()) return
         if (!config.enabled) return
 
         checkArmor()
     }
 
     private fun checkArmor() {
-        val armorPieces = InventoryUtils.getArmor()
+        val armorPieces = McPlayer.armor
             .mapNotNull { it?.getInternalName()?.asString() }
             .count { armorPattern.matcher(it).matches() }
         hasArmor = armorPieces > 1
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<ArmorDropsJson>("ArmorDrops")
-        armorDropInfo = data.special_crops
+        armorDropInfo = data.specialCrops
     }
 
-    private var armorDropInfo = mapOf<String, DropInfo>()
+    private var armorDropInfo = mapOf<String, ArmorDropInfo>()
     private var currentArmorDropChance = 0.0
     private var lastCalculationTime = SimpleTimeMark.farPast()
 
@@ -138,8 +136,8 @@ object ArmorDropTracker {
             lastCalculationTime = SimpleTimeMark.now()
 
             val armorDropName = crop.specialDropType
-            val armorName = armorDropInfo[armorDropName]?.armor_type ?: return 0.0
-            val pieceCount = InventoryUtils.getArmor()
+            val armorName = armorDropInfo[armorDropName]?.armorType ?: return 0.0
+            val pieceCount = McPlayer.armor
                 .mapNotNull { it?.getInternalName()?.asString() }
                 .count { it.contains(armorName) || it.contains("FERMENTO") }
 
@@ -151,19 +149,6 @@ object ArmorDropTracker {
             currentArmorDropChance = (dropRate * 60 * 60.0) / 100
         }
         return currentArmorDropChance
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.farmingArmorDropsEnabled", "garden.farmingArmorDrop.enabled")
-        event.move(3, "garden.farmingArmorDropsHideChat", "garden.farmingArmorDrop.hideChat")
-        event.move(3, "garden.farmingArmorDropsPos", "garden.farmingArmorDrop.pos")
-
-        event.move(8, "#profile.garden.farmArmorDrops", "#profile.garden.armorDropTracker") { old ->
-            val new = JsonObject()
-            new.add("drops", old)
-            new
-        }
     }
 
     fun resetCommand() {

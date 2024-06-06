@@ -1,29 +1,31 @@
 package at.hannibal2.skyhanni.features.rift.area.westvillage
 
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.IslandChangeEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import at.hannibal2.skyhanni.utils.tracker.TrackerData
 import com.google.gson.annotations.Expose
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.regex.Pattern
 
+@SkyHanniModule
 object VerminTracker {
 
     private val patternGroup = RepoPattern.group("rift.area.westvillage.vermintracker")
@@ -39,17 +41,12 @@ object VerminTracker {
         "fly",
         ".*§eYou vacuumed a §.*Fly.*"
     )
-    private val verminBinPattern by patternGroup.pattern(
-        "binline",
-        "§fVermin Bin: §\\w(?<count>\\d+) (?<vermin>\\w+)"
-    )
-    private val verminBagPattern by patternGroup.pattern(
-        "bagline",
-        "§fVacuum Bag: §\\w(?<count>\\d+) (?<vermin>\\w+)"
+    private val verminPattern by patternGroup.pattern(
+        "vermin",
+        "§f(?:Vermin Bin|Vacuum Bag): §\\w(?<count>\\d+) (?<vermin>\\w+)"
     )
 
     private var hasVacuum = false
-    private val TURBOMAX_VACUUM = "TURBOMAX_VACUUM".asInternalName()
 
     private val config get() = RiftAPI.config.area.westVillage.verminTracker
 
@@ -72,21 +69,13 @@ object VerminTracker {
         SILVERFISH(3, "§aSilverfish", silverfishPattern),
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!RiftAPI.inRift()) return
-        if (event.repeatSeconds(1)) {
-            checkVacuum()
-        }
+    @HandleEvent(onlyOnIsland = IslandType.THE_RIFT)
+    fun onSecondPassed(event: SecondPassedEvent) {
+        hasVacuum = McPlayer.has(SkyhanniItems.TURBOMAX_VACUUM(), true)
     }
 
-    private fun checkVacuum() {
-        hasVacuum = InventoryUtils.getItemsInOwnInventory()
-            .any { it.getInternalName() == TURBOMAX_VACUUM }
-    }
-
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         VerminType.entries.forEach { verminType ->
             if (verminType.pattern.matches(event.message)) {
                 tracker.modify { it.count.addOrPut(verminType, 1) }
@@ -98,34 +87,34 @@ object VerminTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (!RiftAPI.inRift() || event.inventoryName != "Vermin Bin") return
 
         val bin = event.inventoryItems[13]?.getLore() ?: return
-        val bag = InventoryUtils.getItemsInOwnInventory()
-            .firstOrNull { it.getInternalName() == TURBOMAX_VACUUM }
+        val bag = McPlayer.inventory
+            .firstOrNull { it.getInternalName() == SkyhanniItems.TURBOMAX_VACUUM() }
             ?.getLore() ?: emptyList()
 
-        val binCounts = countVermin(bin, verminBinPattern)
+        val binCounts = countVermin(bin)
         VerminType.entries.forEach { setVermin(it, binCounts[it] ?: 0) }
 
         if (bag.isEmpty()) return
 
-        val bagCounts = countVermin(bag, verminBagPattern)
+        val bagCounts = countVermin(bag)
         VerminType.entries.forEach { addVermin(it, bagCounts[it] ?: 0) }
     }
 
-    private fun countVermin(lore: List<String>, pattern: Pattern): Map<VerminType, Int> {
+    private fun countVermin(lore: List<String>): Map<VerminType, Int> {
         val verminCounts = mutableMapOf(
             VerminType.SILVERFISH to 0,
             VerminType.SPIDER to 0,
             VerminType.FLY to 0
         )
         for (line in lore) {
-            pattern.matchMatcher(line) {
-                val vermin = group("vermin")?.lowercase() ?: continue
-                val verminCount = group("count")?.toInt() ?: continue
+            verminPattern.matchMatcher(line) {
+                val vermin = group("vermin").lowercase()
+                val verminCount = group("count").toInt()
                 val verminType = getVerminType(vermin)
                 verminCounts[verminType] = verminCount
             }
@@ -158,18 +147,16 @@ object VerminTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent) {
         if (!isEnabled()) return
-        if (!config.showOutsideWestVillage &&
-            !LorenzUtils.skyBlockArea.let { it == "Infested House" || it == "West Village" }
-        ) return
+        if (!config.showOutsideWestVillage && !IslandArea.INFESTED_HOUSE.isInside() && !IslandArea.WEST_VILLAGE.isInside()) return
         if (!config.showWithoutVacuum && !hasVacuum) return
 
         tracker.renderDisplay(config.position)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         if (event.newIsland == IslandType.THE_RIFT) {
             tracker.firstUpdate()

@@ -1,24 +1,26 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiRenderItemEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawSlotText
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getAppliedPocketSackInASack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class PocketSackInASackDisplay {
+@SkyHanniModule
+object PocketSackInASackDisplay {
 
     private val config get() = SkyHanniMod.feature.inventory.pocketSackInASack
-    private val maxedStitched = 3
+    private const val MAX_STITCHES = 3
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemOverlayPost(event: GuiRenderItemEvent.RenderOverlayEvent.GuiRenderItemPost) {
         val stack = event.stack ?: return
-        if (!LorenzUtils.inSkyBlock || stack.stackSize != 1) return
+        if (!SkyBlockAPI.isConnected || stack.stackSize != 1) return
         if (!config.showOverlay) return
         val pocketSackInASackApplied = stack.getAppliedPocketSackInASack() ?: return
 
@@ -29,9 +31,8 @@ class PocketSackInASackDisplay {
         event.drawSlotText(x, y, stackTip, .9f)
     }
 
-    @SubscribeEvent
-    fun onTooltip(event: LorenzToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!config.replaceLore) return
         val itemStack = event.itemStack
         val applied = itemStack.getAppliedPocketSackInASack() ?: return
@@ -41,8 +42,8 @@ class PocketSackInASackDisplay {
         var next = false
         for (line in iterator) {
             if (line.contains("7This sack is")) {
-                val color = if (applied == maxedStitched) "§a" else "§b"
-                iterator.set("§7This sack is stitched $color$applied§7/$color$maxedStitched")
+                val color = if (applied == MAX_STITCHES) "§a" else "§b"
+                iterator.set("§7This sack is stitched $color$applied§7/$color$MAX_STITCHES")
                 next = true
                 continue
             }
@@ -53,8 +54,8 @@ class PocketSackInASackDisplay {
         }
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(31, "misc.pocketSackInASack", "inventory.pocketSackInASack")
     }
 }

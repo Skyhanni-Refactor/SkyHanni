@@ -1,18 +1,19 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI.profileStorage
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 
+@SkyHanniModule
 object ChocolateFactoryTooltip {
 
     private val config get() = ChocolateFactoryAPI.config
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onTooltip(event: LorenzToolTipEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!ChocolateFactoryAPI.inChocolateFactory) return
         if (!config.extraTooltipStats) return
 
@@ -33,8 +34,8 @@ object ChocolateFactoryTooltip {
 
         if (upgradeInfo.effectiveCost == null) return
 
-        event.toolTip.add("§7Extra: §6${upgradeInfo.extraPerSecond?.round(2) ?: "N/A"} §7choc/s")
-        event.toolTip.add("§7Effective Cost: §6${upgradeInfo.effectiveCost.addSeparators() ?: "N/A"}")
+        event.toolTip.add("§7Extra: §6${upgradeInfo.extraPerSecond?.roundTo(2) ?: "N/A"} §7choc/s")
+        event.toolTip.add("§7Effective Cost: §6${upgradeInfo.effectiveCost.addSeparators()}")
 
         if (slotIndex == ChocolateFactoryAPI.timeTowerIndex) {
             event.toolTip.add("§7One charge will give: §6${chocPerTimeTower().addSeparators()}")

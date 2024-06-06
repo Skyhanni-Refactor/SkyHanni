@@ -1,29 +1,32 @@
 package at.hannibal2.skyhanni.features.garden
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
-import at.hannibal2.skyhanni.utils.SkyblockSeason
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.datetime.SkyblockSeason
 
-class AtmosphericFilterDisplay {
+@SkyHanniModule
+object AtmosphericFilterDisplay {
 
     private val config get() = SkyHanniMod.feature.garden.atmosphericFilterDisplay
 
     private var display = ""
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         if (!GardenAPI.inGarden() && !config.outsideGarden) return
         display = drawDisplay(SkyblockSeason.getCurrentSeason() ?: return)
     }
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
         if (GardenAPI.inGarden()) {
             config.position.renderString(display, posLabel = "Atmospheric Filter Perk Display")
@@ -40,8 +43,8 @@ class AtmosphericFilterDisplay {
         append(season.getPerk(config.abbreviatePerk))
     }
 
-    private fun isEnabled() = LorenzUtils.onHypixel && config.enabled && (
-        (OutsideSbFeature.ATMOSPHERIC_FILTER.isSelected() && !LorenzUtils.inSkyBlock) ||
-            (LorenzUtils.inSkyBlock && (GardenAPI.inGarden() || config.outsideGarden))
+    private fun isEnabled() = HypixelAPI.onHypixel && config.enabled && (
+        (OutsideSbFeature.ATMOSPHERIC_FILTER.isSelected() && !SkyBlockAPI.isConnected) ||
+            (SkyBlockAPI.isConnected && (GardenAPI.inGarden() || config.outsideGarden))
         )
 }

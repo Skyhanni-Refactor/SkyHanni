@@ -1,7 +1,9 @@
 package at.hannibal2.skyhanni.config.commands
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.api.SkillAPI
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.ConfigFileType
 import at.hannibal2.skyhanni.config.ConfigGuiManager
 import at.hannibal2.skyhanni.config.features.About.UpdateStream
@@ -12,6 +14,7 @@ import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.data.SackAPI
 import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.bazaar.HypixelBazaarFetcher
+import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.bingo.card.BingoCardDisplay
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.BingoNextStepHelper
 import at.hannibal2.skyhanni.features.chat.Translator
@@ -69,20 +72,18 @@ import at.hannibal2.skyhanni.test.DebugCommand
 import at.hannibal2.skyhanni.test.PacketTest
 import at.hannibal2.skyhanni.test.SkyHanniConfigSearchResetCommand
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
-import at.hannibal2.skyhanni.test.TestBingo
 import at.hannibal2.skyhanni.test.WorldEdit
 import at.hannibal2.skyhanni.test.command.CopyActionBarCommand
 import at.hannibal2.skyhanni.test.command.CopyBossbarCommand
 import at.hannibal2.skyhanni.test.command.CopyItemCommand
 import at.hannibal2.skyhanni.test.command.CopyNearbyEntitiesCommand
 import at.hannibal2.skyhanni.test.command.CopyScoreboardCommand
+import at.hannibal2.skyhanni.test.command.ErrorManager
+import at.hannibal2.skyhanni.test.command.SoundCommand
 import at.hannibal2.skyhanni.test.command.TestChatCommand
 import at.hannibal2.skyhanni.test.command.TrackParticlesCommand
 import at.hannibal2.skyhanni.test.command.TrackSoundsCommand
-import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.chat.ChatClickActionManager
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPatternGui
@@ -151,16 +152,36 @@ object Commands {
     }
 
     private fun usersMain() {
-        registerCommand("sh", "Opens the main SkyHanni config", openMainMenu)
-        registerCommand("skyhanni", "Opens the main SkyHanni config", openMainMenu)
-        registerCommand("ff", "Opens the Farming Fortune Guide") { openFortuneGuide() }
-        registerCommand("shcommands", "Shows this list") { HelpCommand.onCommand(it, commands) }
-        registerCommand0("shdefaultoptions", "Select default options", {
-            DefaultConfigFeatures.onCommand(
-                it.getOrNull(0) ?: "null", it.getOrNull(1) ?: "null"
-            )
-        }, DefaultConfigFeatures::onComplete)
-        registerCommand("shwords", "Opens the config list for modifying visual words") { openVisualWords() }
+        registerCommand(
+            "sh",
+            "Opens the main SkyHanni config",
+            openMainMenu
+        )
+        registerCommand(
+            "skyhanni",
+            "Opens the main SkyHanni config",
+            openMainMenu
+        )
+        registerCommand(
+            "ff",
+            "Opens the Farming Fortune Guide"
+        ) { openFortuneGuide() }
+        registerCommand(
+            "shcommands",
+            "Shows this list"
+        ) { HelpCommand.onCommand(it, commands) }
+        registerCommand0(
+            "shdefaultoptions",
+            "Select default options", {
+                DefaultConfigFeatures.onCommand(
+                    it.getOrNull(0) ?: "null", it.getOrNull(1) ?: "null"
+                )
+            }, DefaultConfigFeatures::onComplete
+        )
+        registerCommand(
+            "shwords",
+            "Opens the config list for modifying visual words"
+        ) { openVisualWords() }
     }
 
     private fun usersNormal() {
@@ -168,7 +189,10 @@ object Commands {
             "shmarkplayer",
             "Add a highlight effect to a player for better visibility"
         ) { MarkedPlayerManager.command(it) }
-        registerCommand("shtrackcollection", "Tracks your collection gain over time") { CollectionTracker.command(it) }
+        registerCommand(
+            "shtrackcollection",
+            "Tracks your collection gain over time"
+        ) { CollectionTracker.command(it) }
         registerCommand(
             "shcroptime",
             "Calculates with your current crop per second speed how long you need to farm a crop to collect this amount of items"
@@ -197,9 +221,18 @@ object Commands {
             "shclearfarmingitems",
             "Clear farming items saved for the Farming Fortune Guide"
         ) { clearFarmingItems() }
-        registerCommand("shresetghostcounter", "Resets the ghost counter") { GhostUtil.reset() }
-        registerCommand("shresetpowdertracker", "Resets the Powder Tracker") { PowderTracker.resetCommand() }
-        registerCommand("shresetdicertracker", "Resets the Dicer Drop Tracker") { DicerRngDropTracker.resetCommand() }
+        registerCommand(
+            "shresetghostcounter",
+            "Resets the ghost counter"
+        ) { GhostUtil.reset() }
+        registerCommand(
+            "shresetpowdertracker",
+            "Resets the Powder Tracker"
+        ) { PowderTracker.resetCommand() }
+        registerCommand(
+            "shresetdicertracker",
+            "Resets the Dicer Drop Tracker"
+        ) { DicerRngDropTracker.resetCommand() }
         registerCommand(
             "shresetendernodetracker",
             "Resets the Ender Node Tracker"
@@ -220,7 +253,10 @@ object Commands {
             "shresetvisitordrops",
             "Reset the Visitors Drop Statistics"
         ) { GardenVisitorDropStatistics.resetCommand() }
-        registerCommand("shbingotoggle", "Toggle the bingo card display mode") { BingoCardDisplay.toggleCommand() }
+        registerCommand(
+            "shbingotoggle",
+            "Toggle the bingo card display mode"
+        ) { BingoCardDisplay.toggleCommand() }
         registerCommand(
             "shfarmingprofile",
             "Look up the farming profile from yourself or another player on elitebot.dev"
@@ -329,15 +365,14 @@ object Commands {
     }
 
     private fun usersBugFix() {
-        registerCommand("shupdaterepo", "Download the SkyHanni repo again") { SkyHanniMod.repo.updateRepo() }
+        registerCommand(
+            "shupdaterepo",
+            "Download the SkyHanni repo again"
+        ) { SkyHanniMod.repo.updateRepo() }
         registerCommand(
             "shresetburrowwarps",
             "Manually resetting disabled diana burrow warp points"
         ) { BurrowWarpHelper.resetDisabledWarps() }
-        registerCommand(
-            "shtogglehypixelapierrors",
-            "Show/hide hypixel api error messages in chat"
-        ) { APIUtil.toggleApiErrorMessages() }
         registerCommand(
             "shclearcropspeed",
             "Reset garden crop speed data and best crop time data"
@@ -409,14 +444,38 @@ object Commands {
     }
 
     private fun developersDebugFeatures() {
-        registerCommand("shtestbingo", "dev command") { TestBingo.toggle() }
-        registerCommand("shprintbingohelper", "dev command") { BingoNextStepHelper.command() }
-        registerCommand("shreloadbingodata", "dev command") { BingoCardDisplay.command() }
-        registerCommand("shtestgardenvisitors", "dev command") { SkyHanniDebugsAndTests.testGardenVisitors() }
-        registerCommand("shtestcomposter", "dev command") { ComposterOverlay.onCommand(it) }
-        registerCommand("shtestinquisitor", "dev command") { InquisitorWaypointShare.test() }
-        registerCommand("shshowcropmoneycalculation", "dev command") { CropMoneyDisplay.toggleShowCalculation() }
-        registerCommand("shcropspeedmeter", "Debugs how many crops you collect over time") { CropSpeedMeter.toggle() }
+        registerCommand(
+            "shtestbingo",
+            "dev command"
+        ) { BingoAPI.toggleDebug() }
+        registerCommand(
+            "shprintbingohelper",
+            "dev command"
+        ) { BingoNextStepHelper.command() }
+        registerCommand(
+            "shreloadbingodata",
+            "dev command"
+        ) { BingoCardDisplay.command() }
+        registerCommand(
+            "shtestgardenvisitors",
+            "dev command"
+        ) { SkyHanniDebugsAndTests.testGardenVisitors() }
+        registerCommand(
+            "shtestcomposter",
+            "dev command"
+        ) { ComposterOverlay.onCommand(it) }
+        registerCommand(
+            "shtestinquisitor",
+            "dev command"
+        ) { InquisitorWaypointShare.test() }
+        registerCommand(
+            "shshowcropmoneycalculation",
+            "dev command"
+        ) { CropMoneyDisplay.toggleShowCalculation() }
+        registerCommand(
+            "shcropspeedmeter",
+            "Debugs how many crops you collect over time"
+        ) { CropSpeedMeter.toggle() }
         registerCommand0(
             "shworldedit",
             "Select regions in the world",
@@ -441,8 +500,14 @@ object Commands {
     }
 
     private fun developersCodingHelp() {
-        registerCommand("shrepopatterns", "See where regexes are loaded from") { RepoPatternGui.open() }
-        registerCommand("shtest", "Unused test command.") { SkyHanniDebugsAndTests.testCommand(it) }
+        registerCommand(
+            "shrepopatterns",
+            "See where regexes are loaded from"
+        ) { RepoPatternGui.open() }
+        registerCommand(
+            "shtest",
+            "Unused test command."
+        ) { SkyHanniDebugsAndTests.testCommand(it) }
         registerCommand(
             "shtestitem",
             "test item internal name resolving"
@@ -451,10 +516,22 @@ object Commands {
             "shfindnullconfig",
             "Find config elements that are null and prints them into the console"
         ) { SkyHanniDebugsAndTests.findNullConfig(it) }
-        registerCommand("shtestwaypoint", "Set a waypoint on that location") { SkyHanniDebugsAndTests.waypoint(it) }
-        registerCommand("shtesttablist", "Set your clipboard as a fake tab list.") { TabListData.toggleDebug() }
-        registerCommand("shreloadlocalrepo", "Reloading the local repo data") { SkyHanniMod.repo.reloadLocalRepo() }
-        registerCommand("shchathistory", "Show the unfiltered chat history") { ChatManager.openChatFilterGUI(it) }
+        registerCommand(
+            "shtestwaypoint",
+            "Set a waypoint on that location"
+        ) { SkyHanniDebugsAndTests.waypoint(it) }
+        registerCommand(
+            "shtesttablist",
+            "Set your clipboard as a fake tab list."
+        ) { TabListData.toggleDebug() }
+        registerCommand(
+            "shreloadlocalrepo",
+            "Reloading the local repo data"
+        ) { SkyHanniMod.repo.reloadLocalRepo() }
+        registerCommand(
+            "shchathistory",
+            "Show the unfiltered chat history"
+        ) { ChatManager.openChatFilterGUI(it) }
         registerCommand(
             "shstoplisteners",
             "Unregistering all loaded forge event listeners"
@@ -498,7 +575,7 @@ object Commands {
         registerCommand(
             "shcopyitem",
             "Copies information about the item in hand to the clipboard"
-        ) { CopyItemCommand.command() }
+        ) { CopyItemCommand.onCommand() }
         registerCommand("shtestpacket", "Logs incoming and outgoing packets to the console") { PacketTest.command(it) }
         registerCommand(
             "shtestmessage",
@@ -515,7 +592,7 @@ object Commands {
         registerCommand(
             "shplaysound",
             "Play the specified sound effect at the given pitch and volume."
-        ) { SoundUtils.command(it) }
+        ) { SoundCommand.onCommand(it) }
         registerCommand(
             "shsendtitle",
             "Display a title on the screen with the specified settings."
@@ -540,10 +617,21 @@ object Commands {
             "shtoggleegglocationdebug",
             "Shows Hoppity egg locations with their internal API names and status."
         ) { HoppityEggLocations.toggleDebug() }
+        registerCommand(
+            "shreseterrors",
+            "Reset the error cache"
+        ) {
+            ErrorManager.resetCache()
+            ChatUtils.chat("Error cache reset!")
+        }
     }
 
     private fun internalCommands() {
-        registerCommand("shaction", "") { ChatClickActionManager.onCommand(it) }
+        registerCommand(
+            "shaction",
+            ""
+        )
+        { ChatClickActionManager.onCommand(it) }
     }
 
     private fun shortenedCommands() {
@@ -557,7 +645,7 @@ object Commands {
 
     @JvmStatic
     fun openFortuneGuide() {
-        if (!LorenzUtils.inSkyBlock) {
+        if (!SkyBlockAPI.isConnected) {
             ChatUtils.userError("Join SkyBlock to open the fortune guide!")
         } else {
             FFGuideGUI.open()
@@ -566,7 +654,7 @@ object Commands {
 
     @JvmStatic
     fun openVisualWords() {
-        if (!LorenzUtils.onHypixel) {
+        if (!HypixelAPI.onHypixel) {
             ChatUtils.userError("You need to join Hypixel to use this feature!")
         } else {
             if (VisualWordGui.sbeConfigPath.exists()) VisualWordGui.drawImport = true

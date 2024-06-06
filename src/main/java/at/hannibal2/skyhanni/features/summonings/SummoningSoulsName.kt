@@ -1,27 +1,29 @@
 package at.hannibal2.skyhanni.features.summonings
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.sorted
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.getNameTagWith
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.minutes
 
-class SummoningSoulsName {
+@SkyHanniModule
+object SummoningSoulsName {
 
     // TODO repo
-    private val texture =
+    private const val TEXTURE =
         "ewogICJ0aW1lc3RhbXAiIDogMTYwMTQ3OTI2NjczMywKICAicHJvZmlsZUlkIiA6ICJmMzA1ZjA5NDI0NTg0ZjU" +
             "4YmEyYjY0ZjAyZDcyNDYyYyIsCiAgInByb2ZpbGVOYW1lIiA6ICJqcm9ja2EzMyIsCiAgInNpZ25hdH" +
             "VyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgI" +
@@ -32,8 +34,8 @@ class SummoningSoulsName {
     private val mobsLastLocation = TimeLimitedCache<Int, LorenzVec>(6.minutes)
     private val mobsName = TimeLimitedCache<Int, String>(6.minutes)
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
 
         // TODO use packets instead of this
@@ -41,10 +43,10 @@ class SummoningSoulsName {
     }
 
     private fun check() {
-        for (entity in EntityUtils.getEntities<EntityArmorStand>()) {
+        for (entity in McWorld.getEntitiesOf<EntityArmorStand>()) {
             if (souls.contains(entity)) continue
 
-            if (entity.hasSkullTexture(texture)) {
+            if (entity.hasSkullTexture(TEXTURE)) {
                 val soulLocation = entity.getLorenzVec()
 
                 val map = mutableMapOf<Int, Double>()
@@ -60,7 +62,7 @@ class SummoningSoulsName {
             }
         }
 
-        for (entity in EntityUtils.getEntities<EntityLiving>()) {
+        for (entity in McWorld.getEntitiesOf<EntityLiving>()) {
             val id = entity.entityId
             val consumer = entity.getNameTagWith(2, "§c❤")
             if (consumer != null && !consumer.name.contains("§e0")) {
@@ -69,14 +71,14 @@ class SummoningSoulsName {
             }
         }
 
-        val entityList = EntityUtils.getEntities<EntityArmorStand>()
+        val entityList = McWorld.getEntitiesOf<EntityArmorStand>()
         souls.keys.removeIf { it !in entityList }
         // TODO fix overhead!
 //        mobs.keys.removeIf { it !in world.loadedEntityList }
     }
 
-    @SubscribeEvent
-    fun onWorldRender(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
 
         for ((entity, name) in souls) {
@@ -85,12 +87,12 @@ class SummoningSoulsName {
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         souls.clear()
         mobsLastLocation.clear()
         mobsName.clear()
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && SkyHanniMod.feature.combat.summonings.summoningSoulDisplay
+    private fun isEnabled() = SkyBlockAPI.isConnected && SkyHanniMod.feature.combat.summonings.summoningSoulDisplay
 }

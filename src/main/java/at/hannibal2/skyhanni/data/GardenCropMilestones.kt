@@ -1,21 +1,22 @@
 package at.hannibal2.skyhanni.data
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenJson
-import at.hannibal2.skyhanni.events.CropMilestoneUpdateEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.garden.CropMilestoneUpdateEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils.chat
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
-import at.hannibal2.skyhanni.utils.SoundUtils
-import at.hannibal2.skyhanni.utils.SoundUtils.playSound
+import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object GardenCropMilestones {
 
     private val patternGroup = RepoPattern.group("data.garden.milestone")
@@ -28,8 +29,6 @@ object GardenCropMilestones {
         "§7Total: §a(?<name>.*)"
     )
 
-    private val config get() = GardenAPI.config.cropMilestones
-
     fun getCropTypeByLore(itemStack: ItemStack): CropType? {
         itemStack.getLore().matchFirst(cropPattern) {
             val name = group("name")
@@ -38,7 +37,7 @@ object GardenCropMilestones {
         return null
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (event.inventoryName != "Crop Milestones") return
 
@@ -49,7 +48,7 @@ object GardenCropMilestones {
                 crop.setCounter(amount)
             }
         }
-        CropMilestoneUpdateEvent().postAndCatch()
+        CropMilestoneUpdateEvent().post()
         GardenCropMilestonesCommunityFix.openInventory(event.inventoryItems)
     }
 
@@ -86,7 +85,7 @@ object GardenCropMilestones {
         if (goalReached)
             chat("§e§lYou have reached your milestone goal of §b§l${customGoalLevel} §e§lin the §b§l${crop.cropName} §e§lcrop!", false)
 
-        SoundUtils.createSound("random.levelup", 1f, 1f).playSound()
+        McSound.play("random.levelup", 1f, 1f)
     }
 
     var cropMilestoneData: Map<CropType, List<Int>> = emptyMap()
@@ -177,8 +176,8 @@ object GardenCropMilestones {
         return (progress - startCrops).toDouble() / (end - startCrops)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
-        cropMilestoneData = event.getConstant<GardenJson>("Garden").crop_milestones
+        cropMilestoneData = event.getConstant<GardenJson>("Garden").cropMilestones
     }
 }

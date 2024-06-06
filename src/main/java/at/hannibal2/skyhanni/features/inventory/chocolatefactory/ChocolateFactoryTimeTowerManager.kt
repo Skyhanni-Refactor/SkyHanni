@@ -1,20 +1,22 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
-import at.hannibal2.skyhanni.events.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object ChocolateFactoryTimeTowerManager {
 
     private val config get() = ChocolateFactoryAPI.config
@@ -23,9 +25,8 @@ object ChocolateFactoryTimeTowerManager {
     private var lastTimeTowerWarning = SimpleTimeMark.farPast()
     private var lastTimeTowerReminder = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         val profileStorage = profileStorage ?: return
 
         if (SimpleTimeMark(profileStorage.currentTimeTowerEnds).isInPast()) {
@@ -54,7 +55,7 @@ object ChocolateFactoryTimeTowerManager {
                     HypixelCommands.chocolateFactory()
                 }
             )
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
             lastTimeTowerWarning = SimpleTimeMark.now()
             return
         }
@@ -77,7 +78,7 @@ object ChocolateFactoryTimeTowerManager {
                 HypixelCommands.chocolateFactory()
             }
         )
-        SoundUtils.playBeepSound()
+        McSound.BEEP.play()
         lastTimeTowerWarning = SimpleTimeMark.now()
     }
 
@@ -118,7 +119,7 @@ object ChocolateFactoryTimeTowerManager {
                     HypixelCommands.chocolateFactory()
                 }
             )
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
             lastTimeTowerReminder = SimpleTimeMark.now()
         }
     }
@@ -142,8 +143,8 @@ object ChocolateFactoryTimeTowerManager {
         return duration.milliseconds
     }
 
-    @SubscribeEvent
-    fun onProfileChange(event: ProfileJoinEvent) {
+    @HandleEvent
+    fun onProfileJoin(event: ProfileJoinEvent) {
         lastTimeTowerWarning = SimpleTimeMark.farPast()
     }
 }

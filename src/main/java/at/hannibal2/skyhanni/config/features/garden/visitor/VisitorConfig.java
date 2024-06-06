@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.config.features.garden.visitor;
 
 import at.hannibal2.skyhanni.config.FeatureToggle;
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.Accordion;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorBoolean;
@@ -48,27 +47,15 @@ public class VisitorConfig {
     @ConfigEditorDropdown
     public HighlightMode highlightStatus = HighlightMode.BOTH;
 
-    public enum HighlightMode implements HasLegacyId {
-        COLOR("Color Only", 0),
-        NAME("Name Only", 1),
-        BOTH("Both", 2),
-        DISABLED("Disabled", 3);
+    public enum HighlightMode {
+        COLOR("Color Only"),
+        NAME("Name Only"),
+        BOTH("Both"),
+        DISABLED("Disabled");
         private final String str;
-        private final int legacyId;
 
-        HighlightMode(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         HighlightMode(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override

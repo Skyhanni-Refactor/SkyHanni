@@ -4,6 +4,7 @@ import com.google.common.cache.CacheBuilder
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 
+@Suppress("UnstableApiUsage")
 class TimeLimitedCache<K: Any, V: Any>(
     expireAfterWrite: Duration,
     private val removalListener: (K?, V?) -> Unit = { _, _ -> },

@@ -1,19 +1,17 @@
 package at.hannibal2.skyhanni.features.event.jerry.frozentreasure
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.config.features.event.winter.FrozenTreasureConfig.FrozenTreasureDisplayEntry
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.ScoreboardData
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
-import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -23,8 +21,8 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import at.hannibal2.skyhanni.utils.tracker.TrackerData
 import com.google.gson.annotations.Expose
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object FrozenTreasureTracker {
 
     private val config get() = SkyHanniMod.feature.event.winter.frozenTreasureTracker
@@ -64,15 +62,15 @@ object FrozenTreasureTracker {
         var treasureCount: MutableMap<FrozenTreasure, Int> = mutableMapOf()
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         icePerHour = 0
         stoppedChecks = 0
         icePerSecond = mutableListOf()
         tracker.update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!onJerryWorkshop()) return
 
@@ -111,8 +109,8 @@ object FrozenTreasureTracker {
         return newList
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!ProfileStorageData.loaded) return
         if (!onJerryWorkshop()) return
 
@@ -150,7 +148,7 @@ object FrozenTreasureTracker {
         addAsSingletonList("")
     }
 
-    fun formatNumber(amount: Number): String {
+    private fun formatNumber(amount: Number): String {
         if (amount is Int) return amount.addSeparators()
         if (amount is Long) return NumberUtil.format(amount)
         return "$amount"
@@ -164,25 +162,13 @@ object FrozenTreasureTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent) {
         if (!config.enabled) return
         if (!onJerryWorkshop()) return
         if (config.onlyInCave && !inGlacialCave()) return
 
         tracker.renderDisplay(config.position)
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.frozenTreasureTracker", "event.winter.frozenTreasureTracker")
-        event.move(
-            11,
-            "event.winter.frozenTreasureTracker.textFormat",
-            "event.winter.frozenTreasureTracker.textFormat"
-        ) { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, FrozenTreasureDisplayEntry::class.java)
-        }
     }
 
     private fun onJerryWorkshop() = IslandType.WINTER.isInIsland()

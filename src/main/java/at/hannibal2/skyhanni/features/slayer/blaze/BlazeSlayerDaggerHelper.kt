@@ -1,32 +1,32 @@
 package at.hannibal2.skyhanni.features.slayer.blaze
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.core.config.gui.GuiPositionEditor
-import at.hannibal2.skyhanni.config.features.slayer.blaze.BlazeHellionConfig.FirstDaggerEntry
 import at.hannibal2.skyhanni.data.ClickType
-import at.hannibal2.skyhanni.events.BlockClickEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.TitleReceivedEvent
-import at.hannibal2.skyhanni.utils.ConfigUtils
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.TitleReceivedEvent
+import at.hannibal2.skyhanni.events.minecraft.click.BlockClickEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LocationUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-class BlazeSlayerDaggerHelper {
+@SkyHanniModule
+object BlazeSlayerDaggerHelper {
 
     private val config get() = SkyHanniMod.feature.slayer.blazes.hellion
 
@@ -43,9 +43,8 @@ class BlazeSlayerDaggerHelper {
     private var lastNearestCheck = SimpleTimeMark.farPast()
     private var lastNearest: HellionShield? = null
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
         if (!config.hideDaggerWarning) return
 
         val message = event.message
@@ -54,12 +53,11 @@ class BlazeSlayerDaggerHelper {
         }
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
 
-        val player = Minecraft.getMinecraft().thePlayer
-        val dagger = getDaggerFromStack(player.inventory.mainInventory[player.inventory.currentItem])
+        val dagger = getDaggerFromStack(McPlayer.heldItem)
         if (dagger != null) {
             setDaggerText(dagger)
             return
@@ -148,8 +146,7 @@ class BlazeSlayerDaggerHelper {
     }
 
     private fun readFromInventory(dagger: Dagger): HellionShield? {
-        val player = Minecraft.getMinecraft().thePlayer
-        for (stack in player.inventory.mainInventory) {
+        for (stack in McPlayer.inventory) {
             val otherDagger = getDaggerFromStack(stack) ?: continue
             if (dagger != otherDagger) continue
             for (line in stack.getLore()) {
@@ -177,7 +174,7 @@ class BlazeSlayerDaggerHelper {
         return null
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onTitleReceived(event: TitleReceivedEvent) {
         if (!isEnabled()) return
 
@@ -189,7 +186,7 @@ class BlazeSlayerDaggerHelper {
                     it.updated = true
                 }
                 shield.active = true
-                event.isCanceled = true
+                event.cancel()
                 clientSideClicked = false
                 return
             }
@@ -197,10 +194,10 @@ class BlazeSlayerDaggerHelper {
     }
 
     private fun isEnabled(): Boolean {
-        return LorenzUtils.inSkyBlock && config.daggers
+        return SkyBlockAPI.isConnected && config.daggers
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onBlockClick(event: BlockClickEvent) {
         if (!isEnabled()) return
         if (clientSideClicked) return
@@ -241,28 +238,16 @@ class BlazeSlayerDaggerHelper {
         }
     }
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
 
         if (textTop == "") return
-        val currentScreen = Minecraft.getMinecraft().currentScreen
+        val currentScreen = McScreen.screen
         if (currentScreen != null && currentScreen !is GuiPositionEditor) return
 
         config.positionTop.renderString(textTop, posLabel = "Blaze Slayer Dagger Top")
         config.positionBottom.renderString(textBottom, posLabel = "Blaze Slayer Dagger Bottom")
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "slayer.blazeDaggers", "slayer.blazes.hellion.daggers")
-        event.move(3, "slayer.blazeMarkRightHellionShield", "slayer.blazes.hellion.markRightHellionShield")
-        event.move(3, "slayer.blazeFirstDagger", "slayer.blazes.hellion.firstDagger")
-        event.move(3, "slayer.blazeHideDaggerWarning", "slayer.blazes.hellion.hideDaggerWarning")
-
-        event.transform(15, "slayer.blazes.hellion.firstDagger") { element ->
-            ConfigUtils.migrateIntToEnum(element, FirstDaggerEntry::class.java)
-        }
     }
 }
 

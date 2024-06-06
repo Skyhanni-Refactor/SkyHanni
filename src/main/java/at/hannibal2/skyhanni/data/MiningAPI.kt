@@ -1,21 +1,25 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.ColdUpdateEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.ScoreboardChangeEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandTypeTag
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.mining.ColdUpdateEvent
 import at.hannibal2.skyhanni.features.gui.customscoreboard.ScoreboardPattern
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object MiningAPI {
 
     private val group = RepoPattern.group("data.miningapi")
@@ -33,15 +37,15 @@ object MiningAPI {
     var lastColdUpdate = SimpleTimeMark.farPast()
     var lastColdReset = SimpleTimeMark.farPast()
 
-    fun inGlaciteArea() = glaciteAreaPattern.matches(HypixelData.skyBlockArea) || IslandType.MINESHAFT.isInIsland()
+    fun inGlaciteArea() = glaciteAreaPattern.matches(SkyBlockAPI.area) || IslandType.MINESHAFT.isInIsland()
 
-    fun inColdIsland() = IslandType.DWARVEN_MINES.isInIsland() || IslandType.MINESHAFT.isInIsland()
+    fun inColdIsland() = IslandTypeTag.IS_COLD.inAny()
 
     fun getCold() = cold
 
-    @SubscribeEvent
-    fun onScoreboardChange(event: ScoreboardChangeEvent) {
-        val newCold = event.newList.matchFirst(ScoreboardPattern.coldPattern) {
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
+        val newCold = event.scoreboard.matchFirst(ScoreboardPattern.coldPattern) {
             group("cold").toInt().absoluteValue
         } ?: return
 
@@ -50,23 +54,23 @@ object MiningAPI {
         }
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
         if (!inColdIsland()) return
         if (coldReset.matches(event.message)) {
             updateCold(0)
             lastColdReset = SimpleTimeMark.now()
         }
         coldResetDeath.matchMatcher(event.message) {
-            if (group("name") == LorenzUtils.getPlayerName()) {
+            if (group("name") == McPlayer.name) {
                 updateCold(0)
                 lastColdReset = SimpleTimeMark.now()
             }
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         if (cold != 0) updateCold(0)
         lastColdReset = SimpleTimeMark.now()
     }
@@ -75,7 +79,7 @@ object MiningAPI {
         // Hypixel sends cold data once in scoreboard even after resetting it
         if (cold == 0 && lastColdUpdate.passedSince() < 1.seconds) return
         lastColdUpdate = SimpleTimeMark.now()
-        ColdUpdateEvent(newCold).postAndCatch()
+        ColdUpdateEvent(newCold).post()
         cold = newCold
     }
 

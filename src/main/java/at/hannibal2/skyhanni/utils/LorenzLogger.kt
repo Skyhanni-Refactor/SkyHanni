@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.utils.LorenzUtils.formatCurrentTime
+import at.hannibal2.skyhanni.api.HypixelAPI
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
@@ -29,6 +29,8 @@ class LorenzLogger(filePath: String) {
             val format = SimpleDateFormat("yyyy_MM_dd/HH_mm_ss").formatCurrentTime()
             PREFIX_PATH = "config/skyhanni/logs/$format/"
         }
+
+        private fun SimpleDateFormat.formatCurrentTime(): String = this.format(System.currentTimeMillis())
     }
 
     private lateinit var logger: Logger
@@ -63,7 +65,7 @@ class LorenzLogger(filePath: String) {
             e.printStackTrace()
         }
 
-        if (!hasDone && LorenzUtils.onHypixel) {
+        if (!hasDone && HypixelAPI.onHypixel) {
             hasDone = true
             val directoryFiles = LOG_DIRECTORY.listFiles() ?: run {
                 println("log directory has no files")

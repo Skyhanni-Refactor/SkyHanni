@@ -1,25 +1,27 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryOpenEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.inventory.InventoryOpenEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.inventory.AuctionsHighlighter
 import at.hannibal2.skyhanni.features.misc.items.EstimatedItemValueCalculator
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 
-class AuctionHousePriceComparison {
+@SkyHanniModule
+object AuctionHousePriceComparison {
 
     private val config get() = SkyHanniMod.feature.inventory.auctions.auctionsPriceComparison
 
@@ -28,7 +30,7 @@ class AuctionHousePriceComparison {
     private var worstPrice = 0L
     private var inInventory = false
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryOpenEvent) {
         inInventory = false
         if (!event.inventoryName.startsWith("Auctions")) return
@@ -70,21 +72,21 @@ class AuctionHousePriceComparison {
         }
     }
 
-    @SubscribeEvent
-    fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
+    @HandleEvent
+    fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         if (!isEnabled()) return
 
-        val good = config.good.toChromaColor()
-        val veryGood = config.veryGood.toChromaColor()
+        val good = config.good.toChromaColour()
+        val veryGood = config.veryGood.toChromaColour()
 
-        val bad = config.bad.toChromaColor()
-        val veryBad = config.veryBad.toChromaColor()
+        val bad = config.bad.toChromaColour()
+        val veryBad = config.veryBad.toChromaColour()
 
 
         for (slot in InventoryUtils.getItemsInOpenChest()) {
             val diff = slotPriceMap[slot.slotIndex] ?: continue
             if (diff == 0L) {
-                slot highlight good
+                slot.highlight(good)
                 continue
             }
             val isGood = diff >= 0
@@ -98,12 +100,12 @@ class AuctionHousePriceComparison {
             } else {
                 getColorInBetween(bad, veryBad, percentage)
             }
-            slot highlight color
+            slot.highlight(color)
         }
     }
 
-    @SubscribeEvent
-    fun onTooltip(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!isEnabled()) return
 
         val diff = slotPriceMap[event.slot.slotIndex] ?: return
@@ -116,11 +118,6 @@ class AuctionHousePriceComparison {
             event.toolTip.add("§cThis item is §6${(-diff).addSeparators()} coins §cmore")
             event.toolTip.add("§cexpensive than the estimated item value!")
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(31, "inventory.auctionsPriceComparison", "inventory.auctions.auctionsPriceComparison")
     }
 
     private fun getColorInBetween(color1: Color, color2: Color, percentage: Double): Color {
@@ -141,5 +138,10 @@ class AuctionHousePriceComparison {
 
     private fun lerp(delta: Double, start: Int, end: Int) = start + delta * (end - start)
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled && inInventory
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled && inInventory
+
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
+        event.move(31, "inventory.auctionsPriceComparison", "inventory.auctions.auctionsPriceComparison")
+    }
 }

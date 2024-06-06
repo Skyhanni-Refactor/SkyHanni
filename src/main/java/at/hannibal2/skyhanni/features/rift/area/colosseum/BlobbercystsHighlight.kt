@@ -1,39 +1,41 @@
 package at.hannibal2.skyhanni.features.rift.area.colosseum
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
-import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
+import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraftforge.event.entity.living.LivingDeathEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 
-class BlobbercystsHighlight {
+@SkyHanniModule
+object BlobbercystsHighlight {
 
     private val config get() = SkyHanniMod.feature.rift.area.colosseum
     private val entityList = mutableListOf<EntityOtherPlayerMP>()
-    private val blobberName = "Blobbercyst "
+    private const val BLOBBER_NAME = "Blobbercyst "
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
         if (!event.isMod(5)) return
-        EntityUtils.getEntities<EntityOtherPlayerMP>().forEach {
-            if (it.name == blobberName) {
+        McWorld.getEntitiesOf<EntityOtherPlayerMP>().forEach {
+            if (it.name == BLOBBER_NAME) {
                 RenderLivingEntityHelper.setEntityColorWithNoHurtTime(it, Color.RED.withAlpha(80)) { isEnabled() }
                 entityList.add(it)
             }
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         if (!isEnabled()) return
         entityList.clear()
     }
@@ -46,10 +48,5 @@ class BlobbercystsHighlight {
         }
     }
 
-    fun isEnabled() = RiftAPI.inRift() && config.highlightBlobbercysts && LorenzUtils.skyBlockArea == "Colosseum"
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(9, "rift.area.colosseumConfig", "rift.area.colosseum")
-    }
+    fun isEnabled() = RiftAPI.inRift() && config.highlightBlobbercysts && IslandArea.COLOSSEUM.isInside()
 }

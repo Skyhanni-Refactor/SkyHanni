@@ -1,14 +1,16 @@
 package at.hannibal2.skyhanni.features.fame
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.InventoryUtils.getUpperItems
@@ -17,7 +19,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
@@ -29,18 +30,20 @@ import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McScreen.setTextIntoSign
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
-import net.minecraft.client.gui.inventory.GuiEditSign
 import net.minecraft.inventory.ContainerChest
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class CityProjectFeatures {
+@SkyHanniModule
+object CityProjectFeatures {
+
+    private val config get() = SkyHanniMod.feature.event.cityProject
 
     private var display = emptyList<List<Any>>()
     private var inInventory = false
@@ -56,22 +59,18 @@ class CityProjectFeatures {
         "§aProject is (?:being built|released)!"
     )
 
-    companion object {
-
-        private val config get() = SkyHanniMod.feature.event.cityProject
-        fun disable() {
-            config.dailyReminder = false
-            ChatUtils.chat("Disabled city project reminder messages!")
-        }
+    fun disable() {
+        config.dailyReminder = false
+        ChatUtils.chat("Disabled city project reminder messages!")
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!config.dailyReminder) return
         val playerSpecific = ProfileStorageData.playerSpecific ?: return
         if (ReminderUtils.isBusy()) return
 
-        if (LorenzUtils.skyBlockArea == "Community Center") return
+        if (IslandArea.COMMUNITY_CENTER.isInside()) return
 
         if (playerSpecific.nextCityProjectParticipationTime == 0L) return
         if (System.currentTimeMillis() <= playerSpecific.nextCityProjectParticipationTime) return
@@ -87,15 +86,13 @@ class CityProjectFeatures {
         )
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         inInventory = false
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
         inInventory = false
         if (!inCityProject(event)) return
         inInventory = true
@@ -158,8 +155,9 @@ class CityProjectFeatures {
             list.add(stack)
 
             list.add(Renderable.optionalLink("$name §ex${amount.addSeparators()}", {
-                if (Minecraft.getMinecraft().currentScreen is GuiEditSign) {
-                    LorenzUtils.setTextIntoSign("$amount")
+                val sign = McScreen.asSign
+                if (sign != null) {
+                    sign.setTextIntoSign("$amount")
                 } else {
                     BazaarApi.searchForBazaarItem(name, amount)
                 }
@@ -193,18 +191,16 @@ class CityProjectFeatures {
         }
     }
 
-    @SubscribeEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!config.showMaterials) return
         if (!inInventory) return
 
         config.pos.renderStringsAndItems(display, posLabel = "City Project Materials")
     }
 
-    @SubscribeEvent
-    fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         if (!config.showReady) return
         if (!inInventory) return
 
@@ -218,13 +214,8 @@ class CityProjectFeatures {
             if (lore.isEmpty()) continue
             val last = lore.last()
             if (last == "§eClick to contribute!") {
-                slot highlight LorenzColor.YELLOW
+                slot.highlight(LorenzColor.YELLOW)
             }
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.cityProject", "event.cityProject")
     }
 }

@@ -1,6 +1,8 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.enchantment.Enchantment
 import net.minecraft.item.ItemStack
@@ -43,7 +45,7 @@ object CollectionUtils {
 
     fun <T> List<T>.indexOfFirst(vararg args: T) = args.map { indexOf(it) }.firstOrNull { it != -1 }
 
-    infix fun <K, V> MutableMap<K, V>.put(pairs: Pair<K, V>) {
+    fun <K, V> MutableMap<K, V>.put(pairs: Pair<K, V>) {
         this[pairs.first] = pairs.second
     }
 
@@ -210,7 +212,7 @@ object CollectionUtils {
     fun MutableList<Renderable>.addItemStack(
         itemStack: ItemStack,
         highlight: Boolean = false,
-        scale: Double = NEUItems.itemFontSize,
+        scale: Double = NEUItems.ITEM_FONT_SIZE,
     ) {
         if (highlight) {
             // Hack to add enchant glint, like Hypixel does it
@@ -263,7 +265,7 @@ object CollectionUtils {
         val onClick = {
             if ((System.currentTimeMillis() - ChatUtils.lastButtonClicked) > 150) { // funny thing happen if I don't do that
                 onChange()
-                SoundUtils.playClickSound()
+                McSound.CLICK.play()
                 ChatUtils.lastButtonClicked = System.currentTimeMillis()
             }
         }

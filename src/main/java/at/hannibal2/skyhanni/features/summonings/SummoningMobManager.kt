@@ -1,32 +1,33 @@
 package at.hannibal2.skyhanni.features.summonings
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.EntityLiving
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SummoningMobManager {
+@SkyHanniModule
+object SummoningMobManager {
 
     private val config get() = SkyHanniMod.feature.combat.summonings
 
@@ -59,10 +60,8 @@ class SummoningMobManager {
         "§cThe Seraph recalled your (\\d+) summoned allies!"
     )
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
         val message = event.message
         spawnPattern.matchMatcher(message) {
             if (config.summoningMobDisplay) {
@@ -87,8 +86,8 @@ class SummoningMobManager {
         }
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
 
         if (config.summoningMobDisplay && event.repeatSeconds(1)) {
@@ -96,12 +95,11 @@ class SummoningMobManager {
         }
 
         if (searchArmorStands) {
-            EntityUtils.getEntities<EntityArmorStand>().filter { it !in summoningMobNametags }
+            McWorld.getEntitiesOf<EntityArmorStand>().filter { it !in summoningMobNametags }
                 .forEach {
                     val name = it.displayName.unformattedText
                     healthPattern.matchMatcher(name) {
-                        val playerName = LorenzUtils.getPlayerName()
-                        if (name.contains(playerName)) {
+                        if (name.contains(McPlayer.name)) {
                             summoningMobNametags.add(it)
                             if (summoningMobNametags.size == summoningsSpawned) {
                                 searchArmorStands = false
@@ -113,7 +111,7 @@ class SummoningMobManager {
 
         if (searchMobs) {
             val playerLocation = LocationUtils.playerLocation()
-            EntityUtils.getEntities<EntityLiving>().filter {
+            McWorld.getEntitiesOf<EntityLiving>().filter {
                 it !in summoningMobs.keys && it.getLorenzVec()
                     .distance(playerLocation) < 10 && it.ticksExisted < 2
             }.forEach {
@@ -152,9 +150,8 @@ class SummoningMobManager {
         }
     }
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!config.summoningMobDisplay) return
         if (summoningMobs.isEmpty()) return
 
@@ -170,29 +167,22 @@ class SummoningMobManager {
         config.summoningMobDisplayPos.renderStrings(list, posLabel = "Summoning Mob Display")
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         despawned()
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityLivingBase>) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH)
+    fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
         if (!config.summoningMobHideNametag) return
 
         val entity = event.entity
-        if (entity !is EntityArmorStand) return
         if (!entity.hasCustomName()) return
         if (entity.isDead) return
 
         if (entity in summoningMobNametags) {
             event.cancel()
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "summonings", "combat.summonings")
     }
 
     private fun despawned() {
@@ -204,7 +194,7 @@ class SummoningMobManager {
     }
 
     private fun isEnabled(): Boolean {
-        return LorenzUtils.inSkyBlock && (config.summoningMobDisplay || config.summoningMobHideNametag)
+        return SkyBlockAPI.isConnected && (config.summoningMobDisplay || config.summoningMobHideNametag)
     }
 
     class SummoningMob(

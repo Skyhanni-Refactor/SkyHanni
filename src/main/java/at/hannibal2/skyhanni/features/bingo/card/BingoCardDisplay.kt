@@ -1,75 +1,72 @@
 package at.hannibal2.skyhanni.features.bingo.card
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.events.bingo.BingoCardUpdateEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.bingo.card.goals.BingoGoal
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.BingoNextStepHelper
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiChat
-import net.minecraft.client.gui.inventory.GuiInventory
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.days
 
-class BingoCardDisplay {
+@SkyHanniModule
+object BingoCardDisplay {
 
     private var display = emptyList<Renderable>()
 
     private var hasHiddenPersonalGoals = false
 
-    companion object {
+    private const val MAX_PERSONAL_GOALS = 20
 
-        private const val MAX_PERSONAL_GOALS = 20
-        private const val MAX_COMMUNITY_GOALS = 5
+    private val config get() = SkyHanniMod.feature.event.bingo.bingoCard
+    private var displayMode = 0
 
-        private val config get() = SkyHanniMod.feature.event.bingo.bingoCard
-        private var displayMode = 0
+    fun command() {
+        reload()
+    }
 
-        fun command() {
-            reload()
+    private fun reload() {
+        BingoAPI.bingoGoals.clear()
+    }
+
+    fun toggleCommand() {
+        if (BingoAPI.isBingo()) {
+            ChatUtils.userError("This command only works on a bingo profile!")
+            return
         }
-
-        private fun reload() {
-            BingoAPI.bingoGoals.clear()
+        if (!config.enabled) {
+            ChatUtils.userError("Bingo Card is disabled in the config!")
+            return
         }
+        toggleMode()
+    }
 
-        fun toggleCommand() {
-            if (!LorenzUtils.isBingoProfile) {
-                ChatUtils.userError("This command only works on a bingo profile!")
-                return
-            }
-            if (!config.enabled) {
-                ChatUtils.userError("Bingo Card is disabled in the config!")
-                return
-            }
-            toggleMode()
-        }
-
-        private fun toggleMode() {
-            displayMode++
-            if (displayMode == 3) {
-                displayMode = 0
-            }
+    private fun toggleMode() {
+        displayMode++
+        if (displayMode == 3) {
+            displayMode = 0
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (hasHiddenPersonalGoals) {
             update()
@@ -124,7 +121,7 @@ class BingoCardDisplay {
         add(Renderable.string(" "))
     }
 
-    private fun percentageFormat(it: BingoGoal) = it.communtyGoalPercentage?.let {
+    private fun percentageFormat(it: BingoGoal) = it.communityGoalPercentage?.let {
         " " + BingoAPI.getCommunityPercentageColor(it)
     } ?: ""
 
@@ -174,7 +171,9 @@ class BingoCardDisplay {
         val filter = showOnlyHighlighted && !editDisplay
         val finalGoal = if (filter) {
             goals.filter { it.highlight }
-        } else goals
+        } else {
+            goals
+        }
 
         finalGoal.mapTo(this) {
             val currentlyHighlighted = it.highlight
@@ -212,9 +211,9 @@ class BingoCardDisplay {
     private var lastSneak = false
     private var inventoryOpen = false
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
         if (!config.enabled) return
 
         val currentlyOpen = canEditDisplay()
@@ -223,11 +222,10 @@ class BingoCardDisplay {
             update()
         }
 
-        if (config.quickToggle && ItemUtils.isSkyBlockMenuItem(InventoryUtils.getItemInHand())) {
-            val sneaking = Minecraft.getMinecraft().thePlayer.isSneaking
-            if (lastSneak != sneaking) {
-                lastSneak = sneaking
-                if (sneaking) {
+        if (config.quickToggle && ItemUtils.isSkyBlockMenuItem(McPlayer.heldItem)) {
+            if (lastSneak != McPlayer.isSneaking) {
+                lastSneak = McPlayer.isSneaking
+                if (McPlayer.isSneaking) {
                     toggleMode()
                 }
             }
@@ -236,7 +234,7 @@ class BingoCardDisplay {
             displayMode = 2
         }
         if (displayMode == 0) {
-            if (Minecraft.getMinecraft().currentScreen !is GuiChat) {
+            if (!McScreen.isChatOpen) {
                 config.bingoCardPos.renderRenderables(display, posLabel = "Bingo Card")
             }
         } else if (displayMode == 1) {
@@ -244,25 +242,19 @@ class BingoCardDisplay {
         }
     }
 
-    private fun canEditDisplay() =
-        Minecraft.getMinecraft().currentScreen is GuiInventory || InventoryUtils.openInventoryName() == "Bingo Card"
+    private fun canEditDisplay() = McScreen.isInventoryOpen || InventoryUtils.openInventoryName() == "Bingo Card"
 
-    @SubscribeEvent
+    @HandleEvent
     fun onBingoCardUpdate(event: BingoCardUpdateEvent) {
         if (!config.enabled) return
-        if (!LorenzUtils.isBingoProfile) return
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         config.hideCommunityGoals.onToggle { update() }
         config.nextTipDuration.onToggle { update() }
         update()
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "bingo", "event.bingo")
     }
 }

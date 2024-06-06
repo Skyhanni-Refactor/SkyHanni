@@ -1,16 +1,19 @@
 package at.hannibal2.skyhanni.test
 
-import at.hannibal2.skyhanni.events.PacketEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NumberUtil.isInt
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.Entity
 import net.minecraft.network.Packet
 import net.minecraft.network.play.client.C03PacketPlayer
@@ -31,9 +34,8 @@ import net.minecraft.network.play.server.S1DPacketEntityEffect
 import net.minecraft.network.play.server.S20PacketEntityProperties
 import net.minecraft.network.play.server.S28PacketEffect
 import net.minecraft.network.play.server.S2APacketParticles
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object PacketTest {
 
     private var enabled = false
@@ -68,8 +70,8 @@ object PacketTest {
         ChatUtils.chat("Packet test: $enabled")
     }
 
-    @SubscribeEvent
-    fun onSendPacket(event: PacketEvent.SendEvent) {
+    @HandleEvent
+    fun onSendPacket(event: SendPacketEvent) {
         if (!enabled) return
 
         val packet = event.packet
@@ -89,8 +91,8 @@ object PacketTest {
         println("Send: $packetName")
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)
-    fun onPacketReceive(event: PacketEvent.ReceiveEvent) {
+    @HandleEvent(priority = HandleEvent.LOW, receiveCancelled = true)
+    fun onPacketReceive(event: ReceivePacketEvent) {
         if (!enabled) return
         val packet = event.packet
         packet.print()
@@ -171,7 +173,7 @@ object PacketTest {
             val distance = getDistance(getLocation(this@print, entity))
 
             if (entity != null) {
-                if (entity == Minecraft.getMinecraft().thePlayer) {
+                if (entity == McPlayer.player) {
                     append(" own")
                     return@buildString
                 } else {
@@ -187,7 +189,7 @@ object PacketTest {
     }
 
     private fun getDistance(location: LorenzVec?): Double {
-        return location?.distanceToPlayer()?.round(1) ?: 0.0
+        return location?.distanceToPlayer()?.roundTo(1) ?: 0.0
     }
 
     private fun getLocation(packet: Packet<*>, entity: Entity?): LorenzVec? {
@@ -219,18 +221,17 @@ object PacketTest {
     }
 
     private fun getEntity(packet: Packet<*>, id: Int?): Entity? {
-        val world = Minecraft.getMinecraft().theWorld
         if (packet is S14PacketEntity) {
-            return packet.getEntity(world)
+            return packet.getEntity(McWorld.world)
         }
         if (packet is S19PacketEntityHeadLook) {
-            return packet.getEntity(world)
+            return packet.getEntity(McWorld.world)
         }
         if (packet is S19PacketEntityStatus) {
-            return packet.getEntity(world)
+            return packet.getEntity(McWorld.world)
         }
         if (id != null) {
-            return EntityUtils.getEntityByID(id)
+            return McWorld.getEntity(id)
         }
 
         return null

@@ -1,32 +1,33 @@
 package at.hannibal2.skyhanni.features.minion
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.data.jsonobjects.repo.MinionXPJson
-import at.hannibal2.skyhanni.events.IslandChangeEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
-import at.hannibal2.skyhanni.events.MinionCloseEvent
-import at.hannibal2.skyhanni.events.MinionOpenEvent
-import at.hannibal2.skyhanni.events.MinionStorageOpenEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionCloseEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionOpenEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionStorageOpenEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.skillprogress.SkillType
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.PrimitiveItemStack
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.block.BlockChest
-import net.minecraft.client.Minecraft
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.EnumMap
 
-class MinionXp {
+@SkyHanniModule
+object MinionXp {
 
     private val config get() = SkyHanniMod.feature.misc.minions
 
@@ -48,7 +49,7 @@ class MinionXp {
     private fun toPrimitiveItemStack(itemStack: ItemStack) =
         PrimitiveItemStack(itemStack.getInternalName(), itemStack.stackSize)
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMinionOpen(event: MinionOpenEvent) {
         if (!config.xpDisplay) return
 
@@ -113,7 +114,7 @@ class MinionXp {
         return xpTotal
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMinionStorageOpen(event: MinionStorageOpenEvent) {
         if (!config.xpDisplay) return
 
@@ -133,16 +134,11 @@ class MinionXp {
             LorenzVec(-1, 0, 0), LorenzVec(0, 0, -1)
         )
 
-        return positionsToCheck.any { position ->
-            val pos = (minionPosition + position).toBlockPos()
-            val block = Minecraft.getMinecraft().theWorld.getBlockState(pos).block
-            block is BlockChest
-        }
+        return positionsToCheck.any { pos -> McWorld.getBlock(minionPosition + pos) is BlockChest }
     }
 
-    @SubscribeEvent
-    fun onTooltip(event: LorenzToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!config.xpDisplay) return
         when {
             MinionFeatures.minionInventoryOpen -> {
@@ -160,29 +156,29 @@ class MinionXp {
         }
     }
 
-    private fun addXpInfoToTooltip(event: LorenzToolTipEvent) {
+    private fun addXpInfoToTooltip(event: SkyHanniToolTipEvent) {
         xpItemMap[toPrimitiveItemStack(event.itemStack)]?.let {
             event.toolTip.add("")
             event.toolTip.add(it)
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         minionStorages.clear()
         xpItemMap.clear()
         collectItemXpList.clear()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMinionClose(event: MinionCloseEvent) {
         xpItemMap.clear()
         collectItemXpList.clear()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
-        xpInfoMap = event.getConstant<MinionXPJson>("MinionXP").minion_xp.mapNotNull { xpType ->
+        xpInfoMap = event.getConstant<MinionXPJson>("MinionXP").minionXp.mapNotNull { xpType ->
             xpType.value.mapNotNull { it.key.asInternalName() to XpInfo(SkillType.getByName(xpType.key), it.value) }
         }.flatten().toMap()
     }

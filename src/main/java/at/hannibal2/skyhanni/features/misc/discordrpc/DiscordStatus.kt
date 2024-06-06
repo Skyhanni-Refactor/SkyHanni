@@ -2,13 +2,14 @@ package at.hannibal2.skyhanni.features.misc.discordrpc
 
 // SkyblockAddons code, adapted for SkyHanni with some additions and fixes
 
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ActionBarStatsData
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getTierForCropCount
 import at.hannibal2.skyhanni.data.GardenCropMilestones.isMaxed
 import at.hannibal2.skyhanni.data.GardenCropMilestones.progressToNextLevel
-import at.hannibal2.skyhanni.data.HypixelData
-import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.PetAPI
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
@@ -16,17 +17,17 @@ import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.GardenAPI.getCropType
 import at.hannibal2.skyhanni.features.misc.compacttablist.AdvancedPlayerList
 import at.hannibal2.skyhanni.features.rift.RiftAPI
-import at.hannibal2.skyhanni.utils.InventoryUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.colorCodeToRarity
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SkyBlockTime
 import at.hannibal2.skyhanni.utils.StringUtils.firstLetterUppercase
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import at.hannibal2.skyhanni.utils.TimeUtils.formatted
+import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.formatted
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import io.github.moulberry.notenoughupdates.miscfeatures.PetInfoOverlay.getCurrentPet
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
@@ -63,13 +64,13 @@ fun getPetDisplay(): String = PetAPI.currentPet?.let {
 } ?: "No pet equipped"
 
 private fun getCropMilestoneDisplay(): String {
-    val crop = InventoryUtils.getItemInHand()?.getCropType()
+    val crop = McPlayer.heldItem?.getCropType()
     val cropCounter = crop?.getCounter()
     val allowOverflow = GardenAPI.config.cropMilestones.overflow.discordRPC
     val tier = cropCounter?.let { getTierForCropCount(it, crop, allowOverflow) }
     val progress = tier?.let {
-        LorenzUtils.formatPercentage(crop.progressToNextLevel(allowOverflow))
-    } ?: 100 // percentage to next milestone
+        crop.progressToNextLevel(allowOverflow).formatPercentage()
+    } ?: "100%" // percentage to next milestone
 
     if (tier == null) return AutoStatus.CROP_MILESTONES.placeholderText
 
@@ -86,8 +87,8 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
     NONE({ null }),
 
     LOCATION({
-        var location = LorenzUtils.skyBlockArea?.removeColor() ?: "invalid"
-        val island = LorenzUtils.skyBlockIsland
+        var location = SkyBlockAPI.area?.removeColor() ?: "invalid"
+        val island = SkyBlockAPI.island
 
         if (location == "Your Island") location = "Private Island"
         when {
@@ -162,7 +163,7 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
     }),
 
     ITEM({
-        InventoryUtils.getItemInHand()?.let {
+        McPlayer.heldItem?.let {
             String.format("Holding ${it.displayName.removeColor()}")
         } ?: "No item in hand"
     }),
@@ -172,18 +173,17 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
     }),
 
     PROFILE({
-        val sbLevel = AdvancedPlayerList.tabPlayerData[LorenzUtils.getPlayerName()]?.sbLevel?.toString() ?: "?"
+        val sbLevel = AdvancedPlayerList.tabPlayerData[McPlayer.name]?.sbLevel?.toString() ?: "?"
         var profile = "SkyBlock Level: [$sbLevel] on "
 
-        profile += when {
-
-            LorenzUtils.isIronmanProfile -> "♲"
-            LorenzUtils.isBingoProfile -> "Ⓑ"
-            LorenzUtils.isStrandedProfile -> "☀"
+        profile += when(SkyBlockAPI.gamemode) {
+            Gamemode.IRONMAN -> "♲"
+            Gamemode.BINGO -> "Ⓑ"
+            Gamemode.STRANDED -> "☀"
             else -> ""
         }
 
-        val fruit = HypixelData.profileName.firstLetterUppercase()
+        val fruit = SkyBlockAPI.profileName?.firstLetterUppercase() ?: ""
         if (fruit == "") profile =
             lastKnownDisplayStrings[PROFILE] ?: "SkyBlock Level: [$sbLevel]" // profile fruit hasn't loaded in yet
         else profile += fruit
@@ -260,7 +260,7 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
             } else item.getSubCompound("ExtraAttributes", false)
         }
 
-        val itemInHand = InventoryUtils.getItemInHand()
+        val itemInHand = McPlayer.heldItem
         val itemName = itemInHand?.displayName?.removeColor() ?: ""
 
         val extraAttributes = getExtraAttributes(itemInHand)
@@ -274,7 +274,7 @@ enum class DiscordStatus(private val displayMessageSupplier: (() -> String?)) {
                 percent = if (amount.toDouble() == 0.0) {
                     ""
                 } else {
-                    LorenzUtils.formatPercentage((amount.toDouble() - levels[level - 1]) / (levels[level] - levels[level - 1]))
+                    ((amount.toDouble() - levels[level - 1]) / (levels[level] - levels[level - 1])).formatPercentage()
                 }
                 break
             }

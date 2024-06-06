@@ -1,15 +1,16 @@
 package at.hannibal2.skyhanni.features.event.diana
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.BurrowGuessEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.PlaySoundEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.diana.BurrowGuessEvent
+import at.hannibal2.skyhanni.events.minecraft.PlaySoundEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.util.EnumParticleTypes
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.abs
 import kotlin.math.atan
 import kotlin.math.cos
@@ -21,7 +22,9 @@ import kotlin.math.sin
 /**
  * Taken and ported from Soopyboo32's javascript module SoopyV2
  */
-class SoopyGuessBurrow {
+// TODO fix whatever is going on in this file
+@SkyHanniModule
+object SoopyGuessBurrow {
 
     private var dingIndex = 0
     private var hasDinged = false
@@ -41,8 +44,8 @@ class SoopyGuessBurrow {
     var distance: Double? = null
     private var distance2: Double? = null
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         hasDinged = false
         lastDingPitch = 0f
         firstPitch = 0f
@@ -57,7 +60,7 @@ class SoopyGuessBurrow {
         dingSlope.clear()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPlaySound(event: PlaySoundEvent) {
         if (!isEnabled()) return
         if (event.soundName != "note.harp") return
@@ -120,7 +123,7 @@ class SoopyGuessBurrow {
         val lineDist = lastParticlePoint2?.distance(particlePoint!!)!!
 
         distance = distance2!!
-        val changesHelp = particlePoint?.subtract(lastParticlePoint2!!)!!
+        val changesHelp = particlePoint!! - lastParticlePoint2!!
         var changes = listOf(changesHelp.x, changesHelp.y, changesHelp.z)
         changes = changes.map { o -> o / lineDist }
 
@@ -142,7 +145,7 @@ class SoopyGuessBurrow {
         return LorenzVec(a, b, c)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
         val type = event.type
@@ -243,7 +246,7 @@ class SoopyGuessBurrow {
                         } else {
                             LorenzVec(floor(p2.x), 255.0, floor(p2.z))
                         }
-                        BurrowGuessEvent(finalLocation).postAndCatch()
+                        BurrowGuessEvent(finalLocation).post()
                     }
                 }
             }
@@ -263,7 +266,7 @@ class SoopyGuessBurrow {
 
             distance = distance2!!
 
-            val changesHelp = particlePoint?.subtract(lastParticlePoint2!!)!!
+            val changesHelp = particlePoint!! - lastParticlePoint2!!
 
             var changes = listOf(changesHelp.x, changesHelp.y, changesHelp.z)
             changes = changes.map { o -> o / lineDist }

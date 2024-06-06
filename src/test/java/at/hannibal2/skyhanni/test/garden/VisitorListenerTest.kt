@@ -1,11 +1,12 @@
 package at.hannibal2.skyhanni.test.garden
 
-import at.hannibal2.skyhanni.events.TabListUpdateEvent
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorListener
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject
@@ -21,13 +22,15 @@ class VisitorListenerTest {
         mockkObject(GardenAPI)
         every { GardenAPI.inGarden() } returns true
 
-        mockkObject(LorenzUtils)
-        every { LorenzUtils.getPlayerName() } returns "ThePlayerName"
+        mockkObject(McPlayer)
+        every { McPlayer.name } returns "ThePlayerName"
 
         mockkObject(VisitorAPI)
         every { VisitorAPI.addVisitor(any()) } returns true
 
-        listener = VisitorListener()
+        mockkObject(HypixelAPI)
+
+        listener = VisitorListener
     }
 
     @Test
@@ -71,7 +74,7 @@ class VisitorListenerTest {
             mockk { every { visitorName } returns "§fJacob" },
         )
 
-        every { LorenzUtils.lastWorldSwitch } returns SimpleTimeMark.now()
+        every { HypixelAPI.lastWorldChange } returns SimpleTimeMark.now()
 
         listener.onTabListUpdate(
             TabListUpdateEvent(

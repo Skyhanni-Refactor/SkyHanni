@@ -1,40 +1,43 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ClickType
-import at.hannibal2.skyhanni.events.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.ItemClickEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI
-import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
-import at.hannibal2.skyhanni.utils.InventoryUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RecalculatingValue
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawColor
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
+import at.hannibal2.skyhanni.utils.RenderUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.util.EnumParticleTypes
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object HoppityEggLocator {
     private val config get() = HoppityEggsManager.config
 
-    private val locatorItem = "EGGLOCATOR".asInternalName()
+    private val locatorItem = SkyhanniItems.EGGLOCATOR()
 
     private var lastParticlePosition: LorenzVec? = null
     private var lastParticlePositionForever: LorenzVec? = null
@@ -55,8 +58,8 @@ object HoppityEggLocator {
     var currentEggType: HoppityEggType? = null
     var currentEggNote: String? = null
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         resetData()
     }
 
@@ -73,8 +76,8 @@ object HoppityEggLocator {
         lastParticlePosition = null
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
 
         event.drawGuessImmediately()
@@ -91,7 +94,7 @@ object HoppityEggLocator {
             }
         }
 
-        val islandEggsLocations = HoppityEggLocations.islandLocations ?: return
+        val islandEggsLocations = HoppityEggLocations.islandLocations
 
         if (shouldShowAllEggs()) {
             for (eggLocation in islandEggsLocations) {
@@ -103,7 +106,7 @@ object HoppityEggLocator {
         event.drawDuplicateEggs(islandEggsLocations)
     }
 
-    private fun LorenzRenderWorldEvent.drawGuessLocations() {
+    private fun SkyHanniRenderWorldEvent.drawGuessLocations() {
         val eyeLocation = exactPlayerEyeLocation()
         for ((index, eggLocation) in possibleEggLocations.withIndex()) {
             drawEggWaypoint(eggLocation, "§aGuess #${index + 1}")
@@ -113,7 +116,7 @@ object HoppityEggLocator {
         }
     }
 
-    private fun LorenzRenderWorldEvent.drawDuplicateEggs(islandEggsLocations: Set<LorenzVec>, ) {
+    private fun SkyHanniRenderWorldEvent.drawDuplicateEggs(islandEggsLocations: Set<LorenzVec>) {
         if (!config.highlightDuplicateEggLocations || !config.showNearbyDuplicateEggLocations) return
         for (eggLocation in islandEggsLocations) {
             val dist = eggLocation.distanceToPlayer()
@@ -125,7 +128,7 @@ object HoppityEggLocator {
         }
     }
 
-    private fun LorenzRenderWorldEvent.drawGuessImmediately() {
+    private fun SkyHanniRenderWorldEvent.drawGuessImmediately() {
         if (config.waypointsImmediately && lastClick.passedSince() < 5.seconds) {
             lastParticlePositionForever?.let {
                 if (lastChange.passedSince() < 300.milliseconds) {
@@ -148,9 +151,8 @@ object HoppityEggLocator {
         }
     }
 
-    private fun LorenzRenderWorldEvent.drawEggWaypoint(location: LorenzVec, label: String) {
-        val shouldMarkDuplicate = config.highlightDuplicateEggLocations
-            && HoppityEggLocations.hasCollectedEgg(location)
+    private fun SkyHanniRenderWorldEvent.drawEggWaypoint(location: LorenzVec, label: String) {
+        val shouldMarkDuplicate = config.highlightDuplicateEggLocations && HoppityEggLocations.hasCollectedEgg(location)
         val possibleDuplicateLabel = if (shouldMarkDuplicate) "$label §c(Duplicate Location)" else label
         if (!shouldMarkDuplicate) {
             drawWaypointFilled(location, LorenzColor.GREEN.toColor(), seeThroughBlocks = true)
@@ -160,14 +162,13 @@ object HoppityEggLocator {
         drawDynamicText(location.add(y = 1), possibleDuplicateLabel, 1.5)
     }
 
-    private fun shouldShowAllEggs() =
-        config.showAllWaypoints && !hasLocatorInHotbar() && HoppityEggType.eggsRemaining()
+    private fun shouldShowAllEggs() = config.showAllWaypoints && !hasLocatorInHotbar() && HoppityEggType.eggsRemaining()
 
     fun eggFound() {
         resetData()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
         if (!hasLocatorInHotbar()) return
@@ -186,8 +187,8 @@ object HoppityEggLocator {
         HoppityEggLocator.lastParticlePosition = null
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
         if (validParticleLocations.isEmpty()) return
         ticksSinceLastParticleFound++
@@ -201,7 +202,7 @@ object HoppityEggLocator {
         lastParticlePosition = null
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onItemClick(event: ItemClickEvent) {
         if (!isEnabled()) return
         val item = event.itemInHand ?: return
@@ -239,7 +240,7 @@ object HoppityEggLocator {
         }.sortedBy { it.second }
 
         eggLocationWeights = sortedEggs.map {
-            it.second.round(3)
+            it.second.roundTo(3)
         }.take(5)
 
         val filteredEggs = sortedEggs.filter {
@@ -251,7 +252,7 @@ object HoppityEggLocator {
         }
 
         if (maxLineDistance.isEmpty()) {
-            LorenzUtils.sendTitle("§cNo eggs found, try getting closer", 2.seconds)
+            TitleManager.sendTitle("§cNo eggs found, try getting closer", 2.seconds)
             return
         }
         secondPos = maxLineDistance.first().nearestPointOnLine(firstPos, secondPos)
@@ -261,22 +262,19 @@ object HoppityEggLocator {
         drawLocations = true
     }
 
-    fun isValidEggLocation(location: LorenzVec): Boolean =
-        HoppityEggLocations.islandLocations?.any { it.distance(location) < 5.0 } ?: false
+    fun isValidEggLocation(location: LorenzVec): Boolean = HoppityEggLocations.islandLocations.any { it.distance(location) < 5.0 }
 
-    private fun ReceiveParticleEvent.isVillagerParticle() =
-        type == EnumParticleTypes.VILLAGER_HAPPY && speed == 0.0f && count == 1
+    private fun ReceiveParticleEvent.isVillagerParticle() = type == EnumParticleTypes.VILLAGER_HAPPY && speed == 0.0f && count == 1
 
-    private fun ReceiveParticleEvent.isEnchantmentParticle() =
-        type == EnumParticleTypes.ENCHANTMENT_TABLE && speed == -2.0f && count == 10
+    private fun ReceiveParticleEvent.isEnchantmentParticle() = type == EnumParticleTypes.ENCHANTMENT_TABLE && speed == -2.0f && count == 10
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.waypoints && !GardenAPI.inGarden()
-        && !ReminderUtils.isBusy(true) && ChocolateFactoryAPI.isHoppityEvent()
+    fun isEnabled() =
+        SkyBlockAPI.isConnected && config.waypoints && !GardenAPI.inGarden() && !ReminderUtils.isBusy(true) && ChocolateFactoryAPI.isHoppityEvent()
 
     private val ItemStack.isLocatorItem get() = getInternalName() == locatorItem
 
     private fun hasLocatorInHotbar() = RecalculatingValue(1.seconds) {
-        LorenzUtils.inSkyBlock && InventoryUtils.getItemsInHotbar().any { it.isLocatorItem }
+        SkyBlockAPI.isConnected && McPlayer.has(locatorItem, onlyHotBar = true)
     }.getValue()
 
     private fun LorenzVec.getEggLocationWeight(firstPoint: LorenzVec, secondPoint: LorenzVec): Double {
@@ -287,7 +285,7 @@ object HoppityEggLocator {
         return distToLine / disMultiplierSquared
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Hoppity Eggs Locations")
 

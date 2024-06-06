@@ -1,16 +1,21 @@
 package at.hannibal2.skyhanni.features.bingo
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.hasEnchantments
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
@@ -19,17 +24,19 @@ import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimalIfNecessary
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import io.github.moulberry.notenoughupdates.recipes.CraftingRecipe
 import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class MinionCraftHelper {
+@SkyHanniModule
+object MinionCraftHelper {
 
     private val config get() = SkyHanniMod.feature.event.bingo
 
@@ -46,19 +53,18 @@ class MinionCraftHelper {
     private val allIngredients = mutableListOf<NEUInternalName>()
     private val alreadyNotified = mutableListOf<String>()
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         alreadyNotified.clear()
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
+        if (!BingoAPI.isBingo()) return
         if (!config.minionCraftHelperEnabled) return
 
         if (event.isMod(10)) {
-            val mainInventory = Minecraft.getMinecraft()?.thePlayer?.inventory?.mainInventory ?: return
-            hasMinionInInventory = mainInventory.mapNotNull { it?.name }.any { isMinionName(it) }
+            hasMinionInInventory = McPlayer.inventory.any { isMinionName(it.name) }
         }
 
         if (event.repeatSeconds(2)) {
@@ -120,7 +126,7 @@ class MinionCraftHelper {
                 if (!allIngredients.contains(rawId)) continue
                 if (!isAllowed(allMinions, rawId)) continue
 
-                val (itemId, multiplier) = NEUItems.getMultiplier(rawId)
+                val (itemId, multiplier) = NEUItems.getPrimitiveMultiplier(rawId)
                 val old = otherItems.getOrDefault(itemId, 0)
                 otherItems[itemId] = old + item.stackSize * multiplier
             }
@@ -131,7 +137,7 @@ class MinionCraftHelper {
     }
 
     private fun isAllowed(allMinions: List<NEUInternalName>, internalName: NEUInternalName): Boolean {
-        val a = NEUItems.getMultiplier(internalName)
+        val primitiveStack = NEUItems.getPrimitiveMultiplier(internalName)
         for (minion in allMinions) {
             val recipes = NEUItems.getRecipes(minion)
 
@@ -140,8 +146,8 @@ class MinionCraftHelper {
                     val ingredientInternalName = ingredient.internalItemId.asInternalName()
                     if (ingredientInternalName == internalName) return true
 
-                    val b = NEUItems.getMultiplier(ingredientInternalName)
-                    if (a.first == b.first && a.second < b.second) return true
+                    val ingredientPrimitive = NEUItems.getPrimitiveMultiplier(ingredientInternalName)
+                    if (primitiveStack.internalName == ingredientPrimitive.internalName && primitiveStack.amount < ingredientPrimitive.amount) return true
                 }
             }
         }
@@ -156,11 +162,11 @@ class MinionCraftHelper {
         for (internalId in NEUItems.allNeuRepoItems().keys) {
             val internalName = internalId.asInternalName()
             if (internalName.endsWith("_GENERATOR_1")) {
-                if (internalName == "REVENANT_GENERATOR_1".asInternalName() ||
-                    internalName == "TARANTULA_GENERATOR_1".asInternalName() ||
-                    internalName == "VOIDLING_GENERATOR_1".asInternalName() ||
-                    internalName == "INFERNO_GENERATOR_1".asInternalName() ||
-                    internalName == "VAMPIRE_GENERATOR_1".asInternalName()
+                if (internalName == SkyhanniItems.REVENANT_GENERATOR_1() ||
+                    internalName == SkyhanniItems.TARANTULA_GENERATOR_1() ||
+                    internalName == SkyhanniItems.VOIDLING_GENERATOR_1() ||
+                    internalName == SkyhanniItems.INFERNO_GENERATOR_1() ||
+                    internalName == SkyhanniItems.VAMPIRE_GENERATOR_1()
                 ) continue
                 tierOneMinions.add(internalName)
             }
@@ -207,7 +213,7 @@ class MinionCraftHelper {
             }
             var allDone = true
             for ((rawId, need) in map) {
-                val (itemId, multiplier) = NEUItems.getMultiplier(rawId)
+                val (itemId, multiplier) = NEUItems.getPrimitiveMultiplier(rawId)
                 val needAmount = need * multiplier
                 val have = otherItems.getOrDefault(itemId, 0)
                 val percentage = have.toDouble() / needAmount
@@ -222,7 +228,7 @@ class MinionCraftHelper {
                         newDisplay.removeLast()
                         return
                     }
-                    val format = LorenzUtils.formatPercentage(percentage)
+                    val format = percentage.formatPercentage()
                     val haveFormat = have.addSeparators()
                     val needFormat = needAmount.addSeparators()
                     newDisplay.add("$itemName§8: §e$format §8(§7$haveFormat§8/§7$needFormat§8)")
@@ -237,9 +243,9 @@ class MinionCraftHelper {
         }
     }
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
+        if (!BingoAPI.isBingo()) return
         if (!config.minionCraftHelperEnabled) return
 
         config.minionCraftHelperPos.renderStrings(display, posLabel = "Minion Craft Helper")
@@ -248,7 +254,7 @@ class MinionCraftHelper {
     private fun notify(minionName: String) {
         if (alreadyNotified.contains(minionName)) return
 
-        LorenzUtils.sendTitle("Can craft $minionName", 3.seconds)
+        TitleManager.sendTitle("Can craft $minionName", 3.seconds)
         alreadyNotified.add(minionName)
     }
 
@@ -260,9 +266,9 @@ class MinionCraftHelper {
 
     private fun isMinionName(itemName: String) = itemName.contains(" Minion ") && !itemName.contains(" Minion Skin")
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+        if (SkyBlockAPI.gamemode != Gamemode.BINGO) return
         if (event.inventoryName != "Crafted Minions") return
 
         for ((_, b) in event.inventoryItems) {
@@ -271,16 +277,6 @@ class MinionCraftHelper {
             val internalName = NEUInternalName.fromItemName("$name I")
                 .replace("MINION", "GENERATOR").replace(";", "_").replace("CAVE_SPIDER", "CAVESPIDER")
             tierOneMinionsDone.add(internalName)
-        }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(26, "#player.bingoSessions") { element ->
-            for ((_, data) in element.asJsonObject.entrySet()) {
-                fixTierOneMinions(data.asJsonObject)
-            }
-            element
         }
     }
 
@@ -300,5 +296,15 @@ class MinionCraftHelper {
             println("Removed $counter wrong entries in fixTierOneMinions.")
         }
         data.add("tierOneMinionsDone", newList)
+    }
+
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
+        event.transform(26, "#player.bingoSessions") { element ->
+            for ((_, data) in element.asJsonObject.entrySet()) {
+                fixTierOneMinions(data.asJsonObject)
+            }
+            element
+        }
     }
 }

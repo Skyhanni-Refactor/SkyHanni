@@ -1,22 +1,24 @@
 package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
-import at.hannibal2.skyhanni.events.DungeonBossRoomEnterEvent
-import at.hannibal2.skyhanni.events.DungeonEnterEvent
-import at.hannibal2.skyhanni.events.DungeonStartEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.dungeon.DungeonBossRoomEnterEvent
+import at.hannibal2.skyhanni.events.dungeon.DungeonEnterEvent
+import at.hannibal2.skyhanni.events.dungeon.DungeonStartEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DungeonCopilot {
+@SkyHanniModule
+object DungeonCopilot {
 
     private val config get() = SkyHanniMod.feature.dungeon.dungeonCopilot
 
@@ -42,8 +44,8 @@ class DungeonCopilot {
     private var nextStep = ""
     private var searchForKey = false
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
 
         copilot(event.message)?.let {
@@ -56,7 +58,7 @@ class DungeonCopilot {
             changeNextStep("Ready up")
         }
 
-        if (message.endsWith("§a is now ready!") && message.contains(LorenzUtils.getPlayerName())) {
+        if (message.endsWith("§a is now ready!") && message.contains(McPlayer.name)) {
             changeNextStep("Wait for the dungeon to start!")
         }
 
@@ -100,10 +102,8 @@ class DungeonCopilot {
         nextStep = step
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
-        if (!DungeonAPI.inDungeon()) return
-
         val entity = event.entity
         if (entity !is EntityArmorStand) return
 
@@ -119,41 +119,34 @@ class DungeonCopilot {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDungeonStart(event: DungeonStartEvent) {
         changeNextStep("Clear first room")
         searchForKey = true
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDungeonStart(event: DungeonEnterEvent) {
         changeNextStep("Talk to Mort")
         searchForKey = true
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDungeonBossRoomEnter(event: DungeonBossRoomEnterEvent) {
         changeNextStep("Defeat the boss! Good luck :)")
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         changeNextStep("")
     }
 
     private fun isEnabled(): Boolean = DungeonAPI.inDungeon() && config.enabled
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
 
         config.pos.renderString(nextStep, posLabel = "Dungeon Copilot")
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "dungeon.messageFilterKeysAndDoors", "dungeon.messageFilter.keysAndDoors")
-        event.move(3, "dungeon.copilotEnabled", "dungeon.dungeonCopilot.enabled")
-        event.move(3, "dungeon.copilotPos", "dungeon.dungeonCopilot.pos")
     }
 }

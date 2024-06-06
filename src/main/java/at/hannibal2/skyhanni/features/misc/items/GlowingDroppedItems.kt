@@ -1,9 +1,12 @@
 package at.hannibal2.skyhanni.features.misc.items
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.RenderEntityOutlineEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
 import at.hannibal2.skyhanni.features.garden.pests.SprayType
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.name
@@ -12,16 +15,17 @@ import at.hannibal2.skyhanni.utils.RecalculatingValue
 import net.minecraft.entity.Entity
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.item.EntityItem
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class GlowingDroppedItems {
+@SkyHanniModule
+object GlowingDroppedItems {
 
     private val config get() = SkyHanniMod.feature.misc.glowingDroppedItems
 
     /**
      * List of SkyBlock locations where we might see items in showcases
      */
+    //TODO change to IslandArea
     private val showcaseItemLocations = setOf(
         "The End",
         "Jerry's Workshop",
@@ -39,14 +43,14 @@ class GlowingDroppedItems {
         IslandType.CRIMSON_ISLE
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderEntityOutlines(event: RenderEntityOutlineEvent) {
         if (isEnabled() && event.type === RenderEntityOutlineEvent.Type.XRAY) {
             event.queueEntitiesToOutline { getEntityOutlineColor(it) }
         }
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled
 
     private fun getEntityOutlineColor(entity: Entity): Int? {
         val item = entity as? EntityItem ?: return null
@@ -65,7 +69,7 @@ class GlowingDroppedItems {
     }
 
     private val isShowcaseArea = RecalculatingValue(1.seconds) {
-        showcaseItemIslands.contains(LorenzUtils.skyBlockIsland) || showcaseItemLocations.contains(LorenzUtils.skyBlockArea)
+        showcaseItemIslands.contains(SkyBlockAPI.island) || showcaseItemLocations.contains(SkyBlockAPI.area)
     }
 
     private fun shouldHideShowcaseItem(entity: EntityItem): Boolean {

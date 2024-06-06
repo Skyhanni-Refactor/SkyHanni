@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.config.features.garden.cropmilestones;
 
 import at.hannibal2.skyhanni.config.FeatureToggle;
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import at.hannibal2.skyhanni.config.core.config.Position;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorBoolean;
@@ -26,26 +25,14 @@ public class NextConfig {
     @ConfigEditorDropdown
     public BestTypeEntry bestType = BestTypeEntry.GARDEN_EXP;
 
-    public enum BestTypeEntry implements HasLegacyId {
-        GARDEN_EXP("Garden Exp", 0),
-        SKYBLOCK_EXP("SkyBlock Exp", 1),
+    public enum BestTypeEntry {
+        GARDEN_EXP("Garden Exp"),
+        SKYBLOCK_EXP("SkyBlock Exp"),
         ;
         private final String str;
-        private final int legacyId;
 
-        BestTypeEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         BestTypeEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override

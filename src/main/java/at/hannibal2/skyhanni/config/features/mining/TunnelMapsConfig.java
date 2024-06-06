@@ -18,6 +18,7 @@ public class TunnelMapsConfig {
     @ConfigOption(name = "Enable", desc = "Enables the tunnel maps, which give you a path to any location you want. Open the Inventory to select a destination.")
     @ConfigEditorBoolean
     @FeatureToggle
+    // TODO rename to enabled
     public boolean enable = true;
 
     @Expose

@@ -1,33 +1,34 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiEditSign
-import at.hannibal2.skyhanni.utils.ClipboardUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.KeyboardManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.OSUtils
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McScreen.addTextIntoSign
+import at.hannibal2.skyhanni.utils.mc.McScreen.setTextIntoSign
+import at.hannibal2.skyhanni.utils.system.OS
 import kotlinx.coroutines.launch
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BetterSignEditing {
+@SkyHanniModule
+object BetterSignEditing {
 
     private var pasteLastClicked = false
     private var copyLastClicked = false
     private var deleteLastClicked = false
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!LorenzUtils.onHypixel) return
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
+        if (!HypixelAPI.onHypixel) return
         if (!SkyHanniMod.feature.misc.betterSignEditing) return
 
-        val gui = Minecraft.getMinecraft().currentScreen
         checkPaste()
-        checkCopying(gui)
-        checkDeleting(gui)
+        checkCopying(McScreen.screen)
+        checkDeleting(McScreen.screen)
     }
 
     private fun checkDeleting(gui: GuiScreen?) {
@@ -41,7 +42,7 @@ class BetterSignEditing {
                     val lastSpaceIndex = currentLine.trimEnd().lastIndexOf(' ')
                     if (lastSpaceIndex >= 0) currentLine.substring(0, lastSpaceIndex + 2) else ""
                 } else return@launch
-                LorenzUtils.setTextIntoSign(newLine, gui.editLine)
+                gui.setTextIntoSign(newLine, gui.editLine)
             }
         }
         deleteLastClicked = deleteClicked
@@ -51,7 +52,7 @@ class BetterSignEditing {
         val copyClicked = KeyboardManager.isCopyingKeysDown()
         if (!copyLastClicked && copyClicked && gui is AccessorGuiEditSign) {
             SkyHanniMod.coroutineScope.launch {
-                ClipboardUtils.copyToClipboard(gui.tileSign.signText[gui.editLine].unformattedText)
+                OS.copyToClipboard(gui.tileSign.signText[gui.editLine].unformattedText)
             }
         }
         copyLastClicked = copyClicked
@@ -60,17 +61,8 @@ class BetterSignEditing {
     private fun checkPaste() {
         val pasteClicked = KeyboardManager.isPastingKeysDown()
         if (!pasteLastClicked && pasteClicked) {
-            SkyHanniMod.coroutineScope.launch {
-                OSUtils.readFromClipboard()?.let {
-                    LorenzUtils.addTextIntoSign(it)
-                }
-            }
+            McScreen.screen?.addTextIntoSign(OS.readFromClipboard())
         }
         pasteLastClicked = pasteClicked
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(16, "misc.pasteIntoSigns", "misc.betterSignEditing")
     }
 }

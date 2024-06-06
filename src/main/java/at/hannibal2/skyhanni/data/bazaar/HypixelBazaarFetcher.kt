@@ -1,11 +1,14 @@
 package at.hannibal2.skyhanni.data.bazaar
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigManager
-import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.compat.hypixel.HypixelWebAPI
+import at.hannibal2.skyhanni.compat.hypixel.data.HypixelBazaar
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarData
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.APIUtil
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.LorenzUtils
@@ -13,17 +16,13 @@ import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.json.fromJson
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
 // https://api.hypixel.net/#tag/SkyBlock/paths/~1v2~1skyblock~1bazaar/get
+@SkyHanniModule
 object HypixelBazaarFetcher {
-    private const val URL = "https://api.hypixel.net/v2/skyblock/bazaar"
     private const val HIDDEN_FAILED_ATTEMPTS = 3
 
     var latestProductInformation = mapOf<NEUInternalName, BazaarData>()
@@ -31,8 +30,8 @@ object HypixelBazaarFetcher {
     private var failedAttempts = 0
     private var nextFetchIsManual = false
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!canFetch()) return
         SkyHanniMod.coroutineScope.launch {
             fetchAndProcessBazaarData()
@@ -43,22 +42,21 @@ object HypixelBazaarFetcher {
         nextFetchTime = SimpleTimeMark.now() + 2.minutes
         val fetchType = if (nextFetchIsManual) "manual" else "automatic"
         nextFetchIsManual = false
-        try {
-            val jsonResponse = withContext(Dispatchers.IO) { APIUtil.getJSONResponse(URL) }.asJsonObject
-            val response = ConfigManager.gson.fromJson<BazaarApiResponseJson>(jsonResponse)
-            if (response.success) {
-                latestProductInformation = process(response.products)
-                failedAttempts = 0
-            } else {
-                val rawResponse = jsonResponse.toString()
-                onError(fetchType, Exception("success=false, cause=${response.cause}"), rawResponse)
+
+        HypixelWebAPI.getBazaar().fold(
+            onSuccess = { data ->
+                if (data.success) {
+                    latestProductInformation = process(data.products)
+                    failedAttempts = 0
+                }
+            },
+            onFailure = {
+                onError(fetchType, it)
             }
-        } catch (e: Exception) {
-            onError(fetchType, e)
-        }
+        )
     }
 
-    private fun process(products: Map<String, BazaarProduct>) = products.mapNotNull { (key, product) ->
+    private fun process(products: Map<String, HypixelBazaar.Product>) = products.mapNotNull { (key, product) ->
         val internalName = NEUItems.transHypixelNameToInternalName(key)
         val sellOfferPrice = product.buySummary.minOfOrNull { it.pricePerUnit } ?: 0.0
         val insantBuyPrice = product.sellSummary.maxOfOrNull { it.pricePerUnit } ?: 0.0
@@ -77,18 +75,7 @@ object HypixelBazaarFetcher {
         internalName to BazaarData(internalName.itemName, sellOfferPrice, insantBuyPrice, product)
     }.toMap()
 
-    private fun BazaarQuickStatus.isEmpty(): Boolean = with(this) {
-        sellPrice == 0.0 &&
-            sellVolume == 0L &&
-            sellMovingWeek == 0L &&
-            sellOrders == 0L &&
-            buyPrice == 0.0 &&
-            buyVolume == 0L &&
-            buyMovingWeek == 0L &&
-            buyOrders == 0L
-    }
-
-    private fun onError(fetchType: String, e: Exception, rawResponse: String? = null) {
+    private fun onError(fetchType: String, e: Throwable, rawResponse: String? = null) {
         val userMessage = "Failed fetching bazaar price data from hypixel"
         failedAttempts++
         if (failedAttempts <= HIDDEN_FAILED_ATTEMPTS) {
@@ -114,5 +101,5 @@ object HypixelBazaarFetcher {
         ChatUtils.chat("Manually updating the bazaar prices right now..")
     }
 
-    private fun canFetch() = LorenzUtils.onHypixel && nextFetchTime.isInPast()
+    private fun canFetch() = HypixelAPI.onHypixel && nextFetchTime.isInPast()
 }

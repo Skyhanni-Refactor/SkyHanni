@@ -1,36 +1,36 @@
 package at.hannibal2.skyhanni.features.slayer
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.SlayerAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.SlayerProfitTrackerItemsJson
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.ItemAddEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.PurseChangeCause
-import at.hannibal2.skyhanni.events.PurseChangeEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import at.hannibal2.skyhanni.events.SlayerChangeEvent
-import at.hannibal2.skyhanni.events.SlayerQuestCompleteEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.PurseChangeCause
+import at.hannibal2.skyhanni.events.skyblock.PurseChangeEvent
+import at.hannibal2.skyhanni.events.slayer.SlayerChangeEvent
+import at.hannibal2.skyhanni.events.slayer.SlayerQuestCompleteEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.ItemTrackerData
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniItemTracker
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
 import com.google.gson.annotations.Expose
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object SlayerProfitTracker {
 
     private val config get() = SkyHanniMod.feature.slayer.itemProfitTracker
@@ -62,7 +62,7 @@ object SlayerProfitTracker {
 
         override fun getDescription(timesDropped: Long): List<String> {
             val percentage = timesDropped.toDouble() / slayerCompletedCount
-            val perBoss = LorenzUtils.formatPercentage(percentage.coerceAtMost(1.0))
+            val perBoss = percentage.formatPercentage()
 
             return listOf(
                 "§7Dropped §e${timesDropped.addSeparators()} §7times.",
@@ -81,10 +81,8 @@ object SlayerProfitTracker {
         }
     }
 
-    private val ItemTrackerData.TrackedItem.timesDropped get() = timesGained
-
     private fun addSlayerCosts(price: Double) {
-        require(price < 0) { "slayer costs can not be positve" }
+        require(price < 0) { "slayer costs can not be positive" }
         getTracker()?.modify {
             it.slayerSpawnCost += price.toInt()
         }
@@ -92,12 +90,12 @@ object SlayerProfitTracker {
 
     private var allowedItems = mapOf<String, List<NEUInternalName>>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         allowedItems = event.getConstant<SlayerProfitTrackerItemsJson>("SlayerProfitTrackerItems").slayers
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPurseChange(event: PurseChangeEvent) {
         if (!isEnabled()) return
         val coins = event.coins
@@ -109,15 +107,15 @@ object SlayerProfitTracker {
         }
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         autoSlayerBankPattern.matchMatcher(event.message) {
             addSlayerCosts(-group("coins").formatDouble())
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSlayerChange(event: SlayerChangeEvent) {
         val newSlayer = event.newSlayer
         itemLogCategory = newSlayer.removeColor()
@@ -138,14 +136,14 @@ object SlayerProfitTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onQuestComplete(event: SlayerQuestCompleteEvent) {
         getTracker()?.modify {
             it.slayerCompletedCount++
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onItemAdd(event: ItemAddEvent) {
         if (!isEnabled()) return
         if (!SlayerAPI.isInCorrectArea) return
@@ -197,18 +195,7 @@ object SlayerProfitTracker {
         tracker.addPriceFromButton(this)
     }
 
-    val coinFormat: (ItemTrackerData.TrackedItem) -> Pair<String, List<String>> = { item ->
-        val mobKillCoinsFormat = NumberUtil.format(item.totalAmount)
-        val text = " §6Mob kill coins§7: §6$mobKillCoinsFormat"
-        val lore = listOf(
-            "§7Killing mobs gives you coins (more with scavenger)",
-            "§7You got §e$mobKillCoinsFormat §7coins in total this way"
-        )
-
-        text to lore
-    }
-
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent) {
         if (!isEnabled()) return
         if (!SlayerAPI.isInCorrectArea) return
@@ -216,29 +203,7 @@ object SlayerProfitTracker {
         getTracker()?.renderDisplay(config.pos)
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(10, "#profile.slayerProfitData") { old ->
-            for (data in old.asJsonObject.entrySet().map { it.value.asJsonObject }) {
-                val items = data.get("items").asJsonObject
-                for (item in items.entrySet().map { it.value.asJsonObject }) {
-                    val oldValue = item.get("timesDropped")
-                    item.add("timesGained", oldValue)
-                }
-
-                val coinAmount = data.get("mobKillCoins")
-                val coins = JsonObject()
-                coins.add("internalName", JsonPrimitive("SKYBLOCK_COIN"))
-                coins.add("timesDropped", JsonPrimitive(1))
-                coins.add("totalAmount", coinAmount)
-                items.add("SKYBLOCK_COIN", coins)
-            }
-
-            old
-        }
-    }
-
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
+    fun isEnabled() = SkyBlockAPI.isConnected && config.enabled
 
     fun clearProfitCommand(args: Array<String>) {
         if (itemLogCategory == "") {

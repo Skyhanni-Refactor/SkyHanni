@@ -11,7 +11,7 @@ import java.util.Base64
 
 object GhostFormatting {
 
-    private const val exportPrefix = "gc/"
+    private const val EXPORT_PREFIX = "gc/"
 
     fun importFormat() {
         val base64: String = try {
@@ -20,11 +20,11 @@ object GhostFormatting {
             return
         }
 
-        if (base64.length <= exportPrefix.length) return
+        if (base64.length <= EXPORT_PREFIX.length) return
         val jsonString = try {
             val t = String(Base64.getDecoder().decode(base64.trim()))
-            if (!t.startsWith(exportPrefix)) return
-            t.substring(exportPrefix.length)
+            if (!t.startsWith(EXPORT_PREFIX)) return
+            t.substring(EXPORT_PREFIX.length)
         } catch (e: IllegalArgumentException) {
             return
         }
@@ -131,7 +131,7 @@ object GhostFormatting {
         for (l in list) {
             jsonArray.add(JsonPrimitive(l))
         }
-        val base64 = Base64.getEncoder().encodeToString((exportPrefix + jsonArray).toByteArray(StandardCharsets.UTF_8))
+        val base64 = Base64.getEncoder().encodeToString((EXPORT_PREFIX + jsonArray).toByteArray(StandardCharsets.UTF_8))
         Toolkit.getDefaultToolkit().systemClipboard.setContents(StringSelection(base64), null)
     }
 

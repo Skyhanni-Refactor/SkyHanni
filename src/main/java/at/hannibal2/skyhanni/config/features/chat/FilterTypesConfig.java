@@ -38,12 +38,6 @@ public class FilterTypesConfig {
     public boolean guildExp = false;
 
     @Expose
-    @ConfigOption(name = "Friend Join Left", desc = "Hide friend join/left messages.")
-    @ConfigEditorBoolean
-    @FeatureToggle
-    public boolean friendJoinLeft = false;
-
-    @Expose
     @ConfigOption(name = "Winter Gifts", desc = "Hide useless Winter Gift messages.")
     @ConfigEditorBoolean
     @FeatureToggle

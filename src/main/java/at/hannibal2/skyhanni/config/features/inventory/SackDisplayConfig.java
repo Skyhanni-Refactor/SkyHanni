@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.config.features.inventory;
 
 import at.hannibal2.skyhanni.config.FeatureToggle;
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import at.hannibal2.skyhanni.config.core.config.Position;
 import at.hannibal2.skyhanni.utils.RenderUtils;
 import com.google.gson.annotations.Expose;
@@ -38,31 +37,19 @@ public class SackDisplayConfig {
     public NumberFormatEntry numberFormat = NumberFormatEntry.FORMATTED;
 
     @Expose
-    @ConfigOption(name = "Alignment", desc = "Channge the alignment for numbers and money.")
+    @ConfigOption(name = "Alignment", desc = "Change the alignment for numbers and money.")
     @ConfigEditorDropdown
     public RenderUtils.HorizontalAlignment alignment = RenderUtils.HorizontalAlignment.LEFT;
 
-    public enum NumberFormatEntry implements HasLegacyId {
-        DEFAULT("Default", 0),
-        FORMATTED("Formatted", 1),
-        UNFORMATTED("Unformatted", 2);
+    public enum NumberFormatEntry {
+        DEFAULT("Default"),
+        FORMATTED("Formatted"),
+        UNFORMATTED("Unformatted");
 
         private final String str;
-        private final int legacyId;
 
-        NumberFormatEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         NumberFormatEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override
@@ -84,28 +71,16 @@ public class SackDisplayConfig {
     @ConfigEditorDropdown
     public SortingTypeEntry sortingType = SortingTypeEntry.DESC_STORED;
 
-    public enum SortingTypeEntry implements HasLegacyId {
-        DESC_STORED("Descending (Stored)", 0),
-        ASC_STORED("Ascending (Stored)", 1),
-        DESC_PRICE("Descending (Price)", 2),
-        ASC_PRICE("Ascending (Price)", 3);
+    public enum SortingTypeEntry {
+        DESC_STORED("Descending (Stored)"),
+        ASC_STORED("Ascending (Stored)"),
+        DESC_PRICE("Descending (Price)"),
+        ASC_PRICE("Ascending (Price)");
 
         private final String str;
-        private final int legacyId;
 
-        SortingTypeEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         SortingTypeEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override
@@ -141,26 +116,14 @@ public class SackDisplayConfig {
     @ConfigEditorDropdown
     public PriceFormatEntry priceFormat = PriceFormatEntry.FORMATTED;
 
-    public enum PriceFormatEntry implements HasLegacyId {
-        FORMATTED("Formatted", 0),
-        UNFORMATTED("Unformatted", 1);
+    public enum PriceFormatEntry {
+        FORMATTED("Formatted"),
+        UNFORMATTED("Unformatted");
 
         private final String str;
-        private final int legacyId;
 
-        PriceFormatEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         PriceFormatEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override
@@ -174,26 +137,14 @@ public class SackDisplayConfig {
     @ConfigEditorDropdown
     public PriceFrom priceFrom = PriceFrom.BAZAAR;
 
-    public enum PriceFrom implements HasLegacyId {
-        BAZAAR("Bazaar", 0),
-        NPC("NPC", 1);
+    public enum PriceFrom {
+        BAZAAR("Bazaar"),
+        NPC("NPC");
 
         private final String str;
-        private final int legacyId;
 
-        PriceFrom(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         PriceFrom(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override

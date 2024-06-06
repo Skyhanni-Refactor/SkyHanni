@@ -1,11 +1,13 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.jsonobjects.repo.HoppityEggLocationsJson
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.NeuProfileDataLoadedEvent
-import at.hannibal2.skyhanni.events.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuProfileDataLoadedEvent
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
@@ -13,12 +15,10 @@ import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceSqToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawColor
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.StringUtils
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 @SkyHanniModule
 object HoppityEggLocations {
@@ -33,14 +33,14 @@ object HoppityEggLocations {
     private var apiEggLocations: Map<IslandType, Map<String, LorenzVec>> = mapOf()
 
     val islandLocations
-        get() = apiEggLocations[LorenzUtils.skyBlockIsland]?.values?.toSet() ?: emptySet()
+        get() = apiEggLocations[SkyBlockAPI.island]?.values?.toSet() ?: emptySet()
 
     val islandCollectedLocations
-        get() = collectedEggStorage[LorenzUtils.skyBlockIsland]?.toSet() ?: emptySet()
+        get() = collectedEggStorage[SkyBlockAPI.island]?.toSet() ?: emptySet()
 
     fun hasCollectedEgg(location: LorenzVec): Boolean = islandCollectedLocations.contains(location)
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         // TODO: split Chocolate Factory and Hoppity repo data
         val data = event.getConstant<HoppityEggLocationsJson>("HoppityEggLocations")
@@ -53,14 +53,14 @@ object HoppityEggLocations {
         if (location.distanceSqToPlayer() > 100) {
             ErrorManager.skyHanniError(
                 "Player far from any known egg location!",
-                "island" to LorenzUtils.skyBlockIsland,
+                "island" to SkyBlockAPI.island,
                 "distanceSqToPlayer" to location.distanceSqToPlayer(),
                 "playerLocation" to LocationUtils.playerLocation(),
                 "closestKnownEgg" to location,
             )
         }
 
-        saveEggLocation(LorenzUtils.skyBlockIsland, location)
+        saveEggLocation(SkyBlockAPI.island, location)
     }
 
     private fun saveEggLocation(island: IslandType, location: LorenzVec) {
@@ -70,12 +70,12 @@ object HoppityEggLocations {
 
     private var loadedNeuThisProfile = false
 
-    @SubscribeEvent
+    @HandleEvent
     fun onProfileJoin(event: ProfileJoinEvent) {
         loadedNeuThisProfile = false
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onNeuProfileDataLoaded(event: NeuProfileDataLoadedEvent) {
         if (loadedNeuThisProfile || !HoppityEggsManager.config.loadFromNeuPv) return
 
@@ -125,11 +125,11 @@ object HoppityEggLocations {
         ChatUtils.chat("$enabledDisabled hoppity egg location debug viewer.")
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
-        if (!LorenzUtils.inSkyBlock || !showEggLocationsDebug) return
-        val legacyLocations = legacyEggLocations[LorenzUtils.skyBlockIsland] ?: return
-        val apiLocations = apiEggLocations[LorenzUtils.skyBlockIsland] ?: return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
+        if (!showEggLocationsDebug) return
+        val legacyLocations = legacyEggLocations[SkyBlockAPI.island] ?: return
+        val apiLocations = apiEggLocations[SkyBlockAPI.island] ?: return
         val collectedLocations = islandCollectedLocations
         for (location in legacyLocations) {
             val name = apiLocations.entries.find { it.value == location }?.key

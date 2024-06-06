@@ -1,8 +1,8 @@
 package at.hannibal2.skyhanni.features.misc.discordrpc
 
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
-import at.hannibal2.skyhanni.utils.LorenzUtils
 
 object DiscordLocationKey {
 
@@ -247,8 +247,6 @@ object DiscordLocationKey {
     )
 
     private fun getAmbiguousKey(location: String): String {
-        val island = LorenzUtils.skyBlockIsland
-
         DungeonAPI.dungeonFloor?.lowercase()?.let {
             if (it.startsWith("m")) {
                 return "master-mode"
@@ -260,7 +258,7 @@ object DiscordLocationKey {
 
         return when (location) {
             "Wizard Tower" -> {
-                when (island) {
+                when (SkyBlockAPI.island) {
                     IslandType.THE_RIFT -> "rift-tower"
                     IslandType.HUB -> "wizard-tower"
                     else -> "skyblock-logo"
@@ -268,7 +266,7 @@ object DiscordLocationKey {
             }
 
             "The Bastion" -> {
-                when (island) {
+                when (SkyBlockAPI.island) {
                     IslandType.THE_RIFT -> "wyld-woods"
                     IslandType.CRIMSON_ISLE -> "crimson-isle"
                     else -> "skyblock-logo"
@@ -276,7 +274,7 @@ object DiscordLocationKey {
             }
 
             "Community Center" -> {
-                when (island) {
+                when (SkyBlockAPI.island) {
                     IslandType.HUB -> "village"
                     IslandType.CRIMSON_ISLE -> "crimson-isle"
                     else -> "skyblock-logo"
@@ -284,7 +282,7 @@ object DiscordLocationKey {
             }
 
             "Colosseum" -> {
-                when (island) {
+                when (SkyBlockAPI.island) {
                     IslandType.HUB -> "colosseum"
                     IslandType.THE_RIFT -> "around-colosseum"
                     else -> "skyblock-logo"

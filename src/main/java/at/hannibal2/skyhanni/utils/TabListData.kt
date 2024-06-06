@@ -1,29 +1,37 @@
 package at.hannibal2.skyhanni.utils
 
-import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.model.TabWidget
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.PacketEvent
-import at.hannibal2.skyhanni.events.TabListUpdateEvent
-import at.hannibal2.skyhanni.events.TablistFooterUpdateEvent
-import at.hannibal2.skyhanni.mixins.hooks.tabListGuard
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.TablistFooterUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
+import at.hannibal2.skyhanni.mixins.kotlin.gui.GuiPlayerTabOverlayMixin
 import at.hannibal2.skyhanni.mixins.transformers.AccessorGuiPlayerTabOverlay
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ConditionalUtils.conditionalTransform
 import at.hannibal2.skyhanni.utils.ConditionalUtils.transformIf
+import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
+import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import at.hannibal2.skyhanni.utils.system.OS
 import com.google.common.collect.ComparisonChain
 import com.google.common.collect.Ordering
-import kotlinx.coroutines.launch
 import net.minecraft.client.Minecraft
 import net.minecraft.client.network.NetworkPlayerInfo
 import net.minecraft.network.play.server.S38PacketPlayerListItem
 import net.minecraft.world.WorldSettings
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.relauncher.Side
-import net.minecraftforge.fml.relauncher.SideOnly
-import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object TabListData {
+
+    private val islandNamePattern by RepoPattern.pattern(
+        "tablist.islandname",
+        "(?:§.)*(Area|Dungeon): (?:§.)*(?<island>.*)"
+    )
+
     private var tablistCache = emptyList<String>()
     private var debugCache: List<String>? = null
 
@@ -43,11 +51,8 @@ object TabListData {
             debugCache = null
             return
         }
-        SkyHanniMod.coroutineScope.launch {
-            val clipboard = OSUtils.readFromClipboard() ?: return@launch
-            debugCache = clipboard.lines()
-            ChatUtils.chat("Enabled tab list debug with your clipboard.")
-        }
+        debugCache = OS.readFromClipboard().lines()
+        ChatUtils.chat("Enabled tab list debug with your clipboard.")
     }
 
     fun copyCommand(args: Array<String>) {
@@ -71,18 +76,17 @@ object TabListData {
         val tabHeader = header.conditionalTransform(noColor, { this.removeColor() }, { this })
         val tabFooter = footer.conditionalTransform(noColor, { this.removeColor() }, { this })
 
-            val widgets = TabWidget.entries.filter { it.isActive }
-                .joinToString("\n") { "\n${it.name} : \n${it.lines.joinToString("\n")}" }
-            val string =
-                "Header:\n\n$tabHeader\n\nBody:\n\n${resultList.joinToString("\n")}\n\nFooter:\n\n$tabFooter\n\nWidgets:$widgets"
+        val widgets = TabWidget.entries.filter { it.isActive }
+            .joinToString("\n") { "\n${it.name} : \n${it.lines.joinToString("\n")}" }
+        val string =
+            "Header:\n\n$tabHeader\n\nBody:\n\n${resultList.joinToString("\n")}\n\nFooter:\n\n$tabFooter\n\nWidgets:$widgets"
 
-        OSUtils.copyToClipboard(string)
+        OS.copyToClipboard(string)
         ChatUtils.chat("Tab list copied into the clipboard!")
     }
 
     private val playerOrdering = Ordering.from(PlayerComparator())
 
-    @SideOnly(Side.CLIENT)
     internal class PlayerComparator : Comparator<NetworkPlayerInfo> {
 
         override fun compare(o1: NetworkPlayerInfo, o2: NetworkPlayerInfo): Int {
@@ -104,36 +108,33 @@ object TabListData {
         val thePlayer = Minecraft.getMinecraft()?.thePlayer ?: return null
         val players = playerOrdering.sortedCopy(thePlayer.sendQueue.playerInfoMap)
         val result = mutableListOf<String>()
-        tabListGuard = true
+        GuiPlayerTabOverlayMixin.tabListGuard = true
         for (info in players) {
             val name = Minecraft.getMinecraft().ingameGUI.tabList.getPlayerName(info)
-            result.add(LorenzUtils.stripVanillaMessage(name))
+            result.add(name.stripHypixelMessage())
         }
-        tabListGuard = false
+        GuiPlayerTabOverlayMixin.tabListGuard = false
         return result.dropLast(1)
     }
 
     var dirty = false
 
-    @SubscribeEvent(receiveCanceled = true)
-    fun onPacketReceive(event: PacketEvent.ReceiveEvent) {
+    @HandleEvent(receiveCancelled = true)
+    fun onPacketReceive(event: ReceivePacketEvent) {
         if (event.packet is S38PacketPlayerListItem) {
             dirty = true
         }
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!dirty) return
         dirty = false
 
         val tabList = readTabList() ?: return
         if (tablistCache != tabList) {
             tablistCache = tabList
-            TabListUpdateEvent(getTabList()).postAndCatch()
-            if (!LorenzUtils.onHypixel) {
-                workaroundDelayedTabListUpdateAgain()
-            }
+            TabListUpdateEvent(getTabList()).post()
         }
 
         val tabListOverlay = Minecraft.getMinecraft().ingameGUI.tabList as AccessorGuiPlayerTabOverlay
@@ -141,17 +142,18 @@ object TabListData {
 
         val tabFooter = tabListOverlay.footer_skyhanni?.formattedText ?: ""
         if (tabFooter != footer && tabFooter != "") {
-            TablistFooterUpdateEvent(tabFooter).postAndCatch()
+            TablistFooterUpdateEvent(tabFooter).post()
         }
         footer = tabFooter
     }
 
-    private fun workaroundDelayedTabListUpdateAgain() {
-        DelayedRun.runDelayed(2.seconds) {
-            if (LorenzUtils.onHypixel) {
-                println("workaroundDelayedTabListUpdateAgain")
-                TabListUpdateEvent(getTabList()).postAndCatch()
-            }
+    // TODO see why this needs to exist
+    @HandleEvent(priority = HandleEvent.HIGHEST)
+    fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
+        fullyLoaded = false
+
+        getTabList().matchFirst(islandNamePattern) {
+            fullyLoaded = true
         }
     }
 }

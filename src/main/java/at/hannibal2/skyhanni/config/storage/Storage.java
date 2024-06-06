@@ -24,10 +24,6 @@ public class Storage {
 
     @Deprecated
     @Expose
-    public Map<String, List<String>> knownFeatureToggles = new HashMap<>();
-
-    @Deprecated
-    @Expose
     public List<VisualWord> modifiedWords = new ArrayList<>();
 
     @Expose

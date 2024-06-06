@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.config.features.garden;
 
 import at.hannibal2.skyhanni.config.FeatureToggle;
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import at.hannibal2.skyhanni.config.core.config.Position;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorBoolean;
@@ -84,28 +83,16 @@ public class MoneyPerHourConfig {
         NPC_PRICE
     ));
 
-    public enum CustomFormatEntry implements HasLegacyId {
-        SELL_OFFER("§eSell Offer", 0),
-        INSTANT_SELL("§eInstant Sell", 1),
-        NPC_PRICE("§eNPC Price", 2),
+    public enum CustomFormatEntry {
+        SELL_OFFER("§eSell Offer"),
+        INSTANT_SELL("§eInstant Sell"),
+        NPC_PRICE("§eNPC Price"),
         ;
 
         private final String str;
-        private final int legacyId;
 
-        CustomFormatEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         CustomFormatEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override

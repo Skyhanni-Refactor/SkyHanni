@@ -1,6 +1,8 @@
 package at.hannibal2.skyhanni.utils
 
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
+import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.allLettersFirstUppercase
@@ -21,7 +23,7 @@ object ItemNameResolver {
         }
 
         if (itemName == "§cmissing repo item") {
-            return itemNameCache.getOrPut(lowercase) { NEUInternalName.MISSING_ITEM }
+            return itemNameCache.getOrPut(lowercase) { SkyhanniItems.MISSING_ITEM() }
         }
 
         resolveEnchantmentByName(itemName)?.let {
@@ -52,7 +54,7 @@ object ItemNameResolver {
         }
 
         val internalName = when (itemName) {
-            "SUPERBOOM TNT" -> "SUPERBOOM_TNT".asInternalName()
+            "SUPERBOOM TNT" -> SkyhanniItems.SUPERBOOM_TNT()
             else -> {
                 ItemResolutionQuery.findInternalNameByDisplayName(itemName, true)?.let {
 
@@ -89,8 +91,8 @@ object ItemNameResolver {
 
     private fun fixEnchantmentName(originalName: String): NEUInternalName {
         duplexPattern.matchMatcher(originalName) {
-            val tier = group("tier")
-            return "ULTIMATE_REITERATE;$tier".asInternalName()
+            val tier = group("tier").formatInt()
+            return SkyhanniItems.ULTIMATE_REITERATE(tier)
         }
         // TODO USE SH-REPO
         return originalName.asInternalName()

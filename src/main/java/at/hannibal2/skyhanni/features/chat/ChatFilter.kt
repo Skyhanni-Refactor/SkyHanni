@@ -1,18 +1,19 @@
 package at.hannibal2.skyhanni.features.chat
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.LorenzChatEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandTypeTag
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.garden.GardenAPI
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.regex.Pattern
 
-class ChatFilter {
+@SkyHanniModule
+object ChatFilter {
 
     private val generalConfig get() = SkyHanniMod.feature.chat
     private val config get() = SkyHanniMod.feature.chat.filterType
@@ -457,8 +458,8 @@ class ChatFilter {
     )
     /// </editor-fold>
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         val blockReason = block(event.message)
         if (blockReason == "") return
 
@@ -488,7 +489,7 @@ class ChatFilter {
         config.factoryUpgrade && message.isPresent("factory_upgrade") -> "factory_upgrade"
         config.sacrifice && message.isPresent("sacrifice") -> "sacrifice"
         generalConfig.hideJacob && !GardenAPI.inGarden() && anitaFortunePattern.matches(message) -> "jacob_event"
-        generalConfig.hideSkyMall && !LorenzUtils.inMiningIsland() && (skymallPerkPattern.matches(message) || message.isPresent("skymall")) -> "skymall"
+        generalConfig.hideSkyMall && !IslandTypeTag.MINING.inAny() && (skymallPerkPattern.matches(message) || message.isPresent("skymall")) -> "skymall"
         dungeonConfig.rareDrops && message.isPresent("rare_drops") -> "rare_drops"
         dungeonConfig.soloClass && DungeonAPI.inDungeon() && message.isPresent("solo_class") -> "solo_class"
         dungeonConfig.soloStats && DungeonAPI.inDungeon() && message.isPresent("solo_stats") -> "solo_stats"
@@ -540,18 +541,4 @@ class ChatFilter {
         (patternsMap[key] ?: emptyList()).any { it.matches(this) } ||
         (messagesContainsMap[key] ?: emptyList()).any { this.contains(it) } ||
         (messagesStartsWithMap[key] ?: emptyList()).any { this.startsWith(it) }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "chat.hypixelHub", "chat.filterType.hypixelHub")
-        event.move(3, "chat.empty", "chat.filterType.empty")
-        event.move(3, "chat.warping", "chat.filterType.warping")
-        event.move(3, "chat.guildExp", "chat.filterType.guildExp")
-        event.move(3, "chat.friendJoinLeft", "chat.filterType.friendJoinLeft")
-        event.move(3, "chat.winterGift", "chat.filterType.winterGift")
-        event.move(3, "chat.powderMining", "chat.filterType.powderMining")
-        event.move(3, "chat.killCombo", "chat.filterType.killCombo")
-        event.move(3, "chat.profileJoin", "chat.filterType.profileJoin")
-        event.move(3, "chat.others", "chat.filterType.others")
-    }
 }

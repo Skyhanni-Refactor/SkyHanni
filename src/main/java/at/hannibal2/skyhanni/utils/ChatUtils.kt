@@ -1,8 +1,10 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.MessageSendToServerEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ConfigUtils.jumpToEditor
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.chat.Text
@@ -10,19 +12,19 @@ import at.hannibal2.skyhanni.utils.chat.Text.asComponent
 import at.hannibal2.skyhanni.utils.chat.Text.command
 import at.hannibal2.skyhanni.utils.chat.Text.hover
 import at.hannibal2.skyhanni.utils.chat.Text.onClick
-import at.hannibal2.skyhanni.utils.chat.Text.prefix
 import at.hannibal2.skyhanni.utils.chat.Text.url
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
 import net.minecraft.util.IChatComponent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.LinkedList
 import java.util.Queue
 import kotlin.reflect.KMutableProperty0
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.times
 
+@SkyHanniModule
 object ChatUtils {
 
     // TODO log based on chat category (error, warning, debug, user error, normal)
@@ -31,7 +33,6 @@ object ChatUtils {
 
     private const val DEBUG_PREFIX = "[SkyHanni Debug] §7"
     private const val USER_ERROR_PREFIX = "§c[SkyHanni] "
-    private val ERROR_PREFIX by lazy { "§c[SkyHanni-${SkyHanniMod.version}] " }
     private const val CHAT_PREFIX = "[SkyHanni] "
 
     /**
@@ -44,7 +45,7 @@ object ChatUtils {
      */
     fun debug(message: String) {
         if (SkyHanniMod.feature.dev.debug.enabled && internalChat(DEBUG_PREFIX + message)) {
-            LorenzUtils.consoleLog("[Debug] $message")
+            SkyHanniMod.logger.info("[Debug] $message")
         }
     }
 
@@ -58,28 +59,6 @@ object ChatUtils {
      */
     fun userError(message: String) {
         internalChat(USER_ERROR_PREFIX + message)
-    }
-
-    /**
-     * Sends a message to the user that an error occurred caused by something in the code.
-     * This should be used for errors that are not caused by the user.
-     *
-     * Why deprecate this? Even if this message is descriptive for the user and the developer,
-     * we don't want inconsistencies in errors, and we would need to search
-     * for the code line where this error gets printed any way.
-     * So it's better to use the stack trace still.
-     *
-     * @param message The message to be sent
-     *
-     * @see ERROR_PREFIX
-     */
-    @Deprecated(
-        "Do not send the user a non clickable non stacktrace containing error message.",
-        ReplaceWith("ErrorManager.logErrorStateWithData(message)")
-    )
-    fun error(message: String) {
-        println("error: '$message'")
-        internalChat(ERROR_PREFIX + message)
     }
 
     /**
@@ -108,13 +87,13 @@ object ChatUtils {
 
         val minecraft = Minecraft.getMinecraft()
         if (minecraft == null) {
-            LorenzUtils.consoleLog(formattedMessage.removeColor())
+            SkyHanniMod.logger.info(formattedMessage.removeColor())
             return false
         }
 
         val thePlayer = minecraft.thePlayer
         if (thePlayer == null) {
-            LorenzUtils.consoleLog(formattedMessage.removeColor())
+            SkyHanniMod.logger.info(formattedMessage.removeColor())
             return false
         }
 
@@ -200,24 +179,7 @@ object ChatUtils {
             this.url = url
             this.hover = "$prefixColor$hover".asComponent()
         })
-        if (autoOpen) OSUtils.openBrowser(url)
-    }
-
-    /**
-     * Sends a message to the user that combines many message components e.g. clickable, hoverable and regular text
-     * @param components The list of components to be joined together to form the final message
-     * @param prefix Whether to prefix the message with the chat prefix, default true
-     * @param prefixColor Color that the prefix should be, default yellow (§e)
-     *
-     * @see CHAT_PREFIX
-     */
-    fun multiComponentMessage(
-        components: List<ChatComponentText>,
-        prefix: Boolean = true,
-        prefixColor: String = "§e",
-    ) {
-        val msgPrefix = if (prefix) prefixColor + CHAT_PREFIX else ""
-        chat(Text.join(components).prefix(msgPrefix))
+        if (autoOpen) OS.openUrl(url)
     }
 
     private var lastMessageSent = SimpleTimeMark.farPast()
@@ -227,8 +189,8 @@ object ChatUtils {
     fun getTimeWhenNewlyQueuedMessageGetsExecuted() =
         (lastMessageSent + sendQueue.size * messageDelay).takeIf { !it.isInPast() } ?: SimpleTimeMark.now()
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         val player = Minecraft.getMinecraft().thePlayer
         if (player == null) {
             sendQueue.clear()
@@ -244,21 +206,14 @@ object ChatUtils {
         sendQueue.add(message)
     }
 
-    @Deprecated("use HypixelCommands instead", ReplaceWith(""))
-    fun sendCommandToServer(command: String) {
-        if (command.startsWith("/")) {
-            debug("Sending wrong command to server? ($command)")
-        }
-        sendMessageToServer("/$command")
-    }
-
+    //TODO look at later
     fun MessageSendToServerEvent.isCommand(commandWithSlash: String) =
         splitMessage.takeIf { it.isNotEmpty() }?.get(0) == commandWithSlash
 
     fun MessageSendToServerEvent.isCommand(commandsWithSlash: Collection<String>) =
         splitMessage.takeIf { it.isNotEmpty() }?.get(0) in commandsWithSlash
 
-    fun MessageSendToServerEvent.senderIsSkyhanni() = originatingModContainer?.modId == "skyhanni"
+    fun MessageSendToServerEvent.senderIsSkyhanni() = originatingModContainer?.id == "skyhanni"
 
     fun MessageSendToServerEvent.eventWithNewMessage(message: String) =
         MessageSendToServerEvent(message, message.split(" "), this.originatingModContainer)

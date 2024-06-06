@@ -1,24 +1,25 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.InventoryUpdatedEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SkyBlockTime
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object HoppityNpc {
 
     private val config get() = HoppityEggsManager.config
@@ -33,7 +34,7 @@ object HoppityNpc {
     private var slotsToHighlight = mutableSetOf<Int>()
     private var inShop = false
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (event.inventoryName != "Hoppity") return
         // TODO maybe we could add an annoying chat message that tells you how many years you have skipped
@@ -43,7 +44,7 @@ object HoppityNpc {
         inShop = true
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isReminderEnabled()) return
         if (ReminderUtils.isBusy()) return
@@ -63,17 +64,17 @@ object HoppityNpc {
         lastReminderSent = SimpleTimeMark.now()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         clear()
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         clear()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
         if (!inShop) return
         slotsToHighlight.clear()
@@ -84,19 +85,19 @@ object HoppityNpc {
         }
     }
 
-    @SubscribeEvent
-    fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         if (!isHighlightEnabled()) return
         if (!inShop) return
         for (slot in InventoryUtils.getItemsInOpenChest()) {
             if (slot.slotIndex in slotsToHighlight) {
-                slot highlight LorenzColor.GREEN.addOpacity(200)
+                slot.highlight(LorenzColor.GREEN.addOpacity(200))
             }
         }
     }
 
-    private fun isHighlightEnabled() = LorenzUtils.inSkyBlock && config.highlightHoppityShop
-    private fun isReminderEnabled() = LorenzUtils.inSkyBlock && config.hoppityShopReminder
+    private fun isHighlightEnabled() = config.highlightHoppityShop
+    private fun isReminderEnabled() = config.hoppityShopReminder
 
     private fun clear() {
         inShop = false

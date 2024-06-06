@@ -1,24 +1,25 @@
 package at.hannibal2.skyhanni.features.misc.limbo
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.events.InventoryOpenEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.inventory.InventoryOpenEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.events.render.gui.ReplaceItemEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.player.inventory.ContainerLocalMenu
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object LimboPlaytime {
     private lateinit var modifiedList: MutableList<String>
     private var setMinutes = false
@@ -40,12 +41,11 @@ object LimboPlaytime {
     private val storage get() = ProfileStorageData.playerSpecific?.limbo
     private val enabled get() = SkyHanniMod.feature.misc.showLimboTimeInPlaytimeDetailed
 
-    private val itemID = "ENDER_PEARL".asInternalName()
-    private val itemName = "§aLimbo"
+    private const val LIMBO_ITEM_NAME = "§aLimbo"
     private lateinit var limboItem: ItemStack
     private var lastCreateCooldown = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
+    @HandleEvent
     fun replaceItem(event: ReplaceItemEvent) {
         if (!enabled) return
         if (event.inventory !is ContainerLocalMenu) return
@@ -57,8 +57,8 @@ object LimboPlaytime {
         if (lastCreateCooldown.passedSince() > 3.seconds) {
             lastCreateCooldown = SimpleTimeMark.now()
             limboItem = Utils.createItemStack(
-                itemID.getItemStack().item,
-                itemName,
+                SkyhanniItems.ENDER_PEARL().getItemStack().item,
+                LIMBO_ITEM_NAME,
                 *createItemLore()
             )
         }
@@ -76,9 +76,8 @@ object LimboPlaytime {
         else -> arrayOf("§7Playtime: §a$wholeMinutes minutes")
     }
 
-    @SubscribeEvent
-    fun onTooltip(event: LorenzToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!enabled) return
         if (!event.slot.inventory.name.startsWith("Detailed /playtime")) return
         if (event.slot.slotIndex != 4) return
@@ -93,7 +92,7 @@ object LimboPlaytime {
         remakeList(event.toolTip, minutesList, hoursList)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderGUI(event: InventoryOpenEvent) {
         if (event.inventoryName != "Detailed /playtime") return
         val playtime = (storage?.playtime ?: 0).seconds
@@ -103,7 +102,7 @@ object LimboPlaytime {
         if ((wholeMinutes % 60) == 0) {
             hoursString = "$wholeHours"
         } else {
-            val minutes: Float = ((wholeMinutes - wholeHours * 60).toFloat() / 60).round(1)
+            val minutes: Float = ((wholeMinutes - wholeHours * 60).toFloat() / 60).roundTo(1)
             hoursString = wholeHours.addSeparators()
             if (findFloatDecimalPlace(minutes) != 0) {
                 val minutesString = minutes.toString()

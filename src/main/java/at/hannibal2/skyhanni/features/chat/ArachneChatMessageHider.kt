@@ -1,15 +1,16 @@
 package at.hannibal2.skyhanni.features.chat
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ArachneChatMessageHider {
+@SkyHanniModule
+object ArachneChatMessageHider {
 
     private val config get() = SkyHanniMod.feature.chat
     private var hideArachneDeadMessage = false
@@ -27,11 +28,12 @@ class ArachneChatMessageHider {
         "spawn",
         "§c\\[BOSS] Arachne§r§f: (?:The Era of Spiders begins now\\.|Ahhhh\\.\\.\\.A Calling\\.\\.\\.)"
     )
+    // TODO more repo patterns
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent(onlyOnIsland = IslandType.SPIDER_DEN)
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
-        if (LorenzUtils.skyBlockArea == "Arachne's Sanctuary") return
+        if (IslandArea.ARACHNE_SANCTUARY.isInside()) return
 
         if (shouldHide(event.message)) {
             event.blockedReason = "arachne"
@@ -61,5 +63,5 @@ class ArachneChatMessageHider {
         return hideArachneDeadMessage
     }
 
-    fun isEnabled() = IslandType.SPIDER_DEN.isInIsland() && config.hideArachneMessages
+    fun isEnabled() = config.hideArachneMessages
 }

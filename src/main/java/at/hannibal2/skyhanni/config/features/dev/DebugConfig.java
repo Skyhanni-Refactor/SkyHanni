@@ -17,11 +17,6 @@ public class DebugConfig {
     public boolean enabled = false;
 
     @Expose
-    @ConfigOption(name = "Command Logging", desc = "Logs stack trace information into the console when a command gets sent to Hypixel. (by any mod or the player)")
-    @ConfigEditorBoolean
-    public boolean commandLogs = false;
-
-    @Expose
     @ConfigOption(
         name = "Mod Menu Log",
         desc = "Enables debug messages when the currently opened GUI changes, with the path to the gui class. " +
@@ -101,20 +96,9 @@ public class DebugConfig {
     public boolean highlightMissingRepo = false;
 
     @Expose
-    @ConfigOption(name = "Hot Swap Detection", desc = "Show chat messages when Hot Swap starts and ends.")
-    @ConfigEditorBoolean
-    public boolean hotSwapDetection = false;
-
-    @Expose
-    @ConfigOption(name = "Always Outdated", desc = "For the sake of the auto updater, act like you are always oudated.")
+    @ConfigOption(name = "Always Outdated", desc = "For the sake of the auto updater, act like you are always outdated.")
     @ConfigEditorBoolean
     public boolean alwaysOutdated = false;
-
-    @Expose
-    @ConfigOption(name = "SkyHanni Event Counter", desc = "Count once per second how many skyhanni events gets triggered, " +
-        "show the total amount in console output.")
-    @ConfigEditorBoolean
-    public boolean eventCounter = false;
 
     @Expose
     @ConfigOption(name = "Bypass Advanced Tab List", desc = "The Advanced Player Tab list is disabled whie pressing this hotkey.")
@@ -140,6 +124,11 @@ public class DebugConfig {
     @ConfigOption(name = "Never April Fools", desc = "Admit it, you hate fun.")
     @ConfigEditorBoolean
     public boolean neverFunnyTime = false;
+
+    @Expose
+    @ConfigOption(name = "Log Custom Packets", desc = "Logs a hex dump of custom payload packets.")
+    @ConfigEditorBoolean
+    public boolean logCustomPackets = false;
 
     // Does not have a config element!
     @Expose

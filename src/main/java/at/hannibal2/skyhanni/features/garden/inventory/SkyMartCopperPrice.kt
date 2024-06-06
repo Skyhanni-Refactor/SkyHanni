@@ -1,30 +1,32 @@
 package at.hannibal2.skyhanni.features.garden.inventory
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.DisplayTableEntry
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.loreCosts
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NEUItems.getPrice
 import at.hannibal2.skyhanni.utils.NEUItems.getPriceOrNull
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
-import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.JsonPrimitive
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class SkyMartCopperPrice {
+@SkyHanniModule
+object SkyMartCopperPrice {
 
     private val copperPattern by RepoPattern.pattern(
         "garden.inventory.skymart.copper",
@@ -34,12 +36,9 @@ class SkyMartCopperPrice {
     private var display = emptyList<Renderable>()
     private val config get() = GardenAPI.config.skyMart
 
-    companion object {
+    var inInventory = false
 
-        var inInventory = false
-    }
-
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (!isEnabled()) return
         if (!event.inventoryName.startsWith("SkyMart ")) return
@@ -94,13 +93,13 @@ class SkyMartCopperPrice {
         display = newList
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         inInventory = false
     }
 
-    @SubscribeEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (inInventory) {
             config.copperPricePos.renderRenderables(
                 display,
@@ -110,15 +109,12 @@ class SkyMartCopperPrice {
         }
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.skyMartCopperPrice", "garden.skyMart.copperPrice")
-        event.move(3, "garden.skyMartCopperPriceAdvancedStats", "garden.skyMart.copperPriceAdvancedStats")
-        event.move(3, "garden.skyMartCopperPricePos", "garden.skyMart.copperPricePos")
+    private fun isEnabled() = GardenAPI.inGarden() && config.copperPrice
+
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.transform(32, "garden.skyMart.itemScale") {
-            JsonPrimitive((it.asDouble / 1.851).round(1))
+            JsonPrimitive((it.asDouble / 1.851).roundTo(1))
         }
     }
-
-    private fun isEnabled() = GardenAPI.inGarden() && config.copperPrice
 }

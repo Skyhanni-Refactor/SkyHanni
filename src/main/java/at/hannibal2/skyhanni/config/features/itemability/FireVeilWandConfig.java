@@ -1,6 +1,5 @@
 package at.hannibal2.skyhanni.config.features.itemability;
 
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorColour;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorDropdown;
@@ -12,27 +11,15 @@ public class FireVeilWandConfig {
     @ConfigEditorDropdown
     public DisplayEntry display = DisplayEntry.PARTICLES;
 
-    public enum DisplayEntry implements HasLegacyId {
-        PARTICLES("Particles", 0),
-        LINE("Line", 1),
-        OFF("Off", 2),
+    public enum DisplayEntry {
+        PARTICLES("Particles"),
+        LINE("Line"),
+        OFF("Off"),
         ;
         private final String str;
-        private final int legacyId;
 
-        DisplayEntry(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         DisplayEntry(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override

@@ -1,25 +1,27 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
-import at.hannibal2.skyhanni.data.hypixel.chat.event.SystemMessageEvent
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.chat.hypixel.SystemMessageEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import at.hannibal2.skyhanni.utils.TimeUtils.minutes
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.minutes
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiChest
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object ChocolateFactoryCustomReminder {
     private val configReminder get() = ChocolateFactoryAPI.config.customReminder
     private val configUpgradeWarnings get() = ChocolateFactoryAPI.config.chocolateUpgradeWarnings
@@ -41,8 +43,8 @@ object ChocolateFactoryCustomReminder {
 
     private var lastUpgradeWarning = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
-    fun onChat(event: SystemMessageEvent) {
+    @HandleEvent
+    fun onSystemMessage(event: SystemMessageEvent) {
         if (!isEnabled()) return
         if (configReminder.hideChat) {
             if (event.message == "§cYou don't have enough Chocolate!") {
@@ -51,14 +53,14 @@ object ChocolateFactoryCustomReminder {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         update()
     }
 
-    @SubscribeEvent(receiveCanceled = true)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(receiveCancelled = true)
+    fun onSlotClick(event: SlotClickEvent) {
         if (!isEnabled()) return
         val item = event.item ?: return
         // TODO add support for prestige and for Chocolate Milestone
@@ -73,20 +75,10 @@ object ChocolateFactoryCustomReminder {
         setReminder(cost, item.name)
     }
 
-    @SubscribeEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiRenderEvent) {
         if (!isEnabled()) return
-        if (!inChocolateMenu()) return
-        if (ReminderUtils.isBusy()) return
-
-        configReminder.position.renderRenderables(display, posLabel = "Chocolate Factory Custom Reminder")
-    }
-
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!isEnabled()) return
-        if (!configReminder.always) return
-        if (Minecraft.getMinecraft().currentScreen is GuiChest) return
+        if (McScreen.isChestOpen && !configReminder.always) return
         if (ReminderUtils.isBusy()) return
 
         configReminder.position.renderRenderables(display, posLabel = "Chocolate Factory Custom Reminder")
@@ -134,12 +126,13 @@ object ChocolateFactoryCustomReminder {
         lastUpgradeWarning = SimpleTimeMark.now()
 
         if (configUpgradeWarnings.upgradeWarningSound) {
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
         }
-        ChatUtils.clickableChat("You can now purchase §f$targetName §ein Chocolate factory!",
-            onClick = {
+        ChatUtils.clickableChat(
+            "You can now purchase §f$targetName §ein Chocolate factory!", onClick = {
                 HypixelCommands.chocolateFactory()
-            })
+            }
+        )
     }
 
     private fun reset() {
@@ -149,5 +142,5 @@ object ChocolateFactoryCustomReminder {
         display = emptyList()
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && configReminder.enabled
+    fun isEnabled() = SkyBlockAPI.isConnected && configReminder.enabled
 }

@@ -1,20 +1,22 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
-import at.hannibal2.skyhanni.utils.ClipboardUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.toRoman
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.renderables.Renderable
+import at.hannibal2.skyhanni.utils.system.OS
 import com.google.gson.JsonElement
 import com.google.gson.JsonPrimitive
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object ChocolateFactoryStats {
 
     private val config get() = ChocolateFactoryAPI.config
@@ -22,15 +24,14 @@ object ChocolateFactoryStats {
 
     private var display = listOf<Renderable>()
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         if (!ChocolateFactoryAPI.chocolateFactoryPaused) return
         updateDisplay()
     }
 
-    @SubscribeEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!ChocolateFactoryAPI.inChocolateFactory && !ChocolateFactoryAPI.chocolateFactoryPaused) return
         if (!config.statsDisplay) return
 
@@ -123,21 +124,11 @@ object ChocolateFactoryStats {
             tips = listOf("§bCopy to Clipboard!"),
             onClick = {
                 val list = text.toMutableList()
-                list.add(0, "${LorenzUtils.getPlayerName()}'s Chocolate Factory Stats")
+                list.add(0, "${McPlayer.name}'s Chocolate Factory Stats")
 
-                ClipboardUtils.copyToClipboard(list.joinToString("\n") { it.removeColor() })
+                OS.copyToClipboard(list.joinToString("\n") { it.removeColor() })
             }
         ))
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(42, "event.chocolateFactory.statsDisplayList") { element ->
-            addToDisplayList(element, "TIME_TOWER", "TIME_TO_PRESTIGE")
-        }
-        event.transform(45, "inventory.chocolateFactory.statsDisplayList") { element ->
-            addToDisplayList(element, "TIME_TO_BEST_UPGRADE")
-        }
     }
 
     private fun addToDisplayList(element: JsonElement, vararg toAdd: String): JsonElement {
@@ -176,6 +167,16 @@ object ChocolateFactoryStats {
 
         override fun toString(): String {
             return display
+        }
+    }
+
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
+        event.transform(42, "event.chocolateFactory.statsDisplayList") { element ->
+            addToDisplayList(element, "TIME_TOWER", "TIME_TO_PRESTIGE")
+        }
+        event.transform(45, "inventory.chocolateFactory.statsDisplayList") { element ->
+            addToDisplayList(element, "TIME_TO_BEST_UPGRADE")
         }
     }
 }

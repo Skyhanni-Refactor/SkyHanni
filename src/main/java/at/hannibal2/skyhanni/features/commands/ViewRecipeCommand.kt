@@ -1,14 +1,16 @@
 package at.hannibal2.skyhanni.features.commands
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.MessageSendToServerEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils.senderIsSkyhanni
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object ViewRecipeCommand {
 
     private val config get() = SkyHanniMod.feature.misc.commands
@@ -23,7 +25,7 @@ object ViewRecipeCommand {
         "\\/viewrecipe (?<item>.*)"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
         if (!config.viewRecipeLowerCase) return
         if (event.senderIsSkyhanni()) return
@@ -32,7 +34,7 @@ object ViewRecipeCommand {
             group("item").uppercase().replace(" ", "_")
         } ?: return
 
-        event.isCanceled = true
+        event.cancel()
         HypixelCommands.viewRecipe(item)
     }
 

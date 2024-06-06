@@ -30,9 +30,4 @@ public class DeepCavernsGuideConfig {
     @ConfigOption(name = "Monochrome Color", desc = "Set a boring monochrome color for the guide waypoints.")
     @ConfigEditorColour
     public Property<String> monochromeColor = Property.of("0:60:0:0:255");
-
-//     @Expose
-//     @ConfigOption(name = "Highlight all Lines", desc = "Show all lines in gray. Useful for debugging.")
-//     @ConfigEditorBoolean
-//     public boolean highlightAllLines = false;
 }

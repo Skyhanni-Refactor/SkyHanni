@@ -1,33 +1,38 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LocationUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.fromNow
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.now
-import at.hannibal2.skyhanni.utils.SkyBlockTime
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.playOnRepeat
 import java.util.regex.Matcher
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object HoppityEggsManager {
 
     val config get() = SkyHanniMod.feature.event.hoppityEggs
@@ -84,16 +89,14 @@ object HoppityEggsManager {
     private var warningActive = false
     private var lastWarnTime = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         lastMeal = null
         lastNote = null
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
         hoppityEventNotOn.matchMatcher(event.message) {
             val currentYear = SkyBlockTime.now().year
 
@@ -151,7 +154,7 @@ object HoppityEggsManager {
         }
     }
 
-    internal fun Matcher.getEggType(event: LorenzChatEvent): HoppityEggType =
+    internal fun Matcher.getEggType(event: SkyHanniChatEvent): HoppityEggType =
         HoppityEggType.getMealByName(group("meal")) ?: run {
             ErrorManager.skyHanniError(
                 "Unknown meal: ${group("meal")}",
@@ -181,8 +184,8 @@ object HoppityEggsManager {
     }
 
     // TODO move logic into second passed event and cache
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isActive()) return
         if (!config.showClaimedEggs) return
         if (isBusy()) return
@@ -192,7 +195,7 @@ object HoppityEggsManager {
             .toMutableList()
         displayList.add(0, "§bUnclaimed Eggs:")
 
-        if (config.showCollectedLocationCount && LorenzUtils.inSkyBlock) {
+        if (config.showCollectedLocationCount && SkyBlockAPI.isConnected) {
             val totalEggs = HoppityEggLocations.islandLocations.size
             if (totalEggs > 0) {
                 val collectedEggs = HoppityEggLocations.islandCollectedLocations.size
@@ -213,7 +216,7 @@ object HoppityEggsManager {
             else -> "§a"
         }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isActive()) return
         HoppityEggType.checkClaimed()
@@ -241,7 +244,7 @@ object HoppityEggsManager {
         val amount = HoppityEggType.entries.size
         val message = "All $amount Hoppity Eggs are ready to be found!"
         if (config.warpUnclaimedEggs) {
-            if (LorenzUtils.inSkyBlock) {
+            if (SkyBlockAPI.isConnected) {
                 ChatUtils.clickableChat(
                     message,
                     onClick = { HypixelCommands.warp(config.warpDestination) },
@@ -255,14 +258,14 @@ object HoppityEggsManager {
                 )
             }
         } else ChatUtils.chat(message)
-        LorenzUtils.sendTitle("§e$amount Hoppity Eggs!", 5.seconds)
-        SoundUtils.repeatSound(100, 10, SoundUtils.plingSound)
+        TitleManager.sendTitle("§e$amount Hoppity Eggs!", 5.seconds)
+        McSound.PLING.playOnRepeat(100, 10)
     }
 
     private fun isBusy() = ReminderUtils.isBusy(config.showDuringContest)
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(
             44,
             "event.chocolateFactory.highlightHoppityShop",
@@ -271,6 +274,6 @@ object HoppityEggsManager {
         event.move(44, "event.chocolateFactory.hoppityEggs", "event.hoppityEggs")
     }
 
-    fun isActive() = (LorenzUtils.inSkyBlock || (LorenzUtils.onHypixel && config.showOutsideSkyblock)) &&
+    fun isActive() = (SkyBlockAPI.isConnected || (HypixelAPI.onHypixel && config.showOutsideSkyblock)) &&
         ChocolateFactoryAPI.isHoppityEvent()
 }

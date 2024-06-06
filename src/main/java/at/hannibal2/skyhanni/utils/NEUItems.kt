@@ -1,15 +1,21 @@
 package at.hannibal2.skyhanni.utils
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.compat.neu.NEUCompat
 import at.hannibal2.skyhanni.config.ConfigManager
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.other.HypixelApiTrophyFish
 import at.hannibal2.skyhanni.data.jsonobjects.other.HypixelPlayerApiJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.MultiFilterJson
-import at.hannibal2.skyhanni.events.NeuProfileDataLoadedEvent
-import at.hannibal2.skyhanni.events.NeuRepositoryReloadEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.Companion.getBazaarData
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuProfileDataLoadedEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
+import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.getBazaarData
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarDataHolder
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
+import at.hannibal2.skyhanni.utils.EncodingUtils.fromBase64
+import at.hannibal2.skyhanni.utils.EncodingUtils.toBase64
 import at.hannibal2.skyhanni.utils.ItemBlink.checkBlinkItem
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
@@ -17,6 +23,8 @@ import at.hannibal2.skyhanni.utils.NumberUtil.isInt
 import at.hannibal2.skyhanni.utils.PrimitiveItemStack.Companion.makePrimitiveStack
 import at.hannibal2.skyhanni.utils.json.BaseGsonBuilder
 import at.hannibal2.skyhanni.utils.json.fromJson
+import at.hannibal2.skyhanni.utils.json.fromJson
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import com.google.gson.JsonObject
 import com.google.gson.JsonPrimitive
 import com.google.gson.TypeAdapter
@@ -45,6 +53,7 @@ import net.minecraft.nbt.NBTTagCompound
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
 
+@SkyHanniModule
 object NEUItems {
 
     val manager: NEUManager get() = NotEnoughUpdates.INSTANCE.manager
@@ -95,13 +104,13 @@ object NEUItems {
         )
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val ignoredItems = event.getConstant<MultiFilterJson>("IgnoredItems")
         ignoreItemsFilter.load(ignoredItems)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onNeuRepoReload(event: NeuRepositoryReloadEvent) {
         allItemsCache = readAllNeuItems()
     }
@@ -111,7 +120,7 @@ object NEUItems {
         val apiData = event.data ?: return
         try {
             val playerData = hypixelApiGson.fromJson<HypixelPlayerApiJson>(apiData)
-            NeuProfileDataLoadedEvent(playerData).postAndCatch()
+            NeuProfileDataLoadedEvent(playerData).post()
 
         } catch (e: Exception) {
             ErrorManager.logErrorWithData(
@@ -133,7 +142,7 @@ object NEUItems {
             name = name.removePrefix("§7[lvl 1➡100] ")
 
             if (name.contains("[lvl 1➡100]")) {
-                if (LorenzUtils.isInDevEnvironment()) {
+                if (PlatformUtils.isDevEnvironment) {
                     error("wrong name: '$name'")
                 }
                 println("wrong name: '$name'")
@@ -157,7 +166,7 @@ object NEUItems {
     fun NEUInternalName.getNpcPrice() = getNpcPriceOrNull() ?: -1.0
 
     fun NEUInternalName.getNpcPriceOrNull(): Double? {
-        if (this == NEUInternalName.WISP_POTION) {
+        if (this == SkyhanniItems.WISP_POTION()) {
             return 20_000.0
         }
         return BazaarDataHolder.getNpcPrice(this)
@@ -167,7 +176,7 @@ object NEUItems {
         manager.auctionManager.transformHypixelBazaarToNEUItemId(hypixelId).asInternalName()
 
     fun NEUInternalName.getPriceOrNull(useSellingPrice: Boolean = false): Double? {
-        if (this == NEUInternalName.WISP_POTION) {
+        if (this == SkyhanniItems.WISP_POTION()) {
             return 20_000.0
         }
 
@@ -179,7 +188,7 @@ object NEUItems {
         if (result != -1L) return result.toDouble()
 
         if (equals("JACK_O_LANTERN")) {
-            return "PUMPKIN".asInternalName().getPrice(useSellingPrice) + 1
+            return SkyhanniItems.PUMPKIN().getPrice(useSellingPrice) + 1
         }
         if (equals("GOLDEN_CARROT")) {
             // 6.8 for some players
@@ -215,9 +224,9 @@ object NEUItems {
     fun isVanillaItem(item: ItemStack): Boolean =
         manager.auctionManager.isVanillaItem(item.getInternalName().asString())
 
-    const val itemFontSize = 2.0 / 3.0
+    const val ITEM_FONT_SIZE = 2.0 / 3.0
 
-    fun ItemStack.renderOnScreen(x: Float, y: Float, scaleMultiplier: Double = itemFontSize) {
+    fun ItemStack.renderOnScreen(x: Float, y: Float, scaleMultiplier: Double = ITEM_FONT_SIZE) {
         val item = checkBlinkItem()
         val isSkull = item.item === Items.skull
 
@@ -253,14 +262,14 @@ object NEUItems {
 
     private object AdjustStandardItemLighting {
 
-        private const val lightScaling = 2.47f // Adjust as needed
-        private const val g = 0.6f // Original Value taken from RenderHelper
-        private const val lightIntensity = lightScaling * g
+        private const val LIGHT_SCALING = 2.47f // Adjust as needed
+        private const val GREY_INTENSITY = 0.6f // Original Value taken from RenderHelper
+        private const val LIGHT_INTENSITY = LIGHT_SCALING * GREY_INTENSITY
         private val itemLightBuffer = GLAllocation.createDirectFloatBuffer(16)
 
         init {
             itemLightBuffer.clear()
-            itemLightBuffer.put(lightIntensity).put(lightIntensity).put(lightIntensity).put(1.0f)
+            itemLightBuffer.put(LIGHT_INTENSITY).put(LIGHT_INTENSITY).put(LIGHT_INTENSITY).put(1.0f)
             itemLightBuffer.flip()
         }
 
@@ -271,12 +280,6 @@ object NEUItems {
     }
 
     fun allNeuRepoItems(): Map<String, JsonObject> = NotEnoughUpdates.INSTANCE.manager.itemInformation
-
-    @Deprecated("outdated", ReplaceWith("NEUItems.getPrimitiveMultiplier(internalName, tryCount)"))
-    fun getMultiplier(internalName: NEUInternalName, tryCount: Int = 0): Pair<NEUInternalName, Int> {
-        val (name, amount) = getPrimitiveMultiplier(internalName, tryCount)
-        return Pair(name, amount)
-    }
 
     fun getPrimitiveMultiplier(internalName: NEUInternalName, tryCount: Int = 0): PrimitiveItemStack {
         multiplierCache[internalName]?.let { return it }
@@ -296,22 +299,22 @@ object NEUItems {
                 val count = ingredient.count.toInt()
                 var internalItemId = ingredient.internalItemId.asInternalName()
                 // ignore cactus green
-                if (internalName == "ENCHANTED_CACTUS_GREEN".asInternalName() && internalItemId == "INK_SACK-2".asInternalName()) {
-                    internalItemId = "CACTUS".asInternalName()
+                if (internalName == SkyhanniItems.ENCHANTED_CACTUS_GREEN() && internalItemId == SkyhanniItems.CACTUS_GREEN()) {
+                    internalItemId = SkyhanniItems.CACTUS()
                 }
 
                 // ignore wheat in enchanted cookie
-                if (internalName == "ENCHANTED_COOKIE".asInternalName() && internalItemId == "WHEAT".asInternalName()) {
+                if (internalName == SkyhanniItems.ENCHANTED_COOKIE() && internalItemId == SkyhanniItems.WHEAT()) {
                     continue
                 }
 
                 // ignore golden carrot in enchanted golden carrot
-                if (internalName == "ENCHANTED_GOLDEN_CARROT".asInternalName() && internalItemId == "GOLDEN_CARROT".asInternalName()) {
+                if (internalName == SkyhanniItems.ENCHANTED_GOLDEN_CARROT() && internalItemId == SkyhanniItems.GOLDEN_CARROT()) {
                     continue
                 }
 
                 // ignore rabbit hide in leather
-                if (internalName == "LEATHER".asInternalName() && internalItemId == "RABBIT_HIDE".asInternalName()) {
+                if (internalName == SkyhanniItems.LEATHER() && internalItemId == SkyhanniItems.RABBIT_HIDE()) {
                     continue
                 }
 
@@ -347,7 +350,7 @@ object NEUItems {
     fun neuHasFocus(): Boolean {
         if (AuctionSearchOverlay.shouldReplace()) return true
         if (BazaarSearchOverlay.shouldReplace()) return true
-        if (InventoryUtils.inStorage() && InventoryUtils.isNeuStorageEnabled.getValue()) return true
+        if (InventoryUtils.inStorage() && NEUCompat.isNeuStorageEnabled.getValue()) return true
         if (NEUOverlay.searchBarHasFocus) return true
 
         return false
@@ -360,12 +363,12 @@ object NEUItems {
             jsonObject.add("internalname", JsonPrimitive("_"))
         }
         if (removeLore && jsonObject.has("lore")) jsonObject.remove("lore")
-        val jsonString = jsonObject.toString()
-        return StringUtils.encodeBase64(jsonString)
+        val jsonString = jsonObject.toString().toByteArray()
+        return jsonString.toBase64()
     }
 
     fun loadNBTData(encoded: String): ItemStack {
-        val jsonString = StringUtils.decodeBase64(encoded)
+        val jsonString = String(encoded.fromBase64())
         val jsonObject = ConfigManager.gson.fromJson(jsonString, JsonObject::class.java)
         return manager.jsonToStack(jsonObject, false)
     }

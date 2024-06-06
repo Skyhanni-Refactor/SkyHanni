@@ -1,19 +1,21 @@
 package at.hannibal2.skyhanni.features.event.diana
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.BurrowDetectEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.diana.BurrowDetectEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawColor
+import at.hannibal2.skyhanni.utils.system.OS
 import kotlinx.coroutines.launch
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object AllBurrowsList {
     private var list = listOf<LorenzVec>()
     private val config get() = SkyHanniMod.feature.event.diana.allBurrowsList
@@ -23,7 +25,7 @@ object AllBurrowsList {
             SkyHanniMod.feature.storage?.foundDianaBurrowLocations = value
         }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onBurrowDetect(event: BurrowDetectEvent) {
         if (!isEnabled()) return
         burrowLocations = burrowLocations?.editCopy {
@@ -31,10 +33,9 @@ object AllBurrowsList {
         }
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
-        if (!event.repeatSeconds(1)) return
         val burrowLocations = burrowLocations ?: return
 
         val range = 5..70
@@ -48,13 +49,13 @@ object AllBurrowsList {
     fun copyToClipboard() {
         val burrowLocations = burrowLocations ?: return
         val list = burrowLocations.map { it.printWithAccuracy(0, ":") }
-        OSUtils.copyToClipboard(list.joinToString(";"))
+        OS.copyToClipboard(list.joinToString(";"))
         ChatUtils.chat("Saved all ${list.size} burrow locations to clipboard.")
     }
 
     fun addFromClipboard() {
         SkyHanniMod.coroutineScope.launch {
-            val text = OSUtils.readFromClipboard() ?: return@launch
+            val text = OS.readFromClipboard()
             val burrowLocations = burrowLocations ?: return@launch
 
             var new = 0
@@ -77,8 +78,8 @@ object AllBurrowsList {
         }
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         if (!config.showAll) return
 

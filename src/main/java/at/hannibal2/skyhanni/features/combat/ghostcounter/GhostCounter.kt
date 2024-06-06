@@ -1,20 +1,21 @@
 package at.hannibal2.skyhanni.features.combat.ghostcounter
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.config.features.combat.ghostcounter.GhostCounterConfig.GhostDisplayEntry
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.SkillExperience
-import at.hannibal2.skyhanni.events.ActionBarUpdateEvent
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.PurseChangeCause
-import at.hannibal2.skyhanni.events.PurseChangeEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
-import at.hannibal2.skyhanni.events.TabListUpdateEvent
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.PurseChangeCause
+import at.hannibal2.skyhanni.events.skyblock.PurseChangeEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostData.Option
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostData.Option.KILLS
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostData.bestiaryData
@@ -23,7 +24,8 @@ import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostUtil.formatText
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostUtil.isUsingCTGhostCounter
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostUtil.preFormat
 import at.hannibal2.skyhanni.features.combat.ghostcounter.GhostUtil.prettyTime
-import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.Companion.getBazaarData
+import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi.getBazaarData
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ChatUtils.chat
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
@@ -38,31 +40,27 @@ import at.hannibal2.skyhanni.utils.CombatUtils.lastKillUpdate
 import at.hannibal2.skyhanni.utils.CombatUtils.lastUpdate
 import at.hannibal2.skyhanni.utils.CombatUtils.xpGainHour
 import at.hannibal2.skyhanni.utils.CombatUtils.xpGainHourLast
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
-import at.hannibal2.skyhanni.utils.NumberUtil.roundToPrecision
-import at.hannibal2.skyhanni.utils.OSUtils
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
+import at.hannibal2.skyhanni.utils.system.OS
 import io.github.moulberry.notenoughupdates.util.Utils
 import io.github.moulberry.notenoughupdates.util.XPInformation
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.io.File
 import java.text.NumberFormat
 import java.util.Locale
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
+@SkyHanniModule
 object GhostCounter {
 
     val config get() = SkyHanniMod.feature.combat.ghostCounter
@@ -114,12 +112,9 @@ object GhostCounter {
     private var currentSkill = ""
     private var currentSkillLevel = -1
     private const val CONFIG_VALUE_VERSION = 1
-    private val SORROW = "SORROW".asInternalName()
-    private val PLASMA = "PLASMA".asInternalName()
-    private val VOLTA = "VOLTA".asInternalName()
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
         if (config.onlyOnMist && !inMist) return
         config.position.renderStringsAndItems(
@@ -152,7 +147,7 @@ object GhostCounter {
             0.0 -> "0"
             else -> {
                 val mf = (((storage?.totalMF!! / Option.TOTALDROPS.get()) + Math.ulp(1.0)) * 100) / 100
-                mf.roundToPrecision(2).toString()
+                mf.roundTo(2).toString()
             }
         }
 
@@ -262,10 +257,10 @@ object GhostCounter {
         addAsSingletonList(etaFormatting.base.formatText(eta).formatText(killETA))
 
         val rate = 0.12 * (1 + (avgMagicFind.toDouble() / 100))
-        val sorrowValue = SORROW.getBazaarData()?.buyPrice?.toLong() ?: 0L
+        val sorrowValue = SkyhanniItems.SORROW().getBazaarData()?.sellOfferPrice?.toLong() ?: 0L
         val final: String = (killInterp * sorrowValue * (rate / 100)).toLong().addSeparators()
-        val plasmaValue = PLASMA.getBazaarData()?.buyPrice?.toLong() ?: 0L
-        val voltaValue = VOLTA.getBazaarData()?.buyPrice?.toLong() ?: 0L
+        val plasmaValue = SkyhanniItems.PLASMA().getBazaarData()?.sellOfferPrice?.toLong() ?: 0L
+        val voltaValue = SkyhanniItems.VOLTA().getBazaarData()?.sellOfferPrice?.toLong() ?: 0L
         var moneyMade: Long = 0
         val priceMap = listOf(
             Triple("Sorrow", Option.SORROWCOUNT.getInt(), sorrowValue),
@@ -286,13 +281,13 @@ object GhostCounter {
         val moneyMadeWithClickableTips = Renderable.clickAndHover(
             textFormatting.moneyMadeFormat.formatText(moneyMade.addSeparators()),
             moneyMadeTips,
-            onClick = { OSUtils.copyToClipboard(moneyMadeTips.joinToString("\n").removeColor()) }
+            onClick = { OS.copyToClipboard(moneyMadeTips.joinToString("\n").removeColor()) }
         )
         addAsSingletonList(textFormatting.moneyHourFormat.formatText(final))
         addAsSingletonList(moneyMadeWithClickableTips)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
 
@@ -329,7 +324,7 @@ object GhostCounter {
             }
         }
 
-        inMist = LorenzUtils.skyBlockArea == "The Mist"
+        inMist = IslandArea.THE_MIST.isInside()
         update()
 
         if (event.repeatSeconds(2)) {
@@ -338,7 +333,7 @@ object GhostCounter {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onActionBarUpdate(event: ActionBarUpdateEvent) {
         if (!isEnabled()) return
         if (!inMist) return
@@ -395,7 +390,7 @@ object GhostCounter {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onTabListUpdate(event: TabListUpdateEvent) {
         if (!isEnabled()) return
         for (line in event.tabList) {
@@ -406,8 +401,8 @@ object GhostCounter {
         }
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         for (opt in Option.entries) {
             val pattern = opt.pattern ?: continue
@@ -471,18 +466,17 @@ object GhostCounter {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPurseChange(event: PurseChangeEvent) {
         if (!isEnabled()) return
-        if (LorenzUtils.skyBlockArea != "The Mist") return
+        if (!IslandArea.THE_MIST.isInside()) return
         if (event.reason != PurseChangeCause.GAIN_MOB_KILL) return
         Option.SCAVENGERCOINS.add(event.coins, true)
         Option.SCAVENGERCOINS.add(event.coins)
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         val inventoryName = event.inventoryName
         if (inventoryName != "Bestiary ➜ Dwarven Mines") return
         val stacks = event.inventoryItems
@@ -505,20 +499,12 @@ object GhostCounter {
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         if (storage?.configUpdateVersion == 0) {
             config.textFormatting.bestiaryFormatting.base = "  &6Bestiary %display%: &b%value%"
             chat("Your GhostCounter config has been automatically adjusted.")
             storage?.configUpdateVersion = CONFIG_VALUE_VERSION
-        }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "ghostCounter", "combat.ghostCounter")
-        event.transform(11, "combat.ghostCounter.ghostDisplayText") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, GhostDisplayEntry::class.java)
         }
     }
 

@@ -1,10 +1,13 @@
 package at.hannibal2.skyhanni.features.garden.visitor
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacks
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorOpenEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.render.gui.ReplaceItemEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
@@ -17,11 +20,10 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.entity.player.InventoryPlayer
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class GardenVisitorSupercraft {
+@SkyHanniModule
+object GardenVisitorSupercraft {
 
     private val isSupercraftEnabled get() = VisitorAPI.config.shoppingList.showSuperCraft
 
@@ -30,7 +32,7 @@ class GardenVisitorSupercraft {
     private var lastSuperCraftMaterial = ""
 
     private val superCraftItem by lazy {
-        val neuItem = "GOLD_PICKAXE".asInternalName().getItemStack()
+        val neuItem = SkyhanniItems.GOLD_PICKAXE().getItemStack()
         Utils.createItemStack(
             neuItem.item,
             "§bSuper Craft",
@@ -39,7 +41,7 @@ class GardenVisitorSupercraft {
         )
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         if (hasIngredients) {
             hasIngredients = false
@@ -47,7 +49,7 @@ class GardenVisitorSupercraft {
     }
 
     // needs to run later than onVisitorOpen at GardenVisitorFeatures
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @HandleEvent(priority = HandleEvent.LOW)
     fun onVisitorOpen(event: VisitorOpenEvent) {
         val visitor = event.visitor
         visitor.offer?.offerItem ?: return
@@ -72,7 +74,7 @@ class GardenVisitorSupercraft {
     private fun getSupercraftForSacks(internalName: NEUInternalName, amount: Int) {
         val ingredients = NEUItems.getRecipes(internalName)
             // TODO describe what this line does
-            .firstOrNull() { !it.allIngredients().first().internalItemId.contains("PEST") }
+            .firstOrNull { !it.allIngredients().first().internalItemId.contains("PEST") }
             ?.allIngredients() ?: return
         val ingredientReqs = mutableMapOf<String, Int>()
         for (ingredient in ingredients) {
@@ -90,7 +92,7 @@ class GardenVisitorSupercraft {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun replaceItem(event: ReplaceItemEvent) {
         if (!hasIngredients) return
         if (event.inventory is InventoryPlayer) return
@@ -100,12 +102,12 @@ class GardenVisitorSupercraft {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onSlotClick(event: SlotClickEvent) {
         if (!hasIngredients) return
 
         if (event.slotId != 31) return
-        event.isCanceled = true
+        event.cancel()
         if (lastClick.passedSince() > 0.3.seconds) {
             HypixelCommands.recipe(lastSuperCraftMaterial)
             lastClick = SimpleTimeMark.now()

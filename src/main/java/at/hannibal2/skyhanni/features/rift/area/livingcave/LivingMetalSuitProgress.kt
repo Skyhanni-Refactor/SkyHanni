@@ -1,25 +1,27 @@
 package at.hannibal2.skyhanni.features.rift.area.livingcave
 
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
-import at.hannibal2.skyhanni.utils.InventoryUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NumberUtil.roundToPrecision
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getLivingMetalProgress
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class LivingMetalSuitProgress {
+@SkyHanniModule
+object LivingMetalSuitProgress {
 
     private val config get() = RiftAPI.config.area.livingCave.livingMetalSuitProgress
     private var display = emptyList<List<Any>>()
     private var progressMap = mapOf<ItemStack, Double?>()
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
         config.position.renderStringsAndItems(
             display,
@@ -37,8 +39,8 @@ class LivingMetalSuitProgress {
 
         if (progressMap.isEmpty()) return@buildList
 
-        val totalProgress = progressMap.values.map { it ?: 1.0 }.average().roundToPrecision(1)
-        val formatPercentage = LorenzUtils.formatPercentage(totalProgress)
+        val totalProgress = progressMap.values.map { it ?: 1.0 }.average().roundTo(1)
+        val formatPercentage = totalProgress.formatPercentage()
         addAsSingletonList("§7Living Metal Suit Progress: ${if (isMaxed) "§a§lMAXED!" else "§a$formatPercentage"}")
 
         if (config.compactWhenMaxed && isMaxed) return@buildList
@@ -49,18 +51,18 @@ class LivingMetalSuitProgress {
                 add(stack)
                 add("${stack.displayName}: ")
                 add(progress?.let {
-                    drawProgressBar(progress) + " §b${LorenzUtils.formatPercentage(progress)}"
+                    drawProgressBar(progress) + " §b${progress.formatPercentage()}"
                 } ?: "§cStart upgrading it!")
             })
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         val old = progressMap
         progressMap = buildMap {
-            for (armor in InventoryUtils.getArmor().filterNotNull()) {
+            for (armor in McPlayer.armor.filterNotNull()) {
                 put(armor, armor.getLivingMetalProgress()?.toDouble()?.let {
                     it.coerceAtMost(100.0) / 100
                 })

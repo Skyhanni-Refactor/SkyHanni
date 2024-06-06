@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
 import at.hannibal2.skyhanni.events.item.ItemHoverEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -14,10 +14,20 @@ object ToolTipData {
 
     @JvmStatic
     fun getTooltip(stack: ItemStack, toolTip: MutableList<String>) {
+        onHover(stack, toolTip)
+        onTooltip(toolTip)
+    }
+
+    @JvmStatic
+    fun onHover(stack: ItemStack, toolTip: MutableList<String>) {
+        ItemHoverEvent(stack, toolTip).post()
+    }
+
+    fun onTooltip(toolTip: MutableList<String>) {
         val slot = lastSlot ?: return
         val itemStack = slot.stack ?: return
         try {
-            if (LorenzToolTipEvent(slot, itemStack, toolTip).postAndCatch()) {
+            if (SkyHanniToolTipEvent(slot, itemStack, toolTip).post()) {
                 toolTip.clear()
             }
         } catch (e: Throwable) {
@@ -33,11 +43,6 @@ object ToolTipData {
                 "lore" to itemStack.getLore(),
             )
         }
-    }
-
-    @JvmStatic
-    fun onHover(stack: ItemStack, toolTip: MutableList<String>) {
-        ItemHoverEvent(stack, toolTip).postAndCatch()
     }
 
     var lastSlot: Slot? = null

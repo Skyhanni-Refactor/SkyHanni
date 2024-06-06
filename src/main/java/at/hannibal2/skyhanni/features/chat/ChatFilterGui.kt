@@ -3,12 +3,12 @@ package at.hannibal2.skyhanni.features.chat
 import at.hannibal2.skyhanni.data.ChatManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
+import at.hannibal2.skyhanni.utils.mc.McFont
+import at.hannibal2.skyhanni.utils.system.OS
 import io.github.moulberry.notenoughupdates.util.Utils
 import io.github.notenoughupdates.moulconfig.internal.GlScissorStack
 import io.github.notenoughupdates.moulconfig.internal.RenderUtils
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.GuiUtilRenderComponents
 import net.minecraft.client.gui.ScaledResolution
@@ -25,8 +25,7 @@ class ChatFilterGui(private val history: List<ChatManager.MessageFilteringResult
     private val reasonMaxLength =
         history.maxOf { reasonLength(it) }
 
-    private fun reasonLength(result: ChatManager.MessageFilteringResult): Int =
-        result.actionReason?.let { Minecraft.getMinecraft().fontRendererObj.getStringWidth(it) } ?: 0
+    private fun reasonLength(result: ChatManager.MessageFilteringResult): Int = result.actionReason?.let { McFont.width(it) } ?: 0
 
     private val historySize by lazy {
         history.sumOf { splitLine(it.message).size * 10 + if (it.modified != null) splitLine(it.modified).size * 10 else 0 }
@@ -42,7 +41,7 @@ class ChatFilterGui(private val history: List<ChatManager.MessageFilteringResult
         GlStateManager.translate(l + 0.0, t + 0.0, 0.0)
         RenderUtils.drawFloatingRectDark(0, 0, w, h)
         GlStateManager.translate(5.0, 5.0 - scroll, 0.0)
-        var mouseX = originalMouseX - l
+        val mouseX = originalMouseX - l
         val isMouseButtonDown = mouseX in 0..w && originalMouseY in t..(t + h) && Mouse.isButtonDown(0)
         var mouseY = originalMouseY - (t - scroll).toInt()
         val sr = ScaledResolution(mc)
@@ -73,11 +72,11 @@ class ChatFilterGui(private val history: List<ChatManager.MessageFilteringResult
                 queuedTooltip = msg.hoverExtraInfo
             if (isHovered && (isMouseButtonDown && !wasMouseButtonDown)) {
                 if (KeyboardManager.isShiftKeyDown()) {
-                    OSUtils.copyToClipboard(IChatComponent.Serializer.componentToJson(msg.message))
+                    OS.copyToClipboard(IChatComponent.Serializer.componentToJson(msg.message))
                     ChatUtils.chat("Copied structured chat line to clipboard", false)
                 } else {
                     val message = msg.message.formattedText.stripHypixelMessage()
-                    OSUtils.copyToClipboard(message)
+                    OS.copyToClipboard(message)
                     ChatUtils.chat("Copied chat line to clipboard")
                 }
             }

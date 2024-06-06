@@ -7,8 +7,9 @@ import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed.getSpeed
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatIntOrUserError
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import net.minecraft.command.CommandBase
+import kotlin.time.Duration.Companion.seconds
 
 object FarmingMilestoneCommand {
 
@@ -18,10 +19,7 @@ object FarmingMilestoneCommand {
             return
         }
 
-        val enteredCrop = CropType.getByName(crop) ?: run {
-            ChatUtils.userError("Invalid crop type entered")
-            return
-        }
+        val enteredCrop = CropType.getByName(crop)
 
         val currentMilestone = current?.toIntOrNull()
         val targetMilestone = target?.toIntOrNull()
@@ -93,7 +91,7 @@ object FarmingMilestoneCommand {
     private fun Long.formatOutput(needsTime: Boolean, crop: CropType): String {
         if (!needsTime) return "${this.addSeparators()} §a${crop.cropName}"
         val speed = crop.getSpeed() ?: -1
-        val missingTimeSeconds = this / speed
-        return "${TimeUtils.formatDuration(missingTimeSeconds * 1000)}§a"
+        val missingTime = (this / speed).seconds
+        return "${missingTime.format()}§a"
     }
 }

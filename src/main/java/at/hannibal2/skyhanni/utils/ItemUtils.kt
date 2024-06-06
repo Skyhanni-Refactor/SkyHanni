@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.data.PetAPI
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
@@ -60,11 +61,9 @@ object ItemUtils {
 
     fun getItemsInInventory(withCursorItem: Boolean = false): List<ItemStack> {
         val list: LinkedList<ItemStack> = LinkedList()
+
         val player = Minecraft.getMinecraft().thePlayer
-        if (player == null) {
-            ChatUtils.error("getItemsInInventoryWithSlots: player is null!")
-            return list
-        }
+            ?: ErrorManager.skyHanniError("getItemsInInventoryWithSlots: player is null!")
         for (slot in player.openContainer.inventorySlots) {
             if (slot.hasStack) {
                 list.add(slot.stack)
@@ -94,7 +93,7 @@ object ItemUtils {
         return false
     }
 
-    fun ItemStack.getInternalName() = getInternalNameOrNull() ?: NEUInternalName.NONE
+    fun ItemStack.getInternalName() = getInternalNameOrNull() ?: SkyhanniItems.NONE()
 
     fun ItemStack.getInternalNameOrNull(): NEUInternalName? {
         val data = cachedData
@@ -108,8 +107,9 @@ object ItemUtils {
     }
 
     private fun ItemStack.grabInternalNameOrNull(): NEUInternalName? {
+        // TODO neu item repo now has potions, do we still need this?
         if (name == "§fWisp's Ice-Flavored Water I Splash Potion") {
-            return NEUInternalName.WISP_POTION
+            return SkyhanniItems.WISP_POTION()
         }
         val internalName = NEUItems.getInternalName(this)?.replace("ULTIMATE_ULTIMATE_", "ULTIMATE_")
         return internalName?.asInternalName()
@@ -240,7 +240,7 @@ object ItemUtils {
         val data = cachedData
         data.itemRarityLastCheck = SimpleTimeMark.now().toMillis()
         val internalName = getInternalName()
-        if (internalName == NEUInternalName.NONE) {
+        if (internalName == SkyhanniItems.NONE()) {
             data.itemRarity = null
             data.itemCategory = null
             return
@@ -289,7 +289,7 @@ object ItemUtils {
     private val itemAmountCache = mutableMapOf<String, Pair<String, Int>>()
 
     fun readItemAmount(originalInput: String): Pair<String, Int>? {
-        // This workaround fixes 'Tubto Cacti I Book'
+        // This workaround fixes 'Turbo Cacti I Book'
         val input = (if (originalInput.endsWith(" Book")) {
             originalInput.replace(" Book", "")
         } else originalInput).removeResets()
@@ -357,14 +357,14 @@ object ItemUtils {
     val NEUInternalName.itemNameWithoutColor: String get() = itemName.removeColor()
 
     private fun NEUInternalName.grabItemName(): String {
-        if (this == NEUInternalName.WISP_POTION) {
+        if (this == SkyhanniItems.WISP_POTION()) {
             return "§fWisp's Ice-Flavored Water"
         }
-        if (this == NEUInternalName.SKYBLOCK_COIN) {
+        if (this == SkyhanniItems.SKYBLOCK_COIN()) {
             return "§6Coins"
         }
-        if (this == NEUInternalName.NONE) {
-            error("NEUInternalName.NONE has no name!")
+        if (this == SkyhanniItems.NONE()) {
+            error("SkyhanniItems.NONE() has no name!")
         }
         if (NEUItems.ignoreItemsFilter.match(this.asString())) {
             return "§cBugged Item"

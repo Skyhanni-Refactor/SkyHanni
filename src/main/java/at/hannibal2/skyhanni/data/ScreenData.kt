@@ -1,20 +1,22 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import net.minecraft.client.Minecraft
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
+import at.hannibal2.skyhanni.utils.mc.McScreen
 
+@SkyHanniModule
 object ScreenData {
     private var wasOpen = false
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        val isOpen = Minecraft.getMinecraft().currentScreen != null
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
+        val isOpen = McScreen.isOpen
         if (wasOpen == isOpen) return
         wasOpen = isOpen
         if (!wasOpen) {
-            InventoryCloseEvent(false).postAndCatch()
+            InventoryCloseEvent(false).post()
         }
     }
 }

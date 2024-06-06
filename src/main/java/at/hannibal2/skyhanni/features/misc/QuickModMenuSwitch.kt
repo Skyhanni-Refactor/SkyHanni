@@ -1,23 +1,26 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ModGuiSwitcherJson
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object QuickModMenuSwitch {
 
     private val config get() = SkyHanniMod.feature.misc.quickModMenuSwitch
@@ -29,7 +32,7 @@ object QuickModMenuSwitch {
     private var currentlyOpeningMod = ""
     private var lastGuiOpen = 0L
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val modsJar = event.getConstant<ModGuiSwitcherJson>("ModGuiSwitcher")
         mods = buildList {
@@ -46,8 +49,8 @@ object QuickModMenuSwitch {
         }
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
 
         if (event.isMod(5)) {
@@ -61,7 +64,7 @@ object QuickModMenuSwitch {
     }
 
     private fun update() {
-        var openGui = Minecraft.getMinecraft().currentScreen?.javaClass?.name ?: "none"
+        var openGui = McScreen.screen?.javaClass?.name ?: "none"
         openGui = handleAbstractGuis(openGui)
         if (latestGuiPath != openGui) {
             latestGuiPath = openGui
@@ -96,8 +99,7 @@ object QuickModMenuSwitch {
     private fun handleAbstractGuis(openGui: String): String {
         if (openGui == "gg.essential.vigilance.gui.SettingsGui") {
             val clazz = Class.forName("gg.essential.vigilance.gui.SettingsGui")
-            val titleBarDelegate = clazz.getDeclaredField("titleBar\$delegate").makeAccessible()
-                .get(Minecraft.getMinecraft().currentScreen)
+            val titleBarDelegate = clazz.getDeclaredField("titleBar\$delegate").makeAccessible().get(McScreen.screen)
             val titleBar =
                 titleBarDelegate.javaClass.declaredFields[0].makeAccessible().get(titleBarDelegate)
             val gui = titleBar.javaClass.getDeclaredField("gui").makeAccessible().get(titleBar)
@@ -105,13 +107,12 @@ object QuickModMenuSwitch {
 
             return config.javaClass.name
         }
-        if (openGui == "cc.polyfrost.oneconfig.gui.OneConfigGui") {
-            /** TODO support different oneconfig mods:
-             * Partly Sane Skies
-             * Dankers SkyBlock Mod
-             * Dulkir
-             */
-        }
+//         if (openGui == "cc.polyfrost.oneconfig.gui.OneConfigGui") {
+//             TODO support different oneconfig mods:
+//             Partly Sane Skies
+//             Dankers SkyBlock Mod
+//             Dulkir
+//         }
 
         return openGui
     }
@@ -155,7 +156,7 @@ object QuickModMenuSwitch {
                         } catch (_: Exception) {
                         }
                     }
-                    ChatUtils.error("Error trying to open the gui for mod " + mod.name + "!")
+                    ChatUtils.chat("Error trying to open the gui for mod " + mod.name + "!")
                 }
 
                 "hytil" -> {
@@ -175,8 +176,7 @@ object QuickModMenuSwitch {
                 }
 
                 else -> {
-                    val thePlayer = Minecraft.getMinecraft().thePlayer
-                    ClientCommandHandler.instance.executeCommand(thePlayer, "/${mod.command}")
+                    ClientCommandHandler.instance.executeCommand(McPlayer.player, "/${mod.command}")
                 }
             }
         } catch (e: Exception) {
@@ -193,10 +193,5 @@ object QuickModMenuSwitch {
         GlStateManager.popMatrix()
     }
 
-    fun isEnabled() = (LorenzUtils.inSkyBlock || OutsideSbFeature.QUICK_MOD_MENU_SWITCH.isSelected()) && config.enabled
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "dev.modMenuLog", "dev.debug.modMenuLog")
-    }
+    fun isEnabled() = (SkyBlockAPI.isConnected || OutsideSbFeature.QUICK_MOD_MENU_SWITCH.isSelected()) && config.enabled
 }

@@ -1,35 +1,38 @@
 package at.hannibal2.skyhanni.features.slayer
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.data.SlayerAPI
-import at.hannibal2.skyhanni.events.EntityHealthUpdateEvent
-import at.hannibal2.skyhanni.events.ItemClickEvent
-import at.hannibal2.skyhanni.events.ScoreboardChangeEvent
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.ScoreboardUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
 import at.hannibal2.skyhanni.features.event.diana.DianaAPI
 import at.hannibal2.skyhanni.features.rift.RiftAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import net.minecraft.entity.EntityLivingBase
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-class SlayerQuestWarning {
+@SkyHanniModule
+object SlayerQuestWarning {
 
     private val config get() = SkyHanniMod.feature.slayer
 
     private var lastWeaponUse = SimpleTimeMark.farPast()
-    private val voidItem = "ASPECT_OF_THE_VOID".asInternalName()
-    private val endItem = "ASPECT_OF_THE_END".asInternalName()
+    private val voidItem = SkyhanniItems.ASPECT_OF_THE_VOID()
+    private val endItem = SkyhanniItems.ASPECT_OF_THE_END()
 
     private val outsideRiftData = SlayerData()
     private val insideRiftData = SlayerData()
@@ -39,10 +42,10 @@ class SlayerQuestWarning {
         var lastSlayerType: SlayerType? = null
     }
 
-    @SubscribeEvent
-    fun onScoreboardChange(event: ScoreboardChangeEvent) {
-        val slayerType = event.newList.nextAfter("Slayer Quest")
-        val slayerProgress = event.newList.nextAfter("Slayer Quest", skip = 2) ?: "no slayer"
+    @HandleEvent
+    fun onScoreboardUpdate(event: ScoreboardUpdateEvent) {
+        val slayerType = event.scoreboard.nextAfter("Slayer Quest")
+        val slayerProgress = event.scoreboard.nextAfter("Slayer Quest", skip = 2) ?: "no slayer"
         val new = slayerProgress.removeColor()
         val slayerData = getSlayerData()
 
@@ -100,19 +103,17 @@ class SlayerQuestWarning {
         if (DianaAPI.isDoingDiana()) return
         // prevent warnings when mobs are hit by other players
         if (lastWeaponUse.passedSince() > 500.milliseconds) return
-      
+
         lastWarning = SimpleTimeMark.now()
         ChatUtils.chat(chatMessage)
 
         if (config.questWarningTitle) {
-            LorenzUtils.sendTitle("§e$titleMessage", 2.seconds)
+            TitleManager.sendTitle("§e$titleMessage", 2.seconds)
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onEntityHealthUpdate(event: EntityHealthUpdateEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
         val entity = event.entity
         if (entity.getLorenzVec().distanceToPlayer() < 6 && isSlayerMob(entity)) {
             tryWarn()
@@ -120,7 +121,7 @@ class SlayerQuestWarning {
     }
 
     private fun isSlayerMob(entity: EntityLivingBase): Boolean {
-        val slayerType = SlayerAPI.getSlayerTypeForCurrentArea() ?: return false
+        val slayerType = SlayerAPI.getSlayerForArea(SkyBlockAPI.area) ?: return false
 
         val activeSlayer = SlayerAPI.getActiveSlayer()
 
@@ -140,7 +141,7 @@ class SlayerQuestWarning {
         return (getSlayerData().lastSlayerType == slayerType) && isSlayer
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onItemClick(event: ItemClickEvent) {
         val internalName = event.itemInHand?.getInternalNameOrNull()
 

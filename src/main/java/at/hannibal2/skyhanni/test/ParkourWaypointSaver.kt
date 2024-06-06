@@ -1,32 +1,34 @@
 package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUItems
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.ParkourHelper
-import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
+import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import net.minecraft.client.Minecraft
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.system.OS
 import kotlin.time.Duration.Companion.milliseconds
 
-class ParkourWaypointSaver {
+@SkyHanniModule
+object ParkourWaypointSaver {
 
     private val config get() = SkyHanniMod.feature.dev.waypoint
     private var timeLastSaved = SimpleTimeMark.farPast()
     private var locations = mutableListOf<LorenzVec>()
     private var parkourHelper: ParkourHelper? = null
 
-    @SubscribeEvent
-    fun onKeyClick(event: LorenzKeyPressEvent) {
-        if (!LorenzUtils.inSkyBlock && !config.parkourOutsideSB) return
-        if (Minecraft.getMinecraft().currentScreen != null) return
+    @HandleEvent
+    fun onKeyClick(event: KeyPressEvent) {
+        if (!SkyBlockAPI.isConnected && !config.parkourOutsideSB) return
+        if (McScreen.isOpen) return
         if (NEUItems.neuHasFocus()) return
         if (timeLastSaved.passedSince() < 250.milliseconds) return
 
@@ -62,19 +64,22 @@ class ParkourWaypointSaver {
             val z = location.z.toString().replace(",", ".")
             resultList.add("\"$x:$y:$z\"")
         }
-        OSUtils.copyToClipboard(resultList.joinToString((",\n")))
+        OS.copyToClipboard(resultList.joinToString((",\n")))
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
-        if (!LorenzUtils.inSkyBlock && !config.parkourOutsideSB) return
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
+        if (!SkyBlockAPI.isConnected && !config.parkourOutsideSB) return
 
         if (locations.size > 1) {
             parkourHelper?.render(event)
         } else {
-            for (location in locations) {
-                val aabb = location.boundingToOffset(1.0, 1.0, 1.0).expandBlock()
-                event.drawFilledBoundingBox_nea(aabb, LorenzColor.GREEN.toColor(), 1f)
+            for (loc in locations) {
+                val box = BoundingBox(
+                    loc.x, loc.y, loc.z,
+                    loc.x + 1, loc.y + 1, loc.z + 1
+                ).expandToEdge()
+                event.drawFilledBoundingBox(box, LorenzColor.GREEN.toColor(), 1f)
             }
         }
     }

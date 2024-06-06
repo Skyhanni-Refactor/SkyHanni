@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
-import at.hannibal2.skyhanni.events.LorenzChatEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.features.event.hoppity.HoppityEggsManager.getEggType
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI
 import at.hannibal2.skyhanni.utils.ChatUtils
@@ -9,7 +9,7 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.RegexUtils.groupOrNull
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.fromNow
-import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
@@ -25,7 +25,7 @@ object HoppityEggsCompactChat {
     private var lastDuplicateAmount: Long? = null
     private val config get() = ChocolateFactoryAPI.config
 
-    fun compactChat(event: LorenzChatEvent, lastDuplicateAmount: Long? = null) {
+    fun compactChat(event: SkyHanniChatEvent, lastDuplicateAmount: Long? = null) {
         lastDuplicateAmount?.let {
             this.lastDuplicateAmount = it
         }
@@ -72,7 +72,7 @@ object HoppityEggsCompactChat {
         } else "?"
     }
 
-    fun handleChat(event: LorenzChatEvent) {
+    fun handleChat(event: SkyHanniChatEvent) {
         HoppityEggsManager.eggFoundPattern.matchMatcher(event.message) {
             hoppityEggChat = mutableListOf()
             lastChatMeal = getEggType(event)

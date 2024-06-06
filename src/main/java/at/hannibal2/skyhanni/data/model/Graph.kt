@@ -3,6 +3,7 @@ package at.hannibal2.skyhanni.data.model
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.json.SkyHanniTypeAdapters.registerTypeAdapter
 import at.hannibal2.skyhanni.utils.json.fromJson
+import at.hannibal2.skyhanni.utils.json.fromJson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonElement
 import com.google.gson.annotations.Expose
@@ -20,7 +21,7 @@ value class Graph(
 
     override fun containsAll(elements: Collection<GraphNode>) = graph.containsAll(elements)
 
-    override fun get(index: Int) = graph.get(index)
+    override fun get(index: Int) = graph[index]
 
     override fun isEmpty() = graph.isEmpty()
 
@@ -63,7 +64,7 @@ value class Graph(
                     reader.beginObject()
                     var position: LorenzVec? = null
                     var name: String? = null
-                    var neighbors = mutableListOf<Pair<Int, Double>>()
+                    val neighbors = mutableListOf<Pair<Int, Double>>()
                     while (reader.hasNext()) {
                         when (reader.nextName()) {
                             "Position" -> {
@@ -122,9 +123,7 @@ class GraphNode(val id: Int, val position: LorenzVec, val name: String? = null) 
 
         other as GraphNode
 
-        if (id != other.id) return false
-
-        return true
+        return id == other.id
     }
 }
 

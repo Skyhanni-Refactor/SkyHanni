@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -52,6 +53,8 @@ value class SimpleTimeMark(private val millis: Long) : Comparable<SimpleTimeMark
     }
 
     fun toMillis() = millis
+
+    fun toSeconds() = millis / 1000
 
     fun toSkyBlockTime() = SkyBlockTime.fromInstant(Instant.ofEpochMilli(millis))
 

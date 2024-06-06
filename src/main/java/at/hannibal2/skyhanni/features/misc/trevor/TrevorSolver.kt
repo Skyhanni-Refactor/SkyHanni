@@ -1,17 +1,16 @@
 package at.hannibal2.skyhanni.features.misc.trevor
 
+import at.hannibal2.skyhanni.data.TitleManager
 import at.hannibal2.skyhanni.data.mob.Mob
 import at.hannibal2.skyhanni.data.mob.MobData
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.canBeSeen
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
 import at.hannibal2.skyhanni.utils.LorenzUtils.derpy
 import at.hannibal2.skyhanni.utils.LorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.EntityLivingBase
 import kotlin.time.Duration.Companion.seconds
@@ -49,8 +48,8 @@ object TrevorSolver {
     }
 
     fun findMob() {
-        Minecraft.getMinecraft().theWorld ?: return
-        for (entity in EntityUtils.getAllEntities()) {
+        if (!McWorld.hasWorld) return
+        for (entity in McWorld.entities) {
             if (entity is EntityOtherPlayerMP) continue
             val name = entity.name
             val isTrevor = MobData.entityToMob[entity]?.let { it.name != name && isTrevorMob(it) } ?: false
@@ -64,7 +63,7 @@ object TrevorSolver {
                     val canSee = entity.canBeSeen() && dist < currentMob!!.renderDistance
                     if (canSee) {
                         if (mobLocation != TrapperMobArea.FOUND) {
-                            LorenzUtils.sendTitle("§2Saw ${currentMob!!.mobName}!", 3.seconds)
+                            TitleManager.sendTitle("§2Saw ${currentMob!!.mobName}!", 3.seconds)
                         }
                         mobLocation = TrapperMobArea.FOUND
                         mobCoordinates = entity.position.toLorenzVec()

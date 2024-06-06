@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.utils.json
 
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.features.fishing.trophy.TrophyRarity
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.pests.PestType
@@ -17,7 +17,7 @@ import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonWriter
 import net.minecraft.item.ItemStack
-import java.util.UUID
+import java.util.*
 
 object SkyHanniTypeAdapters {
     val NEU_ITEMSTACK: TypeAdapter<ItemStack> = SimpleStringTypeAdapter(NEUItems::saveNBTData, NEUItems::loadNBTData)
@@ -70,10 +70,13 @@ object SkyHanniTypeAdapters {
         crossinline write: (JsonWriter, T) -> Unit,
         crossinline read: (JsonReader) -> T,
     ): GsonBuilder {
-        this.registerTypeAdapter(T::class.java, object : TypeAdapter<T>() {
-            override fun write(out: JsonWriter, value: T) = write(out, value)
-            override fun read(reader: JsonReader) = read(reader)
-        }.nullSafe())
+        this.registerTypeAdapter(
+            T::class.java,
+            object : TypeAdapter<T>() {
+                override fun write(out: JsonWriter, value: T) = write(out, value)
+                override fun read(reader: JsonReader) = read(reader)
+            }.nullSafe()
+        )
         return this
     }
 }

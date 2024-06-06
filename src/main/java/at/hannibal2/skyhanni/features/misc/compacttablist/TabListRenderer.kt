@@ -1,14 +1,19 @@
 package at.hannibal2.skyhanni.features.misc.compacttablist
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.SkipTabListLineEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.SkipTabListLineEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.filterToMutable
 import at.hannibal2.skyhanni.utils.KeyboardManager.isActive
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.TabListData
+import at.hannibal2.skyhanni.utils.mc.McClient
+import at.hannibal2.skyhanni.utils.mc.McFont
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
@@ -18,6 +23,7 @@ import net.minecraft.entity.player.EnumPlayerModelParts
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object TabListRenderer {
 
     private val config get() = SkyHanniMod.feature.gui.compactTabList
@@ -30,7 +36,7 @@ object TabListRenderer {
 
     @SubscribeEvent
     fun onRenderOverlay(event: RenderGameOverlayEvent.Pre) {
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (event.type != RenderGameOverlayEvent.ElementType.PLAYER_LIST) return
         if (!config.enabled.get()) return
         event.isCanceled = true
@@ -43,14 +49,13 @@ object TabListRenderer {
     private var isPressed = false
     private var isTabToggled = false
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!config.enabled.get()) return
         if (!config.toggleTab) return
-        if (Minecraft.getMinecraft().currentScreen != null) return
+        if (McScreen.isOpen) return
 
-        if (Minecraft.getMinecraft().gameSettings.keyBindPlayerList.isActive()) {
+        if (McClient.options.keyBindPlayerList.isActive()) {
             if (!isPressed) {
                 isPressed = true
                 isTabToggled = !isTabToggled
@@ -114,9 +119,9 @@ object TabListRenderer {
         var headerY = y
         if (header.isNotEmpty()) {
             for (line in header) {
-                minecraft.fontRendererObj.drawStringWithShadow(
+                McFont.draw(
                     line,
-                    x + totalWidth / 2f - minecraft.fontRendererObj.getStringWidth(line) / 2f,
+                    x + totalWidth / 2f - McFont.width(line) / 2f,
                     headerY.toFloat(),
                     0xFFFFFF
                 )
@@ -138,7 +143,7 @@ object TabListRenderer {
                 if (tabLine.type == TabStringType.SUB_TITLE) {
                     lastSubTitle = tabLine
                 }
-                !SkipTabListLineEvent(tabLine, lastSubTitle, lastTitle).postAndCatch()
+                !SkipTabListLineEvent(tabLine, lastSubTitle, lastTitle).post()
             }.let(::RenderColumn)
 
             Gui.drawRect(
@@ -171,14 +176,14 @@ object TabListRenderer {
                 var text = if (AdvancedPlayerList.ignoreCustomTabList()) tabLine.text else tabLine.customName
                 if (text.contains("§l")) text = "§r$text"
                 if (tabLine.type == TabStringType.TITLE) {
-                    minecraft.fontRendererObj.drawStringWithShadow(
+                    McFont.draw(
                         text,
                         middleX + column.getMaxWidth() / 2f - tabLine.getWidth() / 2f,
                         middleY.toFloat(),
                         0xFFFFFF
                     )
                 } else {
-                    minecraft.fontRendererObj.drawStringWithShadow(
+                    McFont.draw(
                         text,
                         middleX.toFloat(),
                         middleY.toFloat(),
@@ -194,9 +199,9 @@ object TabListRenderer {
         if (footer.isNotEmpty()) {
             var footerY = y + totalHeight - footer.size * LINE_HEIGHT + TAB_PADDING / 2 + 1
             for (line in footer) {
-                minecraft.fontRendererObj.drawStringWithShadow(
+                McFont.draw(
                     line,
-                    x + totalWidth / 2f - minecraft.fontRendererObj.getStringWidth(line) / 2f,
+                    x + totalWidth / 2f - McFont.width(line) / 2f,
                     footerY.toFloat(),
                     -0x1
                 )
@@ -211,15 +216,15 @@ object TabListRenderer {
         "§.§lFire Sales: §r§f\\([0-9]+\\)"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSkipTablistLine(event: SkipTabListLineEvent) {
         if (config.hideFiresales && event.lastSubTitle != null && fireSalePattern.matches(event.lastSubTitle.text)) {
             event.cancel()
         }
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(31, "misc.compactTabList", "gui.compactTabList")
     }
 }

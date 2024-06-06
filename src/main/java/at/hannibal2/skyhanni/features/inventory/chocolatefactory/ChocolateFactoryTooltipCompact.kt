@@ -1,17 +1,18 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.getOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object ChocolateFactoryTooltipCompact {
     private val config get() = ChocolateFactoryAPI.config
 
@@ -19,8 +20,8 @@ object ChocolateFactoryTooltipCompact {
     private var lastHover = SimpleTimeMark.farPast()
     private var tooltipToHover = listOf<String>()
 
-    @SubscribeEvent
-    fun onTooltip(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!ChocolateFactoryAPI.inChocolateFactory) return
 
         if (config.tooltipMove) {
@@ -37,8 +38,8 @@ object ChocolateFactoryTooltipCompact {
         onCompactClick(event)
     }
 
-    @SubscribeEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!ChocolateFactoryAPI.inChocolateFactory) return
         if (config.tooltipMove) {
             if (lastHover.passedSince() < 1.seconds) {
@@ -47,7 +48,7 @@ object ChocolateFactoryTooltipCompact {
         }
     }
 
-    private fun onCompactClick(event: LorenzToolTipEvent) {
+    private fun onCompactClick(event: SkyHanniToolTipEvent) {
         if (!config.compactOnClick) return
 
         val itemStack = event.itemStack
@@ -63,8 +64,8 @@ object ChocolateFactoryTooltipCompact {
         return
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onSlotClick(event: SlotClickEvent) {
 
         if (ChocolateFactoryAPI.inChocolateFactory) {
             if (event.slotId == 13) {

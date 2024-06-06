@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.utils
 
-import net.minecraftforge.fml.common.FMLCommonHandler
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import java.awt.Desktop
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
@@ -102,7 +102,6 @@ object NEUVersionCheck {
     }
 
     fun closeMinecraft() {
-        FMLCommonHandler.instance().handleExit(-1)
-        FMLCommonHandler.instance().expectServerStopped()
+        PlatformUtils.delayedExit(-1, true)
     }
 }

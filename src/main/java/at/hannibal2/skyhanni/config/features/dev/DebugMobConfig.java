@@ -11,6 +11,7 @@ public class DebugMobConfig {
     @Expose
     @ConfigOption(name = "Mob Detection Enable", desc = "Turn off and on again to reset all Mobs.")
     @ConfigEditorBoolean
+    // TODO rename to enabled
     public boolean enable = true;
 
     @Expose

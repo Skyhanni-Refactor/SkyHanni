@@ -2,8 +2,9 @@ package at.hannibal2.skyhanni.config.storage;
 
 import at.hannibal2.skyhanni.api.HotmAPI;
 import at.hannibal2.skyhanni.api.SkillAPI;
-import at.hannibal2.skyhanni.data.IslandType;
+import at.hannibal2.skyhanni.api.skyblock.IslandType;
 import at.hannibal2.skyhanni.data.MaxwellAPI;
+import at.hannibal2.skyhanni.data.item.SkyhanniItems;
 import at.hannibal2.skyhanni.data.jsonobjects.local.HotmTree;
 import at.hannibal2.skyhanni.data.model.ComposterUpgrade;
 import at.hannibal2.skyhanni.features.combat.endernodetracker.EnderNodeTracker;
@@ -12,7 +13,6 @@ import at.hannibal2.skyhanni.features.dungeon.CroesusChestTracker;
 import at.hannibal2.skyhanni.features.dungeon.DungeonFloor;
 import at.hannibal2.skyhanni.features.event.diana.DianaProfitTracker;
 import at.hannibal2.skyhanni.features.event.diana.MythologicalCreatureTracker;
-import at.hannibal2.skyhanni.features.event.hoppity.HoppityCollectionStats;
 import at.hannibal2.skyhanni.features.event.jerry.frozentreasure.FrozenTreasureTracker;
 import at.hannibal2.skyhanni.features.fishing.tracker.FishingProfitTracker;
 import at.hannibal2.skyhanni.features.fishing.tracker.SeaCreatureTracker;
@@ -187,7 +187,7 @@ public class ProfileSpecificStorage {
         public String displayName = "";
 
         @Expose
-        public long lastClicked = -1;
+        public long lastClicked = 0;
 
         @Override
         public String toString() {
@@ -280,10 +280,10 @@ public class ProfileSpecificStorage {
         public Map<CropType, Boolean> toolWithBountiful = new HashMap<>();
 
         @Expose
-        public NEUInternalName composterCurrentOrganicMatterItem = NEUInternalName.Companion.getNONE();
+        public NEUInternalName composterCurrentOrganicMatterItem = SkyhanniItems.NONE.invoke();
 
         @Expose
-        public NEUInternalName composterCurrentFuelItem = NEUInternalName.Companion.getNONE();
+        public NEUInternalName composterCurrentFuelItem = SkyhanniItems.NONE.invoke();
 
         @Expose
         public int uniqueVisitors = 0;
@@ -370,7 +370,7 @@ public class ProfileSpecificStorage {
             public int plotsUnlocked = -1;
 
             @Expose
-            public long cakeExpiring = -1L;
+            public long cakeExpiring = 0;
 
             @Expose
             public boolean carrotFortune = false;
@@ -557,7 +557,7 @@ public class ProfileSpecificStorage {
         public Map<DungeonFloor, Integer> bosses = new HashMap<>();
 
         @Expose
-        public List<DungeonStorage.DungeonRunInfo> runs = CroesusChestTracker.Companion.generateMaxChestAsList();
+        public List<DungeonStorage.DungeonRunInfo> runs = CroesusChestTracker.generateMaxChestAsList();
 
         public static class DungeonRunInfo {
 

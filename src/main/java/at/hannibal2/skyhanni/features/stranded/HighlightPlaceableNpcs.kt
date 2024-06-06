@@ -1,21 +1,23 @@
 package at.hannibal2.skyhanni.features.stranded
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HighlightPlaceableNpcs {
+@SkyHanniModule
+object HighlightPlaceableNpcs {
 
     private val config get() = SkyHanniMod.feature.misc.stranded
 
@@ -27,7 +29,7 @@ class HighlightPlaceableNpcs {
     private var inInventory = false
     private var highlightedItems = emptyList<Int>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         inInventory = false
         if (!isEnabled()) return
@@ -44,25 +46,20 @@ class HighlightPlaceableNpcs {
         this.highlightedItems = highlightedItems
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         inInventory = false
         highlightedItems = emptyList()
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
+    @HandleEvent(priority = HandleEvent.LOW)
+    fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         if (!isEnabled() || !inInventory) return
         for (slot in InventoryUtils.getItemsInOpenChest()) {
             if (slot.slotIndex in highlightedItems) {
-                slot highlight LorenzColor.GREEN
+                slot.highlight(LorenzColor.GREEN)
             }
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(31, "stranded", "misc.stranded")
     }
 
     private fun isPlaceableNpc(lore: List<String>): Boolean {
@@ -75,5 +72,10 @@ class HighlightPlaceableNpcs {
         return lore.none { locationPattern.matches(it) }
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && LorenzUtils.isStrandedProfile && config.highlightPlaceableNpcs
+    private fun isEnabled() = SkyBlockAPI.isConnected && SkyBlockAPI.gamemode == Gamemode.STRANDED && config.highlightPlaceableNpcs
+
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
+        event.move(31, "stranded", "misc.stranded")
+    }
 }

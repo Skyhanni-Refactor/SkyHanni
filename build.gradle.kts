@@ -133,10 +133,6 @@ dependencies {
     implementation("net.hypixel:mod-api:0.3.1")
 }
 
-ksp {
-    arg("symbolProcessor", "at.hannibal2.skyhanni.loadmodule.LoadModuleProvider")
-}
-
 configurations.getByName("minecraftNamed").dependencies.forEach {
     shot.applyTo(it as HasConfigurableAttributes<*>)
 }
@@ -193,6 +189,17 @@ loom {
         }
         "server" {
             isIdeConfigGenerated = false
+        }
+    }
+
+    afterEvaluate {
+        val mixinPath = configurations.compileClasspath.get()
+            .files { it.group == "org.spongepowered" && it.name == "mixin" }
+            .first()
+        runConfigs {
+            "client" {
+                vmArgs.add("-javaagent:$mixinPath")
+            }
         }
     }
 }
@@ -285,6 +292,12 @@ val sourcesJar by tasks.creating(Jar::class) {
     from(sourceSets.main.get().allSource)
 }
 
+idea {
+    module {
+        excludeDirs.add(file("run"))
+    }
+}
+
 publishing.publications {
     create<MavenPublication>("maven") {
         artifact(tasks.remapJar)
@@ -304,6 +317,3 @@ publishing.publications {
         }
     }
 }
-
-
-

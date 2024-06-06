@@ -1,44 +1,45 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.config.features.garden.cropmilestones.CropMilestonesConfig.MilestoneTextEntry
-import at.hannibal2.skyhanni.config.features.garden.cropmilestones.CropMilestonesConfig.TimeFormatEntry
 import at.hannibal2.skyhanni.config.features.garden.cropmilestones.MushroomPetPerkConfig.MushroomTextEntry
 import at.hannibal2.skyhanni.data.GardenCropMilestones
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.data.GardenCropMilestones.isMaxed
 import at.hannibal2.skyhanni.data.GardenCropMilestones.setCounter
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.CropMilestoneUpdateEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.OwnInventoryItemUpdateEvent
-import at.hannibal2.skyhanni.events.ProfileJoinEvent
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.events.garden.CropMilestoneUpdateEvent
+import at.hannibal2.skyhanni.events.inventory.OwnInventoryItemUpdateEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.FarmingFortuneDisplay
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.GardenAPI.addCropIconRenderable
 import at.hannibal2.skyhanni.features.garden.GardenAPI.getCropType
 import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed.setSpeed
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.addString
 import at.hannibal2.skyhanni.utils.ConditionalUtils
-import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
-import at.hannibal2.skyhanni.utils.TimeUnit
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
+import at.hannibal2.skyhanni.utils.datetime.TimeUnit
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object GardenCropMilestoneDisplay {
 
     private var progressDisplay = emptyList<Renderable>()
@@ -47,7 +48,6 @@ object GardenCropMilestoneDisplay {
     private val config get() = GardenAPI.config.cropMilestones
     private val overflowConfig get() = config.overflow
     private val storage get() = ProfileStorageData.profileSpecific?.garden?.customGoalMilestone
-    private val bestCropTime = GardenBestCropTime()
 
     private var lastPlaySoundTime = SimpleTimeMark.farPast()
     private var needsInventory = false
@@ -58,7 +58,7 @@ object GardenCropMilestoneDisplay {
     private var lastMushWarnedLevel = -1
     private var previousMushNext = 0
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         ConditionalUtils.onToggle(
             config.bestShowMaxedNeeded,
@@ -69,8 +69,8 @@ object GardenCropMilestoneDisplay {
         }
     }
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
         if (GardenAPI.hideExtraGuis()) return
 
@@ -85,11 +85,11 @@ object GardenCropMilestoneDisplay {
         }
 
         if (config.next.bestDisplay) {
-            config.next.displayPos.renderStringsAndItems(bestCropTime.display, posLabel = "Best Crop Time")
+            config.next.displayPos.renderStringsAndItems(GardenBestCropTime.display, posLabel = "Best Crop Time")
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
+    @HandleEvent(priority = HandleEvent.LOW)
     fun onProfileJoin(event: ProfileJoinEvent) {
         GardenCropMilestones.cropCounter?.let {
             if (it.values.sum() == 0L) {
@@ -98,17 +98,15 @@ object GardenCropMilestoneDisplay {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCropMilestoneUpdate(event: CropMilestoneUpdateEvent) {
         needsInventory = false
         GardenBestCropTime.updateTimeTillNextCrop()
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onOwnInventoryItemUpdate(event: OwnInventoryItemUpdateEvent) {
-        if (!GardenAPI.inGarden()) return
-
         try {
             val item = event.itemStack
             val counter = GardenAPI.readCounter(item)
@@ -136,14 +134,14 @@ object GardenCropMilestoneDisplay {
     fun update() {
         progressDisplay = emptyList()
         mushroomCowPerkDisplay = emptyList()
-        bestCropTime.display = emptyList()
+        GardenBestCropTime.display = emptyList()
         val currentCrop = GardenAPI.getCurrentlyFarmedCrop()
         currentCrop?.let {
             progressDisplay = drawProgressDisplay(it)
         }
 
         if (config.next.bestDisplay && config.next.bestAlwaysOn || currentCrop != null) {
-            bestCropTime.display = bestCropTime.drawBestDisplay(currentCrop)
+            GardenBestCropTime.display = GardenBestCropTime.drawBestDisplay(currentCrop)
         }
     }
 
@@ -192,18 +190,18 @@ object GardenCropMilestoneDisplay {
 
         val farmingFortune = FarmingFortuneDisplay.getCurrentFarmingFortune()
         val speed = GardenCropSpeed.averageBlocksPerSecond
-        val farmingFortuneSpeed = ((100.0 + farmingFortune) * crop.baseDrops * speed / 100).round(1).toInt()
+        val farmingFortuneSpeed = ((100.0 + farmingFortune) * crop.baseDrops * speed / 100).roundTo(1).toInt()
 
         if (farmingFortuneSpeed > 0) {
             crop.setSpeed(farmingFortuneSpeed)
             if (!crop.isMaxed(overflowDisplay) || overflowDisplay) {
                 val missing = need - have
-                val missingTimeSeconds = missing / farmingFortuneSpeed
-                val millis = missingTimeSeconds * 1000
+                val missingTime = (missing / farmingFortuneSpeed).seconds
+                val millis = missingTime.inWholeMilliseconds
                 GardenBestCropTime.timeTillNextCrop[crop] = millis
                 // TODO, change functionality to use enum rather than ordinals
                 val biggestUnit = TimeUnit.entries[config.highestTimeFormat.get().ordinal]
-                val duration = TimeUtils.formatDuration(millis, biggestUnit)
+                val duration = missingTime.format(biggestUnit)
                 tryWarn(millis, "§b${crop.cropName} $nextTier in $duration")
 
                 val speedText = "§7In §b$duration"
@@ -224,11 +222,11 @@ object GardenCropMilestoneDisplay {
             val hourFormat = (farmingFortuneSpeed * 60 * 60).addSeparators()
             lineMap[MilestoneTextEntry.CROPS_PER_HOUR] = Renderable.string("§7Crops/Hour§8: §e$hourFormat")
 
-            val formatBps = speed.round(config.blocksBrokenPrecision).addSeparators()
+            val formatBps = speed.roundTo(config.blocksBrokenPrecision).addSeparators()
             lineMap[MilestoneTextEntry.BLOCKS_PER_SECOND] = Renderable.string("§7Blocks/Second§8: §e$formatBps")
         }
 
-        val percentageFormat = LorenzUtils.formatPercentage(have.toDouble() / need.toDouble())
+        val percentageFormat = (have.toDouble() / need.toDouble()).formatPercentage()
         lineMap[MilestoneTextEntry.PERCENTAGE] = if (crop.isMaxed(overflowDisplay) && !overflowDisplay) {
             Renderable.string("§7Percentage: §e100%")
         } else {
@@ -269,10 +267,10 @@ object GardenCropMilestoneDisplay {
 
         if (lastPlaySoundTime.passedSince() > 1.seconds) {
             lastPlaySoundTime = SimpleTimeMark.now()
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
         }
         if (!needsInventory) {
-            LorenzUtils.sendTitle(title, 1.5.seconds)
+            TitleManager.sendTitle(title, 1.5.seconds)
         }
     }
 
@@ -327,15 +325,14 @@ object GardenCropMilestoneDisplay {
         if (speed != 0.0) {
             val blocksPerSecond = speed * (GardenAPI.getCurrentlyFarmedCrop()?.multiplier ?: 1)
 
-            val missingTimeSeconds = missing / blocksPerSecond
-            val millis = missingTimeSeconds * 1000
+            val missingTime = (missing / blocksPerSecond).seconds
             // TODO, change functionality to use enum rather than ordinals
             val biggestUnit = TimeUnit.entries[config.highestTimeFormat.get().ordinal]
-            val duration = TimeUtils.formatDuration(millis.toLong(), biggestUnit)
+            val duration = missingTime.format(biggestUnit)
             lineMap[MushroomTextEntry.TIME] = Renderable.string("§7In §b$duration")
         }
 
-        val percentageFormat = LorenzUtils.formatPercentage(have.toDouble() / need.toDouble())
+        val percentageFormat = (have.toDouble() / need.toDouble()).formatPercentage()
         lineMap[MushroomTextEntry.PERCENTAGE] = Renderable.string("§7Percentage: §e$percentageFormat")
 
         if (currentTier >= 46 && currentTier == previousMushNext && nextTier == currentTier + 1 && lastMushWarnedLevel != currentTier) {
@@ -348,42 +345,4 @@ object GardenCropMilestoneDisplay {
     }
 
     private fun isEnabled() = GardenAPI.inGarden() && config.progress
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.cropMilestoneProgress", "garden.cropMilestones.progress")
-        event.move(3, "garden.cropMilestoneWarnClose", "garden.cropMilestones.warnClose")
-        event.move(3, "garden.cropMilestoneHighestTimeFormat", "garden.cropMilestones.highestTimeFormat")
-        event.move(3, "garden.cropMilestoneBestShowMaxedNeeded", "garden.cropMilestones.bestShowMaxedNeeded")
-        event.move(3, "garden.cropMilestoneText", "garden.cropMilestones.text")
-        event.move(3, "garden.blocksBrokenPrecision", "garden.cropMilestones.blocksBrokenPrecision")
-        event.move(3, "garden.cropMilestoneProgressDisplayPos", "garden.cropMilestones.progressDisplayPos")
-        event.move(3, "garden.cropMilestoneBestDisplay", "garden.cropMilestones.next.bestDisplay")
-        event.move(3, "garden.cropMilestoneBestAlwaysOn", "garden.cropMilestones.next.bestAlwaysOn")
-        event.move(3, "garden.cropMilestoneNextDisplayPos", "garden.cropMilestones.next.displayPos")
-        event.move(3, "garden.cropMilestoneMushroomPetPerkEnabled", "garden.cropMilestones.mushroomPetPerk.enabled")
-        event.move(3, "garden.cropMilestoneMushroomPetPerkText", "garden.cropMilestones.mushroomPetPerk.text")
-        event.move(3, "garden.cropMilestoneMushroomPetPerkPos", "garden.cropMilestones.mushroomPetPerk.pos")
-        event.move(
-            11,
-            "garden.cropMilestones.highestTimeFormat",
-            "garden.cropMilestones.highestTimeFormat"
-        ) { element ->
-            ConfigUtils.migrateIntToEnum(element, TimeFormatEntry::class.java)
-        }
-        event.move(
-            11,
-            "garden.cropMilestones.text",
-            "garden.cropMilestones.text"
-        ) { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, MilestoneTextEntry::class.java)
-        }
-        event.move(
-            11,
-            "garden.cropMilestones.mushroomPetPerk.text",
-            "garden.cropMilestones.mushroomPetPerk.text"
-        ) { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, MushroomTextEntry::class.java)
-        }
-    }
 }

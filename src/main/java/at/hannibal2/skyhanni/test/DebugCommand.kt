@@ -1,24 +1,20 @@
 package at.hannibal2.skyhanni.test
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.data.HypixelData
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.repo.RepoManager
-import at.hannibal2.skyhanni.events.DebugDataCollectEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils.equalsIgnoreColor
+import at.hannibal2.skyhanni.utils.StringUtils.toDashlessUUID
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.system.OS
 
 object DebugCommand {
 
     fun command(args: Array<String>) {
-        if (args.size == 2 && args[0] == "profileName") {
-            HypixelData.profileName = args[1].lowercase()
-            ChatUtils.chat("§eManually set profileName to '${HypixelData.profileName}'")
-            return
-        }
         val list = mutableListOf<String>()
         list.add("```")
         list.add("= Debug Information for SkyHanni ${SkyHanniMod.version} =")
@@ -44,7 +40,7 @@ object DebugCommand {
         profileName(event)
         profileType(event)
 
-        event.postAndCatch()
+        event.post()
 
         if (event.empty) {
             list.add("")
@@ -54,13 +50,13 @@ object DebugCommand {
         }
 
         list.add("```")
-        OSUtils.copyToClipboard(list.joinToString("\n"))
+        OS.copyToClipboard(list.joinToString("\n"))
         ChatUtils.chat("§eCopied SkyHanni debug data in the clipboard.")
     }
 
     private fun profileType(event: DebugDataCollectEvent) {
         event.title("Profile Type")
-        if (!LorenzUtils.inSkyBlock) {
+        if (!SkyBlockAPI.isConnected) {
             event.addIrrelevant("Not on SkyBlock")
             return
         }
@@ -70,54 +66,36 @@ object DebugCommand {
             return
         }
 
-        val classic = !LorenzUtils.noTradeMode
-        if (classic) {
-            event.addIrrelevant("on classic")
-        } else {
-            if (HypixelData.ironman) {
-                event.addData("on ironman")
-            }
-            if (HypixelData.stranded) {
-                event.addData("on stranded")
-            }
-            if (HypixelData.bingo) {
-                event.addData("on bingo")
-            }
-        }
+        event.addData("on ${SkyBlockAPI.gamemode.name.lowercase()}")
     }
 
     private fun profileName(event: DebugDataCollectEvent) {
         event.title("Profile Name")
-        if (!LorenzUtils.inSkyBlock) {
+        if (!SkyBlockAPI.isConnected) {
             event.addIrrelevant("Not on SkyBlock")
             return
         }
 
-        if (HypixelData.profileName != "") {
-            event.addIrrelevant("profileName: '${HypixelData.profileName}'")
-        } else {
-            event.addData("profile name is empty!")
+        event.addIrrelevant {
+            add("profileName: '${SkyBlockAPI.profileName ?: "NULL"}'")
+            add("profileId: '${SkyBlockAPI.profileId ?: "NULL"}'")
         }
     }
 
     private fun skyblockStatus(event: DebugDataCollectEvent) {
         event.title("SkyBlock Status")
-        if (!LorenzUtils.onHypixel) {
+        if (!HypixelAPI.onHypixel) {
             event.addData("not on Hypixel")
             return
         }
-        if (!LorenzUtils.inSkyBlock) {
+        if (!SkyBlockAPI.isConnected) {
             event.addData("not on SkyBlock, but on Hypixel")
-            return
-        }
-        if (LorenzUtils.skyBlockIsland == IslandType.UNKNOWN) {
-            event.addData("Unknown SkyBlock island!")
             return
         }
         event.addIrrelevant {
             add("on Hypixel SkyBlock")
-            add("skyBlockIsland: ${LorenzUtils.skyBlockIsland}")
-            add("skyBlockArea: '${LorenzUtils.skyBlockArea}'")
+            add("skyBlockIsland: ${SkyBlockAPI.island}")
+            add("skyBlockArea: '${SkyBlockAPI.area}'")
         }
     }
 
@@ -150,8 +128,8 @@ object DebugCommand {
     private fun player(event: DebugDataCollectEvent) {
         event.title("Player")
         event.addIrrelevant {
-            add("name: '${LorenzUtils.getPlayerName()}'")
-            add("uuid: '${LorenzUtils.getPlayerUuid()}'")
+            add("name: '${McPlayer.name}'")
+            add("uuid: '${McPlayer.uuid.toDashlessUUID()}'")
         }
     }
 }

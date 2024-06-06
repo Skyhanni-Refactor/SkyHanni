@@ -1,7 +1,6 @@
 package at.hannibal2.skyhanni.config.features.fishing.trophyfishing;
 
 import at.hannibal2.skyhanni.config.FeatureToggle;
-import at.hannibal2.skyhanni.config.HasLegacyId;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorBoolean;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorDropdown;
@@ -28,26 +27,14 @@ public class ChatMessagesConfig {
     @ConfigEditorDropdown
     public DesignFormat design = DesignFormat.STYLE_1;
 
-    public enum DesignFormat implements HasLegacyId {
-        STYLE_1("Style 1", 0),
-        STYLE_2("Style 2", 1),
-        STYLE_3("Style 3", 2);
+    public enum DesignFormat {
+        STYLE_1("Style 1"),
+        STYLE_2("Style 2"),
+        STYLE_3("Style 3");
         private final String str;
-        private final int legacyId;
 
-        DesignFormat(String str, int legacyId) {
-            this.str = str;
-            this.legacyId = legacyId;
-        }
-
-        // Constructor if new enum elements are added post-migration
         DesignFormat(String str) {
-            this(str, -1);
-        }
-
-        @Override
-        public int getLegacyId() {
-            return legacyId;
+            this.str = str;
         }
 
         @Override

@@ -4,13 +4,14 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.config.features.misc.TrackerConfig.PriceFromEntry
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.SlayerAPI
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.test.PriceSource
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.KeyboardManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.addSelector
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil
@@ -26,18 +27,14 @@ class SkyHanniItemTracker<Data : ItemTrackerData>(
     drawDisplay: (Data) -> List<List<Any>>,
 ) : SkyHanniTracker<Data>(name, createNewSession, getStorage, drawDisplay) {
 
-    companion object {
-
-        val SKYBLOCK_COIN = NEUInternalName.SKYBLOCK_COIN
-    }
 
     fun addCoins(coins: Int) {
-        addItem(SKYBLOCK_COIN, coins)
+        addItem(SkyhanniItems.SKYBLOCK_COIN(), coins)
     }
 
     fun addItem(internalName: NEUInternalName, amount: Int) {
         modify {
-            it.additem(internalName, amount)
+            it.addItem(internalName, amount)
         }
         getSharedTracker()?.let {
             val hidden = it.get(DisplayMode.TOTAL).items[internalName]!!.hidden
@@ -49,7 +46,7 @@ class SkyHanniItemTracker<Data : ItemTrackerData>(
             ChatUtils.chat("§a+Tracker Drop§7: §r$itemName")
         }
         if (config.warnings.title && price >= config.warnings.minimumTitle) {
-            LorenzUtils.sendTitle("§a+ $itemName", 5.seconds)
+            TitleManager.sendTitle("§a+ $itemName", 5.seconds)
         }
     }
 
@@ -79,7 +76,7 @@ class SkyHanniItemTracker<Data : ItemTrackerData>(
 
             val amount = itemProfit.totalAmount
             val pricePer =
-                if (internalName == SKYBLOCK_COIN) 1.0 else data.getCustomPricePer(internalName)
+                if (internalName == SkyhanniItems.SKYBLOCK_COIN()) 1.0 else data.getCustomPricePer(internalName)
             val price = (pricePer * amount).toLong()
             val hidden = itemProfit.hidden
 
@@ -98,9 +95,9 @@ class SkyHanniItemTracker<Data : ItemTrackerData>(
             val itemProfit = data.items[internalName] ?: error("Item not found for $internalName")
 
             val amount = itemProfit.totalAmount
-            val displayAmount = if (internalName == SKYBLOCK_COIN) itemProfit.timesGained else amount
+            val displayAmount = if (internalName == SkyhanniItems.SKYBLOCK_COIN()) itemProfit.timesGained else amount
 
-            val cleanName = if (internalName == SKYBLOCK_COIN) {
+            val cleanName = if (internalName == SkyhanniItems.SKYBLOCK_COIN()) {
                 data.getCoinName(itemProfit)
             } else {
                 internalName.itemName
@@ -159,7 +156,7 @@ class SkyHanniItemTracker<Data : ItemTrackerData>(
         newDrop: Boolean,
         internalName: NEUInternalName,
     ) = buildList {
-        if (internalName == SKYBLOCK_COIN) {
+        if (internalName == SkyhanniItems.SKYBLOCK_COIN()) {
             addAll(data.getCoinDescription(item))
         } else {
             addAll(data.getDescription(item.timesGained))

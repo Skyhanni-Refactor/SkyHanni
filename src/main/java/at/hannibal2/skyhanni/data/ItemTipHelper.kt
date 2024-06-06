@@ -1,30 +1,32 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.DrawScreenAfterEvent
-import at.hannibal2.skyhanni.events.GuiRenderItemEvent
-import at.hannibal2.skyhanni.events.RenderInventoryItemTipEvent
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
-import at.hannibal2.skyhanni.mixins.transformers.gui.AccessorGuiContainer
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.render.gui.DrawScreenAfterEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderItemEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import at.hannibal2.skyhanni.utils.InventoryUtils.getInventoryName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawSlotText
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiChest
+import at.hannibal2.skyhanni.utils.mc.McFont
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McScreen.left
+import at.hannibal2.skyhanni.utils.mc.McScreen.top
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.inventory.ContainerChest
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ItemTipHelper {
+@SkyHanniModule
+object ItemTipHelper {
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemOverlayPost(event: GuiRenderItemEvent.RenderOverlayEvent.GuiRenderItemPost) {
         val stack = event.stack ?: return
-        if (!LorenzUtils.inSkyBlock || stack.stackSize != 1) return
+        if (!SkyBlockAPI.isConnected || stack.stackSize != 1) return
 
         val itemTipEvent = RenderItemTipEvent(stack, mutableListOf())
-        itemTipEvent.postAndCatch()
+        itemTipEvent.post()
 
         if (itemTipEvent.renderObjects.isEmpty()) return
 
@@ -37,19 +39,13 @@ class ItemTipHelper {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGHEST)
     fun onRenderInventoryItemOverlayPost(event: DrawScreenAfterEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         if (!SkyHanniDebugsAndTests.globalRender) return
 
-        val gui = Minecraft.getMinecraft().currentScreen
-        if (gui !is GuiChest) return
+        val gui = McScreen.asChest ?: return
         val chest = gui.inventorySlots as ContainerChest
         val inventoryName = chest.getInventoryName()
-
-        val guiLeft = (gui as AccessorGuiContainer).guiLeft
-        val guiTop = (gui as AccessorGuiContainer).guiTop
-        val fontRenderer = Minecraft.getMinecraft().fontRendererObj
 
         GlStateManager.disableLighting()
         GlStateManager.disableDepth()
@@ -58,19 +54,21 @@ class ItemTipHelper {
             val stack = slot.stack ?: continue
 
             val itemTipEvent = RenderInventoryItemTipEvent(inventoryName, slot, stack)
-            itemTipEvent.postAndCatch()
+            itemTipEvent.post()
             val stackTip = itemTipEvent.stackTip
             if (stackTip.isEmpty()) continue
 
             val xDisplayPosition = slot.xDisplayPosition
             val yDisplayPosition = slot.yDisplayPosition
 
-            val x = guiLeft + xDisplayPosition + 17 + itemTipEvent.offsetX - if (itemTipEvent.alignLeft) {
-                fontRenderer.getStringWidth(stackTip)
-            } else 0
-            val y = guiTop + yDisplayPosition + 9 + itemTipEvent.offsetY
+            val x = gui.left + xDisplayPosition + 17 + itemTipEvent.offsetX - if (itemTipEvent.alignLeft) {
+                McFont.width(stackTip)
+            } else {
+                0
+            }
+            val y = gui.top + yDisplayPosition + 9 + itemTipEvent.offsetY
 
-            fontRenderer.drawStringWithShadow(stackTip, x.toFloat(), y.toFloat(), 16777215)
+            McFont.draw(stackTip, x.toFloat(), y.toFloat(), 16777215)
         }
         GlStateManager.enableLighting()
         GlStateManager.enableDepth()

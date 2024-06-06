@@ -1,16 +1,18 @@
 package at.hannibal2.skyhanni.features.nether.kuudra
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ScoreboardData
-import at.hannibal2.skyhanni.events.KuudraCompleteEvent
-import at.hannibal2.skyhanni.events.KuudraEnterEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.kuudra.KuudraCompleteEvent
+import at.hannibal2.skyhanni.events.kuudra.KuudraEnterEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object KuudraAPI {
 
     private val patternGroup = RepoPattern.group("data.kuudra")
@@ -25,33 +27,34 @@ object KuudraAPI {
     )
 
     var kuudraTier: Int? = null
+    val inKuudra: Boolean
+        get() = kuudraTier != null && SkyBlockAPI.isConnected
+
     fun inKuudra() = kuudraTier != null
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTick(event: ClientTickEvent) {
         if (kuudraTier != null) return
         for (line in ScoreboardData.sidebarLinesFormatted) {
             tierPattern.matchMatcher(line) {
                 val tier = group("tier").toInt()
                 kuudraTier = tier
-                KuudraEnterEvent(tier).postAndCatch()
+                KuudraEnterEvent(tier).post()
             }
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         kuudraTier = null
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
         val message = event.message
         completePattern.matchMatcher(message) {
             val tier = kuudraTier ?: return
-            KuudraCompleteEvent(tier).postAndCatch()
+            KuudraCompleteEvent(tier).post()
         }
     }
-
 }

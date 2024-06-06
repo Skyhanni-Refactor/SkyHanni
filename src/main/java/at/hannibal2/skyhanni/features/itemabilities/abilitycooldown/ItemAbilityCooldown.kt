@@ -1,18 +1,22 @@
 package at.hannibal2.skyhanni.features.itemabilities.abilitycooldown
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.ActionBarUpdateEvent
-import at.hannibal2.skyhanni.events.ItemClickEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.PlaySoundEvent
-import at.hannibal2.skyhanni.events.RenderGuiItemOverlayEvent
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
-import at.hannibal2.skyhanni.events.RenderObject
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.ActionBarUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.PlaySoundEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderGuiItemOverlayEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderObject
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.itemabilities.abilitycooldown.ItemAbility.Companion.getMultiplier
 import at.hannibal2.skyhanni.features.nether.ashfang.AshfangFreezeCooldown
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.equalsOneOf
 import at.hannibal2.skyhanni.utils.CollectionUtils.mapKeysNotNull
 import at.hannibal2.skyhanni.utils.InventoryUtils
@@ -20,22 +24,21 @@ import at.hannibal2.skyhanni.utils.ItemUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.between
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
+import at.hannibal2.skyhanni.utils.RegexUtils.findMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getAbilityScrolls
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemId
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getItemUuid
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.max
 
-class ItemAbilityCooldown {
+@SkyHanniModule
+object ItemAbilityCooldown {
 
     private val config get() = SkyHanniMod.feature.inventory.itemAbilities
 
@@ -48,20 +51,21 @@ class ItemAbilityCooldown {
         "buffedyourself",
         "§aYou buffed yourself for §r§c\\+\\d+❁ Strength"
     )
+    private val actionBarPattern by patternGroup.pattern(
+        "actionbar",
+        "-?[0-9,]+ Mana \\(§6(?<ability>.+)§b\\)"
+    )
 
     private var lastAbility = ""
     private var items = mapOf<String, List<ItemText>>()
     private var abilityItems = mapOf<ItemStack, MutableList<ItemAbility>>()
-    private val WEIRD_TUBA = "WEIRD_TUBA".asInternalName()
-    private val WEIRDER_TUBA = "WEIRDER_TUBA".asInternalName()
-    private val VOODOO_DOLL_WILTED = "VOODOO_DOLL_WILTED".asInternalName()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPlaySound(event: PlaySoundEvent) {
         when {
             // Hyperion
             event.soundName == "mob.zombie.remedy" && event.pitch == 0.6984127f && event.volume == 1f -> {
-                val abilityScrolls = InventoryUtils.getItemInHand()?.getAbilityScrolls() ?: return
+                val abilityScrolls = McPlayer.heldItem?.getAbilityScrolls() ?: return
                 if (abilityScrolls.size != 3) return
 
                 ItemAbility.HYPERION.sound()
@@ -82,10 +86,10 @@ class ItemAbilityCooldown {
                 }
                 // Shadow Fury
                 if (event.pitch == 1f && event.volume == 1f) {
-                    val internalName = InventoryUtils.getItemInHand()?.getInternalName() ?: return
+                    val internalName = McPlayer.heldItem?.getInternalName() ?: return
                     if (!internalName.equalsOneOf(
-                            "SHADOW_FURY".asInternalName(),
-                            "STARRED_SHADOW_FURY".asInternalName()
+                            SkyhanniItems.SHADOW_FURY(),
+                            SkyhanniItems.STARRED_SHADOW_FURY(),
                         )
                     ) return
 
@@ -119,7 +123,7 @@ class ItemAbilityCooldown {
             // Jinxed Voodoo Doll Miss
             event.soundName == "mob.ghast.scream" && event.volume == 1.0f && event.pitch >= 1.6 && event.pitch <= 1.7 -> {
                 val recentItems = InventoryUtils.recentItemsInHand.values
-                if (VOODOO_DOLL_WILTED in recentItems) {
+                if (SkyhanniItems.VOODOO_DOLL_WILTED() in recentItems) {
                     ItemAbility.VOODOO_DOLL_WILTED.sound()
                 }
             }
@@ -130,10 +134,10 @@ class ItemAbilityCooldown {
             // Weird Tuba & Weirder Tuba
             event.soundName == "mob.wolf.howl" && event.volume == 0.5f -> {
                 val recentItems = InventoryUtils.recentItemsInHand.values
-                if (WEIRD_TUBA in recentItems) {
+                if (SkyhanniItems.WEIRD_TUBA() in recentItems) {
                     ItemAbility.WEIRD_TUBA.sound()
                 }
-                if (WEIRDER_TUBA in recentItems) {
+                if (SkyhanniItems.WEIRDER_TUBA() in recentItems) {
                     ItemAbility.WEIRDER_TUBA.sound()
                 }
             }
@@ -166,7 +170,7 @@ class ItemAbilityCooldown {
                 ItemAbility.STAFF_OF_THE_VOLCANO.sound()
             }
             // Holy Ice
-            event.soundName == "random.drink" && event.pitch.round(1) == 1.8f && event.volume == 1.0f -> {
+            event.soundName == "random.drink" && event.pitch.roundTo(1) == 1.8f && event.volume == 1.0f -> {
                 ItemAbility.HOLY_ICE.sound()
             }
             // Royal Pigeon
@@ -180,28 +184,23 @@ class ItemAbilityCooldown {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onItemClick(event: ItemClickEvent) {
         if (AshfangFreezeCooldown.isCurrentlyFrozen()) return
-        handleItemClick(event.itemInHand)
-    }
-
-    private fun handleItemClick(itemInHand: ItemStack?) {
-        if (!LorenzUtils.inSkyBlock) return
-        itemInHand?.getInternalName()?.run {
+        event.itemInHand?.getInternalName()?.run {
             ItemAbility.getByInternalName(this)?.setItemClick()
         }
     }
 
-    @SubscribeEvent
-    fun onIslandChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         for (ability in ItemAbility.entries) {
             ability.lastActivation = 0L
             ability.specialColor = null
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onActionBarUpdate(event: ActionBarUpdateEvent) {
         if (!isEnabled()) return
 
@@ -228,9 +227,8 @@ class ItemAbilityCooldown {
     }
 
     private fun handleOldAbilities(message: String) {
-        // TODO use regex
-        if (message.contains(" (§6") && message.contains("§b) ")) {
-            val name: String = message.between(" (§6", "§b) ")
+        actionBarPattern.findMatcher(message) {
+            val name = group("ability") ?: return
             if (name == lastAbility) return
             lastAbility = name
             for (ability in ItemAbility.entries) {
@@ -244,7 +242,7 @@ class ItemAbilityCooldown {
         lastAbility = ""
     }
 
-    private fun isEnabled(): Boolean = LorenzUtils.inSkyBlock && config.itemAbilityCooldown
+    private fun isEnabled(): Boolean = SkyBlockAPI.isConnected && config.itemAbilityCooldown
 
     private fun click(ability: ItemAbility) {
         if (ability.actionBarDetection) {
@@ -252,8 +250,8 @@ class ItemAbilityCooldown {
         }
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
 
         checkHotBar(event.isMod(10))
@@ -298,18 +296,17 @@ class ItemAbilityCooldown {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
         if (!isEnabled()) return
 
         val stack = event.stack
 
-        val guiOpen = Minecraft.getMinecraft().currentScreen != null
         val uuid = stack.getIdentifier() ?: return
         val list = items[uuid] ?: return
 
         for (itemText in list) {
-            if (guiOpen && !itemText.onCooldown) continue
+            if (McScreen.isOpen && !itemText.onCooldown) continue
             val color = itemText.color
             val renderObject = RenderObject(color.getChatColor() + itemText.text)
             if (itemText.alternativePosition) {
@@ -320,12 +317,12 @@ class ItemAbilityCooldown {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItem(event: RenderGuiItemOverlayEvent) {
         if (!isEnabled()) return
         if (!config.itemAbilityCooldownBackground) return
 
-        val guiOpen = Minecraft.getMinecraft().currentScreen != null
+        val guiOpen = McScreen.isOpen
         val stack = event.stack
 
         val uuid = stack?.getIdentifier() ?: return
@@ -341,22 +338,23 @@ class ItemAbilityCooldown {
                 opacity = 80
                 if (!config.itemAbilityShowWhenReady) return
             }
-            event highlight color.addOpacity(opacity)
+            event.highlight(color.addOpacity(opacity))
         }
     }
 
     private fun ItemStack.getIdentifier() = getItemUuid() ?: getItemId()
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
 
         val message = event.message
         if (message == "§dCreeper Veil §r§aActivated!") {
             ItemAbility.WITHER_CLOAK.activate(LorenzColor.LIGHT_PURPLE)
         }
-        if (message == "§dCreeper Veil §r§cDe-activated! §r§8(Expired)"
-            || message == "§cNot enough mana! §r§dCreeper Veil §r§cDe-activated!"
+        if (
+            message == "§dCreeper Veil §r§cDe-activated! §r§8(Expired)" ||
+            message == "§cNot enough mana! §r§dCreeper Veil §r§cDe-activated!"
         ) {
             ItemAbility.WITHER_CLOAK.activate()
         }
@@ -376,11 +374,6 @@ class ItemAbilityCooldown {
         youBuffedYourselfPattern.matchMatcher(message) {
             ItemAbility.SWORD_OF_BAD_HEALTH.activate()
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(31, "itemAbilities", "inventory.itemAbilities")
     }
 
     private fun hasAbility(stack: ItemStack): MutableList<ItemAbility> {
@@ -417,4 +410,9 @@ class ItemAbilityCooldown {
         val onCooldown: Boolean,
         val alternativePosition: Boolean,
     )
+
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
+        event.move(31, "itemAbilities", "inventory.itemAbilities")
+    }
 }

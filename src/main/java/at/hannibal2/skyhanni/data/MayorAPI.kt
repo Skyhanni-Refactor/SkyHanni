@@ -1,33 +1,28 @@
 package at.hannibal2.skyhanni.data
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigManager
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.compat.hypixel.HypixelWebAPI
+import at.hannibal2.skyhanni.compat.hypixel.data.HypixelMayor
 import at.hannibal2.skyhanni.data.Mayor.Companion.setAssumeMayor
 import at.hannibal2.skyhanni.data.Mayor.Companion.setAssumeMayorJson
-import at.hannibal2.skyhanni.data.jsonobjects.other.MayorCandidate
-import at.hannibal2.skyhanni.data.jsonobjects.other.MayorElection
-import at.hannibal2.skyhanni.data.jsonobjects.other.MayorJson
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
-import at.hannibal2.skyhanni.utils.APIUtil
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.put
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
-import at.hannibal2.skyhanni.utils.SkyBlockTime
-import at.hannibal2.skyhanni.utils.json.fromJson
+import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
+@SkyHanniModule
 object MayorAPI {
 
     val group = RepoPattern.group("mayorapi")
@@ -43,10 +38,9 @@ object MayorAPI {
     private var lastMayor: Mayor? = null
 
     var lastUpdate = SimpleTimeMark.farPast()
-    private var dispatcher = Dispatchers.IO
 
-    private var rawMayorData: MayorJson? = null
-    var candidates = mapOf<Int, MayorCandidate>()
+    private var rawMayorData: HypixelMayor? = null
+    var candidates = mapOf<Int, HypixelMayor.Candidate>()
         private set
     var currentMayor: Mayor? = null
         private set
@@ -68,19 +62,17 @@ object MayorAPI {
      */
     fun mayorNameWithColorCode(input: String) = mayorNameToColorCode(input) + input
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!LorenzUtils.onHypixel) return
+        if (!HypixelAPI.onHypixel) return
         if (event.repeatSeconds(2)) {
             checkHypixelAPI()
             getTimeTillNextMayor()
         }
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
-        if (!LorenzUtils.onHypixel) return
-
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
         if (electionOver.matches(event.message)) {
             lastMayor = currentMayor
             currentMayor = Mayor.UNKNOWN
@@ -120,26 +112,19 @@ object MayorAPI {
         if (lastUpdate.passedSince() < 20.minutes || (currentMayor == Mayor.UNKNOWN && lastUpdate.passedSince() < 1.minutes)) return
         lastUpdate = SimpleTimeMark.now()
 
-        SkyHanniMod.coroutineScope.launch {
-            val url = "https://api.hypixel.net/v2/resources/skyblock/election"
-            val jsonObject = withContext(dispatcher) { APIUtil.getJSONResponse(url) }
-            rawMayorData = ConfigManager.gson.fromJson<MayorJson>(jsonObject)
-            val data = rawMayorData ?: return@launch
-            val map = mutableMapOf<Int, MayorCandidate>()
-            map put data.mayor.election.getPairs()
-            data.current?.let {
-                map put data.current.getPairs()
+        HypixelWebAPI.getElection {
+            onSuccess { data ->
+                rawMayorData = data
+                candidates = mutableMapOf<Int, HypixelMayor.Candidate>().apply {
+                    put(data.mayor.election.year + 1 to data.mayor.election.winner)
+                    data.current?.apply { put(year + 1 to winner) }
+                }
+                checkCurrentMayor()
             }
-            candidates = map
-            checkCurrentMayor()
         }
     }
 
-    private fun MayorElection.getPairs() = year + 1 to candidates.bestCandidate()
-
-    private fun List<MayorCandidate>.bestCandidate() = maxBy { it.votes }
-
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigReload(event: ConfigLoadEvent) {
         SkyHanniMod.feature.dev.debug.assumeMayor.onToggle {
             val mayor = SkyHanniMod.feature.dev.debug.assumeMayor.get()
@@ -153,7 +138,7 @@ object MayorAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Mayor")
         event.addIrrelevant {

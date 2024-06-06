@@ -1,25 +1,27 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.data.ClickType
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
 import at.hannibal2.skyhanni.data.GardenCropMilestones.setCounter
 import at.hannibal2.skyhanni.data.Perk
 import at.hannibal2.skyhanni.data.jsonobjects.repo.DicerDropsJson
-import at.hannibal2.skyhanni.data.jsonobjects.repo.DicerDropsJson.DicerType
-import at.hannibal2.skyhanni.events.CropClickEvent
-import at.hannibal2.skyhanni.events.GardenToolChangeEvent
-import at.hannibal2.skyhanni.events.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.data.jsonobjects.repo.DicerType
+import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.click.CropClickEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import kotlin.concurrent.fixedRateTimer
 
+@SkyHanniModule
 object GardenCropSpeed {
 
     private val config get() = GardenAPI.config
@@ -43,7 +45,7 @@ object GardenCropSpeed {
     init {
         // TODO use SecondPassedEvent + passedSince
         fixedRateTimer(name = "skyhanni-crop-milestone-speed", period = 1000L) {
-            if (isEnabled()) {
+            if (GardenAPI.inGarden()) {
                 if (GardenAPI.mushroomCowPet) {
                     CropType.MUSHROOM.setCounter(
                         CropType.MUSHROOM.getCounter() + blocksBroken * (lastBrokenCrop?.multiplier ?: 1)
@@ -55,24 +57,22 @@ object GardenCropSpeed {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onProfileJoin(event: ProfileJoinEvent) {
         lastBrokenCrop = null
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onGardenToolChange(event: GardenToolChangeEvent) {
-        if (isEnabled()) {
-            resetSpeed()
-            update()
-        }
+        resetSpeed()
+        update()
     }
 
     private fun update() {
         GardenCropMilestoneDisplay.update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCropClick(event: CropClickEvent) {
         if (event.clickType != ClickType.LEFT_CLICK) return
 
@@ -109,8 +109,7 @@ object GardenCropSpeed {
                 blocksSpeedList.drop(1).average()
             } else 0.0
             GardenAPI.getCurrentlyFarmedCrop()?.let {
-                val heldTool = InventoryUtils.getItemInHand()
-                val toolName = heldTool?.getInternalName()?.asString()
+                val toolName = McPlayer.heldItem?.getInternalName()?.asString()
                 if (toolName?.contains("DICER") == true) {
                     val lastCrop = lastBrokenCrop?.cropName?.lowercase() ?: "NONE"
                     if (toolName.lowercase().contains(lastCrop)) {
@@ -136,7 +135,7 @@ object GardenCropSpeed {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<DicerDropsJson>("DicerDrops")
         calculateAverageDicer(melonDicer, data.MELON)
@@ -177,8 +176,6 @@ object GardenCropSpeed {
 
     fun finneganPerkActive() = Perk.FARMING_SIMULATOR.isActive
 
-    fun isEnabled() = GardenAPI.inGarden()
-
     fun CropType.getSpeed() = cropsPerSecond?.get(this)
 
     fun CropType.setSpeed(speed: Int) {
@@ -188,9 +185,4 @@ object GardenCropSpeed {
     fun CropType.getLatestBlocksPerSecond() = latestBlocksPerSecond?.get(this)
 
     fun isSpeedDataEmpty() = cropsPerSecond?.values?.sum()?.let { it == 0 } ?: true
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.blocksBrokenResetTime", "garden.cropMilestones.blocksBrokenResetTime")
-    }
 }

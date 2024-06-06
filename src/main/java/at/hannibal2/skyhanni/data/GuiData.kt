@@ -1,32 +1,35 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.NEURenderEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
+import at.hannibal2.skyhanni.events.minecraft.ScreenChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuRenderEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
+import at.hannibal2.skyhanni.utils.mc.McClient
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import io.github.moulberry.notenoughupdates.NEUApi
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiChest
-import net.minecraftforge.client.event.GuiOpenEvent
 import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.network.FMLNetworkEvent
 import org.lwjgl.input.Keyboard
 
+@SkyHanniModule
 object GuiData {
 
     var preDrawEventCanceled = false
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onNeuRenderEvent(event: NEURenderEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onNeuRenderEvent(event: NeuRenderEvent) {
         if (preDrawEventCanceled) event.cancel()
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onClick(event: SlotClickEvent) {
         if (preDrawEventCanceled) event.cancel()
     }
 
@@ -37,34 +40,34 @@ object GuiData {
 
     @SubscribeEvent(priority = EventPriority.HIGH)
     fun onGuiKeyPress(event: GuiScreenEvent.KeyboardInputEvent.Pre) {
-        val (escKey, invKey) = Minecraft.getMinecraft().gameSettings.let {
+        val (escKey, invKey) = McClient.options.let {
             Keyboard.KEY_ESCAPE to it.keyBindInventory.keyCode
         }
         if (escKey.isKeyHeld() || invKey.isKeyHeld()) return
         if (preDrawEventCanceled) event.isCanceled = true
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         DelayedRun.runNextTick {
-            if (Minecraft.getMinecraft().currentScreen !is GuiChest) {
+            if (!McScreen.isChestOpen) {
                 preDrawEventCanceled = false
             }
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         preDrawEventCanceled = false
     }
 
-    @SubscribeEvent
-    fun onDisconnect(event: FMLNetworkEvent.ClientDisconnectionFromServerEvent) {
+    @HandleEvent
+    fun onDisconnect(event: ClientDisconnectEvent) {
         preDrawEventCanceled = false
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    fun onGuiOpen(event: GuiOpenEvent) {
+    @HandleEvent(priority = HandleEvent.LOW)
+    fun onScreenChange(event: ScreenChangeEvent) {
         if (preDrawEventCanceled) {
             NEUApi.setInventoryButtonsToDisabled()
         }

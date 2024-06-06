@@ -9,9 +9,11 @@ import at.hannibal2.skyhanni.features.garden.fortuneguide.pages.UpgradePage
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.GuiRenderUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.OSUtils
-import at.hannibal2.skyhanni.utils.SoundUtils
+import at.hannibal2.skyhanni.utils.datetime.DateUtils
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.renderer.GlStateManager
@@ -27,7 +29,7 @@ open class FFGuideGUI : GuiScreen() {
         private var firefoxTrials = 0
 
         fun open() {
-            if (LorenzUtils.isAprilFoolsDay) {
+            if (DateUtils.isAprilFools()) {
                 when (firefoxTrials) {
                     0 -> {
                         ChatUtils.chat("Are you looking for the FF browser?", prefix = false)
@@ -35,7 +37,7 @@ open class FFGuideGUI : GuiScreen() {
 
                     1 -> {
                         ChatUtils.chat("Quickly, download Firefox! NOW!", prefix = false)
-                        OSUtils.openBrowser("https://www.mozilla.org/en-US/firefox/new/")
+                        OS.openUrl("https://www.mozilla.org/en-US/firefox/new/")
                     }
 
                     2 -> {
@@ -75,8 +77,8 @@ open class FFGuideGUI : GuiScreen() {
         var guiTop = 0
         var screenHeight = 0
 
-        const val sizeX = 360
-        const val sizeY = 180
+        const val SIZE_X = 360
+        const val SIZE_Y = 180
 
         var selectedPage = FortuneGuidePage.OVERVIEW
         var currentCrop: CropType? = null
@@ -94,7 +96,7 @@ open class FFGuideGUI : GuiScreen() {
 
         var tooltipToDisplay = mutableListOf<String>()
 
-        fun isInGui() = Minecraft.getMinecraft().currentScreen is FFGuideGUI
+        fun isInGui() = McScreen.screen is FFGuideGUI
 
         fun FarmingItems.getItem(): ItemStack {
             val fortune = GardenAPI.storage?.fortune ?: return getFallbackItem(this)
@@ -138,14 +140,14 @@ open class FFGuideGUI : GuiScreen() {
         super.drawScreen(unusedX, unusedY, partialTicks)
         drawDefaultBackground()
         screenHeight = height
-        guiLeft = (width - sizeX) / 2
-        guiTop = (height - sizeY) / 2
+        guiLeft = (width - SIZE_X) / 2
+        guiTop = (height - SIZE_Y) / 2
 
         mouseX = Mouse.getX() * width / Minecraft.getMinecraft().displayWidth
         mouseY = height - Mouse.getY() * height / Minecraft.getMinecraft().displayHeight - 1
 
         GlStateManager.pushMatrix()
-        drawRect(guiLeft, guiTop, guiLeft + sizeX, guiTop + sizeY, 0x50000000)
+        drawRect(guiLeft, guiTop, guiLeft + SIZE_X, guiTop + SIZE_Y, 0x50000000)
         renderTabs()
 
         if (selectedPage == FortuneGuidePage.UPGRADES) {
@@ -299,24 +301,24 @@ open class FFGuideGUI : GuiScreen() {
         var x = guiLeft + 15
         var y = guiTop - 28
         if (isMouseIn(x, y, 25, 28)) {
-            SoundUtils.playClickSound()
+            McSound.CLICK.play()
             if (currentCrop != null) {
                 currentCrop = null
                 if (selectedPage != FortuneGuidePage.UPGRADES) {
                     selectedPage = FortuneGuidePage.OVERVIEW
                 }
             } else {
-                if (selectedPage == FortuneGuidePage.UPGRADES) {
-                    selectedPage = FortuneGuidePage.OVERVIEW
+                selectedPage = if (selectedPage == FortuneGuidePage.UPGRADES) {
+                    FortuneGuidePage.OVERVIEW
                 } else {
-                    selectedPage = FortuneGuidePage.UPGRADES
+                    FortuneGuidePage.UPGRADES
                 }
             }
         }
         for (crop in CropType.entries) {
             x += 30
             if (isMouseIn(x, y, 25, 28)) {
-                SoundUtils.playClickSound()
+                McSound.CLICK.play()
                 if (currentCrop != crop) {
                     currentCrop = crop
                     if (selectedPage == FortuneGuidePage.OVERVIEW) {
@@ -353,7 +355,7 @@ open class FFGuideGUI : GuiScreen() {
         if (isMouseIn(x, y, 28, 25) &&
             selectedPage != FortuneGuidePage.CROP && selectedPage != FortuneGuidePage.OVERVIEW
         ) {
-            SoundUtils.playClickSound()
+            McSound.CLICK.play()
             selectedPage = if (currentCrop == null) {
                 FortuneGuidePage.OVERVIEW
             } else {
@@ -363,105 +365,105 @@ open class FFGuideGUI : GuiScreen() {
         y += 30
         if (isMouseIn(x, y, 28, 25) && selectedPage != FortuneGuidePage.UPGRADES) {
             selectedPage = FortuneGuidePage.UPGRADES
-            SoundUtils.playClickSound()
+            McSound.CLICK.play()
         }
 
         if (selectedPage != FortuneGuidePage.UPGRADES) {
             if (currentCrop == null) {
                 when {
                     isMouseInRect(guiLeft + 142, guiTop + 130) && currentPet != FarmingItems.ELEPHANT -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentPet = FarmingItems.ELEPHANT
                         FFStats.getTotalFF()
                     }
 
                     isMouseInRect(guiLeft + 162, guiTop + 130) && currentPet != FarmingItems.MOOSHROOM_COW -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentPet = FarmingItems.MOOSHROOM_COW
                         FFStats.getTotalFF()
                     }
 
                     isMouseInRect(guiLeft + 182, guiTop + 130) && currentPet != FarmingItems.RABBIT -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentPet = FarmingItems.RABBIT
                         FFStats.getTotalFF()
                     }
 
                     isMouseInRect(guiLeft + 202, guiTop + 130) && currentPet != FarmingItems.BEE -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentPet = FarmingItems.BEE
                         FFStats.getTotalFF()
                     }
 
                     isMouseInRect(guiLeft + 142, guiTop + 5) -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentArmor = if (currentArmor == 1) 0 else 1
                     }
 
                     isMouseInRect(guiLeft + 162, guiTop + 5) -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentArmor = if (currentArmor == 2) 0 else 2
                     }
 
                     isMouseInRect(guiLeft + 182, guiTop + 5) -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentArmor = if (currentArmor == 3) 0 else 3
                     }
 
                     isMouseInRect(guiLeft + 202, guiTop + 5) -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentArmor = if (currentArmor == 4) 0 else 4
                     }
 
                     isMouseInRect(guiLeft + 262, guiTop + 5) -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentEquipment = if (currentEquipment == 1) 0 else 1
                     }
 
                     isMouseInRect(guiLeft + 282, guiTop + 5) -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentEquipment = if (currentEquipment == 2) 0 else 2
                     }
 
                     isMouseInRect(guiLeft + 302, guiTop + 5) -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentEquipment = if (currentEquipment == 3) 0 else 3
                     }
 
                     isMouseInRect(guiLeft + 322, guiTop + 5) -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentEquipment = if (currentEquipment == 4) 0 else 4
                     }
                 }
             } else {
                 when {
                     isMouseInRect(guiLeft + 142, guiTop + 160) && currentPet != FarmingItems.ELEPHANT -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentPet = FarmingItems.ELEPHANT
                         FFStats.getTotalFF()
                     }
 
                     isMouseInRect(guiLeft + 162, guiTop + 160) && currentPet != FarmingItems.MOOSHROOM_COW -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentPet = FarmingItems.MOOSHROOM_COW
                         FFStats.getTotalFF()
                     }
 
                     isMouseInRect(guiLeft + 182, guiTop + 160) && currentPet != FarmingItems.RABBIT -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentPet = FarmingItems.RABBIT
                         FFStats.getTotalFF()
                     }
 
                     isMouseInRect(guiLeft + 202, guiTop + 160) && currentPet != FarmingItems.BEE -> {
-                        SoundUtils.playClickSound()
+                        McSound.CLICK.play()
                         currentPet = FarmingItems.BEE
                         FFStats.getTotalFF()
                     }
                 }
             }
         } else {
-            if (isMouseIn(guiLeft, guiTop, sizeX, sizeY)) {
+            if (isMouseIn(guiLeft, guiTop, SIZE_X, SIZE_Y)) {
                 lastClickedHeight = mouseY
             }
         }

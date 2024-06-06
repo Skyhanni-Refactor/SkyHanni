@@ -1,35 +1,36 @@
 package at.hannibal2.skyhanni.features.garden.pests
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.ClickType
-import at.hannibal2.skyhanni.events.ItemClickEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.PacketEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
 import at.hannibal2.skyhanni.events.garden.pests.PestUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.click.ItemClickEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
-import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayerIgnoreY
 import at.hannibal2.skyhanni.utils.LocationUtils.playerLocation
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
+import at.hannibal2.skyhanni.utils.RenderUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.network.play.server.S0EPacketSpawnObject
 import net.minecraft.util.EnumParticleTypes
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 import kotlin.math.absoluteValue
 import kotlin.time.Duration.Companion.seconds
 
 // TODO delete workaround class PestParticleLine when this class works again
-class PestParticleWaypoint {
+@SkyHanniModule
+object PestParticleWaypoint {
 
     private val config get() = SkyHanniMod.feature.garden.pests.pestWaypoint
 
@@ -45,19 +46,19 @@ class PestParticleWaypoint {
     private var isPointingToPest = false
     private var color: Color? = null
 
-    @SubscribeEvent
+    @HandleEvent
     fun onItemClick(event: ItemClickEvent) {
         if (!isEnabled()) return
         if (PestAPI.hasVacuumInHand()) {
-            if (event.clickType == ClickType.LEFT_CLICK && !Minecraft.getMinecraft().thePlayer.isSneaking) {
+            if (event.clickType == ClickType.LEFT_CLICK && !McPlayer.isSneaking) {
                 reset()
                 lastPestTrackerUse = SimpleTimeMark.now()
             }
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         reset()
     }
 
@@ -73,7 +74,7 @@ class PestParticleWaypoint {
         isPointingToPest = false
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)
+    @HandleEvent(priority = HandleEvent.LOW, receiveCancelled = true)
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
         if (event.type != EnumParticleTypes.REDSTONE || event.speed != 1f) return
@@ -117,16 +118,16 @@ class PestParticleWaypoint {
         ++particles
     }
 
-    @SubscribeEvent
-    fun onFireWorkSpawn(event: PacketEvent.ReceiveEvent) {
+    @HandleEvent
+    fun onFireWorkSpawn(event: ReceivePacketEvent) {
         if (event.packet !is S0EPacketSpawnObject) return
         if (!GardenAPI.inGarden() || !config.hideParticles) return
         val fireworkId = 76
         if (event.packet.type == fireworkId) event.cancel()
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         if (locations.isEmpty()) return
         if (lastPestTrackerUse.passedSince() > config.showForSeconds.seconds) {
@@ -157,8 +158,8 @@ class PestParticleWaypoint {
         }
     } else guessPoint
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
         val guessPoint = guessPoint ?: return
 
@@ -167,7 +168,7 @@ class PestParticleWaypoint {
         reset()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPestUpdate(event: PestUpdateEvent) {
         if (PestAPI.scoreboardPests == 0) reset()
     }
@@ -177,7 +178,7 @@ class PestParticleWaypoint {
         val list = locations.toList()
         var pos = LorenzVec(0.0, 0.0, 0.0)
         for ((i, particle) in list.withIndex()) {
-            pos += (particle - firstParticle) / (i.toDouble() + 1.0)
+            pos += (particle - firstParticle) / (i + 1.0)
         }
         return firstParticle + pos * (120.0 / list.size)
     }

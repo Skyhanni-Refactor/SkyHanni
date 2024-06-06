@@ -27,6 +27,7 @@ public class EffigiesConfig {
         maxValue = 15,
         minStep = 1
     )
+//TODO change config name
     public int respwningSoonTime = 3;
 
     @Expose

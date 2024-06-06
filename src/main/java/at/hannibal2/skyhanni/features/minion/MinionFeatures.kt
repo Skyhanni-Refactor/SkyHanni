@@ -1,30 +1,31 @@
 package at.hannibal2.skyhanni.features.minion
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
 import at.hannibal2.skyhanni.data.ClickType
-import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.events.BlockClickEvent
-import at.hannibal2.skyhanni.events.EntityClickEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.InventoryUpdatedEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.MinionCloseEvent
-import at.hannibal2.skyhanni.events.MinionOpenEvent
-import at.hannibal2.skyhanni.events.MinionStorageOpenEvent
-import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
-import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockStateAt
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.click.BlockClickEvent
+import at.hannibal2.skyhanni.events.minecraft.click.EntityClickEvent
+import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionCloseEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionOpenEvent
+import at.hannibal2.skyhanni.events.skyblock.minion.MinionStorageOpenEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
@@ -32,8 +33,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
@@ -43,22 +42,23 @@ import at.hannibal2.skyhanni.utils.RegexUtils.find
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
+import at.hannibal2.skyhanni.utils.RenderUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
-import at.hannibal2.skyhanni.utils.SpecialColour
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McWorld
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockStateAt
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.toLorenzVec
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiChest
-import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.init.Blocks
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
-import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import java.awt.Color
 
+@SkyHanniModule
 object MinionFeatures {
 
     private val config get() = SkyHanniMod.feature.misc.minions
@@ -88,13 +88,18 @@ object MinionFeatures {
         "^§aCollect All$"
     )
 
+    var lastMinion: LorenzVec? = null
+    private var lastStorage: LorenzVec? = null
+    var minionInventoryOpen = false
+    var minionStorageInventoryOpen = false
+
     @SubscribeEvent
     fun onPlayerInteract(event: PlayerInteractEvent) {
         if (!isEnabled()) return
         if (event.action != PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK) return
 
         val lookingAt = event.pos.offset(event.face).toLorenzVec()
-        val equipped = InventoryUtils.getItemInHand() ?: return
+        val equipped = McPlayer.heldItem ?: return
 
         if (equipped.displayName.contains(" Minion ") && lookingAt.getBlockStateAt().block == Blocks.air) {
             newMinion = lookingAt.add(0.5, 0.0, 0.5)
@@ -105,7 +110,7 @@ object MinionFeatures {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onEntityClick(event: EntityClickEvent) {
         if (!enableWithHub()) return
         if (event.clickType != ClickType.RIGHT_CLICK) return
@@ -113,7 +118,7 @@ object MinionFeatures {
         lastClickedEntity = event.clickedEntity?.getLorenzVec() ?: return
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onBlockClick(event: BlockClickEvent) {
         if (!enableWithHub()) return
         if (event.clickType != ClickType.RIGHT_CLICK) return
@@ -121,13 +126,13 @@ object MinionFeatures {
         lastStorage = event.position
     }
 
-    @SubscribeEvent
-    fun onRenderLastClickedMinion(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderLastClickedMinion(event: SkyHanniRenderWorldEvent) {
         if (!enableWithHub()) return
         if (!config.lastClickedMinion.display) return
 
         val special = config.lastClickedMinion.color
-        val color = Color(SpecialColour.specialToChromaRGB(special), true)
+        val color = special.toChromaColour()
 
         val loc = lastMinion
         if (loc != null) {
@@ -145,31 +150,31 @@ object MinionFeatures {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (!enableWithHub()) return
         if (!minionTitlePattern.find(event.inventoryName)) return
 
         event.inventoryItems[48]?.let {
             if (minionCollectItemPattern.matches(it.name)) {
-                MinionOpenEvent(event.inventoryName, event.inventoryItems).postAndCatch()
+                MinionOpenEvent(event.inventoryName, event.inventoryItems).post()
                 return
             }
         }
 
-        MinionStorageOpenEvent(lastStorage, event.inventoryItems).postAndCatch()
+        MinionStorageOpenEvent(lastStorage, event.inventoryItems).post()
         minionStorageInventoryOpen = true
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
         if (!enableWithHub()) return
         if (minionInventoryOpen) {
-            MinionOpenEvent(event.inventoryName, event.inventoryItems).postAndCatch()
+            MinionOpenEvent(event.inventoryName, event.inventoryItems).post()
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMinionOpen(event: MinionOpenEvent) {
         removeBuggedMinions()
         val minions = minions ?: return
@@ -177,7 +182,7 @@ object MinionFeatures {
 
         val openInventory = event.inventoryName
         val name = getMinionName(openInventory)
-        if (!minions.contains(entity) && LorenzUtils.skyBlockIsland != IslandType.HUB) {
+        if (!minions.contains(entity) && SkyBlockAPI.island != IslandType.HUB) {
             MinionFeatures.minions = minions.editCopy {
                 this[entity] = ProfileSpecificStorage.MinionConfig().apply {
                     displayName = name
@@ -204,7 +209,7 @@ object MinionFeatures {
         val removedEntities = mutableListOf<LorenzVec>()
         for (location in minions.keys) {
             if (location.distanceToPlayer() > 30) continue
-            val entitiesNearby = EntityUtils.getEntities<EntityArmorStand>().map { it.distanceTo(location) }
+            val entitiesNearby = McWorld.getEntitiesOf<EntityArmorStand>().map { it.distanceTo(location) }
             if (!entitiesNearby.any { it == 0.0 }) {
                 removedEntities.add(location)
             }
@@ -225,7 +230,7 @@ object MinionFeatures {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         if (event.reopenSameName) return
 
@@ -245,15 +250,15 @@ object MinionFeatures {
                 minions[location]?.lastClicked = 0
             }
         }
-        MinionCloseEvent().postAndCatch()
+        MinionCloseEvent().post()
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
         if (coinsPerDay != "") return
 
-        if (Minecraft.getMinecraft().currentScreen is GuiChest && config.hopperProfitDisplay) {
+        if (McScreen.isChestOpen && config.hopperProfitDisplay) {
             coinsPerDay = if (minionInventoryOpen) updateCoinsPerDay() else ""
         }
     }
@@ -292,8 +297,8 @@ object MinionFeatures {
         return "§7Coins/day with ${stack.name}§7: §6$format coins"
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         lastClickedEntity = null
         lastMinion = null
         lastMinionOpened = 0L
@@ -301,8 +306,8 @@ object MinionFeatures {
         minionStorageInventoryOpen = false
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
 
         val message = event.message
@@ -337,8 +342,8 @@ object MinionFeatures {
         }
     }
 
-    @SubscribeEvent
-    fun onRenderLastEmptied(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderLastEmptied(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
 
         val playerLocation = LocationUtils.playerLocation()
@@ -359,21 +364,20 @@ object MinionFeatures {
             }
 
             if (config.emptiedTime.display && lastEmptied != 0L) {
-                val duration = System.currentTimeMillis() - lastEmptied
-                val format = TimeUtils.formatDuration(duration, longName = true) + " ago"
+                val passedSince = SimpleTimeMark(lastEmptied).passedSince()
+                val format = passedSince.format(longName = true) + " ago"
                 val text = "§eHopper Emptied: $format"
                 event.drawString(location.add(y = 1.15), text, true)
             }
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityLivingBase>) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityArmorStand>) {
         if (!isEnabled()) return
         if (!config.hideMobsNametagNearby) return
 
         val entity = event.entity
-        if (entity !is EntityArmorStand) return
         if (!entity.hasCustomName()) return
         if (entity.isDead) return
         val minions = minions ?: return
@@ -381,7 +385,7 @@ object MinionFeatures {
         if (entity.customNameTag.contains("§c❤")) {
             val loc = entity.getLorenzVec()
             if (minions.any { it.key.distance(loc) < 5 }) {
-                event.isCanceled = true
+                event.cancel()
             }
         }
     }
@@ -390,20 +394,14 @@ object MinionFeatures {
 
     private fun enableWithHub() = isEnabled() || IslandType.HUB.isInIsland()
 
-    @SubscribeEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!minionInventoryOpen) return
 
         if (config.hopperProfitDisplay) {
             config.hopperProfitPos.renderString(coinsPerDay, posLabel = "Minion Coins Per Day")
         }
     }
-
-    var lastMinion: LorenzVec? = null
-    var lastStorage: LorenzVec? = null
-    var minionInventoryOpen = false
-    var minionStorageInventoryOpen = false
 
     private var minions: Map<LorenzVec, ProfileSpecificStorage.MinionConfig>?
         get() {
@@ -413,14 +411,13 @@ object MinionFeatures {
             ProfileStorageData.profileSpecific?.minions = value
         }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "minions.lastClickedMinionDisplay", "minions.lastClickedMinion.display")
-        event.move(3, "minions.lastOpenedMinionColor", "minions.lastClickedMinion.color")
-        event.move(3, "minions.lastOpenedMinionTime", "minions.lastClickedMinion.time")
-        event.move(3, "minions.emptiedTimeDisplay", "minions.emptiedTime.display")
-        event.move(3, "minions.distance", "minions.emptiedTime.distance")
+    fun clearMinionData() {
+        minions = mutableMapOf()
+        ChatUtils.chat("Manually reset all private island minion location data!")
+    }
 
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(31, "minions", "misc.minions")
     }
 }

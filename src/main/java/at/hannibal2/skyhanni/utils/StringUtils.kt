@@ -1,11 +1,12 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.data.hypixel.chat.event.SystemMessageEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.SystemMessageEvent
 import at.hannibal2.skyhanni.mixins.transformers.AccessorChatComponentText
 import at.hannibal2.skyhanni.utils.GuiRenderUtils.darkenColor
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.RegexUtils.matches
+import at.hannibal2.skyhanni.utils.mc.McFont
 import net.minecraft.client.gui.GuiUtilRenderComponents
 import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
@@ -13,12 +14,10 @@ import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatStyle
 import net.minecraft.util.EnumChatFormatting
 import net.minecraft.util.IChatComponent
-import java.util.Base64
-import java.util.NavigableMap
-import java.util.UUID
+import java.text.DecimalFormat
+import java.util.*
 import java.util.function.Predicate
 import java.util.regex.Matcher
-import java.util.regex.Pattern
 
 object StringUtils {
     private val whiteSpaceResetPattern = "^(?:\\s|§r)*|(?:\\s|§r)*$".toPattern()
@@ -135,34 +134,6 @@ object StringUtils {
 
     fun UUID.toDashlessUUID(): String = toString().replace("-", "")
 
-    @Deprecated("Use the new one instead", ReplaceWith("RegexUtils.matchMatcher(text, consumer)"))
-    inline fun <T> Pattern.matchMatcher(text: String, consumer: Matcher.() -> T) =
-        matcher(text).let { if (it.matches()) consumer(it) else null }
-
-    @Deprecated("Use the new one instead", ReplaceWith("RegexUtils.matchMatcher(text, consumer)"))
-    inline fun <T> Pattern.findMatcher(text: String, consumer: Matcher.() -> T) =
-        matcher(text).let { if (it.find()) consumer(it) else null }
-
-    @Deprecated("Use the new one instead", ReplaceWith("RegexUtils.matchFirst(pattern, consumer)"))
-    inline fun <T> Sequence<String>.matchFirst(pattern: Pattern, consumer: Matcher.() -> T): T? =
-        toList().matchFirst(pattern, consumer)
-
-    @Deprecated("Use the new one instead", ReplaceWith("RegexUtils.matchFirst(pattern, consumer)"))
-    inline fun <T> List<String>.matchFirst(pattern: Pattern, consumer: Matcher.() -> T): T? {
-        for (line in this) {
-            pattern.matcher(line).let { if (it.matches()) return consumer(it) }
-        }
-        return null
-    }
-
-    @Deprecated("Use the new one instead", ReplaceWith("RegexUtils.matchAll(pattern, consumer)"))
-    inline fun <T> List<String>.matchAll(pattern: Pattern, consumer: Matcher.() -> T): T? {
-        for (line in this) {
-            pattern.matcher(line).let { if (it.find()) consumer(it) }
-        }
-        return null
-    }
-
     private fun String.internalCleanPlayerName(): String {
         val split = trim().split(" ")
         return if (split.size > 1) {
@@ -172,31 +143,21 @@ object StringUtils {
         }
     }
 
-    fun String.cleanPlayerName(displayName: Boolean = false): String {
-        return if (displayName) {
-            if (SkyHanniMod.feature.chat.playerMessage.playerRankHider) {
-                // TODO custom color
-                "§b" + internalCleanPlayerName()
-            } else this
+    fun String.cleanPlayerName(displayName: Boolean = false): String = if (displayName) {
+        if (SkyHanniMod.feature.chat.playerMessage.playerRankHider) {
+            // TODO custom color
+            "§b" + internalCleanPlayerName()
         } else {
-            internalCleanPlayerName()
+            this
         }
-    }
-
-    @Deprecated("Use the new one instead", ReplaceWith("RegexUtils.matchMatchers(text, consumer)"))
-    inline fun <T> List<Pattern>.matchMatchers(text: String, consumer: Matcher.() -> T): T? {
-        for (pattern in iterator()) {
-            pattern.matchMatcher<T>(text) {
-                return consumer()
-            }
-        }
-        return null
+    } else {
+        internalCleanPlayerName()
     }
 
     fun getColor(string: String, default: Int, darker: Boolean = true): Int {
         val matcher = stringColourPattern.matcher(string)
         if (matcher.matches()) {
-            val colorInt = Minecraft.getMinecraft().fontRendererObj.getColorCode(string[1])
+            val colorInt = McFont.getColorCode(string[1])
             return if (darker) {
                 colorInt.darkenColor()
             } else {
@@ -230,18 +191,19 @@ object StringUtils {
 
     fun String.removeWordsAtEnd(i: Int) = split(" ").dropLast(i).joinToString(" ")
 
-    fun String.splitLines(width: Int): String {
-        val fr = Minecraft.getMinecraft().fontRendererObj
-        return GuiUtilRenderComponents.splitText(
-            ChatComponentText(this), width, fr, false, false
-        ).joinToString("\n") {
-            val text = it.formattedText
-            val formatCode = Regex("(?:§[a-f0-9l-or]|\\s)*")
-            formatCode.matchAt(text, 0)?.let { matcher ->
-                val codes = matcher.value.replace("\\s".toRegex(), "")
-                codes + text.removeRange(matcher.range)
-            } ?: text
-        }
+    fun String.splitLines(width: Int) = GuiUtilRenderComponents.splitText(
+        ChatComponentText(this),
+        width,
+        McFont.font,
+        false,
+        false
+    ).joinToString("\n") {
+        val text = it.formattedText
+        val formatCode = Regex("(?:§[a-f0-9l-or]|\\s)*")
+        formatCode.matchAt(text, 0)?.let { matcher ->
+            val codes = matcher.value.replace("\\s".toRegex(), "")
+            codes + text.removeRange(matcher.range)
+        } ?: text
     }
 
     /**
@@ -266,6 +228,11 @@ object StringUtils {
         return str
     }
 
+    fun Double.formatPercentage(): String = formatPercentage(this, "0.00")
+
+    private fun formatPercentage(percentage: Double, format: String): String =
+        DecimalFormat(format).format(percentage.coerceIn(0.0, 1.0) * 100).replace(',', '.') + "%"
+
     fun progressBar(percentage: Double, steps: Int = 24): Any {
         //'§5§o§2§l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §f§l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §l§m §r §e348,144.3§6/§e936k'
         val prefix = "§5§o§2"
@@ -289,8 +256,7 @@ object StringUtils {
         return builder.toString()
     }
 
-    fun String.capAtMinecraftLength(limit: Int) =
-        capAtLength(limit) { Minecraft.getMinecraft().fontRendererObj.getCharWidth(it) }
+    fun String.capAtMinecraftLength(limit: Int) = capAtLength(limit) { McFont.width(it) }
 
     private fun String.capAtLength(limit: Int, lengthJudger: (Char) -> Int): String {
         var i = 0
@@ -359,18 +325,6 @@ object StringUtils {
 
     fun String.convertToFormatted(): String = this.replace("&&", "§")
 
-    @Deprecated("Use the new one instead", ReplaceWith("RegexUtils.matches(string)"))
-    fun Pattern.matches(string: String?): Boolean = string?.let { matcher(it).matches() } ?: false
-
-    @Deprecated("Use the new one instead", ReplaceWith("RegexUtils.anyMatches(list)"))
-    fun Pattern.anyMatches(list: List<String>?): Boolean = list?.any { this.matches(it) } ?: false
-
-    @Deprecated("Use the new one instead", ReplaceWith("RegexUtils.anyMatches(list)"))
-    fun Pattern.anyMatches(list: Sequence<String>?): Boolean = anyMatches(list?.toList())
-
-    @Deprecated("Use the new one instead", ReplaceWith("RegexUtils.find(string)"))
-    fun Pattern.find(string: String?) = string?.let { matcher(it).find() } ?: false
-
     fun String.allLettersFirstUppercase() = split("_").joinToString(" ") { it.firstLetterUppercase() }
 
     fun String?.equalsIgnoreColor(string: String?) = this?.let { it.removeColor() == string?.removeColor() } ?: false
@@ -381,17 +335,11 @@ object StringUtils {
 
     fun generateRandomId() = UUID.randomUUID().toString()
 
-    fun replaceIfNeeded(
-        original: ChatComponentText,
-        newText: String,
-    ): ChatComponentText? {
-        return replaceIfNeeded(original, ChatComponentText(newText))
-    }
+    fun replaceIfNeeded(original: ChatComponentText, newText: String,): ChatComponentText? =
+        replaceIfNeeded(original, ChatComponentText(newText))
 
     private val colorMap = EnumChatFormatting.entries.associateBy { it.toString()[1] }
-    fun enumChatFormattingByCode(char: Char): EnumChatFormatting? {
-        return colorMap[char]
-    }
+    fun enumChatFormattingByCode(char: Char): EnumChatFormatting? = colorMap[char]
 
     fun doLookTheSame(left: IChatComponent, right: IChatComponent): Boolean {
         class ChatIterator(var component: IChatComponent) {
@@ -451,10 +399,7 @@ object StringUtils {
         }
     }
 
-    fun <T : IChatComponent> replaceIfNeeded(
-        original: T,
-        newText: T,
-    ): T? {
+    fun <T : IChatComponent> replaceIfNeeded(original: T, newText: T,): T? {
         if (doLookTheSame(original, newText)) return null
         return newText
     }
@@ -488,10 +433,7 @@ object StringUtils {
         if (hoverEvents.size == 1) chatComponent.chatStyle.chatHoverEvent = hoverEvents.first()
     }
 
-    private fun IChatComponent.findAllEvents(
-        clickEvents: MutableList<ClickEvent>,
-        hoverEvents: MutableList<HoverEvent>,
-    ) {
+    private fun IChatComponent.findAllEvents(clickEvents: MutableList<ClickEvent>, hoverEvents: MutableList<HoverEvent>,) {
         siblings.forEach { it.findAllEvents(clickEvents, hoverEvents) }
 
         val clickEvent = chatStyle.chatClickEvent
@@ -549,8 +491,4 @@ object StringUtils {
         formattedText.cleanPlayerName(displayName).applyFormattingFrom(this)
 
     fun IChatComponent.contains(string: String): Boolean = formattedText.contains(string)
-
-    fun String.width(): Int {
-        return Minecraft.getMinecraft().fontRendererObj.getStringWidth(this)
-    }
 }

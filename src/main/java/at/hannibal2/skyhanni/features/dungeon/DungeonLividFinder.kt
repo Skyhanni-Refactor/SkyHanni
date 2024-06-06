@@ -1,33 +1,35 @@
 package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
-import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockStateAt
-import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceSqToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzColor.Companion.toLorenzColor
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
+import at.hannibal2.skyhanni.utils.RenderUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.RenderUtils.exactPlayerEyeLocation
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McWorld
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockStateAt
 import net.minecraft.block.BlockStainedGlass
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.potion.Potion
-import net.minecraft.util.AxisAlignedBB
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object DungeonLividFinder {
 
     private val config get() = SkyHanniMod.feature.dungeon.lividFinder
@@ -38,15 +40,17 @@ object DungeonLividFinder {
     private var gotBlinded = false
     private var color: LorenzColor? = null
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!inDungeon()) return
 
         val isCurrentlyBlind = isCurrentlyBlind()
         if (!gotBlinded) {
             gotBlinded = isCurrentlyBlind
             return
-        } else if (isCurrentlyBlind) return
+        } else if (isCurrentlyBlind) {
+            return
+        }
 
         if (!config.enabled) return
 
@@ -56,12 +60,12 @@ object DungeonLividFinder {
         val color = color ?: return
         val chatColor = color.getChatColor()
 
-        lividArmorStand = EntityUtils.getEntities<EntityArmorStand>()
+        lividArmorStand = McWorld.getEntitiesOf<EntityArmorStand>()
             .firstOrNull { it.name.startsWith("${chatColor}﴾ ${chatColor}§lLivid") }
 
         if (event.isMod(20)) {
             if (lividArmorStand == null) {
-            val amountArmorStands = EntityUtils.getEntities<EntityArmorStand>().filter { it.name.contains("Livid") }.count()
+                val amountArmorStands = McWorld.getEntitiesOf<EntityArmorStand>().count { it.name.contains("Livid") }
                 if (amountArmorStands >= 8) {
                     ErrorManager.logErrorStateWithData(
                         "Could not find livid",
@@ -77,8 +81,8 @@ object DungeonLividFinder {
 
         val lividArmorStand = lividArmorStand ?: return
 
-        val aabb = with(lividArmorStand) {
-            AxisAlignedBB(
+        val box = with(lividArmorStand) {
+            BoundingBox(
                 posX - 0.5,
                 posY - 2,
                 posZ - 0.5,
@@ -87,8 +91,8 @@ object DungeonLividFinder {
                 posZ + 0.5
             )
         }
-        val world = Minecraft.getMinecraft().theWorld
-        val newLivid = world.getEntitiesWithinAABB(EntityOtherPlayerMP::class.java, aabb)
+
+        val newLivid = McWorld.getEntitiesInBox<EntityOtherPlayerMP>(box)
             .takeIf { it.size == 1 }?.firstOrNull() ?: return
         if (!newLivid.name.contains("Livid")) return
 
@@ -105,7 +109,7 @@ object DungeonLividFinder {
         if (!it.isDead && it.health > 0.5) it else null
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
         if (!inDungeon()) return
         if (!config.hideWrong) return
@@ -117,17 +121,15 @@ object DungeonLividFinder {
 
         if (entity != livid && entity != lividArmorStand) {
             if (entity.name.contains("Livid")) {
-                event.isCanceled = true
+                event.cancel()
             }
         }
     }
 
-    private fun isCurrentlyBlind() = if (Minecraft.getMinecraft().thePlayer.isPotionActive(Potion.blindness)) {
-        Minecraft.getMinecraft().thePlayer.getActivePotionEffect(Potion.blindness).duration > 10
-    } else false
+    private fun isCurrentlyBlind() = McPlayer.getEffect(Potion.blindness)?.takeIf { it.duration > 10 } != null
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!inDungeon()) return
         if (!config.enabled) return
 
@@ -145,8 +147,8 @@ object DungeonLividFinder {
         event.drawWaypointFilled(location, color, beacon = false, seeThroughBlocks = true)
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         lividEntity = null
         gotBlinded = false
     }

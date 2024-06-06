@@ -1,20 +1,21 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry.CRIMSON_ARMOR
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ItemsJson
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.inventory.ItemDisplayOverlayFeatures.isSelected
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.event.entity.player.ItemTooltipEvent
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ItemStars {
+@SkyHanniModule
+object ItemStars {
 
     private val config get() = SkyHanniMod.feature.inventory
 
@@ -27,10 +28,10 @@ class ItemStars {
     private val tiers = mutableMapOf<String, Int>()
     private val armorParts = listOf("Helmet", "Chestplate", "Leggings", "Boots")
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    fun onTooltip(event: ItemTooltipEvent) {
+    @HandleEvent(priority = HandleEvent.LOW)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!isEnabled()) return
-        val stack = event.itemStack ?: return
+        val stack = event.itemStack
         if (stack.stackSize != 1) return
 
         val itemName = stack.name
@@ -46,18 +47,18 @@ class ItemStars {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<ItemsJson>("Items")
         armorNames.clear()
         tiers.clear()
-        armorNames.addAll(data.crimson_armors)
-        for (tier in data.crimson_tiers) {
+        armorNames.addAll(data.crimsonArmors)
+        for (tier in data.crimsonTiers) {
             tiers[tier.key] = tier.value
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
         if (!CRIMSON_ARMOR.isSelected()) return
         val stack = event.stack
@@ -129,5 +130,5 @@ class ItemStars {
         return -1
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.itemStars
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.itemStars
 }

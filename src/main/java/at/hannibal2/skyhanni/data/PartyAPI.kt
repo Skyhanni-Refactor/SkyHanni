@@ -1,19 +1,21 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.data.hypixel.chat.event.PartyChatEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.PartyChatEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.StringUtils.removeResets
 import at.hannibal2.skyhanni.utils.StringUtils.trimWhiteSpace
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.system.OS
 import kotlin.random.Random
 
+@SkyHanniModule
 object PartyAPI {
 
     private val patternGroup = RepoPattern.group("data.party")
@@ -93,24 +95,24 @@ object PartyAPI {
             ChatUtils.chat(" §a- §7$member" + if (partyLeader == member) " §a(Leader)" else "", false)
         }
 
-        if (partyLeader == LorenzUtils.getPlayerName()) {
+        if (partyLeader == McPlayer.name) {
             ChatUtils.chat("§aYou are leader")
         }
 
         if (Random.nextDouble() < 0.1) {
-            OSUtils.openBrowser("https://www.youtube.com/watch?v=iANP7ib7CPA")
+            OS.openUrl("https://www.youtube.com/watch?v=iANP7ib7CPA")
             ChatUtils.hoverableChat("§7Are You Ready To Party?", listOf("§b~Spongebob"), prefix = false)
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPartyChat(event: PartyChatEvent) {
         val name = event.author.cleanPlayerName()
         addPlayer(name)
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         val message = event.message.trimWhiteSpace().removeResets()
 
         // new member joined
@@ -122,7 +124,7 @@ object PartyAPI {
         othersJoinedPartyPattern.matchMatcher(message) {
             val name = group("name").cleanPlayerName()
             if (partyMembers.isEmpty()) {
-                partyLeader = LorenzUtils.getPlayerName()
+                partyLeader = McPlayer.name
             }
             addPlayer(name)
         }
@@ -200,7 +202,7 @@ object PartyAPI {
 
     private fun addPlayer(playerName: String) {
         if (partyMembers.contains(playerName)) return
-        if (playerName == LorenzUtils.getPlayerName()) return
+        if (playerName == McPlayer.name) return
         partyMembers.add(playerName)
     }
 

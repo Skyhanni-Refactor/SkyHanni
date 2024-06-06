@@ -4,8 +4,9 @@ import at.hannibal2.skyhanni.data.mob.Mob
 import at.hannibal2.skyhanni.data.mob.MobData
 import at.hannibal2.skyhanni.utils.EntityUtils.cleanName
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceTo
-import at.hannibal2.skyhanni.utils.LocationUtils.rayIntersects
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
+import at.hannibal2.skyhanni.utils.math.toBox
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
@@ -18,17 +19,17 @@ object MobUtils {
     // The corresponding ArmorStand for a mob has always the ID + 1 (with some exceptions)
     fun getArmorStand(entity: Entity, offset: Int = 1) = getNextEntity(entity, offset) as? EntityArmorStand
 
-    fun getNextEntity(entity: Entity, offset: Int) = EntityUtils.getEntityByID(entity.entityId + offset)
+    fun getNextEntity(entity: Entity, offset: Int) = McWorld.getEntity(entity.entityId + offset)
 
     fun getArmorStandByRangeAll(entity: Entity, range: Double) =
-        EntityUtils.getEntitiesNearby<EntityArmorStand>(entity.getLorenzVec(), range)
+        McWorld.getEntitiesNear<EntityArmorStand>(entity, range)
 
     fun getClosedArmorStand(entity: Entity, range: Double) =
-        getArmorStandByRangeAll(entity, range).sortedBy { it.distanceTo(entity) }.firstOrNull()
+        getArmorStandByRangeAll(entity, range).minByOrNull { it.distanceTo(entity) }
 
     fun getClosedArmorStandWithName(entity: Entity, range: Double, name: String) =
         getArmorStandByRangeAll(entity, range).filter { it.cleanName().startsWith(name) }
-            .sortedBy { it.distanceTo(entity) }.firstOrNull()
+            .minByOrNull { it.distanceTo(entity) }
 
     fun EntityArmorStand.isDefaultValue() = defaultArmorStandName.matches(this.name)
 
@@ -69,7 +70,7 @@ object MobUtils {
         val pos = entity.getPositionEyes(partialTicks).toLorenzVec() + offset
         val look = entity.getLook(partialTicks).toLorenzVec().normalize()
         val possibleEntities = MobData.entityToMob.filterKeys {
-            it !is EntityArmorStand && it.entityBoundingBox.rayIntersects(
+            it !is EntityArmorStand && it.entityBoundingBox.toBox().intersects(
                 pos, look
             )
         }.values

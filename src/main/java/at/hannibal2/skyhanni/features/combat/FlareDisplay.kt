@@ -1,35 +1,38 @@
 package at.hannibal2.skyhanni.features.combat
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.combat.FlareConfig
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.EntityUtils.canBeSeen
 import at.hannibal2.skyhanni.utils.EntityUtils.hasSkullTexture
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
 import at.hannibal2.skyhanni.utils.RenderUtils.drawSphereInWorld
 import at.hannibal2.skyhanni.utils.RenderUtils.drawSphereWireframeInWorld
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import at.hannibal2.skyhanni.utils.TimeUtils.ticks
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.ticks
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.util.EnumParticleTypes
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object FlareDisplay {
 
     private val config get() = SkyHanniMod.feature.combat.flare
@@ -49,15 +52,15 @@ object FlareDisplay {
             to FlareType.SOS
     )
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
         if (config.displayType == FlareConfig.DisplayType.WORLD) return
         config.position.renderRenderables(display, posLabel = "Flare Timer")
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         if (config.displayType == FlareConfig.DisplayType.GUI) return
 
@@ -70,11 +73,11 @@ object FlareDisplay {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondsPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         flares.removeIf { !it.entity.isEntityAlive }
-        for (entity in EntityUtils.getAllEntities().filterIsInstance<EntityArmorStand>()) {
+        for (entity in McWorld.getEntitiesOf<EntityArmorStand>()) {
             if (!entity.canBeSeen()) continue
             if (entity.ticksExisted.ticks > MAX_FLARE_TIME) continue
             if (isAlreadyKnownFlare(entity)) continue
@@ -106,12 +109,12 @@ object FlareDisplay {
                 }
 
                 FlareConfig.AlertType.TITLE -> {
-                    LorenzUtils.sendTitle(message, 1.seconds)
+                    TitleManager.sendTitle(message, 1.seconds)
                 }
 
                 FlareConfig.AlertType.CHAT_TITLE -> {
                     ChatUtils.chat(message)
-                    LorenzUtils.sendTitle(message, 1.seconds)
+                    TitleManager.sendTitle(message, 1.seconds)
                 }
 
                 else -> {}
@@ -135,14 +138,14 @@ object FlareDisplay {
     private fun isAlreadyKnownFlare(entity: EntityArmorStand): Boolean =
         flares.any { it.entity.entityId == entity.entityId }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         flares.clear()
         display = emptyList()
     }
 
-    @SubscribeEvent
-    fun onRender(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRender(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         if (config.outlineType == FlareConfig.OutlineType.NONE) return
 
@@ -154,7 +157,7 @@ object FlareDisplay {
                 FlareType.WARNING -> config.warningColor
                 FlareType.ALERT -> config.alertColor
                 FlareType.SOS -> config.sosColor
-            }.toChromaColor()
+            }.toChromaColour()
 
             when (config.outlineType) {
                 FlareConfig.OutlineType.FILLED -> {
@@ -174,7 +177,7 @@ object FlareDisplay {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
         if (!config.hideParticles) return
@@ -195,5 +198,5 @@ object FlareDisplay {
         ;
     }
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled
 }

@@ -8,7 +8,7 @@ import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils
 
 object GardenCropsInCommand {
 
@@ -46,7 +46,7 @@ object GardenCropsInCommand {
             val internalName = entry.key
             val itemName = internalName.itemName
             if (itemName.removeColor().lowercase().contains(searchName)) {
-                val (baseId, baseAmount) = NEUItems.getMultiplier(internalName)
+                val (baseId, baseAmount) = NEUItems.getPrimitiveMultiplier(internalName)
                 val baseName = baseId.itemName
                 val crop = CropType.getByName(baseName.removeColor())
 

@@ -1,34 +1,35 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.OwnInventoryItemUpdateEvent
-import at.hannibal2.skyhanni.events.PacketEvent
-import at.hannibal2.skyhanni.events.entity.ItemAddInInventoryEvent
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.ItemAddInInventoryEvent
+import at.hannibal2.skyhanni.events.inventory.OwnInventoryItemUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.DelayedRun
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.network.play.client.C0EPacketClickWindow
 import net.minecraft.network.play.server.S0DPacketCollectItem
 import net.minecraft.network.play.server.S2FPacketSetSlot
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-class OwnInventoryData {
+@SkyHanniModule
+object OwnInventoryData {
 
     private var itemAmounts = mapOf<NEUInternalName, Int>()
     private var dirty = false
@@ -37,10 +38,8 @@ class OwnInventoryData {
         "§aMoved §r§e\\d* (?<name>.*)§r§a from your Sacks to your inventory."
     )
 
-    @SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)
-    fun onItemPickupReceivePacket(event: PacketEvent.ReceiveEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.LOW, receiveCancelled = true)
+    fun onItemPickupReceivePacket(event: ReceivePacketEvent) {
         val packet = event.packet
         if (packet is S2FPacketSetSlot || packet is S0DPacketCollectItem) {
             dirty = true
@@ -51,15 +50,14 @@ class OwnInventoryData {
                 val slot = packet.func_149173_d()
                 val item = packet.func_149174_e() ?: return
                 DelayedRun.runNextTick {
-                    OwnInventoryItemUpdateEvent(item, slot).postAndCatch()
+                    OwnInventoryItemUpdateEvent(item, slot).post()
                 }
             }
         }
     }
 
-    @SubscribeEvent
-    fun onClickEntity(event: PacketEvent.SendEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onClickEntity(event: SendPacketEvent) {
         val packet = event.packet
 
         if (packet is C0EPacketClickWindow) {
@@ -67,9 +65,8 @@ class OwnInventoryData {
         }
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTick(event: ClientTickEvent) {
         if (itemAmounts.isEmpty()) {
             itemAmounts = getCurrentItems()
         }
@@ -86,15 +83,15 @@ class OwnInventoryData {
 
     private fun getCurrentItems(): MutableMap<NEUInternalName, Int> {
         val map = mutableMapOf<NEUInternalName, Int>()
-        for (itemStack in InventoryUtils.getItemsInOwnInventory()) {
+        for (itemStack in McPlayer.inventory) {
             val internalName = itemStack.getInternalNameOrNull() ?: continue
             map.addOrPut(internalName, itemStack.stackSize)
         }
         return map
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         itemAmounts = emptyMap()
     }
 
@@ -107,20 +104,19 @@ class OwnInventoryData {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
-        val item = Minecraft.getMinecraft().thePlayer.inventory.itemStack ?: return
-        val internalNameOrNull = item.getInternalNameOrNull() ?: return
+        val internalNameOrNull = McPlayer.cursor?.getInternalNameOrNull() ?: return
         ignoreItem(500.milliseconds) { it == internalNameOrNull }
     }
 
-    @SubscribeEvent
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent
+    fun onSlotClick(event: SlotClickEvent) {
         ignoreItem(500.milliseconds) { true }
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         sackToInventoryChatPattern.matchMatcher(event.message) {
             val name = group("name")
             ignoreItem(500.milliseconds) { it.itemName.contains(name) }
@@ -136,7 +132,7 @@ class OwnInventoryData {
     class IgnoredItem(val condition: (NEUInternalName) -> Boolean, val blockedUntil: SimpleTimeMark)
 
     private fun addItem(internalName: NEUInternalName, add: Int) {
-        if (LorenzUtils.lastWorldSwitch.passedSince() < 3.seconds) return
+        if (HypixelAPI.lastWorldChange.passedSince() < 3.seconds) return
 
         ignoredItemsUntil.removeIf { it.blockedUntil.isInPast() }
         if (ignoredItemsUntil.any { it.condition(internalName) }) {
@@ -145,6 +141,6 @@ class OwnInventoryData {
 
         if (internalName.startsWith("MAP-")) return
 
-        ItemAddInInventoryEvent(internalName, add).postAndCatch()
+        ItemAddInInventoryEvent(internalName, add).post()
     }
 }

@@ -1,40 +1,43 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.GuiKeyPressEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiKeyPressEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.anyMatches
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McClient
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McScreen.sendSlotClick
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.client.player.inventory.ContainerLocalMenu
 import net.minecraft.item.Item
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.network.FMLNetworkEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 // Delaying key presses by 300ms comes from NotEnoughUpdates
+@SkyHanniModule
 object HarpFeatures {
 
     private val config get() = SkyHanniMod.feature.inventory.helper.harp
     private var lastClick = SimpleTimeMark.farPast()
 
-    private const val closeButtonSlot = 40
+    private const val CLOSE_BUTTON_SLOT = 40
 
     private val buttonColors = listOf('d', 'e', 'a', '2', '5', '9', 'b')
 
@@ -55,9 +58,8 @@ object HarpFeatures {
     private fun isHarpGui(chestName: String) = inventoryTitlePattern.matches(chestName)
     private fun isMenuGui(chestName: String) = menuTitlePattern.matches(chestName)
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onGui(event: GuiKeyPressEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         if (!config.keybinds) return
         if (!isHarpGui(InventoryUtils.openInventoryName())) return
         val chest = event.guiContainer as? GuiChest ?: return
@@ -69,13 +71,12 @@ object HarpFeatures {
 
             event.cancel()
 
-            Minecraft.getMinecraft().playerController.windowClick(
-                chest.inventorySlots.windowId,
+            chest.sendSlotClick(
                 37 + index,
                 2,
-                3,
-                Minecraft.getMinecraft().thePlayer
-            ) // middle clicks > left clicks
+                3
+            )
+            // middle clicks > left clicks
             lastClick = SimpleTimeMark.now()
             break
         }
@@ -95,9 +96,8 @@ object HarpFeatures {
 
     private var openTime: SimpleTimeMark = SimpleTimeMark.farPast()
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         if (config.quickRestart && isMenuGui(event.inventoryName)) {
             openTime = SimpleTimeMark.now()
         }
@@ -107,8 +107,8 @@ object HarpFeatures {
     }
 
     private fun updateScale() {
-        if (Minecraft.getMinecraft().currentScreen == null) {
-            DelayedRun.runNextTick() {
+        if (!McScreen.isOpen) {
+            DelayedRun.runNextTick {
                 updateScale()
             }
             return
@@ -121,15 +121,14 @@ object HarpFeatures {
         minecraft.currentScreen.setWorldAndResolution(minecraft, i, j)
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryClose(event: InventoryCloseEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         if (!config.guiScale) return
         unSetGUIScale()
     }
 
-    @SubscribeEvent
-    fun onLeave(event: FMLNetworkEvent.ClientDisconnectionFromServerEvent) {
+    @HandleEvent
+    fun onDisconnect(event: ClientDisconnectEvent) {
         if (!config.guiScale) return
         unSetGUIScale()
     }
@@ -138,27 +137,24 @@ object HarpFeatures {
     private var isGUIScaled = false
 
     private fun setGUIScale() {
-        val gameSettings = Minecraft.getMinecraft().gameSettings ?: return
-        guiSetting = gameSettings.guiScale
-        gameSettings.guiScale = 0
+        guiSetting = McClient.options.guiScale
+        McClient.options.guiScale = 0
         isGUIScaled = true
         updateScale()
     }
 
     private fun unSetGUIScale() {
         if (!isGUIScaled) return
-        Minecraft.getMinecraft().gameSettings.guiScale = guiSetting
+        McClient.options.guiScale = guiSetting
         isGUIScaled = false
     }
 
-    @SubscribeEvent
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onSlotClick(event: SlotClickEvent) {
         if (isHarpGui(InventoryUtils.openInventoryName())) {
             if (config.keybinds) {
                 // needed to not send duplicate clicks via keybind feature
-                if (event.clickTypeEnum == GuiContainerEvent.ClickType.HOTBAR) {
+                if (event.clickTypeEnum == SlotClickEvent.ClickType.HOTBAR) {
                     event.cancel()
                     return
                 }
@@ -167,12 +163,12 @@ object HarpFeatures {
 
         if (!config.quickRestart) return
         if (!isMenuGui(InventoryUtils.openInventoryName())) return
-        if (event.slot?.slotNumber != closeButtonSlot) return
+        if (event.slot?.slotNumber != CLOSE_BUTTON_SLOT) return
         if (openTime.passedSince() > 2.seconds) return
         event.container.inventory.filterNotNull().indexOfFirst {
             songSelectedPattern.anyMatches(it.getLore())
         }.takeIf { it != -1 }?.let {
-            event.isCanceled = true
+            event.cancel()
             Minecraft.getMinecraft().playerController.windowClick(
                 event.container.windowId,
                 it,
@@ -183,9 +179,8 @@ object HarpFeatures {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderItemTip(event: RenderItemTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         if (!config.showNumbers) return
         if (!isHarpGui(InventoryUtils.openInventoryName())) return
         if (Item.getIdFromItem(event.stack.item) != 159) return // Stained hardened clay item id = 159
@@ -198,15 +193,9 @@ object HarpFeatures {
         event.stackTip = KeyboardManager.getKeyName(keyCode).take(3)
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.harpKeybinds", "inventory.helper.harp.keybinds")
-        event.move(2, "misc.harpNumbers", "inventory.helper.harp.showNumbers")
-    }
 
-    @SubscribeEvent
-    fun onTooltip(event: LorenzToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!config.hideMelodyTooltip) return
         if (!isHarpGui(InventoryUtils.openInventoryName())) return
         if (event.slot.inventory !is ContainerLocalMenu) return

@@ -1,22 +1,25 @@
 package at.hannibal2.skyhanni.features.event.hoppity
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DisplayTableEntry
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RegexUtils.anyMatches
 import at.hannibal2.skyhanni.utils.RegexUtils.find
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
@@ -25,8 +28,8 @@ import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object HoppityCollectionStats {
 
     private val config get() = ChocolateFactoryAPI.config
@@ -77,7 +80,7 @@ object HoppityCollectionStats {
 
     var inInventory = false
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (!isEnabled()) return
         if (!pagePattern.matches(event.inventoryName)) return
@@ -86,14 +89,14 @@ object HoppityCollectionStats {
         display = buildDisplay(event)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         inInventory = false
         display = emptyList()
     }
 
-    @SubscribeEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!inInventory) return
 
         config.hoppityStatsPosition.renderRenderables(
@@ -104,17 +107,17 @@ object HoppityCollectionStats {
     }
 
     // TODO cache with inventory update event
-    @SubscribeEvent
-    fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
+    @HandleEvent
+    fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         if (!config.highlightRabbitsWithRequirement) return
         if (!inInventory) return
 
         for (slot in InventoryUtils.getItemsInOpenChest()) {
             val lore = slot.stack.getLore()
             if (lore.any { requirementMet.find(it) } && !config.onlyHighlightRequirementNotMet)
-                slot highlight LorenzColor.GREEN
+                slot.highlight(LorenzColor.GREEN)
             if (lore.any { requirementNotMet.find(it) })
-                slot highlight LorenzColor.RED
+                slot.highlight(LorenzColor.RED)
         }
     }
 
@@ -195,7 +198,7 @@ object HoppityCollectionStats {
                 add("§7Total Rabbits Found: §a${displayFound + displayDuplicates}")
                 add("")
                 add("§7Chocolate Per Second: §a${displayChocolatePerSecond.addSeparators()}")
-                add("§7Chocolate Multiplier: §a${displayChocolateMultiplier.round(3)}")
+                add("§7Chocolate Multiplier: §a${displayChocolateMultiplier.roundTo(3)}")
             }
             table.add(
                 DisplayTableEntry(
@@ -255,20 +258,20 @@ object HoppityCollectionStats {
 
     fun hasFoundRabbit(rabbit: String): Boolean = loggedRabbits.containsKey(rabbit)
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.hoppityCollectionStats
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.hoppityCollectionStats
 
     enum class RabbitCollectionRarity(
         val displayName: String,
         val item: NEUInternalName,
     ) {
-        COMMON("§fCommon", "STAINED_GLASS".asInternalName()),
-        UNCOMMON("§aUncommon", "STAINED_GLASS-5".asInternalName()),
-        RARE("§9Rare", "STAINED_GLASS-11".asInternalName()),
-        EPIC("§5Epic", "STAINED_GLASS-10".asInternalName()),
-        LEGENDARY("§6Legendary", "STAINED_GLASS-1".asInternalName()),
-        MYTHIC("§dMythic", "STAINED_GLASS-6".asInternalName()),
-        DIVINE("§bDivine", "STAINED_GLASS-3".asInternalName()),
-        TOTAL("§cTotal", "STAINED_GLASS-14".asInternalName()),
+        COMMON("§fCommon", SkyhanniItems.WHITE_STAINED_GLASS()),
+        UNCOMMON("§aUncommon", SkyhanniItems.LIME_STAINED_GLASS()),
+        RARE("§9Rare", SkyhanniItems.BLUE_STAINED_GLASS()),
+        EPIC("§5Epic", SkyhanniItems.PURPLE_STAINED_GLASS()),
+        LEGENDARY("§6Legendary", SkyhanniItems.ORANGE_STAINED_GLASS()),
+        MYTHIC("§dMythic", SkyhanniItems.PINK_STAINED_GLASS()),
+        DIVINE("§bDivine", SkyhanniItems.AQUA_STAINED_GLASS()),
+        TOTAL("§cTotal", SkyhanniItems.RED_STAINED_GLASS()),
         ;
 
         companion object {

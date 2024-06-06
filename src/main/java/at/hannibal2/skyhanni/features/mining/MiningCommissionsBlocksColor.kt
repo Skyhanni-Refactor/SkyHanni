@@ -1,30 +1,32 @@
 package at.hannibal2.skyhanni.features.mining
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.data.HypixelData
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.data.MiningAPI
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.equalsOneOf
 import at.hannibal2.skyhanni.utils.ConditionalUtils.onToggle
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.TimeLimitedSet
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.block.BlockCarpet
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.Minecraft
 import net.minecraft.init.Blocks
 import net.minecraft.item.EnumDyeColor
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object MiningCommissionsBlocksColor {
 
     private val config get() = SkyHanniMod.feature.mining.commissionsBlocksColor
@@ -90,14 +92,13 @@ object MiningCommissionsBlocksColor {
     private var oldSneakState = false
 
     private var dirty = false
-    private var forceDirty = false
 
     private var inDwarvenMines = false
     private var inCrystalHollows = false
     private var inGlaciteArea = false
 
     // TODO Commissin API
-    @SubscribeEvent
+    @HandleEvent
     fun onTabListUpdate(event: TabListUpdateEvent) {
         for (block in MiningBlock.entries) {
             val tabList = " §r§f${block.displayName}: "
@@ -113,8 +114,8 @@ object MiningCommissionsBlocksColor {
     private val ignoredTabListCommissions = TimeLimitedSet<MiningBlock>(5.seconds)
 
     // TODO Commissin API
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!enabled) return
         commissionCompletePattern.matchMatcher(event.message) {
             val name = group("name")
@@ -125,13 +126,13 @@ object MiningCommissionsBlocksColor {
         }
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (LorenzUtils.lastWorldSwitch.passedSince() > 4.seconds) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
+        if (HypixelAPI.lastWorldChange.passedSince() > 4.seconds) {
             inGlaciteArea = MiningAPI.inGlaciteArea() && !IslandType.MINESHAFT.isInIsland()
             inDwarvenMines = IslandType.DWARVEN_MINES.isInIsland() &&
-                !(inGlaciteArea || HypixelData.skyBlockArea.equalsOneOf("Dwarven Base Camp", "Fossil Research Center"))
-            inCrystalHollows = IslandType.CRYSTAL_HOLLOWS.isInIsland() && HypixelData.skyBlockArea != "Crystal Nucleus"
+                !(inGlaciteArea || IslandArea.FOSSIL_RESEARCH_CENTER.isInside() || IslandArea.DWARVEN_BASE_CAMP.isInside())
+            inCrystalHollows = IslandType.CRYSTAL_HOLLOWS.isInIsland() && IslandArea.CRYSTAL_NUCLEUS.isInside()
         }
 
         // TODO add dwarven mines support
@@ -147,14 +148,11 @@ object MiningCommissionsBlocksColor {
         }
 
         if (enabled) {
-            if (config.sneakQuickToggle.get()) {
-                val sneaking = Minecraft.getMinecraft().thePlayer.isSneaking
-                if (sneaking != oldSneakState) {
-                    oldSneakState = sneaking
-                    if (oldSneakState) {
-                        active = !active
-                        dirty = true
-                    }
+            if (config.sneakQuickToggle.get() && McPlayer.isSneaking != oldSneakState) {
+                oldSneakState = McPlayer.isSneaking
+                if (oldSneakState) {
+                    active = !active
+                    dirty = true
                 }
             }
             if (dirty) {
@@ -168,7 +166,7 @@ object MiningCommissionsBlocksColor {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigReload(event: ConfigLoadEvent) {
         color = config.color.get().toDyeColor()
         config.sneakQuickToggle.onToggle {
@@ -184,15 +182,15 @@ object MiningCommissionsBlocksColor {
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         enabled = false
         inDwarvenMines = false
         inCrystalHollows = false
         inGlaciteArea = false
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Mining Commissions Blocks Color")
         if (!enabled) {

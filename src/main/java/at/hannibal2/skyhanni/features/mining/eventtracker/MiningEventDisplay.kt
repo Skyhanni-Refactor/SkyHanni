@@ -1,38 +1,41 @@
 package at.hannibal2.skyhanni.features.mining.eventtracker
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandTypeTag
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.compat.soopy.data.MiningEventData
+import at.hannibal2.skyhanni.compat.soopy.data.RunningEventType
 import at.hannibal2.skyhanni.config.features.mining.MiningEventConfig
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.mining.eventtracker.MiningEventType.Companion.CompressFormat
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.SimpleTimeMark.Companion.asTimeMark
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.init.Blocks
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object MiningEventDisplay {
     private val config get() = SkyHanniMod.feature.mining.miningEvent
     private var display = listOf<Renderable>()
 
     private val islandEventData: MutableMap<IslandType, MiningIslandEventInfo> = mutableMapOf()
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!event.repeatSeconds(1)) return
+    @HandleEvent
+    fun onSecondPassed(event: SecondPassedEvent) {
         updateDisplay()
     }
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!shouldDisplay()) return
         config.position.renderRenderables(display, posLabel = "Upcoming Events Display")
     }
@@ -74,11 +77,11 @@ object MiningEventDisplay {
                             listOf(
                                 when (islandType) {
                                     IslandType.DWARVEN_MINES -> Renderable.itemStack(
-                                        "MITHRIL_ORE".asInternalName().getItemStack()
+                                        SkyhanniItems.MITHRIL_ORE().getItemStack()
                                     )
 
                                     IslandType.CRYSTAL_HOLLOWS -> Renderable.itemStack(
-                                        "PERFECT_RUBY_GEM".asInternalName().getItemStack()
+                                        SkyhanniItems.PERFECT_RUBY_GEM().getItemStack()
                                     )
 
                                     IslandType.MINESHAFT -> Renderable.itemStack(ItemStack(Blocks.packed_ice))
@@ -134,10 +137,10 @@ object MiningEventDisplay {
     }
 
     private fun shouldDisplay() =
-        LorenzUtils.inSkyBlock && config.enabled && !(!config.outsideMining && !LorenzUtils.inAdvancedMiningIsland())
+        SkyBlockAPI.isConnected && config.enabled && !(!config.outsideMining && !IslandTypeTag.ADVANCED_MINING.inAny())
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.transform(46, "mining.miningEvent.compressedFormat") {
             ConfigUtils.migrateBooleanToEnum(it, CompressFormat.COMPACT_TEXT, CompressFormat.DEFAULT)
         }

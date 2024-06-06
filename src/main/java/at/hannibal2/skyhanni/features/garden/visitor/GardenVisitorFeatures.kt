@@ -1,35 +1,38 @@
 package at.hannibal2.skyhanni.features.garden.visitor
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.config.features.garden.visitor.VisitorConfig.HighlightMode
-import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacks
 import at.hannibal2.skyhanni.data.SackAPI.getAmountInSacksOrNull
-import at.hannibal2.skyhanni.events.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.OwnInventoryItemUpdateEvent
-import at.hannibal2.skyhanni.events.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.SackDataUpdateEvent
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorAcceptEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorAcceptedEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorArrivalEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorOpenEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorRefusedEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorRenderEvent
+import at.hannibal2.skyhanni.events.inventory.OwnInventoryItemUpdateEvent
+import at.hannibal2.skyhanni.events.inventory.SackDataUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.features.garden.CropType.Companion.getByNameOrNull
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed.getSpeed
 import at.hannibal2.skyhanni.features.garden.visitor.VisitorAPI.blockReason
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
-import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
-import at.hannibal2.skyhanni.utils.InventoryUtils.getAmountInInventory
 import at.hannibal2.skyhanni.utils.ItemBlink
 import at.hannibal2.skyhanni.utils.ItemUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -38,8 +41,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.itemNameWithoutColor
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
@@ -54,13 +55,14 @@ import at.hannibal2.skyhanni.utils.RenderUtils.drawString
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import at.hannibal2.skyhanni.utils.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McScreen.setTextIntoSign
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import com.google.gson.JsonArray
-import com.google.gson.JsonPrimitive
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiEditSign
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
@@ -70,9 +72,11 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.round
 import kotlin.time.Duration.Companion.seconds
 
-private val config get() = VisitorAPI.config
 
+@SkyHanniModule
 object GardenVisitorFeatures {
+
+    private val config get() = VisitorAPI.config
 
     private var display = emptyList<List<Any>>()
 
@@ -100,14 +104,14 @@ object GardenVisitorFeatures {
 
     private val logger = LorenzLogger("garden/visitors")
     private var lastFullPrice = 0.0
-    private val greenThumb = "GREEN_THUMB;1".asInternalName()
+    private val greenThumb = SkyhanniItems.GREEN_THUMB(1)
 
-    @SubscribeEvent
+    @HandleEvent
     fun onProfileJoin(event: ProfileJoinEvent) {
         display = emptyList()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onVisitorOpen(event: VisitorOpenEvent) {
         val visitor = event.visitor
         val offerItem = visitor.offer?.offerItem ?: return
@@ -192,8 +196,9 @@ object GardenVisitorFeatures {
                 list.add(itemStack)
 
                 list.add(Renderable.optionalLink("$name §ex${amount.addSeparators()}", {
-                    if (Minecraft.getMinecraft().currentScreen is GuiEditSign) {
-                        LorenzUtils.setTextIntoSign("$amount")
+                    val sign = McScreen.asSign
+                    if (sign != null) {
+                        sign.setTextIntoSign("$amount")
                     } else {
                         BazaarApi.searchForBazaarItem(name, amount)
                     }
@@ -284,34 +289,34 @@ object GardenVisitorFeatures {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onOwnInventoryItemUpdate(event: OwnInventoryItemUpdateEvent) {
         if (GardenAPI.onBarnPlot) {
             update()
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSackUpdate(event: SackDataUpdateEvent) {
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onVisitorRefused(event: VisitorRefusedEvent) {
         update()
         GardenVisitorDropStatistics.deniedVisitors += 1
         GardenVisitorDropStatistics.saveAndUpdate()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onVisitorAccepted(event: VisitorAcceptedEvent) {
-        VisitorAcceptEvent(event.visitor).postAndCatch()
+        VisitorAcceptEvent(event.visitor).post()
         update()
         GardenVisitorDropStatistics.coinsSpent += round(lastFullPrice).toLong()
         GardenVisitorDropStatistics.lastAccept = SimpleTimeMark.now()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onVisitorRender(event: VisitorRenderEvent) {
         val visitor = event.visitor
         val text = visitor.status.displayName
@@ -425,12 +430,12 @@ object GardenVisitorFeatures {
                 finalList[index] = "$formattedLine §7(§6$format§7)"
             }
             if (!readingShoppingList) continue
-            val multiplier = NEUItems.getMultiplier(internalName)
+            val primitiveStack = NEUItems.getPrimitiveMultiplier(internalName)
 
-            val rawName = multiplier.first.itemNameWithoutColor
+            val rawName = primitiveStack.internalName.itemNameWithoutColor
             val cropType = getByNameOrNull(rawName) ?: continue
 
-            val cropAmount = multiplier.second.toLong() * amount
+            val cropAmount = primitiveStack.amount.toLong() * amount
             val formattedName = "§e${cropAmount.addSeparators()}§7x ${cropType.cropName} "
             val formattedSpeed = cropType.getSpeed()?.let { speed ->
                 val duration = (cropAmount / speed).seconds
@@ -445,9 +450,8 @@ object GardenVisitorFeatures {
         visitor.lastLore = finalList
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!GardenAPI.inGarden()) return
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
+    fun onTick(event: ClientTickEvent) {
         if (!config.shoppingList.display && config.highlightStatus == HighlightMode.DISABLED) return
         if (!event.isMod(10, 2)) return
 
@@ -456,7 +460,7 @@ object GardenVisitorFeatures {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onVisitorArrival(event: VisitorArrivalEvent) {
         val visitor = event.visitor
         val name = visitor.visitorName
@@ -464,10 +468,10 @@ object GardenVisitorFeatures {
         update()
 
         logger.log("New visitor detected: '$name'")
-        val recentWorldSwitch = LorenzUtils.lastWorldSwitch.passedSince() < 2.seconds
+        val recentWorldSwitch = HypixelAPI.lastWorldChange.passedSince() < 2.seconds
 
         if (config.notificationTitle && !recentWorldSwitch) {
-            LorenzUtils.sendTitle("§eNew Visitor", 5.seconds)
+            TitleManager.sendTitle("§eNew Visitor", 5.seconds)
         }
         if (config.notificationChat) {
             val displayName = GardenVisitorColorNames.getColoredName(name)
@@ -486,8 +490,8 @@ object GardenVisitorFeatures {
         }
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (config.hypixelArrivedMessage && visitorArrivePattern.matcher(event.message).matches()) {
             event.blockedReason = "new_visitor_arrived"
         }
@@ -552,7 +556,7 @@ object GardenVisitorFeatures {
     }
 
     private fun findEntity(nameTag: EntityArmorStand, visitor: VisitorAPI.Visitor) {
-        for (entity in EntityUtils.getAllEntities()) {
+        for (entity in McWorld.entities) {
             if (entity is EntityArmorStand) continue
             if (entity.getLorenzVec().distanceIgnoreY(nameTag.getLorenzVec()) != 0.0) continue
 
@@ -564,8 +568,7 @@ object GardenVisitorFeatures {
     private fun hasItems(visitor: VisitorAPI.Visitor): Boolean {
         var ready = true
         for ((internalName, required) in visitor.shoppingList) {
-            val having = internalName.getAmountInInventory() + internalName.getAmountInSacks()
-            if (having < required) {
+            if (McPlayer.countItems(internalName, true) < required) {
                 ready = false
             }
         }
@@ -588,7 +591,7 @@ object GardenVisitorFeatures {
 
     private fun hideExtraGuis() = GardenAPI.hideExtraGuis() && !VisitorAPI.inInventory
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent) {
         if (!config.shoppingList.display) return
 
@@ -599,10 +602,10 @@ object GardenVisitorFeatures {
 
     private fun showGui(): Boolean {
         if (IslandType.HUB.isInIsland()) {
-            if (config.shoppingList.inBazaarAlley && LorenzUtils.skyBlockArea == "Bazaar Alley") {
+            if (config.shoppingList.inBazaarAlley && IslandArea.BAZAAR_ALLEY.isInside()) {
                 return true
             }
-            if (config.shoppingList.inFarmingAreas && LorenzUtils.skyBlockArea == "Farm") {
+            if (config.shoppingList.inFarmingAreas && IslandArea.FARM.isInside()) {
                 return true
             }
         }
@@ -615,7 +618,7 @@ object GardenVisitorFeatures {
         return false
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Garden Visitor Stats")
 
@@ -643,56 +646,8 @@ object GardenVisitorFeatures {
         }
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.visitorNeedsDisplay", "garden.visitors.needs.display")
-        event.move(3, "garden.visitorNeedsPos", "garden.visitors.needs.pos")
-        event.move(3, "garden.visitorNeedsOnlyWhenClose", "garden.visitors.needs.onlyWhenClose")
-        event.move(3, "garden.visitorNeedsInBazaarAlley", "garden.visitors.needs.inBazaarAlley")
-        event.move(3, "garden.visitorNeedsShowPrice", "garden.visitors.needs.showPrice")
-        event.move(3, "garden.visitorItemPreview", "garden.visitors.needs.itemPreview")
-        event.move(3, "garden.visitorShowPrice", "garden.visitors.inventory.showPrice")
-        event.move(3, "garden.visitorExactAmountAndTime", "garden.visitors.inventory.exactAmountAndTime")
-        event.move(3, "garden.visitorCopperPrice", "garden.visitors.inventory.copperPrice")
-        event.move(3, "garden.visitorCopperTime", "garden.visitors.inventory.copperTime")
-        event.move(3, "garden.visitorExperiencePrice", "garden.visitors.inventory.experiencePrice")
-        event.move(3, "garden.visitorRewardWarning.notifyInChat", "garden.visitors.rewardWarning.notifyInChat")
-        event.move(3, "garden.visitorRewardWarning.showOverName", "garden.visitors.rewardWarning.showOverName")
-        event.move(
-            3,
-            "garden.visitorRewardWarning.preventRefusing",
-            "garden.visitors.rewardWarning.preventRefusing"
-        )
-        event.move(3, "garden.visitorRewardWarning.bypassKey", "garden.visitors.rewardWarning.bypassKey")
-        event.move(3, "garden.visitorRewardWarning.drops", "garden.visitors.rewardWarning.drops")
-        event.move(3, "garden.visitorNotificationChat", "garden.visitors.notificationChat")
-        event.move(3, "garden.visitorNotificationTitle", "garden.visitors.notificationTitle")
-        event.move(3, "garden.visitorHighlightStatus", "garden.visitors.highlightStatus")
-        event.move(3, "garden.visitorColoredName", "garden.visitors.coloredName")
-        event.move(3, "garden.visitorHypixelArrivedMessage", "garden.visitors.hypixelArrivedMessage")
-        event.move(3, "garden.visitorHideChat", "garden.visitors.hideChat")
-        event.transform(11, "garden.visitors.rewardWarning.drops") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, VisitorReward::class.java)
-        }
-        event.transform(12, "garden.visitors.rewardWarning.drops") { element ->
-            val drops = JsonArray()
-            for (jsonElement in element.asJsonArray) {
-                val old = jsonElement.asString
-                val new = VisitorReward.entries.firstOrNull { old.startsWith(it.name) }
-                if (new == null) {
-                    println("error with migrating old VisitorReward entity: '$old'")
-                    continue
-                }
-                drops.add(JsonPrimitive(new.name))
-            }
-
-            drops
-        }
-
-        event.transform(15, "garden.visitors.highlightStatus") { element ->
-            ConfigUtils.migrateIntToEnum(element, HighlightMode::class.java)
-        }
-
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(18, "garden.visitors.needs", "garden.visitors.shoppingList")
     }
 }

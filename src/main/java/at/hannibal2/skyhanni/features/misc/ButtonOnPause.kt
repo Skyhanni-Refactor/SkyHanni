@@ -1,22 +1,23 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.HypixelAPI
 import at.hannibal2.skyhanni.config.ConfigGuiManager
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import net.minecraft.client.gui.GuiButton
 import net.minecraft.client.gui.GuiIngameMenu
 import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ButtonOnPause {
+@SkyHanniModule
+object ButtonOnPause {
 
     private val config get() = SkyHanniMod.feature.gui
     private val buttonId = System.nanoTime().toInt()
 
     @SubscribeEvent
     fun onGuiAction(event: GuiScreenEvent.ActionPerformedEvent.Post) {
-        if (!LorenzUtils.onHypixel) return
+        if (!HypixelAPI.onHypixel) return
 
         if (config.configButtonOnPause && event.gui is GuiIngameMenu && event.button.id == buttonId) {
             ConfigGuiManager.openConfigGui()
@@ -25,7 +26,7 @@ class ButtonOnPause {
 
     @SubscribeEvent
     fun onGuiInitPost(event: GuiScreenEvent.InitGuiEvent.Post) {
-        if (!LorenzUtils.onHypixel) return
+        if (!HypixelAPI.onHypixel) return
 
         if (config.configButtonOnPause && event.gui is GuiIngameMenu) {
             val x = event.gui.width - 105
@@ -45,10 +46,5 @@ class ButtonOnPause {
             }
             event.buttonList.add(GuiButton(buttonId, x, 0.coerceAtLeast(y), 100, 20, "SkyHanni"))
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.configButtonOnPause", "gui.configButtonOnPause")
     }
 }

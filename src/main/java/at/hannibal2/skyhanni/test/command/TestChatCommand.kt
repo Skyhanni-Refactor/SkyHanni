@@ -1,10 +1,10 @@
 package at.hannibal2.skyhanni.test.command
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.LorenzChatEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.IChatComponent
 
@@ -23,10 +23,7 @@ object TestChatCommand {
             // cant use multi lines without clipboard
             val isClipboard = mutArgs.remove("-clipboard") || multiLines
             val isHidden = mutArgs.remove("-s")
-            val text = if (isClipboard) {
-                OSUtils.readFromClipboard()
-                    ?: return@launchCoroutine ChatUtils.userError("Clipboard does not contain a string!")
-            } else mutArgs.joinToString(" ")
+            val text = if (isClipboard) { OS.readFromClipboard() } else mutArgs.joinToString(" ")
             if (multiLines) {
                 for (line in text.split("\n")) {
                     extracted(isComplex, line, isHidden)
@@ -53,8 +50,8 @@ object TestChatCommand {
 
     private fun test(componentText: IChatComponent, isHidden: Boolean) {
         val message = componentText.formattedText.stripHypixelMessage()
-        val event = LorenzChatEvent(message, componentText)
-        event.postAndCatch()
+        val event = SkyHanniChatEvent(message, componentText)
+        event.post()
 
         if (event.blockedReason != "") {
             if (!isHidden) {

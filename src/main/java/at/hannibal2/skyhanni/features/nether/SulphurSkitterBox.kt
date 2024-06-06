@@ -1,36 +1,36 @@
 package at.hannibal2.skyhanni.features.nether
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.config.features.crimsonisle.SulphurSkitterBoxConfig
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockAt
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColourInt
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RenderUtils
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
-import at.hannibal2.skyhanni.utils.SpecialColour
+import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.init.Blocks
-import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 
-class SulphurSkitterBox {
+@SkyHanniModule
+object SulphurSkitterBox {
 
     private val config get() = SkyHanniMod.feature.fishing.trophyFishing.sulphurSkitterBox
     private var spongeBlocks = listOf<BlockPos>()
     private var closestBlock: BlockPos? = null
-    private val radius = 8
+    private const val RADIUS = 8
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
         if (event.isMod(5)) {
             closestBlock = getClosestBlockToPlayer()
@@ -44,8 +44,8 @@ class SulphurSkitterBox {
                 val loc = it.toLorenzVec()
                 loc.getBlockAt() == Blocks.sponge && loc.distanceToPlayer() <= 15
             }.filter {
-                val pos1 = it.add(-radius, -radius, -radius)
-                val pos2 = it.add(radius, radius, radius)
+                val pos1 = it.add(-RADIUS, -RADIUS, -RADIUS)
+                val pos2 = it.add(RADIUS, RADIUS, RADIUS)
                 BlockPos.getAllInBox(pos1, pos2).any { pos ->
                     pos.toLorenzVec().getBlockAt() in FishingAPI.lavaBlocks
                 }
@@ -53,19 +53,20 @@ class SulphurSkitterBox {
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         spongeBlocks = emptyList()
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         closestBlock?.let {
-            if (it.toLorenzVec().distanceToPlayer() >= 50) return
-            val pos1 = it.add(-radius, -radius, -radius)
-            val pos2 = it.add(radius, radius, radius)
-            val axis = AxisAlignedBB(pos1, pos2).expandBlock()
+            val vec = it.toLorenzVec()
+            if (vec.distanceToPlayer() >= 50) return
+            val pos1 = vec.add(-RADIUS, -RADIUS, -RADIUS)
+            val pos2 = vec.add(RADIUS, RADIUS, RADIUS)
+            val axis = BoundingBox(pos1, pos2).expandToEdge()
 
             drawBox(axis, event.partialTicks)
         }
@@ -75,11 +76,11 @@ class SulphurSkitterBox {
         return spongeBlocks.minByOrNull { it.toLorenzVec().distanceToPlayer() }
     }
 
-    private fun drawBox(axis: AxisAlignedBB, partialTicks: Float) {
-        val color = Color(SpecialColour.specialToChromaRGB(config.boxColor), true)
+    private fun drawBox(axis: BoundingBox, partialTicks: Float) {
+        val color = Color(config.boxColor.toChromaColourInt(), true)
         when (config.boxType) {
             SulphurSkitterBoxConfig.BoxType.FULL -> {
-                RenderUtils.drawFilledBoundingBox_nea(
+                RenderUtils.drawFilledBoundingBox(
                     axis,
                     color,
                     partialTicks = partialTicks,
@@ -88,11 +89,11 @@ class SulphurSkitterBox {
             }
 
             SulphurSkitterBoxConfig.BoxType.WIREFRAME -> {
-                RenderUtils.drawWireframeBoundingBox_nea(axis, color, partialTicks)
+                RenderUtils.drawWireframeBoundingBox(axis, color, partialTicks)
             }
 
             else -> {
-                RenderUtils.drawWireframeBoundingBox_nea(axis, color, partialTicks)
+                RenderUtils.drawWireframeBoundingBox(axis, color, partialTicks)
             }
         }
     }
@@ -100,8 +101,8 @@ class SulphurSkitterBox {
     fun isEnabled() =
         IslandType.CRIMSON_ISLE.isInIsland() && config.enabled && (!config.onlyWithRods || FishingAPI.holdingLavaRod)
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(24, "crimsonIsle.sulphurSkitterBoxConfig", "fishing.trophyFishing.sulphurSkitterBox")
     }
 }

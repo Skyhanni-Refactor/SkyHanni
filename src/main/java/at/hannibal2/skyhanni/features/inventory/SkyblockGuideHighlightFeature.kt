@@ -1,21 +1,22 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.RegexUtils.anyMatches
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
+import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.intellij.lang.annotations.Language
 
 val patternGroup = RepoPattern.group("skyblockguide.highlight")
@@ -27,8 +28,8 @@ class SkyblockGuideHighlightFeature private constructor(
     private val config: () -> Boolean,
     inventory: RepoPattern,
     loreCondition: RepoPattern,
-    private val onSlotClicked: (GuiContainerEvent.SlotClickEvent) -> Unit = {},
-    private val onTooltip: (LorenzToolTipEvent) -> Unit = {},
+    private val onSlotClicked: (SlotClickEvent) -> Unit = {},
+    private val onTooltip: (SkyHanniToolTipEvent) -> Unit = {},
 ) {
 
     private val inventoryPattern by inventory
@@ -39,8 +40,8 @@ class SkyblockGuideHighlightFeature private constructor(
         key: String,
         @Language("RegExp") inventory: String,
         @Language("RegExp") loreCondition: String,
-        onSlotClicked: (GuiContainerEvent.SlotClickEvent) -> Unit = {},
-        onTooltip: (LorenzToolTipEvent) -> Unit = {},
+        onSlotClicked: (SlotClickEvent) -> Unit = {},
+        onTooltip: (SkyHanniToolTipEvent) -> Unit = {},
     ) : this(
         config,
         patternGroup.pattern("$key.$keyPrefixInventory", inventory),
@@ -54,8 +55,8 @@ class SkyblockGuideHighlightFeature private constructor(
         key: String,
         @Language("RegExp") inventory: String,
         loreCondition: RepoPattern,
-        onSlotClicked: (GuiContainerEvent.SlotClickEvent) -> Unit = {},
-        onTooltip: (LorenzToolTipEvent) -> Unit = {},
+        onSlotClicked: (SlotClickEvent) -> Unit = {},
+        onTooltip: (SkyHanniToolTipEvent) -> Unit = {},
     ) : this(
         config,
         patternGroup.pattern("$key.$keyPrefixInventory", inventory),
@@ -77,40 +78,42 @@ class SkyblockGuideHighlightFeature private constructor(
         private var activeObject: SkyblockGuideHighlightFeature? = null
         private var missing = mutableSetOf<Int>()
 
-        fun isEnabled() = LorenzUtils.inSkyBlock
+        fun isEnabled() = SkyBlockAPI.isConnected
         fun close() {
             activeObject = null
         }
 
-        @SubscribeEvent
-        fun onInventoryClose(event: InventoryCloseEvent) = close()
+        @HandleEvent
+        fun onInventoryClose(event: InventoryCloseEvent) {
+            close()
+        }
 
-        @SubscribeEvent
-        fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+        @HandleEvent
+        fun onSlotClick(event: SlotClickEvent) {
             if (!isEnabled()) return
             val current = activeObject ?: return
             if (!missing.contains(event.slotId)) return
             current.onSlotClicked.invoke(event)
         }
 
-        @SubscribeEvent
-        fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
+        @HandleEvent
+        fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
             if (!isEnabled()) return
             if (activeObject == null) return
 
             event.gui.inventorySlots.inventorySlots.filter { missing.contains(it.slotNumber) }
-                .forEach { it highlight LorenzColor.RED }
+                .forEach { it.highlight(LorenzColor.RED) }
         }
 
-        @SubscribeEvent
-        fun onTooltip(event: LorenzToolTipEvent) {
+        @HandleEvent
+        fun onTooltip(event: SkyHanniToolTipEvent) {
             if (!isEnabled()) return
             val current = activeObject ?: return
             if (!missing.contains(event.slot.slotNumber)) return
             current.onTooltip.invoke(event)
         }
 
-        @SubscribeEvent
+        @HandleEvent
         fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
             if (!isEnabled()) return
             val current =
@@ -139,14 +142,14 @@ class SkyblockGuideHighlightFeature private constructor(
                 "§7Progress to Complete Category: §6\\d{1,2}(?:\\.\\d)?%"
             )
 
-        private val openWikiOnClick: (GuiContainerEvent.SlotClickEvent) -> Unit = { event ->
+        private val openWikiOnClick: (SlotClickEvent) -> Unit = { event ->
             val internalName = event.item?.getInternalName()
             if (internalName != null) {
                 HypixelCommands.wiki(internalName.asString())
             }
         }
 
-        private val openWikiTooltip: (LorenzToolTipEvent) -> Unit = { event ->
+        private val openWikiTooltip: (SkyHanniToolTipEvent) -> Unit = { event ->
             event.toolTip.add("")
             event.toolTip.add("§7§eClick to view on the SkyBlock Wiki!")
         }

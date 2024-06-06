@@ -1,30 +1,33 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.inventory.chocolatefactory.ChocolateFactoryConfig
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage.ChocolateFactoryStorage
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.jsonobjects.repo.HoppityEggLocationsJson
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.event.hoppity.HoppityCollectionStats
+import at.hannibal2.skyhanni.features.event.hoppity.HoppityEggLocator
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.DelayedRun
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
-import at.hannibal2.skyhanni.utils.SkyblockSeason
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.UtilsPatterns
+import at.hannibal2.skyhanni.utils.datetime.SkyblockSeason
+import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object ChocolateFactoryAPI {
 
     val config: ChocolateFactoryConfig get() = SkyHanniMod.feature.inventory.chocolateFactory
@@ -72,9 +75,9 @@ object ChocolateFactoryAPI {
     var bestPossibleSlot = -1
 
     var specialRabbitTextures = listOf<String>()
-    var warningSound = SoundUtils.createSound("note.pling", 1f)
+    var warningSound = McSound.PLING
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (!isEnabled()) return
 
@@ -92,7 +95,7 @@ object ChocolateFactoryAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<HoppityEggLocationsJson>("HoppityEggLocations")
 
@@ -116,30 +119,6 @@ object ChocolateFactoryAPI {
         ChocolateFactoryUpgrade.updateIgnoredSlots()
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        val old = "event.chocolateFactory"
-        val new = "inventory.chocolateFactory"
-        event.move(44, "$old.enabled", "$new.enabled")
-        event.move(44, "$old.statsDisplay", "$new.statsDisplay")
-        event.move(44, "$old.statsDisplayList", "$new.statsDisplayList")
-        event.move(44, "$old.showStackSizes", "$new.showStackSizes")
-        event.move(44, "$old.highlightUpgrades", "$new.highlightUpgrades")
-        event.move(44, "$old.useMiddleClick", "$new.useMiddleClick")
-        event.move(44, "$old.rabbitWarning", "$new.rabbitWarning")
-        event.move(44, "$old.barnCapacityThreshold", "$new.barnCapacityThreshold")
-        event.move(44, "$old.extraTooltipStats", "$new.extraTooltipStats")
-        event.move(44, "$old.timeTowerWarning", "$new.timeTowerWarning")
-        event.move(44, "$old.position", "$new.position")
-        event.move(44, "$old.compactOnClick", "$new.compactOnClick")
-        event.move(44, "$old.compactOnClickAlways", "$new.compactOnClickAlways")
-        event.move(44, "$old.tooltipMove", "$new.tooltipMove")
-        event.move(44, "$old.tooltipMovePosition", "$new.tooltipMovePosition")
-        event.move(44, "$old.hoppityMenuShortcut", "$new.hoppityMenuShortcut")
-        event.move(44, "$old.hoppityCollectionStats", "$new.hoppityCollectionStats")
-        event.move(44, "$old.hoppityStatsPosition", "$new.hoppityStatsPosition")
-    }
-
     fun getChocolateBuyCost(lore: List<String>): Long? {
         val nextLine = lore.nextAfter({ UtilsPatterns.costLinePattern.matches(it) }) ?: return null
         return chocolateAmountPattern.matchMatcher(nextLine.removeColor()) {
@@ -147,7 +126,7 @@ object ChocolateFactoryAPI {
         }
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
+    fun isEnabled() = SkyBlockAPI.isConnected && config.enabled
 
     fun isHoppityEvent() = SkyblockSeason.getCurrentSeason() == SkyblockSeason.SPRING
 
@@ -183,5 +162,29 @@ object ChocolateFactoryAPI {
         needed -= (secondsUntilTowerExpires * timeTowerChocPerSecond).toLong()
         val basePerSecond = rawChocolatePerSecond * baseMultiplier
         return (needed / basePerSecond + secondsUntilTowerExpires).seconds
+    }
+
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
+        val old = "event.chocolateFactory"
+        val new = "inventory.chocolateFactory"
+        event.move(44, "$old.enabled", "$new.enabled")
+        event.move(44, "$old.statsDisplay", "$new.statsDisplay")
+        event.move(44, "$old.statsDisplayList", "$new.statsDisplayList")
+        event.move(44, "$old.showStackSizes", "$new.showStackSizes")
+        event.move(44, "$old.highlightUpgrades", "$new.highlightUpgrades")
+        event.move(44, "$old.useMiddleClick", "$new.useMiddleClick")
+        event.move(44, "$old.rabbitWarning", "$new.rabbitWarning")
+        event.move(44, "$old.barnCapacityThreshold", "$new.barnCapacityThreshold")
+        event.move(44, "$old.extraTooltipStats", "$new.extraTooltipStats")
+        event.move(44, "$old.timeTowerWarning", "$new.timeTowerWarning")
+        event.move(44, "$old.position", "$new.position")
+        event.move(44, "$old.compactOnClick", "$new.compactOnClick")
+        event.move(44, "$old.compactOnClickAlways", "$new.compactOnClickAlways")
+        event.move(44, "$old.tooltipMove", "$new.tooltipMove")
+        event.move(44, "$old.tooltipMovePosition", "$new.tooltipMovePosition")
+        event.move(44, "$old.hoppityMenuShortcut", "$new.hoppityMenuShortcut")
+        event.move(44, "$old.hoppityCollectionStats", "$new.hoppityCollectionStats")
+        event.move(44, "$old.hoppityStatsPosition", "$new.hoppityStatsPosition")
     }
 }

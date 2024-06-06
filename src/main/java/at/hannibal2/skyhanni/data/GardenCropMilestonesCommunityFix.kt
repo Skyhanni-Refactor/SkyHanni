@@ -1,11 +1,12 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigManager
 import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenJson
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
@@ -16,15 +17,14 @@ import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimalIfNecessary
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import kotlinx.coroutines.launch
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object GardenCropMilestonesCommunityFix {
     private val amountPattern by RepoPattern.pattern(
         "data.garden.milestonefix.amount",
@@ -34,10 +34,10 @@ object GardenCropMilestonesCommunityFix {
     private var showWrongData = false
     private var showWhenAllCorrect = false
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<GardenJson>("Garden")
-        val map = data.crop_milestone_community_help ?: return
+        val map = data.cropMilestoneCommunityHelp
         for ((key, value) in map) {
             if (key == "show_wrong_data") {
                 showWrongData = value
@@ -67,7 +67,7 @@ object GardenCropMilestonesCommunityFix {
                     "Correct data got put into clipboard. " +
                     "Please share it on the §bSkyHanni Discord §ein the channel §b#share-data§e."
             )
-            OSUtils.copyToClipboard("```${data.joinToString("\n")}```")
+            OS.copyToClipboard("```${data.joinToString("\n")}```")
         } else {
             if (showWhenAllCorrect) {
                 ChatUtils.chat("No wrong crop milestone steps found!")
@@ -109,7 +109,7 @@ object GardenCropMilestonesCommunityFix {
         } ?: return
 //         println("totalMax real: ${totalMax.addSeparators()}")
         val totalOffBy = guessTotalMax - totalMax
-//         debug("$crop total offf by: ${totalOffBy.addSeparators()}")
+//         debug("$crop total off by: ${totalOffBy.addSeparators()}")
     }
 
 //     fun debug(message: String) {
@@ -128,11 +128,7 @@ object GardenCropMilestonesCommunityFix {
      * The clipboard context can be used to update the repo content.
      */
     fun readDataFromClipboard() {
-        SkyHanniMod.coroutineScope.launch {
-            OSUtils.readFromClipboard()?.let {
-                handleInput(it)
-            }
-        }
+        handleInput(OS.readFromClipboard())
     }
 
     private var totalFixedValues = 0
@@ -156,7 +152,7 @@ object GardenCropMilestonesCommunityFix {
         totalFixedValues += fixed
         ChatUtils.chat("Fixed: $fixed/$alreadyCorrect, total fixes: $totalFixedValues")
         val s = ConfigManager.gson.toJsonTree(GardenCropMilestones.cropMilestoneData).toString()
-        OSUtils.copyToClipboard("\"crop_milestones\":$s,")
+        OS.copyToClipboard("\"crop_milestones\":$s,")
     }
 
     private fun tryFix(crop: CropType, tier: Int, amount: Int): Boolean {

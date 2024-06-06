@@ -1,20 +1,22 @@
 package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.RenderEntityOutlineEvent
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
+import at.hannibal2.skyhanni.utils.mc.McFont
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.entity.Entity
 import net.minecraft.scoreboard.ScorePlayerTeam
 import net.minecraft.scoreboard.Team
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DungeonTeammateOutlines {
+@SkyHanniModule
+object DungeonTeammateOutlines {
 
     private val config get() = SkyHanniMod.feature.dungeon
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderEntityOutlines(event: RenderEntityOutlineEvent) {
         if (isEnabled() && event.type === RenderEntityOutlineEvent.Type.XRAY) {
             event.queueEntitiesToOutline { entity -> getEntityOutlineColor(entity) }
@@ -31,8 +33,10 @@ class DungeonTeammateOutlines {
         if (team.nameTagVisibility == Team.EnumVisible.NEVER) return null
 
         val colorFormat = FontRenderer.getFormatFromString(team.colorPrefix)
-        return if (colorFormat.length >= 2)
-            Minecraft.getMinecraft().fontRendererObj.getColorCode(colorFormat[1])
-        else null
+        return if (colorFormat.length >= 2) {
+            McFont.getColorCode(colorFormat[1])
+        } else {
+            null
+        }
     }
 }

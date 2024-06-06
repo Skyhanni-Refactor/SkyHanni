@@ -1,25 +1,27 @@
 package at.hannibal2.skyhanni.data.mob
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.data.mob.MobData.Companion.logger
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.mob.MobFilter.isDisplayNPC
 import at.hannibal2.skyhanni.data.mob.MobFilter.isRealPlayer
 import at.hannibal2.skyhanni.data.mob.MobFilter.isSkyBlockMob
-import at.hannibal2.skyhanni.events.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.EntityHealthUpdateEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.MobEvent
-import at.hannibal2.skyhanni.events.PacketEvent
+import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
+import at.hannibal2.skyhanni.events.entity.MobEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientDisconnectEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.drainForEach
 import at.hannibal2.skyhanni.utils.CollectionUtils.drainTo
 import at.hannibal2.skyhanni.utils.CollectionUtils.put
 import at.hannibal2.skyhanni.utils.CollectionUtils.refreshReference
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.MobUtils
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
@@ -30,14 +32,13 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.network.play.server.S01PacketJoinGame
 import net.minecraft.network.play.server.S0CPacketSpawnPlayer
 import net.minecraft.network.play.server.S0FPacketSpawnMob
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.network.FMLNetworkEvent
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
 private const val MAX_RETRIES = 20 * 5
 
-class MobDetection {
+@SkyHanniModule
+object MobDetection {
 
     /* Unsupported "Mobs"
         Nicked Players
@@ -75,16 +76,16 @@ class MobDetection {
     private fun mobDetectionReset() {
         MobData.currentMobs.map {
             it.createDeSpawnEvent()
-        }.forEach { it.postAndCatch() }
+        }.forEach { it.post() }
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (shouldClear.get()) { // Needs to work outside skyblock since it needs clearing when leaving skyblock and joining limbo
             mobDetectionReset()
             shouldClear.set(false)
         }
-        if (!LorenzUtils.inSkyBlock) return
+        if (!SkyBlockAPI.isConnected) return
         if (event.isMod(2)) return
 
         makeEntityReferenceUpdate()
@@ -96,7 +97,7 @@ class MobDetection {
         MobData.previousEntityLiving.clear()
         MobData.previousEntityLiving.addAll(MobData.currentEntityLiving)
         MobData.currentEntityLiving.clear()
-        MobData.currentEntityLiving.addAll(EntityUtils.getEntities<EntityLivingBase>()
+        MobData.currentEntityLiving.addAll(McWorld.getEntitiesOf<EntityLivingBase>()
             .filter { it !is EntityArmorStand && it !is EntityPlayerSP })
 
         if (forceReset) {
@@ -129,12 +130,12 @@ class MobDetection {
     private fun getRetry(entity: EntityLivingBase) = MobData.retries[entity.entityId]
 
     /** @return always true */
-    private fun mobDetectionError(string: String) = logger.log(string).let { true }
+    private fun mobDetectionError(string: String) = MobData.logger.log(string).let { true }
 
     /**@return a false means that it should try again (later)*/
     private fun entitySpawn(entity: EntityLivingBase, roughType: Mob.Type): Boolean {
         when (roughType) {
-            Mob.Type.PLAYER -> MobEvent.Spawn.Player(MobFactories.player(entity)).postAndCatch()
+            Mob.Type.PLAYER -> MobEvent.Spawn.Player(MobFactories.player(entity)).post()
 
             Mob.Type.DISPLAY_NPC -> return MobFilter.createDisplayNPC(entity)
             Mob.Type.BASIC -> {
@@ -156,7 +157,7 @@ class MobDetection {
                             Mob.Type.PROJECTILE -> MobEvent.Spawn.Projectile(mob)
                             Mob.Type.DISPLAY_NPC -> MobEvent.Spawn.DisplayNPC(mob) // Needed for some special cases
                             Mob.Type.PLAYER -> return mobDetectionError("An Player Ended Here. How?")
-                        }.postAndCatch()
+                        }.post()
                     }
                 }
             }
@@ -179,14 +180,14 @@ class MobDetection {
     private fun handleMobsFromPacket() = entityFromPacket.drainForEach { (type, id) ->
         when (type) {
             EntityPacketType.SPIRIT_BAT -> {
-                val entity = EntityUtils.getEntityByID(id) as? EntityBat ?: return@drainForEach
+                val entity = McWorld.getEntity(id) as? EntityBat ?: return@drainForEach
                 if (MobData.entityToMob[entity] != null) return@drainForEach
                 removeRetry(entity)
-                MobEvent.Spawn.Projectile(MobFactories.projectile(entity, "Spirit Scepter Bat")).postAndCatch()
+                MobEvent.Spawn.Projectile(MobFactories.projectile(entity, "Spirit Scepter Bat")).post()
             }
 
             EntityPacketType.VILLAGER -> {
-                val entity = EntityUtils.getEntityByID(id) as? EntityVillager ?: return@drainForEach
+                val entity = McWorld.getEntity(id) as? EntityVillager ?: return@drainForEach
                 val mob = MobData.entityToMob[entity]
                 if (mob != null && mob.mobType == Mob.Type.DISPLAY_NPC) {
                     MobEvent.DeSpawn.DisplayNPC(mob)
@@ -202,16 +203,16 @@ class MobDetection {
             }
 
             EntityPacketType.CREEPER_VAIL -> {
-                val entity = EntityUtils.getEntityByID(id) as? EntityCreeper ?: return@drainForEach
+                val entity = McWorld.getEntity(id) as? EntityCreeper ?: return@drainForEach
                 if (MobData.entityToMob[entity] != null) return@drainForEach
                 if (!entity.powered) return@drainForEach
                 removeRetry(entity)
-                MobEvent.Spawn.Special(MobFactories.special(entity, "Creeper Veil")).postAndCatch()
+                MobEvent.Spawn.Special(MobFactories.special(entity, "Creeper Veil")).post()
             }
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onEntityHealthUpdateEvent(event: EntityHealthUpdateEvent) {
         when {
             event.entity is EntityBat && event.health == 6 -> {
@@ -228,14 +229,14 @@ class MobDetection {
         }
     }
 
-    private fun islandException(): Boolean = when (LorenzUtils.skyBlockIsland) {
+    private fun islandException(): Boolean = when (SkyBlockAPI.island) {
         IslandType.GARDEN_GUEST -> true
         IslandType.PRIVATE_ISLAND_GUEST -> true
         else -> false
     }
 
     private fun entityDeSpawn(entity: EntityLivingBase) {
-        MobData.entityToMob[entity]?.createDeSpawnEvent()?.postAndCatch() ?: removeRetry(entity)
+        MobData.entityToMob[entity]?.createDeSpawnEvent()?.post() ?: removeRetry(entity)
         allEntitiesViaPacketId.remove(entity.entityId)
     }
 
@@ -263,7 +264,7 @@ class MobDetection {
 
             val entity = retry.entity
             if (retry.times == MAX_RETRIES) {
-                logger.log(
+                MobData.logger.log(
                     "`${retry.entity.name}`${retry.entity.entityId} missed {\n "
                         + "is already Found: ${MobData.entityToMob[retry.entity] != null})."
                         + "\n Position: ${retry.entity.getLorenzVec()}\n "
@@ -299,7 +300,7 @@ class MobDetection {
     }
 
     private fun handleEntityUpdate(entityID: Int): Boolean {
-        val entity = EntityUtils.getEntityByID(entityID) as? EntityLivingBase ?: return false
+        val entity = McWorld.getEntity(entityID) as? EntityLivingBase ?: return false
         getRetry(entity)?.apply { this.entity = entity }
         MobData.currentEntityLiving.refreshReference(entity)
         MobData.previousEntityLiving.refreshReference(entity)
@@ -308,8 +309,8 @@ class MobDetection {
         return true
     }
 
-    @SubscribeEvent
-    fun onEntitySpawnPacket(event: PacketEvent.ReceiveEvent) {
+    @HandleEvent
+    fun onEntitySpawnPacket(event: ReceivePacketEvent) {
         when (val packet = event.packet) {
             is S0FPacketSpawnMob -> addEntityUpdate(packet.entityID)
             is S0CPacketSpawnPlayer -> addEntityUpdate(packet.entityID)
@@ -330,12 +331,12 @@ class MobDetection {
         allEntitiesViaPacketId.add(id)
     }
 
-    @SubscribeEvent
-    fun onDisconnect(event: FMLNetworkEvent.ClientDisconnectionFromServerEvent) {
+    @HandleEvent
+    fun onDisconnect(event: ClientDisconnectEvent) {
         shouldClear.set(true)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Mob Detection")
         if (forceReset) {

@@ -1,19 +1,24 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class SkyBlockKickDuration {
+@SkyHanniModule
+object SkyBlockKickDuration {
 
     private val config get() = SkyHanniMod.feature.misc.kickDuration
 
@@ -22,12 +27,12 @@ class SkyBlockKickDuration {
     private var lastKickTime = SimpleTimeMark.farPast()
     private var hasWarned = false
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         if (event.message == "§cYou were kicked while joining that server!") {
 
-            if (LorenzUtils.onHypixel && !LorenzUtils.inSkyBlock) {
+            if (HypixelAPI.onHypixel && !SkyBlockAPI.isConnected) {
                 kickMessage = false
                 showTime = true
                 lastKickTime = SimpleTimeMark.now()
@@ -43,8 +48,8 @@ class SkyBlockKickDuration {
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         if (!isEnabled()) return
         if (kickMessage) {
             kickMessage = false
@@ -54,13 +59,13 @@ class SkyBlockKickDuration {
         hasWarned = false
     }
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
-        if (!LorenzUtils.onHypixel) return
+        if (!HypixelAPI.onHypixel) return
         if (!showTime) return
 
-        if (LorenzUtils.inSkyBlock) {
+        if (SkyBlockAPI.isConnected) {
             showTime = false
         }
 
@@ -83,8 +88,8 @@ class SkyBlockKickDuration {
     }
 
     private fun warn() {
-        LorenzUtils.sendTitle("§eTry rejoining SkyBlock now!", 3.seconds)
-        SoundUtils.playBeepSound()
+        TitleManager.sendTitle("§eTry rejoining SkyBlock now!", 3.seconds)
+        McSound.BEEP.play()
     }
 
     fun isEnabled() = config.enabled

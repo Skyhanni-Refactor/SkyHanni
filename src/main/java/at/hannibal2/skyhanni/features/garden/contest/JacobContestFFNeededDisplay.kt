@@ -1,33 +1,35 @@
 package at.hannibal2.skyhanni.features.garden.contest
 
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.RenderItemTooltipEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTooltipEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.FarmingFortuneDisplay.getLatestTrueFarmingFortune
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed.getLatestBlocksPerSecond
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.ceil
 import kotlin.time.Duration.Companion.milliseconds
 
-class JacobContestFFNeededDisplay {
+@SkyHanniModule
+object JacobContestFFNeededDisplay {
 
     private val config get() = GardenAPI.config
     private var display = emptyList<List<Any>>()
     private var lastToolTipTime = SimpleTimeMark.farPast()
     private val cache = mutableMapOf<ItemStack, List<List<Any>>>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTooltip(event: RenderItemTooltipEvent) {
         if (!isEnabled()) return
 
@@ -50,7 +52,7 @@ class JacobContestFFNeededDisplay {
         lastToolTipTime = SimpleTimeMark.now()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         cache.clear()
     }
@@ -79,7 +81,7 @@ class JacobContestFFNeededDisplay {
             addAsSingletonList("§cassuming 19.9 instead.")
         } else {
             if (blocksPerSecond < 15.0) {
-                add(listOf("§7Your latest ", crop.icon, "§7blocks/second: §e${blocksPerSecond.round(2)}"))
+                add(listOf("§7Your latest ", crop.icon, "§7blocks/second: §e${blocksPerSecond.roundTo(2)}"))
                 add(listOf("§cThis is too low, showing 19.9 Blocks/second instead!"))
                 blocksPerSecond = 19.9
             }
@@ -114,15 +116,15 @@ class JacobContestFFNeededDisplay {
         return " ${bracket.displayName}§f: §6$format FF §7(${counter.addSeparators()} crops)"
     }
 
-    @SubscribeEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!isEnabled()) return
         if (!FarmingContestAPI.inInventory) return
         if (lastToolTipTime.passedSince() < 200.milliseconds) return
         config.farmingFortuneForContestPos.renderStringsAndItems(display, posLabel = "Jacob Contest Crop Data")
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.farmingFortuneForContest
+    fun isEnabled() = SkyBlockAPI.isConnected && config.farmingFortuneForContest
 }
 
 private fun CropType.getRealBlocksPerSecond(): Double {

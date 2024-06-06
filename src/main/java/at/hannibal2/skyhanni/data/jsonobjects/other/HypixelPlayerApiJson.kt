@@ -2,7 +2,6 @@ package at.hannibal2.skyhanni.data.jsonobjects.other
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import javax.annotation.Nullable
 
 data class HypixelPlayerApiJson(
     @Expose val profiles: List<HypixelApiProfile>

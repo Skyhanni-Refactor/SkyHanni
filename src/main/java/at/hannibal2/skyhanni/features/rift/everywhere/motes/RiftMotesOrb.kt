@@ -1,23 +1,24 @@
 package at.hannibal2.skyhanni.features.rift.everywhere.motes
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
-import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.LorenzVec
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
+import at.hannibal2.skyhanni.utils.RenderUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.util.EnumParticleTypes
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class RiftMotesOrb {
+@SkyHanniModule
+object RiftMotesOrb {
 
     private val config get() = RiftAPI.config.motesOrbs
 
@@ -37,7 +38,7 @@ class RiftMotesOrb {
         var pickedUp: Boolean = false,
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
         val location = event.location.add(-0.5, 0.0, -0.5)
@@ -53,13 +54,13 @@ class RiftMotesOrb {
             orb.counter++
             orb.pickedUp = false
             if (config.hideParticles && orb.isOrb) {
-                event.isCanceled = true
+                event.cancel()
             }
         }
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         motesPattern.matchMatcher(event.message) {
             motesOrbs.minByOrNull { it.location.distanceToPlayer() }?.let {
                 it.pickedUp = true
@@ -67,8 +68,8 @@ class RiftMotesOrb {
         }
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
 
         motesOrbs = motesOrbs.editCopy { removeIf { System.currentTimeMillis() > it.lastTime + 2000 } }
@@ -77,7 +78,7 @@ class RiftMotesOrb {
             val ageInSeconds = (System.currentTimeMillis() - orb.startTime).toDouble() / 1000
             if (ageInSeconds < 0.5) continue
 
-            val particlesPerSecond = (orb.counter.toDouble() / ageInSeconds).round(1)
+            val particlesPerSecond = (orb.counter.toDouble() / ageInSeconds).roundTo(1)
             if (particlesPerSecond < 60 || particlesPerSecond > 90) continue
             orb.isOrb = true
 
@@ -95,9 +96,4 @@ class RiftMotesOrb {
     }
 
     fun isEnabled() = RiftAPI.inRift() && config.enabled
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(9, "rift.area.motesOrbsConfig", "rift.area.motesOrbs")
-    }
 }

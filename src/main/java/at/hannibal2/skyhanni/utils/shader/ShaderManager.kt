@@ -1,13 +1,15 @@
 package at.hannibal2.skyhanni.utils.shader
 
+import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.features.chroma.StandardChromaShader
 import at.hannibal2.skyhanni.features.chroma.TexturedChromaShader
 import at.hannibal2.skyhanni.features.misc.DarkenShader
 import at.hannibal2.skyhanni.features.misc.RoundedRectangleOutlineShader
 import at.hannibal2.skyhanni.features.misc.RoundedRectangleShader
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.mc.McClient
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import net.minecraft.util.ResourceLocation
 import org.apache.commons.lang3.StringUtils
 import org.lwjgl.opengl.OpenGLException
@@ -83,8 +85,7 @@ object ShaderManager {
 
         val source = StringBuilder()
 
-        val inputStream = Minecraft.getMinecraft().resourceManager.getResource(resourceLocation).inputStream
-        BufferedReader(InputStreamReader(inputStream)).forEachLine {
+        BufferedReader(InputStreamReader(McClient.getResource(resourceLocation))).forEachLine {
             source.append(it).append("\n")
         }
 
@@ -104,7 +105,7 @@ object ShaderManager {
                     "GLSL Compilation Error:\n" to errorLog
                 )
             } else {
-                LorenzUtils.consoleLog("$errorMessage $errorLog")
+                SkyHanniMod.logger.info("$errorMessage $errorLog")
             }
 
             return -1
@@ -113,7 +114,7 @@ object ShaderManager {
         return shaderID
     }
 
-    fun inWorld() = (Minecraft.getMinecraft().theWorld != null) && (Minecraft.getMinecraft().thePlayer != null)
+    fun inWorld() = McWorld.hasWorld && McPlayer.hasPlayer
 }
 
 enum class ShaderType(val extension: String, val shaderType: Int) {

@@ -1,24 +1,25 @@
 package at.hannibal2.skyhanni.features.misc
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.ItemAddEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.inventory.ItemAddEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import io.github.moulberry.notenoughupdates.NotEnoughUpdates
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.hours
 
-class FixNEUHeavyPearls {
+@SkyHanniModule
+object FixNEUHeavyPearls {
 
     private val config get() = SkyHanniMod.feature.misc
-    private val heavyPearl = "HEAVY_PEARL".asInternalName()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onItemAdd(event: ItemAddEvent) {
         if (!isEnabled()) return
 
-        if (event.internalName == heavyPearl && event.amount == 3) {
+        if (event.internalName == SkyhanniItems.HEAVY_PEARL() && event.amount == 3) {
             val specific = NotEnoughUpdates.INSTANCE.config.getProfileSpecific()
             if (System.currentTimeMillis() > specific.dailyHeavyPearlCompleted + 1.hours.inWholeMilliseconds) {
                 ChatUtils.chat("Mark NEU Heavy Pearls as done.")
@@ -27,5 +28,5 @@ class FixNEUHeavyPearls {
         }
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.fixNeuHeavyPearls
+    fun isEnabled() = SkyBlockAPI.isConnected && config.fixNeuHeavyPearls
 }

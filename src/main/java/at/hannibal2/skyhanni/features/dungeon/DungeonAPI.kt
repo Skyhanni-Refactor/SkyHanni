@@ -1,24 +1,24 @@
 package at.hannibal2.skyhanni.features.dungeon
 
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.data.ProfileStorageData
 import at.hannibal2.skyhanni.data.ScoreboardData
-import at.hannibal2.skyhanni.events.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.DungeonBossRoomEnterEvent
-import at.hannibal2.skyhanni.events.DungeonCompleteEvent
-import at.hannibal2.skyhanni.events.DungeonEnterEvent
-import at.hannibal2.skyhanni.events.DungeonStartEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.TablistFooterUpdateEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.dungeon.DungeonBossRoomEnterEvent
+import at.hannibal2.skyhanni.events.dungeon.DungeonCompleteEvent
+import at.hannibal2.skyhanni.events.dungeon.DungeonEnterEvent
+import at.hannibal2.skyhanni.events.dungeon.DungeonStartEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.TablistFooterUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.CollectionUtils.equalsOneOf
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimalIfNecessary
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
@@ -27,10 +27,11 @@ import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.StringUtils.firstLetterUppercase
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object DungeonAPI {
 
     private val floorPattern = " §7⏣ §cThe Catacombs §7\\((?<floor>.*)\\)".toPattern()
@@ -100,7 +101,7 @@ object DungeonAPI {
         val message = rawMessage.removeColor()
         val bossName = message.substringAfter("[BOSS] ").substringBefore(":").trim()
         if ((bossName != "The Watcher") && dungeonFloor != null && checkBossName(bossName) && !inBossRoom) {
-            DungeonBossRoomEnterEvent().postAndCatch()
+            DungeonBossRoomEnterEvent().post()
             inBossRoom = true
         }
     }
@@ -154,19 +155,19 @@ object DungeonAPI {
         else -> "§7"
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTick(event: ClientTickEvent) {
         if (dungeonFloor == null) {
             ScoreboardData.sidebarLinesFormatted.matchFirst(floorPattern) {
                 val floor = group("floor")
                 dungeonFloor = floor
-                DungeonEnterEvent(floor).postAndCatch()
+                DungeonEnterEvent(floor).post()
             }
         }
         if (dungeonFloor != null && playerClass == null) {
             val playerTeam =
                 TabListData.getTabList().firstOrNull {
-                    it.contains(LorenzUtils.getPlayerName())
+                    it.contains(McPlayer.name)
                 }?.removeColor() ?: ""
 
             DungeonClass.entries.forEach {
@@ -179,7 +180,7 @@ object DungeonAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onTabUpdate(event: TablistFooterUpdateEvent) {
         if (!inDungeon()) return
         val tabList = event.footer.split("\n")
@@ -199,8 +200,8 @@ object DungeonAPI {
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         dungeonFloor = null
         started = false
         inBossRoom = false
@@ -211,18 +212,17 @@ object DungeonAPI {
         DungeonBlessings.reset()
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
         val floor = dungeonFloor ?: return
         if (event.message == "§e[NPC] §bMort§f: §rHere, I found this map when I first entered the dungeon.") {
             started = true
-            DungeonStartEvent(floor).postAndCatch()
+            DungeonStartEvent(floor).post()
         }
         if (event.message.removeColor().matches(uniqueClassBonus)) {
             isUniqueClass = true
         }
 
-        if (!LorenzUtils.inSkyBlock) return
         killPattern.matchMatcher(event.message.removeColor()) {
             val bossCollections = bossStorage ?: return
             val boss = DungeonFloor.byBossName(group("boss"))
@@ -233,13 +233,13 @@ object DungeonAPI {
         }
         dungeonComplete.matchMatcher(event.message) {
             completed = true
-            DungeonCompleteEvent(floor).postAndCatch()
+            DungeonCompleteEvent(floor).post()
             return
         }
     }
 
     // This returns a map of boss name to the integer for the amount of kills the user has in the collection
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         val bossCollections = bossStorage ?: return
 
@@ -299,7 +299,7 @@ object DungeonAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Dungeon")
 

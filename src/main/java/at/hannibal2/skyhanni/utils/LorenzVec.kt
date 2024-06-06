@@ -1,10 +1,9 @@
 package at.hannibal2.skyhanni.utils
 
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.Entity
 import net.minecraft.network.play.server.S2APacketParticles
-import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
 import net.minecraft.util.Rotations
 import net.minecraft.util.Vec3
@@ -74,15 +73,6 @@ data class LorenzVec(
 
     override fun toString() = "LorenzVec{x=$x, y=$y, z=$z}"
 
-    @Deprecated("Use operator fun times instead", ReplaceWith("this * LorenzVec(x, y, z)"))
-    fun multiply(d: Double): LorenzVec = LorenzVec(x * d, y * d, z * d)
-
-    @Deprecated("Use operator fun times instead", ReplaceWith("this * LorenzVec(x, y, z)"))
-    fun multiply(d: Int): LorenzVec = LorenzVec(x * d, y * d, z * d)
-
-    @Deprecated("Use operator fun times instead", ReplaceWith("this * LorenzVec(x, y, z)"))
-    fun multiply(v: LorenzVec) = LorenzVec(x * v.x, y * v.y, z * v.z)
-
     fun dotProduct(other: LorenzVec): Double = (x * other.x) + (y * other.y) + (z * other.z)
 
     fun angleAsCos(other: LorenzVec) = this.normalize().dotProduct(other.normalize())
@@ -90,12 +80,6 @@ data class LorenzVec(
     fun angleInRad(other: LorenzVec) = acos(this.angleAsCos(other))
 
     fun angleInDeg(other: LorenzVec) = Math.toDegrees(this.angleInRad(other))
-
-    @Deprecated("Use operator fun plus instead", ReplaceWith("this + other"))
-    fun add(other: LorenzVec) = LorenzVec(x + other.x, y + other.y, z + other.z)
-
-    @Deprecated("Use operator fun minus instead", ReplaceWith("this - other"))
-    fun subtract(other: LorenzVec) = LorenzVec(x - other.x, y - other.y, z - other.z)
 
     fun normalize() = length().let { LorenzVec(x / it, y / it, z / it) }
 
@@ -150,12 +134,12 @@ data class LorenzVec(
         return result
     }
 
-    fun round(decimals: Int) = LorenzVec(x.round(decimals), y.round(decimals), z.round(decimals))
+    fun round(decimals: Int) = LorenzVec(x.roundTo(decimals), y.roundTo(decimals), z.roundTo(decimals))
 
     fun roundLocationToBlock(): LorenzVec {
-        val x = (x - .499999).round(0)
-        val y = (y - .499999).round(0)
-        val z = (z - .499999).round(0)
+        val x = (x - .499999).roundTo(0)
+        val y = (y - .499999).roundTo(0)
+        val z = (z - .499999).roundTo(0)
         return LorenzVec(x, y, z)
     }
 
@@ -168,16 +152,11 @@ data class LorenzVec(
         return LorenzVec(x, y, z)
     }
 
-    fun boundingToOffset(offX: Double, offY: Double, offZ: Double) =
-        AxisAlignedBB(x, y, z, x + offX, y + offY, z + offZ)
-
     fun scale(scalar: Double): LorenzVec = LorenzVec(scalar * x, scalar * y, scalar * z)
 
     fun applyTranslationToGL() {
         GlStateManager.translate(x, y, z)
     }
-
-    fun axisAlignedTo(other: LorenzVec) = AxisAlignedBB(x, y, z, other.x, other.y, other.z)
 
     fun up(offset: Double): LorenzVec = copy(y = y + offset)
 
@@ -256,7 +235,3 @@ fun Array<Double>.toLorenzVec(): LorenzVec {
 }
 
 fun RenderUtils.translate(vec: LorenzVec) = GlStateManager.translate(vec.x, vec.y, vec.z)
-
-fun AxisAlignedBB.expand(vec: LorenzVec): AxisAlignedBB = this.expand(vec.x, vec.y, vec.z)
-
-fun AxisAlignedBB.expand(amount: Double): AxisAlignedBB = this.expand(amount, amount, amount)

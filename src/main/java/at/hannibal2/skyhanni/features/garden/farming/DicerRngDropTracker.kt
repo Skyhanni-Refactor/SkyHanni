@@ -1,13 +1,14 @@
 package at.hannibal2.skyhanni.features.garden.farming
 
-import at.hannibal2.skyhanni.config.ConfigManager
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.GardenToolChangeEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.features.garden.CropType
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
 import at.hannibal2.skyhanni.utils.ConditionalUtils
@@ -19,9 +20,9 @@ import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import at.hannibal2.skyhanni.utils.tracker.TrackerData
 import com.google.gson.annotations.Expose
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.regex.Pattern
 
+@SkyHanniModule
 object DicerRngDropTracker {
 
     private val itemDrops = mutableListOf<ItemDrop>()
@@ -94,9 +95,8 @@ object DicerRngDropTracker {
         PRAY_TO_RNGESUS('5', "PRAY TO RNGESUS"),
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
-        if (!GardenAPI.inGarden()) return
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
+    fun onChat(event: SkyHanniChatEvent) {
         if (!config.hideChat && !config.display) return
 
         val message = event.message
@@ -111,7 +111,7 @@ object DicerRngDropTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         ConditionalUtils.onToggle(config.compact) {
             tracker.update()
@@ -149,7 +149,7 @@ object DicerRngDropTracker {
     private var cropInHand: CropType? = null
     private var toolName = ""
 
-    @SubscribeEvent
+    @HandleEvent
     fun onGardenToolChange(event: GardenToolChangeEvent) {
         val crop = event.crop
         cropInHand = if (crop == CropType.MELON || crop == CropType.PUMPKIN) crop else null
@@ -166,7 +166,7 @@ object DicerRngDropTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent) {
         if (!isEnabled()) return
 
@@ -176,27 +176,6 @@ object DicerRngDropTracker {
     class ItemDrop(val crop: CropType, val rarity: DropRarity, val pattern: Pattern)
 
     fun isEnabled() = GardenAPI.inGarden() && config.display
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.dicerCounterDisplay", "garden.dicerCounters.display")
-        event.move(3, "garden.dicerCounterHideChat", "garden.dicerCounters.hideChat")
-        event.move(3, "garden.dicerCounterPos", "garden.dicerCounters.pos")
-
-        event.move(7, "#profile.garden.dicerRngDrops", "#profile.garden.dicerDropTracker.drops") { old ->
-            val items: MutableMap<CropType, MutableMap<DropRarity, Int>> = mutableMapOf()
-            val oldItems = ConfigManager.gson.fromJson<Map<String, Int>>(old, Map::class.java)
-            for ((internalName, amount) in oldItems) {
-                val split = internalName.split(".")
-                val crop = CropType.getByName(split[0])
-                val rarityName = split[1]
-                val rarity = DropRarity.valueOf(rarityName)
-                items.getOrPut(crop) { mutableMapOf() }[rarity] = amount
-            }
-
-            ConfigManager.gson.toJsonTree(items)
-        }
-    }
 
     fun resetCommand() {
         tracker.resetCommand()

@@ -1,21 +1,19 @@
 package at.hannibal2.skyhanni.features.mining.powdertracker
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.config.features.mining.PowderTrackerConfig.PowderDisplayEntry
-import at.hannibal2.skyhanni.data.BossbarData
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.IslandChangeEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.BossbarAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
-import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
@@ -26,9 +24,9 @@ import at.hannibal2.skyhanni.utils.tracker.TrackerData
 import com.google.gson.JsonArray
 import com.google.gson.JsonNull
 import com.google.gson.annotations.Expose
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.minutes
 
+@SkyHanniModule
 object PowderTracker {
 
     private val config get() = SkyHanniMod.feature.mining.powderTracker
@@ -77,7 +75,7 @@ object PowderTracker {
         PowderChestReward.entries.forEach { it.chatPattern }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         calculateResourceHour(gemstoneInfo)
@@ -85,6 +83,18 @@ object PowderTracker {
         calculateResourceHour(diamondEssenceInfo)
         calculateResourceHour(goldEssenceInfo)
         calculateResourceHour(chestInfo)
+
+        doublePowder = powderBossBarPattern.matcher(BossbarAPI.getBossbar()).find()
+        powderBossBarPattern.matchMatcher(BossbarAPI.getBossbar()) {
+            powderTimer = group("time")
+            doublePowder = powderTimer != "00:00"
+
+            tracker.update()
+        }
+
+        if (lastChestPicked.passedSince() > 1.minutes) {
+            isGrinding = false
+        }
     }
 
     private val tracker = SkyHanniTracker("Powder Tracker", { Data() }, { it.powderTracker })
@@ -104,7 +114,7 @@ object PowderTracker {
         var rewards: MutableMap<PowderChestReward, Long> = mutableMapOf()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent) {
         if (!isEnabled()) return
 
@@ -113,8 +123,8 @@ object PowderTracker {
         tracker.renderDisplay(config.position)
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         val msg = event.message
 
@@ -153,32 +163,15 @@ object PowderTracker {
         tracker.update()
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!isEnabled()) return
-        if (event.repeatSeconds(1)) {
-            doublePowder = powderBossBarPattern.matcher(BossbarData.getBossbar()).find()
-            powderBossBarPattern.matchMatcher(BossbarData.getBossbar()) {
-                powderTimer = group("time")
-                doublePowder = powderTimer != "00:00"
-
-                tracker.update()
-            }
-        }
-        if (lastChestPicked.passedSince() > 1.minutes) {
-            isGrinding = false
-        }
-    }
-
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         config.textFormat.afterChange {
             tracker.update()
         }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         if (!isEnabled()) return
         gemstoneInfo.perHour = 0.0
         gemstoneInfo.stoppedChecks = 0
@@ -199,27 +192,7 @@ object PowderTracker {
         tracker.update()
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.powderTrackerConfig", "mining.powderTracker")
-        event.transform(8, "#profile.powderTracker") { old -> old.asJsonObject.get("0") }
-        event.transform(11, "mining.powderTracker.textFormat") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, PowderDisplayEntry::class.java)
-        }
-
-        event.transform(20, "mining.powderTracker.textFormat") { element ->
-            val newList = JsonArray()
-            for (entry in element.asJsonArray) {
-                if (entry is JsonNull) continue
-                if (entry.asString.let { it != "TITLE" && it != "DISPLAY_MODE" }) {
-                    newList.add(entry)
-                }
-            }
-            newList
-        }
-    }
-
-    @SubscribeEvent
+    @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         if (event.newIsland == IslandType.CRYSTAL_HOLLOWS) {
             tracker.firstUpdate()
@@ -375,5 +348,19 @@ object PowderTracker {
 
     fun resetCommand() {
         tracker.resetCommand()
+    }
+
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
+        event.transform(20, "mining.powderTracker.textFormat") { element ->
+            val newList = JsonArray()
+            for (entry in element.asJsonArray) {
+                if (entry is JsonNull) continue
+                if (entry.asString.let { it != "TITLE" && it != "DISPLAY_MODE" }) {
+                    newList.add(entry)
+                }
+            }
+            newList
+        }
     }
 }

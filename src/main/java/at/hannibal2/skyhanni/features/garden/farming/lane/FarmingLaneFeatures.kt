@@ -1,36 +1,38 @@
 package at.hannibal2.skyhanni.features.garden.farming.lane
 
-import at.hannibal2.skyhanni.events.GardenToolChangeEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.farming.FarmingLaneSwitchEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.events.garden.farming.FarmingLaneSwitchEvent
+import at.hannibal2.skyhanni.events.garden.farming.GardenToolChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.farming.lane.FarmingLaneAPI.getValue
 import at.hannibal2.skyhanni.features.garden.farming.lane.FarmingLaneAPI.setValue
 import at.hannibal2.skyhanni.features.misc.MovementSpeedDisplay
-import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.LorenzVec
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
+import at.hannibal2.skyhanni.utils.RenderUtils.drawWaypointFilled
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
-import at.hannibal2.skyhanni.utils.SoundUtils.playSound
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import at.hannibal2.skyhanni.utils.TimeUtils.ticks
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.ticks
+import at.hannibal2.skyhanni.utils.mc.McSound
 import kotlin.math.absoluteValue
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object FarmingLaneFeatures {
     val config get() = FarmingLaneAPI.config
 
-    private var currentPositon: Double? = null
+    private var currentPosition: Double? = null
     private var currentDistance = 0.0
 
     private var display = listOf<String>()
@@ -49,19 +51,18 @@ object FarmingLaneFeatures {
         ;
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onFarmingLaneSwitch(event: FarmingLaneSwitchEvent) {
         display = emptyList()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onGardenToolChange(event: GardenToolChangeEvent) {
         display = emptyList()
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!GardenAPI.inGarden()) return
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
+    fun onTick(event: ClientTickEvent) {
         if (!config.distanceDisplay && !config.laneSwitchNotification.enabled) return
 
         if (!calculateDistance()) return
@@ -73,7 +74,7 @@ object FarmingLaneFeatures {
 
         if (config.distanceDisplay) {
             display = buildList {
-                add("§7Distance until switch: §e${currentDistance.round(1)}")
+                add("§7Distance until switch: §e${currentDistance.roundTo(1)}")
 
                 val normal = movementState == MovementState.NORMAL
                 val color = if (normal) "§b" else "§8"
@@ -117,14 +118,14 @@ object FarmingLaneFeatures {
         return true
     }
 
-    private fun calculateDirection(newPositon: Double): Int? {
-        val position = currentPositon ?: run {
-            currentPositon = newPositon
+    private fun calculateDirection(newPosition: Double): Int? {
+        val position = currentPosition ?: run {
+            currentPosition = newPosition
             return null
         }
-        currentPositon = newPositon
+        currentPosition = newPosition
 
-        val diff = position - newPositon
+        val diff = position - newPosition
         return if (diff > 0) {
             1
         } else if (diff < 0) {
@@ -137,7 +138,7 @@ object FarmingLaneFeatures {
     private fun showWarning() {
         with(config.laneSwitchNotification) {
             if (enabled) {
-                LorenzUtils.sendTitle(text.replace("&", "§"), 2.seconds)
+                TitleManager.sendTitle(text.replace("&", "§"), 2.seconds)
                 if (lastPlaySound.passedSince() >= sound.repeatDuration.ticks) {
                     lastPlaySound = SimpleTimeMark.now()
                     playUserSound()
@@ -149,7 +150,7 @@ object FarmingLaneFeatures {
     private var sameSpeedCounter = 0
 
     private fun calculateSpeed(): Boolean {
-        val speed = MovementSpeedDisplay.speed.round(2)
+        val speed = MovementSpeedDisplay.speed.roundTo(2)
         movementState = calculateMovementState(speed)
         if (movementState != MovementState.NORMAL) return false
 
@@ -189,9 +190,8 @@ object FarmingLaneFeatures {
         return MovementState.NORMAL
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
-        if (!GardenAPI.inGarden()) return
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!config.cornerWaypoints) return
 
         val lane = FarmingLaneAPI.currentLane ?: return
@@ -208,9 +208,8 @@ object FarmingLaneFeatures {
 
     private fun LorenzVec.capAtBuildHeight(): LorenzVec = if (y > 76) copy(y = 76.0) else this
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!GardenAPI.inGarden()) return
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!config.distanceDisplay) return
 
         config.distanceDisplayPosition.renderStrings(display, posLabel = "Lane Display")
@@ -219,7 +218,7 @@ object FarmingLaneFeatures {
     @JvmStatic
     fun playUserSound() {
         with(config.laneSwitchNotification.sound) {
-            SoundUtils.createSound(name, pitch).playSound()
+            McSound.play(name, pitch)
         }
     }
 }

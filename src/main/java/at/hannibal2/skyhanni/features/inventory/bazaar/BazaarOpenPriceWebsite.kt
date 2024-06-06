@@ -1,26 +1,27 @@
 package at.hannibal2.skyhanni.features.inventory.bazaar
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.GuiContainerEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.render.gui.ReplaceItemEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.system.OS
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.entity.player.InventoryPlayer
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.seconds
 
-class BazaarOpenPriceWebsite {
+@SkyHanniModule
+object BazaarOpenPriceWebsite {
 
     private val config get() = SkyHanniMod.feature.inventory.bazaar
     private var lastClick = SimpleTimeMark.farPast()
 
     private val item by lazy {
-        val neuItem = "PAPER".asInternalName().getItemStack()
+        val neuItem = SkyhanniItems.PAPER().getItemStack()
         Utils.createItemStack(
             neuItem.item,
             "§bPrice History",
@@ -30,7 +31,7 @@ class BazaarOpenPriceWebsite {
         )
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun replaceItem(event: ReplaceItemEvent) {
         if (!isEnabled()) return
         BazaarApi.currentlyOpenedProduct ?: return
@@ -41,16 +42,16 @@ class BazaarOpenPriceWebsite {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent(priority = HandleEvent.HIGH)
+    fun onSlotClick(event: SlotClickEvent) {
         if (!isEnabled()) return
         val lastItem = BazaarApi.currentlyOpenedProduct ?: return
 
         if (event.slotId == 22) {
-            event.isCanceled = true
+            event.cancel()
             if (lastClick.passedSince() > 0.3.seconds) {
                 val name = getSkyBlockBzName(lastItem)
-                OSUtils.openBrowser("https://www.skyblock.bz/product/$name")
+                OS.openUrl("https://www.skyblock.bz/product/$name")
                 lastClick = SimpleTimeMark.now()
             }
         }

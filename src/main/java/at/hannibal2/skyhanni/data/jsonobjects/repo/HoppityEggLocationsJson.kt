@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.data.jsonobjects.repo
 
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.utils.LorenzVec
 import com.google.gson.annotations.Expose
 

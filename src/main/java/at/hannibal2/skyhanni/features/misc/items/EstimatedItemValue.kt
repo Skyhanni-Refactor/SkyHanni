@@ -1,16 +1,19 @@
 package at.hannibal2.skyhanni.features.misc.items
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ItemsJson
 import at.hannibal2.skyhanni.data.jsonobjects.repo.neu.NeuReforgeStoneJson
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.NeuRepositoryReloadEvent
-import at.hannibal2.skyhanni.events.RenderItemTooltipEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
 import at.hannibal2.skyhanni.events.item.ItemHoverEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTooltipEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
@@ -22,19 +25,18 @@ import at.hannibal2.skyhanni.utils.ItemUtils.isRune
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import io.github.moulberry.notenoughupdates.profileviewer.GuiProfileViewer
-import net.minecraft.client.Minecraft
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.math.roundToLong
 
+@SkyHanniModule
 object EstimatedItemValue {
 
     private val config get() = SkyHanniMod.feature.inventory.estimatedItemValues
@@ -46,9 +48,9 @@ object EstimatedItemValue {
     var bookBundleAmount = mapOf<String, Int>()
     private var currentlyShowing = false
 
-    fun isCurrentlyShowing() = currentlyShowing && Minecraft.getMinecraft().currentScreen != null
+    fun isCurrentlyShowing() = currentlyShowing && McScreen.isOpen
 
-    @SubscribeEvent
+    @HandleEvent
     fun onNeuRepoReload(event: NeuRepositoryReloadEvent) {
         gemstoneUnlockCosts =
             event.readConstant<HashMap<NEUInternalName, HashMap<String, List<String>>>>("gemstonecosts")
@@ -56,17 +58,16 @@ object EstimatedItemValue {
             event.readConstant<Map<NEUInternalName, NeuReforgeStoneJson>>("reforgestones")
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<ItemsJson>("Items")
-        bookBundleAmount = data.book_bundle_amount ?: error("book_bundle_amount is missing")
+        bookBundleAmount = data.bookBundleAmount
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: ItemHoverEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         if (!config.enabled) return
-        if (Minecraft.getMinecraft().currentScreen !is GuiProfileViewer) return
+        if (McScreen.screen !is GuiProfileViewer) return
 
         if (renderedItems == 0) {
             updateItem(event.itemStack)
@@ -83,8 +84,8 @@ object EstimatedItemValue {
      */
     private var renderedItems = 0
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         renderedItems = 0
     }
 
@@ -95,13 +96,12 @@ object EstimatedItemValue {
         config.itemPriceDataPos.renderStringsAndItems(display, posLabel = "Estimated Item Value")
     }
 
-    @SubscribeEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         tryRendering()
     }
 
     private fun checkCurrentlyVisible(): Boolean {
-        if (!LorenzUtils.inSkyBlock) return false
         if (!config.enabled) return false
         if (!config.hotkey.isKeyHeld() && !config.alwaysEnabled) return false
         if (System.currentTimeMillis() > lastToolTipTime + 200) return false
@@ -111,21 +111,20 @@ object EstimatedItemValue {
         return true
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         cache.clear()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         config.enchantmentsCap.onToggle {
             cache.clear()
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onRenderItemTooltip(event: RenderItemTooltipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         if (!config.enabled) return
 
         updateItem(event.stack)
@@ -222,15 +221,8 @@ object EstimatedItemValue {
         return newDisplay
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "misc.estimatedIemValueEnabled", "misc.estimatedItemValues.enabled")
-        event.move(3, "misc.estimatedItemValueHotkey", "misc.estimatedItemValues.hotkey")
-        event.move(3, "misc.estimatedIemValueAlwaysEnabled", "misc.estimatedItemValues.alwaysEnabled")
-        event.move(3, "misc.estimatedIemValueEnchantmentsCap", "misc.estimatedItemValues.enchantmentsCap")
-        event.move(3, "misc.estimatedIemValueExactPrice", "misc.estimatedItemValues.exactPrice")
-        event.move(3, "misc.itemPriceDataPos", "misc.estimatedItemValues.itemPriceDataPos")
-
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(31, "misc.estimatedItemValues", "inventory.estimatedItemValues")
     }
 }

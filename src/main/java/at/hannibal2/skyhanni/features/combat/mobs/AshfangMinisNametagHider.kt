@@ -1,20 +1,19 @@
 package at.hannibal2.skyhanni.features.combat.mobs
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.SkyHanniRenderEntityEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.render.entity.SkyHanniRenderEntityEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class AshfangMinisNametagHider {
+@SkyHanniModule
+object AshfangMinisNametagHider {
 
     private val config get() = SkyHanniMod.feature.combat.mobs
 
-    @SubscribeEvent(priority = EventPriority.HIGH)
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.HIGH)
     fun onRenderLiving(event: SkyHanniRenderEntityEvent.Specials.Pre<EntityLivingBase>) {
-        if (!LorenzUtils.inSkyBlock) return
         if (!config.hideNameTagArachneMinis) return
 
         val entity = event.entity
@@ -23,7 +22,7 @@ class AshfangMinisNametagHider {
 
         val name = entity.name
         if (name.contains("§cArachne's Brood§r")) {
-            event.isCanceled = true
+            event.cancel()
         }
     }
 }

@@ -1,16 +1,18 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
-import at.hannibal2.skyhanni.events.ProfileJoinEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
-import at.hannibal2.skyhanni.utils.TimeUtils.minutes
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.minutes
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 
+@SkyHanniModule
 object ChocolateFactoryUpgradeWarning {
 
     private val config get() = ChocolateFactoryAPI.config.chocolateUpgradeWarnings
@@ -20,9 +22,8 @@ object ChocolateFactoryUpgradeWarning {
     private var lastUpgradeSlot = -1
     private var lastUpgradeLevel = 0
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         val profileStorage = profileStorage ?: return
 
         val upgradeAvailableAt = SimpleTimeMark(profileStorage.bestUpgradeAvailableAt)
@@ -39,7 +40,7 @@ object ChocolateFactoryUpgradeWarning {
         if (lastUpgradeWarning.passedSince() < config.timeBetweenWarnings.minutes) return
         lastUpgradeWarning = SimpleTimeMark.now()
         if (config.upgradeWarningSound) {
-            SoundUtils.playBeepSound()
+            McSound.BEEP.play()
         }
         if (ChocolateFactoryAPI.inChocolateFactory) return
         ChatUtils.clickableChat(
@@ -50,8 +51,8 @@ object ChocolateFactoryUpgradeWarning {
         )
     }
 
-    @SubscribeEvent
-    fun onProfileChange(event: ProfileJoinEvent) {
+    @HandleEvent
+    fun onProfileJoin(event: ProfileJoinEvent) {
         lastUpgradeWarning = SimpleTimeMark.farPast()
     }
 

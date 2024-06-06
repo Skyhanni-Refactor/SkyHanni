@@ -1,6 +1,6 @@
 package at.hannibal2.skyhanni.utils.repopatterns
 
-import at.hannibal2.skyhanni.utils.KSerializable
+import com.google.gson.annotations.Expose
 
 /**
  * A class containing a dump of all regexes that are defined using [RepoPattern].
@@ -23,8 +23,7 @@ import at.hannibal2.skyhanni.utils.KSerializable
  * called `REPO_PAT`, which contains a [personal access token](https://github.com/settings/tokens/new) with repo write
  * access to the live repo.
  */
-@KSerializable
 data class RepoPatternDump(
-    val sourceLabel: String = "anonymous",
-    val regexes: Map<String, String> = mapOf(),
+    @Expose val sourceLabel: String = "anonymous",
+    @Expose val regexes: Map<String, String> = mapOf(),
 )

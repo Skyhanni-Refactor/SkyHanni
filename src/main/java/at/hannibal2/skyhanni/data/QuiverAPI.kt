@@ -1,35 +1,37 @@
 package at.hannibal2.skyhanni.data
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.data.jsonobjects.repo.ArrowTypeJson
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.OwnInventoryItemUpdateEvent
-import at.hannibal2.skyhanni.events.QuiverUpdateEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.inventory.OwnInventoryItemUpdateEvent
+import at.hannibal2.skyhanni.events.skyblock.QuiverUpdateEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getExtraAttributes
 import at.hannibal2.skyhanni.utils.StringUtils.removeResets
 import at.hannibal2.skyhanni.utils.StringUtils.trimWhiteSpace
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemBow
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 private var infinityQuiverLevelMultiplier = 0.03f
 
+@SkyHanniModule
 object QuiverAPI {
     private val storage get() = ProfileStorageData.profileSpecific
     var currentArrow: ArrowType?
@@ -60,7 +62,6 @@ object QuiverAPI {
     private var hasBow = false
 
     const val MAX_ARROW_AMOUNT = 2880
-    private val SKELETON_MASTER_CHESTPLATE = "SKELETON_MASTER_CHESTPLATE".asInternalName()
 
     var NONE_ARROW_TYPE: ArrowType? = null
     private var FLINT_ARROW_TYPE: ArrowType? = null
@@ -98,8 +99,8 @@ object QuiverAPI {
         "§7Active Arrow: §.(?<type>.*) §7\\(§e(?<amount>.*)§7\\)"
     )
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         val message = event.message.trimWhiteSpace().removeResets()
 
@@ -188,7 +189,7 @@ object QuiverAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryFullyLoaded(event: InventoryFullyOpenedEvent) {
         if (!isEnabled()) return
         if (!quiverInventoryNamePattern.matches(event.inventoryName)) return
@@ -206,7 +207,7 @@ object QuiverAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onInventoryUpdate(event: OwnInventoryItemUpdateEvent) {
         if (!isEnabled() && event.slot != 44) return
         val stack = event.itemStack
@@ -231,12 +232,12 @@ object QuiverAPI {
         }
     }
 
-    fun Int.asArrowPercentage() = ((this.toFloat() / MAX_ARROW_AMOUNT) * 100).round(1)
+    fun asArrowPercentage(value: Int) = ((value.toFloat() / MAX_ARROW_AMOUNT) * 100).roundTo(1)
 
     fun hasBowInInventory() = hasBow
 
     fun isHoldingBow(): Boolean {
-        InventoryUtils.getItemInHand()?.let {
+        McPlayer.heldItem?.let {
             return it.item is ItemBow && !fakeBowsPattern.matches(it.getInternalName().asString())
         } ?: return false
     }
@@ -249,12 +250,10 @@ object QuiverAPI {
         return arrows.firstOrNull { it.internalName == internalName }
     }
 
-    private fun NEUInternalName.asArrowTypeOrNull() = getArrowByNameOrNull(this)
-
-    fun isEnabled() = LorenzUtils.inSkyBlock && storage != null
+    private fun isEnabled() = storage != null
 
     private fun checkBowInventory() {
-        hasBow = InventoryUtils.getItemsInOwnInventory().any {
+        hasBow = McPlayer.inventory.any {
             it.item is ItemBow && !fakeBowsPattern.matches(it.getInternalName().asString())
         }
     }
@@ -262,18 +261,18 @@ object QuiverAPI {
     private fun checkChestplate() {
         val wasWearing = wearingSkeletonMasterChestplate
         wearingSkeletonMasterChestplate =
-            InventoryUtils.getChestplate()?.getInternalName() == SKELETON_MASTER_CHESTPLATE
+            McPlayer.chestplate?.getInternalName() == SkyhanniItems.SKELETON_MASTER_CHESTPLATE()
         if (wasWearing != wearingSkeletonMasterChestplate) {
             postUpdateEvent()
         }
     }
 
     private fun postUpdateEvent(arrowType: ArrowType? = currentArrow) {
-        QuiverUpdateEvent(arrowType, currentAmount).postAndCatch()
+        QuiverUpdateEvent(arrowType, currentAmount).post()
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         if (event.repeatSeconds(2)) {
             checkChestplate()
@@ -281,14 +280,13 @@ object QuiverAPI {
         }
     }
 
-    // Load arrows from repo
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val arrowData = event.getConstant<ArrowTypeJson>("ArrowTypes")
         arrows = arrowData.arrows.map { ArrowType(it.value.arrow, it.key.asInternalName()) }
 
-        NONE_ARROW_TYPE = getArrowByNameOrNull("NONE".asInternalName())
-        FLINT_ARROW_TYPE = getArrowByNameOrNull("ARROW".asInternalName())
+        NONE_ARROW_TYPE = getArrowByNameOrNull(SkyhanniItems.NONE())
+        FLINT_ARROW_TYPE = getArrowByNameOrNull(SkyhanniItems.ARROW())
     }
 
     class UnknownArrowType(message: String) : Exception(message)

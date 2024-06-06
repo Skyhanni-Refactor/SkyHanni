@@ -1,18 +1,20 @@
 package at.hannibal2.skyhanni.features.commands
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.misc.PartyCommandsConfig
 import at.hannibal2.skyhanni.data.FriendAPI
 import at.hannibal2.skyhanni.data.PartyAPI
-import at.hannibal2.skyhanni.data.hypixel.chat.event.PartyChatEvent
-import at.hannibal2.skyhanni.events.TabCompletionEvent
+import at.hannibal2.skyhanni.events.chat.TabCompletionEvent
+import at.hannibal2.skyhanni.events.chat.hypixel.PartyChatEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object PartyChatCommands {
 
     private val config get() = SkyHanniMod.feature.misc.partyCommands
@@ -81,16 +83,16 @@ object PartyChatCommands {
         return storage.blacklistedUsers.any { it.equals(name, ignoreCase = true) }
     }
 
-    @SubscribeEvent
-    fun onPartyCommand(event: PartyChatEvent) {
+    @HandleEvent
+    fun onPartyChat(event: PartyChatEvent) {
         if (event.message.firstOrNull() !in commandPrefixes) return
         val commandLabel = event.message.substring(1).substringBefore(' ')
         val command = indexedPartyChatCommands[commandLabel.lowercase()] ?: return
         val name = event.cleanedAuthor
 
-        if (name == LorenzUtils.getPlayerName()) return
+        if (name == McPlayer.name) return
         if (!command.isEnabled()) return
-        if (command.requiresPartyLead && PartyAPI.partyLeader != LorenzUtils.getPlayerName()) return
+        if (command.requiresPartyLead && PartyAPI.partyLeader != McPlayer.name) return
         if (isBlockedUser(name)) {
             if (config.showIgnoredReminder) ChatUtils.clickableChat(
                 "§cIgnoring chat command from ${event.author}. " +
@@ -111,7 +113,7 @@ object PartyChatCommands {
         command.executable(event)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onTabComplete(event: TabCompletionEvent) {
         if (PartyAPI.partyLeader == null) return
         val prefix = event.fullText.firstOrNull() ?: return

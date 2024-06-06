@@ -1,20 +1,29 @@
 package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.data.ClickType
-import at.hannibal2.skyhanni.events.BlockClickEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.utils.BlockUtils
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockAt
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.click.BlockClickEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.drawColor
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockEntityAt
 import net.minecraft.init.Blocks
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import net.minecraft.tileentity.TileEntitySkull
+import net.minecraftforge.common.util.Constants
 
-class DungeonHighlightClickedBlocks {
+@SkyHanniModule
+object DungeonHighlightClickedBlocks {
+
+    private const val WITHER_ESSENCE_TEXTURE = "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQ" +
+        "ubmV0L3RleHR1cmUvYzRkYjRhZGZhOWJmNDhmZjVkNDE3M" +
+        "DdhZTM0ZWE3OGJkMjM3MTY1OWZjZDhjZDg5MzQ3NDlhZjRjY2U5YiJ9fX0="
 
     private val blocks = mutableListOf<ClickedBlock>()
     private var colorIndex = 0
@@ -27,20 +36,17 @@ class DungeonHighlightClickedBlocks {
         return colors[colorIndex]
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
+    fun onChat(event: SkyHanniChatEvent) {
         if (!SkyHanniMod.feature.dungeon.highlightClickedBlocks) return
-        if (!DungeonAPI.inDungeon()) return
-
         if (event.message == "§cYou hear the sound of something opening...") {
             event.blockedReason = "dungeon_highlight_clicked_block"
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onBlockClick(event: BlockClickEvent) {
         if (!SkyHanniMod.feature.dungeon.highlightClickedBlocks) return
-        if (!DungeonAPI.inDungeon()) return
         if (DungeonAPI.inBossRoom) return
         if (event.clickType != ClickType.RIGHT_CLICK) return
 
@@ -55,11 +61,13 @@ class DungeonHighlightClickedBlocks {
         }
 
         if (type == ClickedBlockType.WITHER_ESSENCE) {
-            val text = BlockUtils.getTextureFromSkull(position.toBlockPos())
-            if (text != "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQ" +
-                "ubmV0L3RleHR1cmUvYzRkYjRhZGZhOWJmNDhmZjVkNDE3M" +
-                "DdhZTM0ZWE3OGJkMjM3MTY1OWZjZDhjZDg5MzQ3NDlhZjRjY2U5YiJ9fX0="
-            ) {
+            val entity = position.getBlockEntityAt() as TileEntitySkull
+            val text = entity.serializeNBT().getCompoundTag("Owner")
+                .getCompoundTag("Properties")
+                .getTagList("textures", Constants.NBT.TAG_COMPOUND)
+                .getCompoundTagAt(0)
+                .getString("Value")
+            if (text != WITHER_ESSENCE_TEXTURE) {
                 return
             }
         }
@@ -72,10 +80,9 @@ class DungeonHighlightClickedBlocks {
         blocks.add(ClickedBlock(position, displayText, color, System.currentTimeMillis()))
     }
 
-    @SubscribeEvent
-    fun onWorldRender(event: LorenzRenderWorldEvent) {
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!SkyHanniMod.feature.dungeon.highlightClickedBlocks) return
-        if (!DungeonAPI.inDungeon()) return
 
         blocks.removeAll { System.currentTimeMillis() > it.time + 3000 }
         blocks.forEach {

@@ -1,24 +1,23 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.MaxwellAPI
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.RenderInventoryItemTipEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.render.gui.RenderInventoryItemTipEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.StringUtils.createCommaSeparatedList
-import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class StatsTuning {
+@SkyHanniModule
+object StatsTuning {
 
     private val config get() = SkyHanniMod.feature.inventory.statsTuning
 
@@ -27,7 +26,7 @@ class StatsTuning {
         "§7Stat has: §e(?<amount>\\d+) points?"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTip(event: RenderInventoryItemTipEvent) {
         val inventoryName = event.inventoryName
 
@@ -94,10 +93,8 @@ class StatsTuning {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
+    @HandleEvent(onlyOnSkyblock = true, priority = HandleEvent.LOW)
+    fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         val chestName = InventoryUtils.openInventoryName()
         if (!config.selectedTemplate || chestName != "Stats Tuning") return
         for (slot in InventoryUtils.getItemsInOpenChest()) {
@@ -105,16 +102,8 @@ class StatsTuning {
             val lore = stack.getLore()
 
             if (lore.any { it == "§aCurrently selected!" }) {
-                slot highlight LorenzColor.GREEN
+                slot.highlight(LorenzColor.GREEN)
             }
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "inventory.statsTuningSelectedStats", "inventory.statsTuning.selectedStats")
-        event.move(3, "inventory.statsTuningSelectedTemplate", "inventory.statsTuning.selectedTemplate")
-        event.move(3, "inventory.statsTuningTemplateStats", "inventory.statsTuning.templateStats")
-        event.move(3, "inventory.statsTuningPoints", "inventory.statsTuning.points")
     }
 }

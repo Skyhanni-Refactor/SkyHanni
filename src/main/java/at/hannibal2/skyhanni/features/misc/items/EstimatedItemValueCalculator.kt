@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.features.misc.items
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
@@ -222,7 +223,7 @@ object EstimatedItemValueCalculator {
     private fun addRecomb(stack: ItemStack, list: MutableList<String>): Double {
         if (!stack.isRecombobulated()) return 0.0
 
-        val price = "RECOMBOBULATOR_3000".asInternalName().getPrice()
+        val price = SkyhanniItems.RECOMBOBULATOR_3000().getPrice()
         list.add("§7Recombobulated: §a§l✔ §7(§6" + NumberUtil.format(price) + "§7)")
         return price
     }
@@ -230,7 +231,7 @@ object EstimatedItemValueCalculator {
     private fun addJalapenoBook(stack: ItemStack, list: MutableList<String>): Double {
         if (!stack.hasJalapenoBook()) return 0.0
 
-        val price = "JALAPENO_BOOK".asInternalName().getPrice()
+        val price = SkyhanniItems.JALAPENO_BOOK().getPrice()
         list.add("§7Jalapeno Book: §a§l✔ §7(§6" + NumberUtil.format(price) + "§7)")
         return price
     }
@@ -238,8 +239,8 @@ object EstimatedItemValueCalculator {
     private fun addEtherwarp(stack: ItemStack, list: MutableList<String>): Double {
         if (!stack.hasEtherwarp()) return 0.0
 
-        val wtfHardcodedConduit = "ETHERWARP_CONDUIT".asInternalName()
-        val wtfHardcodedMerger = "ETHERWARP_MERGER".asInternalName()
+        val wtfHardcodedConduit = SkyhanniItems.ETHERWARP_CONDUIT()
+        val wtfHardcodedMerger = SkyhanniItems.ETHERWARP_MERGER()
         val price = wtfHardcodedConduit.getPrice() + wtfHardcodedMerger.getPrice()
         list.add("§7Etherwarp: §a§l✔ §7(§6" + NumberUtil.format(price) + "§7)")
         return price
@@ -248,7 +249,7 @@ object EstimatedItemValueCalculator {
     private fun addWoodSingularity(stack: ItemStack, list: MutableList<String>): Double {
         if (!stack.hasWoodSingularity()) return 0.0
 
-        val price = "WOOD_SINGULARITY".asInternalName().getPrice()
+        val price = SkyhanniItems.WOOD_SINGULARITY().getPrice()
         list.add("§7Wood Singularity: §a§l✔ §7(§6" + NumberUtil.format(price) + "§7)")
         return price
     }
@@ -256,7 +257,7 @@ object EstimatedItemValueCalculator {
     private fun addArtOfWar(stack: ItemStack, list: MutableList<String>): Double {
         if (!stack.hasArtOfWar()) return 0.0
 
-        val price = "THE_ART_OF_WAR".asInternalName().getPrice()
+        val price = SkyhanniItems.THE_ART_OF_WAR().getPrice()
         list.add("§7The Art of War: §a§l✔ §7(§6" + NumberUtil.format(price) + "§7)")
         return price
     }
@@ -264,7 +265,7 @@ object EstimatedItemValueCalculator {
     private fun addStatsBook(stack: ItemStack, list: MutableList<String>): Double {
         if (!stack.hasBookOfStats()) return 0.0
 
-        val price = "BOOK_OF_STATS".asInternalName().getPrice()
+        val price = SkyhanniItems.BOOK_OF_STATS().getPrice()
         list.add("§7Book of Stats: §a§l✔ §7(§6" + NumberUtil.format(price) + "§7)")
         return price
     }
@@ -273,7 +274,7 @@ object EstimatedItemValueCalculator {
     private fun addArtOfPeace(stack: ItemStack, list: MutableList<String>): Double {
         if (!stack.hasArtOfPeace()) return 0.0
 
-        val price = "THE_ART_OF_PEACE".asInternalName().getPrice()
+        val price = SkyhanniItems.THE_ART_OF_PEACE().getPrice()
         list.add("§7The Art Of Peace: §a§l✔ §7(§6" + NumberUtil.format(price) + "§7)")
         return price
     }
@@ -293,13 +294,13 @@ object EstimatedItemValueCalculator {
 
         var totalPrice = 0.0
 
-        val wtfHardcodedHpb = "HOT_POTATO_BOOK".asInternalName()
+        val wtfHardcodedHpb = SkyhanniItems.HOT_POTATO_BOOK()
         val hpbPrice = wtfHardcodedHpb.getPrice() * hpb
         list.add("§7HPB's: §e$hpb§7/§e10 §7(§6" + NumberUtil.format(hpbPrice) + "§7)")
         totalPrice += hpbPrice
 
         if (fuming > 0) {
-            val wtfHardcodedFuming = "FUMING_POTATO_BOOK".asInternalName()
+            val wtfHardcodedFuming = SkyhanniItems.FUMING_POTATO_BOOK()
             val fumingPrice = wtfHardcodedFuming.getPrice() * fuming
             list.add("§7Fuming: §e$fuming§7/§e5 §7(§6" + NumberUtil.format(fumingPrice) + "§7)")
             totalPrice += fumingPrice
@@ -311,7 +312,7 @@ object EstimatedItemValueCalculator {
     private fun addFarmingForDummies(stack: ItemStack, list: MutableList<String>): Double {
         val count = stack.getFarmingForDummiesCount() ?: return 0.0
 
-        val wtfHardcodedDumbFarmers = "FARMING_FOR_DUMMIES".asInternalName()
+        val wtfHardcodedDumbFarmers = SkyhanniItems.FARMING_FOR_DUMMIES()
         val price = wtfHardcodedDumbFarmers.getPrice() * count
         list.add("§7Farming for Dummies: §e$count§7/§e5 §7(§6" + NumberUtil.format(price) + "§7)")
         return price
@@ -320,7 +321,7 @@ object EstimatedItemValueCalculator {
     private fun addPolarvoidBook(stack: ItemStack, list: MutableList<String>): Double {
         val count = stack.getPolarvoidBookCount() ?: return 0.0
 
-        val broDilloMiningSoBad = "POLARVOID_BOOK".asInternalName()
+        val broDilloMiningSoBad = SkyhanniItems.POLARVOID_BOOK()
         val price = broDilloMiningSoBad.getPrice() * count
         list.add("§7Polarvoid: §e$count§7/§e5 §7(§6" + NumberUtil.format(price) + "§7)")
         return price
@@ -329,7 +330,7 @@ object EstimatedItemValueCalculator {
     private fun addBookwormBook(stack: ItemStack, list: MutableList<String>): Double {
         val count = stack.getBookwormBookCount() ?: return 0.0
 
-        val tfHardcodedItemAgain = "BOOKWORM_BOOK".asInternalName()
+        val tfHardcodedItemAgain = SkyhanniItems.BOOKWORM_BOOK()
         val price = tfHardcodedItemAgain.getPrice() * count
         list.add("§7Bookworm's Favorite Book: §e$count§7/§e5 §7(§6" + NumberUtil.format(price) + "§7)")
         return price
@@ -339,9 +340,9 @@ object EstimatedItemValueCalculator {
         val tier = stack.getSilexCount() ?: return 0.0
 
         val internalName = stack.getInternalName()
-        val maxTier = if (internalName == "STONK_PICKAXE".asInternalName()) 4 else 5
+        val maxTier = if (internalName == SkyhanniItems.STONK_PICKAXE()) 4 else 5
 
-        val wtfHardcodedSilex = "SIL_EX".asInternalName()
+        val wtfHardcodedSilex = SkyhanniItems.SIL_EX()
         val price = wtfHardcodedSilex.getPrice() * tier
         list.add("§7Silex: §e$tier§7/§e$maxTier §7(§6" + NumberUtil.format(price) + "§7)")
         return price
@@ -350,7 +351,7 @@ object EstimatedItemValueCalculator {
     private fun addTransmissionTuners(stack: ItemStack, list: MutableList<String>): Double {
         val count = stack.getTransmissionTunerCount() ?: return 0.0
 
-        val wtfHardcodedTuner = "TRANSMISSION_TUNER".asInternalName()
+        val wtfHardcodedTuner = SkyhanniItems.TRANSMISSION_TUNER()
         val price = wtfHardcodedTuner.getPrice() * count
         list.add("§7Transmission Tuners: §e$count§7/§e4 §7(§6" + NumberUtil.format(price) + "§7)")
         return price
@@ -359,7 +360,7 @@ object EstimatedItemValueCalculator {
     private fun addManaDisintegrators(stack: ItemStack, list: MutableList<String>): Double {
         val count = stack.getManaDisintegrators() ?: return 0.0
 
-        val wtfHardcodedTuner = "MANA_DISINTEGRATOR".asInternalName()
+        val wtfHardcodedTuner = SkyhanniItems.MANA_DISINTEGRATOR()
         val price = wtfHardcodedTuner.getPrice() * count
         list.add("§7Mana Disintegrators: §e$count§7/§e10 §7(§6" + NumberUtil.format(price) + "§7)")
         return price
@@ -507,19 +508,19 @@ object EstimatedItemValueCalculator {
 
     // TODO repo
     private val hasAlwaysScavenger = listOf(
-        "CRYPT_DREADLORD_SWORD".asInternalName(),
-        "ZOMBIE_SOLDIER_CUTLASS".asInternalName(),
-        "CONJURING_SWORD".asInternalName(),
-        "EARTH_SHARD".asInternalName(),
-        "ZOMBIE_KNIGHT_SWORD".asInternalName(),
-        "SILENT_DEATH".asInternalName(),
-        "ZOMBIE_COMMANDER_WHIP".asInternalName(),
-        "ICE_SPRAY_WAND".asInternalName(),
+        SkyhanniItems.CRYPT_DREADLORD_SWORD(),
+        SkyhanniItems.ZOMBIE_SOLDIER_CUTLASS(),
+        SkyhanniItems.CONJURING_SWORD(),
+        SkyhanniItems.EARTH_SHARD(),
+        SkyhanniItems.ZOMBIE_KNIGHT_SWORD(),
+        SkyhanniItems.SILENT_DEATH(),
+        SkyhanniItems.ZOMBIE_COMMANDER_WHIP(),
+        SkyhanniItems.ICE_SPRAY_WAND(),
     )
 
     private val hasAlwaysReplenish = listOf(
-        "ADVANCED_GARDENING_HOE".asInternalName(),
-        "ADVANCED_GARDENING_AXE".asInternalName(),
+        SkyhanniItems.ADVANCED_GARDENING_HOE(),
+        SkyhanniItems.ADVANCED_GARDENING_AXE(),
     )
 
     private fun addEnchantments(stack: ItemStack, list: MutableList<String>): Double {
@@ -638,7 +639,7 @@ object EstimatedItemValueCalculator {
         val unlockedSlots =
             stack.getExtraAttributes()?.getCompoundTag("gems")?.getTag("unlocked_slots")?.toString() ?: return 0.0
 
-        // TODO detection for old items which doesnt have gems.unlocked_slots NBT array
+        // TODO detection for old items which doesn't have gems.unlocked_slots NBT array
 //        if (unlockedSlots == "null") return 0.0
 
         val priceMap = mutableMapOf<String, Double>()

@@ -1,13 +1,13 @@
 package at.hannibal2.skyhanni.test.command
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.features.misc.update.UpdateManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.StringUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeLimitedSet
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.client.Minecraft
 import kotlin.time.Duration.Companion.minutes
 
@@ -27,7 +27,7 @@ object ErrorManager {
 
     private val replace = mapOf(
         "at.hannibal2.skyhanni" to "SH",
-        "io.mouberry,notenoughupdates" to "NEU",
+        "io.moulberry.notenoughupdates" to "NEU",
         "net.minecraft." to "MC.",
         "net.minecraftforge.fml." to "FML.",
     )
@@ -48,7 +48,7 @@ object ErrorManager {
         "at at.hannibal2.skyhanni.config.commands.SimpleCommand.",
         "at at.hannibal2.skyhanni.config.commands.Commands\$createCommand\$1.processCommand",
         "at at.hannibal2.skyhanni.test.command.ErrorManager.logError",
-        "at at.hannibal2.skyhanni.events.LorenzEvent.postAndCatch",
+        "at at.hannibal2.skyhanni.api.event.SkyHanniEvent.post",
         "at net.minecraft.launchwrapper.",
     )
 
@@ -73,7 +73,7 @@ object ErrorManager {
         }
         val name = if (fullErrorMessage) "Full error" else "Error"
         ChatUtils.chat(errorMessage?.let {
-            OSUtils.copyToClipboard(it)
+            OS.copyToClipboard(it)
             "$name copied into the clipboard, please report it on the SkyHanni discord!"
         } ?: "Error id not found!")
     }
@@ -115,7 +115,7 @@ object ErrorManager {
         vararg extraData: Pair<String, Any?>,
         betaOnly: Boolean = false,
     ) {
-        if (betaOnly && !LorenzUtils.isBetaVersion()) return
+        if (betaOnly && !UpdateManager.isCurrentlyBeta()) return
         if (!ignoreErrorCache) {
             val pair = if (throwable.stackTrace.isNotEmpty()) {
                 throwable.stackTrace[0].let { (it.fileName ?: "<unknown>") to it.lineNumber }

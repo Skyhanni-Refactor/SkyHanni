@@ -1,15 +1,18 @@
 package at.hannibal2.skyhanni.features.event.spook
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.utils.LorenzUtils
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.RenderUtils.renderString
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.TabListData
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
 
-class TheGreatSpook {
+@SkyHanniModule
+object TheGreatSpook {
 
     // §r§cPrimal Fears§r§7: §r§6§lREADY!!
     private val config get() = SkyHanniMod.feature.event.spook
@@ -18,10 +21,9 @@ class TheGreatSpook {
     private var displayTimeLeft = ""
     private var notificationSeconds = 0
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onSecondPassed(event: SecondPassedEvent) {
         if (isAllDisabled()) return
-        if (!event.repeatSeconds(1)) return
 
         if (isTimerEnabled() || isNotificationEnabled()) displayTimer = checkTabList(" §r§cPrimal Fears§r§7: ")
         if (isFearStatEnabled()) displayFearStat = checkTabList(" §r§5Fear: ")
@@ -29,7 +31,7 @@ class TheGreatSpook {
         if (isNotificationEnabled()) {
             if (displayTimer.endsWith("READY!!")) {
                 if (notificationSeconds > 0) {
-                    SoundUtils.playBeepSound()
+                    McSound.BEEP.play()
                     notificationSeconds--
                 }
             } else if (displayTimer.isNotEmpty()) {
@@ -42,18 +44,18 @@ class TheGreatSpook {
         return (TabListData.getTabList().find { it.contains(matchString) } ?: "").trim()
     }
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (isTimerEnabled()) config.positionTimer.renderString(displayTimer, posLabel = "Primal Fear Timer")
         if (isFearStatEnabled()) config.positionFear.renderString(displayFearStat, posLabel = "Fear Stat Display")
         if (isTimeLeftEnabled()) config.positionTimeLeft.renderString(displayTimeLeft, posLabel = "Time Left Display")
     }
 
-    private fun isTimerEnabled(): Boolean = LorenzUtils.inSkyBlock && config.primalFearTimer
+    private fun isTimerEnabled(): Boolean = SkyBlockAPI.isConnected && config.primalFearTimer
 
-    private fun isNotificationEnabled(): Boolean = LorenzUtils.inSkyBlock && config.primalFearNotification
-    private fun isFearStatEnabled(): Boolean = LorenzUtils.inSkyBlock && config.fearStatDisplay
-    private fun isTimeLeftEnabled(): Boolean = LorenzUtils.inSkyBlock && config.greatSpookTimeLeft
+    private fun isNotificationEnabled(): Boolean = SkyBlockAPI.isConnected && config.primalFearNotification
+    private fun isFearStatEnabled(): Boolean = SkyBlockAPI.isConnected && config.fearStatDisplay
+    private fun isTimeLeftEnabled(): Boolean = SkyBlockAPI.isConnected && config.greatSpookTimeLeft
 
     private fun isAllDisabled(): Boolean = !isTimeLeftEnabled() && !isTimerEnabled() && !isFearStatEnabled() &&
         !isNotificationEnabled()

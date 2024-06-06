@@ -1,15 +1,20 @@
 package at.hannibal2.skyhanni.data
 
-import at.hannibal2.skyhanni.events.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.SlayerChangeEvent
-import at.hannibal2.skyhanni.events.SlayerProgressChangeEvent
-import at.hannibal2.skyhanni.events.SlayerQuestCompleteEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.data.jsonobjects.repo.SlayerTypeJson
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.slayer.SlayerChangeEvent
+import at.hannibal2.skyhanni.events.slayer.SlayerProgressChangeEvent
+import at.hannibal2.skyhanni.events.slayer.SlayerQuestCompleteEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.slayer.SlayerType
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getNpcPriceOrNull
 import at.hannibal2.skyhanni.utils.NEUItems.getPrice
@@ -17,13 +22,14 @@ import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.RecalculatingValue
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object SlayerAPI {
 
     private var nameCache = TimeLimitedCache<Pair<NEUInternalName, Int>, Pair<String, Double>>(1.minutes)
+    private var slayerAreas = emptyMap<String, SlayerType>()
 
     var questStartTime = SimpleTimeMark.farPast()
     var isInCorrectArea = false
@@ -50,7 +56,13 @@ object SlayerAPI {
             "$amountFormat$displayName$priceFormat" to totalPrice
         }
 
-    @SubscribeEvent
+    @HandleEvent
+    fun onRepoLoad(event: RepositoryReloadEvent) {
+        val data = event.getConstant<SlayerTypeJson>("SlayerAreas")
+        slayerAreas = data.slayerAreas
+    }
+
+    @HandleEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Slayer")
 
@@ -67,16 +79,14 @@ object SlayerAPI {
         }
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
         if (event.message.contains("§r§5§lSLAYER QUEST STARTED!")) {
             questStartTime = SimpleTimeMark.now()
         }
 
         if (event.message == "  §r§a§lSLAYER QUEST COMPLETE!") {
-            SlayerQuestCompleteEvent().postAndCatch()
+            SlayerQuestCompleteEvent().post()
         }
     }
 
@@ -96,10 +106,8 @@ object SlayerAPI {
         return null
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTick(event: ClientTickEvent) {
         // wait with sending SlayerChangeEvent until profile is detected
         if (ProfileStorageData.profileSpecific == null) return
 
@@ -107,58 +115,26 @@ object SlayerAPI {
         if (slayerQuest != latestSlayerCategory) {
             val old = latestSlayerCategory
             latestSlayerCategory = slayerQuest
-            SlayerChangeEvent(old, latestSlayerCategory).postAndCatch()
+            SlayerChangeEvent(old, latestSlayerCategory).post()
         }
 
         val slayerProgress = ScoreboardData.sidebarLinesFormatted.nextAfter("Slayer Quest", 2) ?: ""
         if (latestSlayerProgress != slayerProgress) {
-            SlayerProgressChangeEvent(latestSlayerProgress, slayerProgress).postAndCatch()
+            SlayerProgressChangeEvent(latestSlayerProgress, slayerProgress).post()
             latestSlayerProgress = slayerProgress
         }
 
         if (event.isMod(5)) {
-            isInCorrectArea = if (LorenzUtils.isStrandedProfile) {
+            isInCorrectArea = if (SkyBlockAPI.gamemode == Gamemode.STRANDED) {
                 isInAnyArea = true
                 true
             } else {
-                val slayerTypeForCurrentArea = getSlayerTypeForCurrentArea()
+                val slayerTypeForCurrentArea = getSlayerForArea(SkyBlockAPI.area)
                 isInAnyArea = slayerTypeForCurrentArea != null
                 slayerTypeForCurrentArea == getActiveSlayer() && slayerTypeForCurrentArea != null
             }
         }
     }
 
-    // TODO USE SH-REPO
-    fun getSlayerTypeForCurrentArea() = when (LorenzUtils.skyBlockArea) {
-        "Graveyard",
-        "Coal Mine",
-        -> SlayerType.REVENANT
-
-        "Spider Mound",
-        "Arachne's Burrow",
-        "Arachne's Sanctuary",
-        "Burning Desert",
-        -> SlayerType.TARANTULA
-
-        "Ruins",
-        "Howling Cave",
-        -> SlayerType.SVEN
-
-        "The End",
-        "Dragon's Nest",
-        "Void Sepulture",
-        "Zealot Bruiser Hideout",
-        -> SlayerType.VOID
-
-        "Stronghold",
-        "The Wasteland",
-        "Smoldering Tomb",
-        -> SlayerType.INFERNO
-
-        "Stillgore Château",
-        "Oubliette",
-        -> SlayerType.VAMPIRE
-
-        else -> null
-    }
+    fun getSlayerForArea(area: String?) = slayerAreas[area]
 }

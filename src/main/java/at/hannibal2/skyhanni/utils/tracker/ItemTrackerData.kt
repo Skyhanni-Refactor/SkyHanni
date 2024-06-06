@@ -1,13 +1,10 @@
 package at.hannibal2.skyhanni.utils.tracker
 
-import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import com.google.gson.annotations.Expose
 
 abstract class ItemTrackerData : TrackerData() {
-
-    private val config get() = SkyHanniMod.feature.misc.tracker
 
     abstract fun resetItems()
 
@@ -24,7 +21,7 @@ abstract class ItemTrackerData : TrackerData() {
         resetItems()
     }
 
-    fun additem(internalName: NEUInternalName, stackSize: Int) {
+    fun addItem(internalName: NEUInternalName, stackSize: Int) {
         val item = items.getOrPut(internalName) { TrackedItem() }
 
         item.timesGained++

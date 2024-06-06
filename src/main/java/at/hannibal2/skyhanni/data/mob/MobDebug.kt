@@ -1,22 +1,21 @@
 package at.hannibal2.skyhanni.data.mob
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.dev.DebugMobConfig.HowToShow
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.MobEvent
+import at.hannibal2.skyhanni.events.entity.MobEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.CopyNearbyEntitiesCommand.getMobInfo
-import at.hannibal2.skyhanni.utils.LocationUtils.getTopCenter
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzDebug
 import at.hannibal2.skyhanni.utils.MobUtils
-import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
+import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox
 import at.hannibal2.skyhanni.utils.RenderUtils.drawString
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class MobDebug {
+@SkyHanniModule
+object MobDebug {
 
     private val config get() = SkyHanniMod.feature.dev.mobDebug.mobDetection
 
@@ -30,20 +29,20 @@ class MobDebug {
 
     private fun Mob.isNotInvisible() = !this.isInvisible() || (config.showInvisible && this == lastRayHit)
 
-    private fun MobData.MobSet.highlight(event: LorenzRenderWorldEvent, color: (Mob) -> (LorenzColor)) =
+    private fun MobData.MobSet.highlight(event: SkyHanniRenderWorldEvent, color: (Mob) -> (LorenzColor)) =
         this.filter { it.isNotInvisible() }.forEach {
-            event.drawFilledBoundingBox_nea(it.boundingBox.expandBlock(), color.invoke(it).toColor(), 0.3f)
+            event.drawFilledBoundingBox(it.boundingBox.expandToEdge(), color.invoke(it).toColor(), 0.3f)
         }
 
-    private fun MobData.MobSet.showName(event: LorenzRenderWorldEvent) =
-        this.filter { it.canBeSeen() && it.isNotInvisible() }.map { it.boundingBox.getTopCenter() to it.name }.forEach {
+    private fun MobData.MobSet.showName(event: SkyHanniRenderWorldEvent) =
+        this.filter { it.canBeSeen() && it.isNotInvisible() }.map { it.boundingBox.topCenter() to it.name }.forEach {
             event.drawString(
                 it.first.add(y = 0.5), "§5" + it.second, seeThroughBlocks = true
             )
         }
 
-    @SubscribeEvent
-    fun onWorldRenderDebug(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (config.showRayHit || config.showInvisible) {
             lastRayHit = MobUtils.rayTraceForMobs(Minecraft.getMinecraft().thePlayer, event.partialTicks)
                 ?.firstOrNull { it.canBeSeen() && (!config.showInvisible || !it.isInvisible()) }
@@ -78,18 +77,18 @@ class MobDebug {
         }
         if (config.showRayHit) {
             lastRayHit?.let {
-                event.drawFilledBoundingBox_nea(it.boundingBox.expandBlock(), LorenzColor.GOLD.toColor(), 0.5f)
+                event.drawFilledBoundingBox(it.boundingBox.expandToEdge(), LorenzColor.GOLD.toColor(), 0.5f)
             }
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMobEvent(event: MobEvent) {
         if (!config.logEvents) return
         val text = "Mob ${if (event is MobEvent.Spawn) "Spawn" else "Despawn"}: ${
             getMobInfo(event.mob).joinToString(", ")
         }"
         MobData.logger.log(text)
-        LorenzDebug.log(text)
+        SkyHanniMod.logger.info("[Mod Debug]: $text")
     }
 }

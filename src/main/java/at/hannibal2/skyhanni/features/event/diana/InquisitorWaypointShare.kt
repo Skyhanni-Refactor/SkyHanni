@@ -1,37 +1,41 @@
 package at.hannibal2.skyhanni.features.event.diana
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.EntityHealthUpdateEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.PacketEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
 import at.hannibal2.skyhanni.events.diana.InquisitorFoundEvent
+import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.packet.ReceivePacketEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
+import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.KeyboardManager
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RegexUtils.hasGroup
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.cleanPlayerName
 import at.hannibal2.skyhanni.utils.StringUtils.stripHypixelMessage
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.network.play.server.S02PacketChat
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.regex.Matcher
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object InquisitorWaypointShare {
 
     private val config get() = SkyHanniMod.feature.event.diana.inquisitorSharing
@@ -83,12 +87,14 @@ object InquisitorWaypointShare {
 
     private var test = false
 
+    private val inquisitorTime = mutableListOf<SimpleTimeMark>()
+
     fun test() {
         test = !test
         ChatUtils.chat("Inquisitor Test " + if (test) "Enabled" else "Disabled")
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
 
@@ -99,15 +105,14 @@ object InquisitorWaypointShare {
         waypoints = waypoints.editCopy { values.removeIf { it.spawnTime.passedSince() > 75.seconds } }
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         waypoints = emptyMap()
         inquisitorsNearby = emptyList()
     }
 
-    val inquisitorTime = mutableListOf<SimpleTimeMark>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInquisitorFound(event: InquisitorFoundEvent) {
         val inquisitor = event.inquisitorEntity
         inquisitorsNearby = inquisitorsNearby.editCopy { add(inquisitor) }
@@ -131,8 +136,8 @@ object InquisitorWaypointShare {
         }
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         val message = event.message
 
@@ -160,7 +165,7 @@ object InquisitorWaypointShare {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onEntityHealthUpdate(event: EntityHealthUpdateEvent) {
         if (!isEnabled()) return
         if (event.health > 0) return
@@ -174,10 +179,10 @@ object InquisitorWaypointShare {
         }
     }
 
-    @SubscribeEvent
-    fun onKeyClick(event: LorenzKeyPressEvent) {
+    @HandleEvent
+    fun onKeyClick(event: KeyPressEvent) {
         if (!isEnabled()) return
-        if (Minecraft.getMinecraft().currentScreen != null) return
+        if (McScreen.isOpen) return
         if (event.keyCode == config.keyBindShare) sendInquisitor()
     }
 
@@ -191,17 +196,16 @@ object InquisitorWaypointShare {
         HypixelCommands.partyChat("Inquisitor dead!")
     }
 
-    fun sendInquisitor() {
+    private fun sendInquisitor() {
         if (!isEnabled()) return
         if (lastShareTime.passedSince() < 5.seconds) return
         lastShareTime = SimpleTimeMark.now()
 
         if (inquisitor == -1) {
-            ChatUtils.error("No Inquisitor Found!")
-            return
+            ErrorManager.skyHanniError("No Inquisitor Found!")
         }
 
-        val inquisitor = EntityUtils.getEntityByID(inquisitor)
+        val inquisitor = McWorld.getEntity(inquisitor)
         if (inquisitor == null) {
             ChatUtils.chat("§cInquisitor out of range!")
             return
@@ -218,8 +222,8 @@ object InquisitorWaypointShare {
         HypixelCommands.partyChat("x: $x, y: $y, z: $z ")
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW, receiveCanceled = true)
-    fun onFirstChatEvent(event: PacketEvent.ReceiveEvent) {
+    @HandleEvent(priority = HandleEvent.LOW, receiveCancelled = true)
+    fun onFirstChatEvent(event: ReceivePacketEvent) {
         if (!isEnabled()) return
         val packet = event.packet
         if (packet !is S02PacketChat) return
@@ -230,13 +234,13 @@ object InquisitorWaypointShare {
 
         partyInquisitorCheckerPattern.matchMatcher(message) {
             if (detectFromChat()) {
-                event.isCanceled = true
+                event.cancel()
             }
         }
 
         partyOnlyCoordsPattern.matchMatcher(message) {
             if (detectFromChat()) {
-                event.isCanceled = true
+                event.cancel()
             }
         }
         diedPattern.matchMatcher(message) {
@@ -262,9 +266,9 @@ object InquisitorWaypointShare {
         val displayName = rawName.cleanPlayerName(displayName = true)
         if (!waypoints.containsKey(name)) {
             ChatUtils.chat("$displayName §l§efound an inquisitor at §l§c${x.toInt()} ${y.toInt()} ${z.toInt()}!")
-            if (name != LorenzUtils.getPlayerName()) {
-                LorenzUtils.sendTitle("§dINQUISITOR §efrom §b$displayName", 5.seconds)
-                SoundUtils.playBeepSound()
+            if (name != McPlayer.name) {
+                TitleManager.sendTitle("§dINQUISITOR §efrom §b$displayName", 5.seconds)
+                McSound.BEEP.play()
             }
         }
         val inquis = SharedInquisitor(name, displayName, location, SimpleTimeMark.now())

@@ -1,14 +1,15 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.GuiContainerEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.InventoryUtils.getInventoryName
 import at.hannibal2.skyhanni.utils.InventoryUtils.getUpperItems
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUItems.getPriceOrNull
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
@@ -16,8 +17,8 @@ import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.inventory.ContainerChest
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object AuctionsHighlighter {
 
     private val config get() = SkyHanniMod.feature.inventory.auctions
@@ -32,9 +33,8 @@ object AuctionsHighlighter {
         "§7(?:Starting bid|Top bid): §6(?<coins>.*) coins"
     )
 
-    @SubscribeEvent
-    fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         if (!config.highlightAuctions) return
         if (event.gui !is GuiChest) return
 
@@ -45,11 +45,11 @@ object AuctionsHighlighter {
         for ((slot, stack) in chest.getUpperItems()) {
             val lore = stack.getLore()
             if (lore.any { it == "§7Status: §aSold!" }) {
-                slot highlight LorenzColor.GREEN
+                slot.highlight(LorenzColor.GREEN)
                 continue
             }
             if (lore.any { it == "§7Status: §cExpired!" }) {
-                slot highlight LorenzColor.RED
+                slot.highlight(LorenzColor.RED)
                 continue
             }
             if (config.highlightAuctionsUnderbid) {
@@ -57,7 +57,7 @@ object AuctionsHighlighter {
                     val coins = group("coins").formatLong()
                     stack.getInternalNameOrNull()?.getPriceOrNull()?.let {
                         if (coins > it) {
-                            slot highlight LorenzColor.GOLD
+                            slot.highlight(LorenzColor.GOLD)
                         }
                     }
                 }
@@ -65,8 +65,8 @@ object AuctionsHighlighter {
         }
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(25, "inventory.highlightAuctions", "inventory.auctions.highlightAuctions")
         event.move(25, "inventory.highlightAuctionsUnderbid", "inventory.auctions.highlightAuctionsUnderbid")
     }

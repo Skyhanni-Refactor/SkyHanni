@@ -1,24 +1,26 @@
 package at.hannibal2.skyhanni.features.dungeon
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
-import at.hannibal2.skyhanni.events.DamageIndicatorFinalBossEvent
-import at.hannibal2.skyhanni.events.EntityHealthUpdateEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.PlaySoundEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.damageindicator.DamageIndicatorFinalBossEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.entity.EntityHealthUpdateEvent
+import at.hannibal2.skyhanni.events.minecraft.PlaySoundEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.monster.EntityGuardian
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class DungeonCleanEnd {
+@SkyHanniModule
+object DungeonCleanEnd {
 
     private val config get() = SkyHanniMod.feature.dungeon.cleanEnd
     private val catacombsPattern by RepoPattern.pattern(
@@ -30,9 +32,8 @@ class DungeonCleanEnd {
     private var chestsSpawned = false
     private var lastBossId: Int = -1
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
-        if (!DungeonAPI.inDungeon()) return
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
+    fun onChat(event: SkyHanniChatEvent) {
         if (!config.enabled) return
 
         val message = event.message
@@ -51,16 +52,15 @@ class DungeonCleanEnd {
         return true
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         bossDone = false
         chestsSpawned = false
         lastBossId = -1
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onBossDead(event: DamageIndicatorFinalBossEvent) {
-        if (!DungeonAPI.inDungeon()) return
         if (bossDone) return
 
         if (lastBossId == -1) {
@@ -68,9 +68,8 @@ class DungeonCleanEnd {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnIsland = IslandType.CATACOMBS)
     fun onEntityHealthUpdate(event: EntityHealthUpdateEvent) {
-        if (!DungeonAPI.inDungeon()) return
         if (!config.enabled) return
         if (bossDone) return
         if (lastBossId == -1) return
@@ -83,19 +82,19 @@ class DungeonCleanEnd {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
         if (!shouldBlock()) return
 
         val entity = event.entity
 
-        if (entity == Minecraft.getMinecraft().thePlayer) return
+        if (entity == McPlayer.player) return
 
-        if (config.F3IgnoreGuardians
-            && DungeonAPI.isOneOf("F3", "M3")
-            && entity is EntityGuardian
-            && entity.entityId != lastBossId
-            && Minecraft.getMinecraft().thePlayer.isSneaking
+        if (config.F3IgnoreGuardians &&
+            DungeonAPI.isOneOf("F3", "M3") &&
+            entity is EntityGuardian &&
+            entity.entityId != lastBossId &&
+            McPlayer.isSneaking
         ) {
             return
         }
@@ -104,26 +103,20 @@ class DungeonCleanEnd {
             return
         }
 
-        event.isCanceled = true
+        event.cancel()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (shouldBlock()) {
-            event.isCanceled = true
+            event.cancel()
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onPlaySound(event: PlaySoundEvent) {
         if (shouldBlock() && !chestsSpawned && event.soundName.startsWith("note.")) {
-            event.isCanceled = true
+            event.cancel()
         }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "dungeon.cleanEndToggle", "dungeon.cleanEnd.enabled")
-        event.move(3, "dungeon.cleanEndF3IgnoreGuardians", "dungeon.cleanEnd.F3IgnoreGuardians")
     }
 }

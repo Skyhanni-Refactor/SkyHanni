@@ -1,48 +1,49 @@
 package at.hannibal2.skyhanni.features.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.compat.neu.NEUCompat
 import at.hannibal2.skyhanni.config.features.inventory.ChestValueConfig.NumberFormatEntry
 import at.hannibal2.skyhanni.config.features.inventory.ChestValueConfig.SortingTypeEntry
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryOpenEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryOpenEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.render.gui.ChestGuiOverlayRenderEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.inventory.bazaar.BazaarApi
 import at.hannibal2.skyhanni.features.minion.MinionFeatures
 import at.hannibal2.skyhanni.features.misc.items.EstimatedItemValue
 import at.hannibal2.skyhanni.features.misc.items.EstimatedItemValueCalculator
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzUtils.addButton
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStackOrNull
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McFont
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class ChestValue {
+@SkyHanniModule
+object ChestValue {
 
     private val config get() = SkyHanniMod.feature.inventory.chestValueConfig
     private var display = emptyList<List<Any>>()
     private val chestItems = mutableMapOf<String, Item>()
     private val inInventory get() = isValidStorage()
 
-    @SubscribeEvent
-    fun onBackgroundDraw(event: GuiRenderEvent.ChestGuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: ChestGuiOverlayRenderEvent) {
         if (!isEnabled()) return
         if (DungeonAPI.inDungeon() && !config.enableInDungeons) return
         if (InventoryUtils.openInventoryName() == "") return
@@ -61,8 +62,8 @@ class ChestValue {
         }
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
         if (!inInventory) return
         if (event.isMod(5)) {
@@ -70,7 +71,7 @@ class ChestValue {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryOpenEvent) {
         if (!isEnabled()) return
         if (inInventory) {
@@ -78,7 +79,7 @@ class ChestValue {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         chestItems.clear()
     }
@@ -112,13 +113,14 @@ class ChestValue {
             if (rendered >= config.itemToShow) continue
             if (total < config.hideBelow) continue
             val textAmount = " §7x${amount.addSeparators()}:"
-            val width = Minecraft.getMinecraft().fontRendererObj.getStringWidth(textAmount)
+            val width = McFont.width(textAmount)
             val name = "${stack.itemName.reduceStringLength((config.nameLength - width), ' ')} $textAmount"
             val price = "§6${(total).formatPrice()}"
-            val text = if (config.alignedDisplay)
+            val text = if (config.alignedDisplay) {
                 "$name $price"
-            else
+            } else {
                 "${stack.itemName} §7x$amount: §6${total.formatPrice()}"
+            }
             newDisplay.add(buildList {
                 val renderable = Renderable.hoverTips(
                     text,
@@ -229,14 +231,14 @@ class ChestValue {
 
     private fun isValidStorage(): Boolean {
         val name = InventoryUtils.openInventoryName().removeColor()
-        if (Minecraft.getMinecraft().currentScreen !is GuiChest) return false
+        if (!McScreen.isChestOpen) return false
         if (BazaarApi.inBazaarInventory) return false
         if (MinionFeatures.minionInventoryOpen) return false
         if (MinionFeatures.minionStorageInventoryOpen) return false
 
 
         if ((name.contains("Backpack") && name.contains("Slot #") || name.startsWith("Ender Chest (")) &&
-            !InventoryUtils.isNeuStorageEnabled.getValue()
+            !NEUCompat.isNeuStorageEnabled.getValue()
         ) {
             return true
         }
@@ -246,15 +248,14 @@ class ChestValue {
     }
 
     private fun String.reduceStringLength(targetLength: Int, char: Char): String {
-        val mc = Minecraft.getMinecraft()
-        val spaceWidth = mc.fontRendererObj.getCharWidth(char)
+        val spaceWidth = McFont.width(char)
 
         var currentString = this
-        var currentLength = mc.fontRendererObj.getStringWidth(currentString)
+        var currentLength = McFont.width(currentString)
 
         while (currentLength > targetLength) {
             currentString = currentString.dropLast(1)
-            currentLength = mc.fontRendererObj.getStringWidth(currentString)
+            currentLength = McFont.width(currentString)
         }
 
         val difference = targetLength - currentLength
@@ -276,15 +277,5 @@ class ChestValue {
         val tips: MutableList<String>,
     )
 
-    private fun isEnabled() = LorenzUtils.inSkyBlock && config.enabled
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(17, "inventory.chestValueConfig.formatType") { element ->
-            ConfigUtils.migrateIntToEnum(element, NumberFormatEntry::class.java)
-        }
-        event.transform(15, "inventory.chestValueConfig.sortingType") { element ->
-            ConfigUtils.migrateIntToEnum(element, SortingTypeEntry::class.java)
-        }
-    }
+    private fun isEnabled() = SkyBlockAPI.isConnected && config.enabled
 }

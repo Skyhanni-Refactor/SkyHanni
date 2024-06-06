@@ -1,37 +1,38 @@
 package at.hannibal2.skyhanni.features.garden.visitor
 
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.garden.visitor.VisitorConfig.VisitorBlockBehaviour
 import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenJson
-import at.hannibal2.skyhanni.events.PacketEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.data.jsonobjects.repo.GardenVisitor
+import at.hannibal2.skyhanni.events.minecraft.packet.SendPacketEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.EntityUtils.getSkinTexture
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzVec
-import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import io.github.moulberry.notenoughupdates.util.SBInfo
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.network.play.client.C02PacketUseEntity
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class HighlightVisitorsOutsideOfGarden {
+@SkyHanniModule
+object HighlightVisitorsOutsideOfGarden {
 
-    private var visitorJson = mapOf<String?, List<GardenJson.GardenVisitor>>()
+    private var visitorJson = mapOf<String?, List<GardenVisitor>>()
 
     private val config get() = GardenAPI.config.visitors
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         visitorJson = event.getConstant<GardenJson>(
             "Garden", GardenJson::class.java
@@ -57,15 +58,15 @@ class HighlightVisitorsOutsideOfGarden {
         val possibleJsons = visitorJson[mode] ?: return false
         val skinOrType = getSkinOrTypeFor(entity)
         return possibleJsons.any {
-            (it.position == null || it.position!!.distance(entity.position.toLorenzVec()) < 1)
+            (it.position == null || it.position.distance(entity.position.toLorenzVec()) < 1)
                 && it.skinOrType == skinOrType
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!config.highlightVisitors) return
-        EntityUtils.getEntities<EntityLivingBase>()
+        McWorld.getEntitiesOf<EntityLivingBase>()
             .filter { it !is EntityArmorStand && isVisitor(it) }
             .forEach {
                 RenderLivingEntityHelper.setEntityColor(
@@ -79,25 +80,24 @@ class HighlightVisitorsOutsideOfGarden {
         get() = when (config.blockInteracting) {
             VisitorBlockBehaviour.DONT -> false
             VisitorBlockBehaviour.ALWAYS -> true
-            VisitorBlockBehaviour.ONLY_ON_BINGO -> LorenzUtils.isBingoProfile
+            VisitorBlockBehaviour.ONLY_ON_BINGO -> BingoAPI.isBingo()
             null -> false
         }
 
-    private fun isVisitorNearby(location: LorenzVec) =
-        EntityUtils.getEntitiesNearby<EntityLivingBase>(location, 2.0).any { isVisitor(it) }
+    private fun isVisitorNearby(entity: Entity) = McWorld.getEntitiesNear<EntityLivingBase>(entity, 2.0).any(::isVisitor)
 
-    @SubscribeEvent
-    fun onClickEntity(event: PacketEvent.SendEvent) {
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onClickEntity(event: SendPacketEvent) {
         if (!shouldBlock) return
-        val world = Minecraft.getMinecraft().theWorld ?: return
-        val player = Minecraft.getMinecraft().thePlayer ?: return
-        if (player.isSneaking) return
+        val world = McWorld.world ?: return
+        if (McPlayer.isSneaking) return
         val packet = event.packet as? C02PacketUseEntity ?: return
         val entity = packet.getEntityFromWorld(world) ?: return
-        if (isVisitor(entity) || (entity is EntityArmorStand && isVisitorNearby(entity.getLorenzVec()))) {
-            event.isCanceled = true
+        if (isVisitor(entity) || (entity is EntityArmorStand && isVisitorNearby(entity))) {
+            event.cancel()
             if (packet.action == C02PacketUseEntity.Action.INTERACT) {
-                ChatUtils.chatAndOpenConfig("Blocked you from interacting with a visitor. Sneak to bypass or click here to change settings.",
+                ChatUtils.chatAndOpenConfig(
+                    "Blocked you from interacting with a visitor. Sneak to bypass or click here to change settings.",
                     GardenAPI.config.visitors::blockInteracting
                 )
             }

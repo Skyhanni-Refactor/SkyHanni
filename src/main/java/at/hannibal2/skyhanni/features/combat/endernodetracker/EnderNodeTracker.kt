@@ -1,36 +1,33 @@
 package at.hannibal2.skyhanni.features.combat.endernodetracker
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.config.features.combat.EnderNodeConfig.EnderNodeDisplayEntry
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.IslandChangeEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.OwnInventoryItemUpdateEvent
-import at.hannibal2.skyhanni.events.SackChangeEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.inventory.OwnInventoryItemUpdateEvent
+import at.hannibal2.skyhanni.events.inventory.SackChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.CollectionUtils.addOrPut
 import at.hannibal2.skyhanni.utils.ConditionalUtils.afterChange
-import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemCategory.Companion.containsItem
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalNameOrNull
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUItems.getNpcPriceOrNull
 import at.hannibal2.skyhanni.utils.NEUItems.getPriceOrNull
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.format
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.tracker.SkyHanniTracker
 import at.hannibal2.skyhanni.utils.tracker.TrackerData
 import com.google.gson.annotations.Expose
-import net.minecraft.client.Minecraft
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object EnderNodeTracker {
 
     private val config get() = SkyHanniMod.feature.combat.enderNodeTracker
@@ -64,8 +61,8 @@ object EnderNodeTracker {
         var lootCount: MutableMap<EnderNode, Int> = mutableMapOf()
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         if (!ProfileStorageData.loaded) return
 
@@ -86,9 +83,9 @@ object EnderNodeTracker {
             item = it.groups[2]?.value
         }
 
-        when {
-            item == null -> return
-            item == "§cEndermite Nest" -> {
+        when (item) {
+            null -> return
+            "§cEndermite Nest" -> {
                 tracker.modify { storage ->
                     storage.totalEndermiteNests++
                 }
@@ -103,15 +100,15 @@ object EnderNodeTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         if (!isEnabled()) return
-        miteGelInInventory = Minecraft.getMinecraft().thePlayer.inventory.mainInventory
-            .filter { it?.getInternalNameOrNull() == EnderNode.MITE_GEL.internalName }
+        miteGelInInventory = McPlayer.inventory
+            .filter { it.getInternalNameOrNull() == EnderNode.MITE_GEL.internalName }
             .sumOf { it.stackSize }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSackChange(event: SackChangeEvent) {
         if (!isEnabled()) return
         if (!ProfileStorageData.loaded) return
@@ -125,13 +122,13 @@ object EnderNodeTracker {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onOwnInventoryItemUpdate(event: OwnInventoryItemUpdateEvent) {
         if (!isEnabled()) return
         if (!ProfileStorageData.loaded) return
 
-        val newMiteGelInInventory = Minecraft.getMinecraft().thePlayer.inventory.mainInventory
-            .filter { it?.getInternalNameOrNull() == EnderNode.MITE_GEL.internalName }
+        val newMiteGelInInventory = McPlayer.inventory
+            .filter { it.getInternalNameOrNull() == EnderNode.MITE_GEL.internalName }
             .sumOf { it.stackSize }
         val change = newMiteGelInInventory - miteGelInInventory
         if (change > 0) {
@@ -142,27 +139,19 @@ object EnderNodeTracker {
         miteGelInInventory = newMiteGelInInventory
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderOverlay(event: GuiRenderEvent) {
         if (!isEnabled()) return
 
         tracker.renderDisplay(config.position)
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         config.textFormat.afterChange {
             tracker.update()
         }
         tracker.update()
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(2, "misc.enderNodeTracker", "combat.enderNodeTracker")
-        event.transform(11, "combat.enderNodeTracker.textFormat") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, EnderNodeDisplayEntry::class.java)
-        }
     }
 
     private fun getLootProfit(storage: Data): Map<EnderNode, Double> {
@@ -173,7 +162,7 @@ object EnderNodeTracker {
             val price = if (isEnderArmor(item)) {
                 10_000.0
             } else {
-                (if (!LorenzUtils.noTradeMode) item.internalName.getPriceOrNull() else 0.0)
+                (if (!SkyBlockAPI.gamemode.noTrade) item.internalName.getPriceOrNull() else 0.0)
                     ?.coerceAtLeast(item.internalName.getNpcPriceOrNull() ?: 0.0)
                     ?.coerceAtLeast(georgePrice(item) ?: 0.0)
                     ?: 0.0
@@ -186,7 +175,7 @@ object EnderNodeTracker {
     private fun isEnabled() = IslandType.THE_END.isInIsland() && config.enabled &&
         (!config.onlyPickaxe || hasItemInHand())
 
-    private fun hasItemInHand() = ItemCategory.miningTools.containsItem(InventoryUtils.getItemInHand())
+    private fun hasItemInHand() = ItemCategory.miningTools.containsItem(McPlayer.heldItem)
 
     private fun isEnderArmor(displayName: EnderNode) = when (displayName) {
         EnderNode.END_HELMET,

@@ -6,7 +6,6 @@ import at.hannibal2.skyhanni.data.mob.MobFilter.isDisplayNPC
 import at.hannibal2.skyhanni.data.mob.MobFilter.isRealPlayer
 import at.hannibal2.skyhanni.data.mob.MobFilter.isSkyBlockMob
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.EntityUtils.cleanName
 import at.hannibal2.skyhanni.utils.EntityUtils.getBlockInHand
 import at.hannibal2.skyhanni.utils.EntityUtils.getSkinTexture
@@ -18,7 +17,9 @@ import at.hannibal2.skyhanni.utils.ItemUtils.name
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzUtils.baseMaxHealth
-import at.hannibal2.skyhanni.utils.OSUtils
+import at.hannibal2.skyhanni.utils.math.toBox
+import at.hannibal2.skyhanni.utils.mc.McWorld
+import at.hannibal2.skyhanni.utils.system.OS
 import at.hannibal2.skyhanni.utils.toLorenzVec
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.entity.Entity
@@ -45,7 +46,7 @@ object CopyNearbyEntitiesCommand {
         val resultList = mutableListOf<String>()
         var counter = 0
 
-        for (entity in EntityUtils.getAllEntities().sortedBy { it.entityId }) {
+        for (entity in McWorld.entities.sortedBy { it.entityId }) {
             val position = entity.position
             val vec = position.toLorenzVec()
             val distance = start.distance(vec)
@@ -180,7 +181,7 @@ object CopyNearbyEntitiesCommand {
 
         if (counter != 0) {
             val string = resultList.joinToString("\n")
-            OSUtils.copyToClipboard(string)
+            OS.copyToClipboard(string)
             ChatUtils.chat("$counter entities copied into the clipboard!")
         } else {
             ChatUtils.chat("No entities found in a search radius of $searchRadius!")
@@ -231,7 +232,7 @@ object CopyNearbyEntitiesCommand {
         }
     }
 
-    fun getMobInfo(mob: Mob) = buildList<String> {
+    fun getMobInfo(mob: Mob) = buildList {
         add("Name: ${mob.name}")
         add("Type: ${mob.mobType}")
         add("Base Entity: ${mob.baseEntity.asString()}")
@@ -254,7 +255,7 @@ object CopyNearbyEntitiesCommand {
             add("Is Starred: ${mob.hasStar}")
             add("Attribute: ${mob.attribute ?: "NONE"}")
         }
-        if (mob.boundingBox != mob.baseEntity.entityBoundingBox) {
+        if (mob.boundingBox != mob.baseEntity.entityBoundingBox.toBox()) {
             add("Bounding Box: ${mob.boundingBox}")
         }
     }

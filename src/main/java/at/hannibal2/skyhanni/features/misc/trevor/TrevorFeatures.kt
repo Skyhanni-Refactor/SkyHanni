@@ -1,51 +1,49 @@
 package at.hannibal2.skyhanni.features.misc.trevor
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.config.features.misc.TrevorTheTrapperConfig.TrackerEntry
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.CheckRenderEntityEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzKeyPressEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.entity.CheckRenderEntityEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.KeyPressEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.garden.farming.GardenCropSpeed
 import at.hannibal2.skyhanni.mixins.hooks.RenderLivingEntityHelper
-import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
-import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.ConfigUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
+import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.NEUItems
-import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
-import at.hannibal2.skyhanni.utils.RenderUtils.drawString
-import at.hannibal2.skyhanni.utils.RenderUtils.renderString
-import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.findMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
-import at.hannibal2.skyhanni.utils.RegexUtils.matches
+import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
+import at.hannibal2.skyhanni.utils.RenderUtils.drawString
+import at.hannibal2.skyhanni.utils.RenderUtils.drawWaypointFilled
+import at.hannibal2.skyhanni.utils.RenderUtils.renderString
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TabListData
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McScreen
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object TrevorFeatures {
     private val patternGroup = RepoPattern.group("misc.trevor")
     private val trapperPattern by patternGroup.pattern(
@@ -89,12 +87,13 @@ object TrevorFeatures {
         "Trapper's Den"
     )
 
+    private const val TRAPPER_ID: Int = 56
+    private const val BACKUP_TRAPPER_ID: Int = 17
+
     private var timeUntilNextReady = 0
     private var trapperReady: Boolean = true
     private var currentStatus = TrapperStatus.READY
     private var currentLabel = "§2Ready"
-    private var trapperID: Int = 56
-    private var backupTrapperID: Int = 17
     private var timeLastWarped = SimpleTimeMark.farPast()
     private var lastChatPrompt = ""
     private var lastChatPromptTime = SimpleTimeMark.farPast()
@@ -106,7 +105,7 @@ object TrevorFeatures {
 
     private val config get() = SkyHanniMod.feature.misc.trevorTheTrapper
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!onFarmingIsland()) return
         if (!config.trapperSolver) return
@@ -116,8 +115,8 @@ object TrevorFeatures {
         if (questActive) TrevorSolver.findMob()
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!onFarmingIsland()) return
 
         val formattedMessage = event.message.removeColor()
@@ -125,8 +124,8 @@ object TrevorFeatures {
         mobDiedPattern.matchMatcher(event.message) {
             TrevorSolver.resetLocation()
             if (config.trapperMobDiedMessage) {
-                LorenzUtils.sendTitle("§2Mob Died ", 5.seconds)
-                SoundUtils.playBeepSound()
+                TitleManager.sendTitle("§2Mob Died ", 5.seconds)
+                McSound.BEEP.play()
             }
             trapperReady = true
             TrevorSolver.mobLocation = TrapperMobArea.NONE
@@ -179,8 +178,8 @@ object TrevorFeatures {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent(priority = HandleEvent.LOW)
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!config.trapperCooldownGui) return
         if (!onFarmingIsland()) return
 
@@ -203,8 +202,8 @@ object TrevorFeatures {
 
         if (timeUntilNextReady <= 0 && trapperReady) {
             if (timeUntilNextReady == 0) {
-                LorenzUtils.sendTitle("§2Trapper Ready", 3.seconds)
-                SoundUtils.playBeepSound()
+                TitleManager.sendTitle("§2Trapper Ready", 3.seconds)
+                McSound.BEEP.play()
             }
             currentStatus = TrapperStatus.READY
             currentLabel = "§2Ready"
@@ -245,11 +244,11 @@ object TrevorFeatures {
         questActive = active
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!onFarmingIsland()) return
-        var entityTrapper = EntityUtils.getEntityByID(trapperID)
-        if (entityTrapper !is EntityLivingBase) entityTrapper = EntityUtils.getEntityByID(backupTrapperID)
+        var entityTrapper = McWorld.getEntity(TRAPPER_ID)
+        if (entityTrapper !is EntityLivingBase) entityTrapper = McWorld.getEntity(BACKUP_TRAPPER_ID)
         if (entityTrapper is EntityLivingBase && config.trapperTalkCooldown) {
             RenderLivingEntityHelper.setEntityColorWithNoHurtTime(entityTrapper, currentStatus.color)
             { config.trapperTalkCooldown }
@@ -280,10 +279,10 @@ object TrevorFeatures {
         }
     }
 
-    @SubscribeEvent
-    fun onKeyClick(event: LorenzKeyPressEvent) {
+    @HandleEvent
+    fun onKeyClick(event: KeyPressEvent) {
         if (!onFarmingIsland()) return
-        if (Minecraft.getMinecraft().currentScreen != null) return
+        if (McScreen.isOpen) return
         if (NEUItems.neuHasFocus()) return
 
         if (event.keyCode != config.keyBindWarpTrapper) return
@@ -305,13 +304,13 @@ object TrevorFeatures {
         }
     }
 
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    @HandleEvent(priority = HandleEvent.HIGHEST)
     fun onCheckRender(event: CheckRenderEntityEvent<*>) {
         if (!inTrapperDen) return
         if (!config.trapperTalkCooldown) return
         val entity = event.entity
         if (entity is EntityArmorStand && entity.name == "§e§lCLICK") {
-            event.isCanceled = true
+            event.cancel()
         }
     }
 
@@ -323,14 +322,14 @@ object TrevorFeatures {
         inBetweenQuests = false
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         resetTrapper()
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        inTrapperDen = areaTrappersDenPattern.matches(LorenzUtils.skyBlockArea)
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
+        inTrapperDen = IslandArea.TRAPPERS_DEN.isInside()
     }
 
     enum class TrapperStatus(baseColor: LorenzColor) {
@@ -344,11 +343,4 @@ object TrevorFeatures {
     }
 
     fun onFarmingIsland() = IslandType.THE_FARMING_ISLANDS.isInIsland()
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(11, "misc.trevorTheTrapper.textFormat") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, TrackerEntry::class.java)
-        }
-    }
 }

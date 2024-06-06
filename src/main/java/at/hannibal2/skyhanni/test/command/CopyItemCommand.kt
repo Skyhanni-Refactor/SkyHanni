@@ -1,24 +1,17 @@
 package at.hannibal2.skyhanni.test.command
 
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getMinecraftId
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.system.OS
 import net.minecraft.item.ItemStack
 import net.minecraft.nbt.NBTTagCompound
 
 object CopyItemCommand {
 
-    fun command() {
-        val itemStack = InventoryUtils.getItemInHand()
-        if (itemStack == null) {
-            ChatUtils.userError("No item in hand!")
-            return
-        }
-        copyItemToClipboard(itemStack)
-    }
+    fun onCommand() = McPlayer.heldItem?.let { copyItemToClipboard(it) } ?: ChatUtils.userError("No item in hand!")
 
     private fun recurseTag(compound: NBTTagCompound, text: String, list: MutableList<String>) {
         for (s in compound.keySet) {
@@ -52,7 +45,7 @@ object CopyItemCommand {
         }
 
         val string = resultList.joinToString("\n")
-        OSUtils.copyToClipboard(string)
+        OS.copyToClipboard(string)
         ChatUtils.chat("Item info copied into the clipboard!")
     }
 }

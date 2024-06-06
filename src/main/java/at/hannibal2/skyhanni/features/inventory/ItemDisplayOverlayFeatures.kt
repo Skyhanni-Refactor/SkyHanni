@@ -3,7 +3,7 @@ package at.hannibal2.skyhanni.features.inventory
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.CollectionAPI
 import at.hannibal2.skyhanni.api.SkillAPI
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry.BINGO_GOAL_RANK
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry.BOTTLE_OF_JYRRE
@@ -23,12 +23,14 @@ import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumbe
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry.SKILL_LEVEL
 import at.hannibal2.skyhanni.config.features.inventory.InventoryConfig.ItemNumberEntry.VACUUM_GARDEN
 import at.hannibal2.skyhanni.data.PetAPI
-import at.hannibal2.skyhanni.events.RenderItemTipEvent
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.render.gui.RenderItemTipEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
 import at.hannibal2.skyhanni.features.garden.pests.PestAPI
 import at.hannibal2.skyhanni.features.skillprogress.SkillProgress
 import at.hannibal2.skyhanni.features.skillprogress.SkillType
-import at.hannibal2.skyhanni.utils.ConfigUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemCategory
 import at.hannibal2.skyhanni.utils.ItemUtils
@@ -37,7 +39,6 @@ import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemCategoryOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
@@ -51,12 +52,13 @@ import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getPetLevel
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getRanchersSpeed
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getSecondsHeld
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.JsonArray
 import com.google.gson.JsonElement
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object ItemDisplayOverlayFeatures {
     private val config get() = SkyHanniMod.feature.inventory
 
@@ -82,7 +84,7 @@ object ItemDisplayOverlayFeatures {
         "(§.)*You were the (§.)*(?<rank>[\\w]+)(?<ordinal>(st|nd|rd|th)) (§.)*to"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRenderItemTip(event: RenderItemTipEvent) {
         event.stackTip = getStackTip(event.stack) ?: return
     }
@@ -95,11 +97,11 @@ object ItemDisplayOverlayFeatures {
 
         if (MASTER_STAR_TIER.isSelected()) {
             when (internalName) {
-                "FIRST_MASTER_STAR".asInternalName() -> return "1"
-                "SECOND_MASTER_STAR".asInternalName() -> return "2"
-                "THIRD_MASTER_STAR".asInternalName() -> return "3"
-                "FOURTH_MASTER_STAR".asInternalName() -> return "4"
-                "FIFTH_MASTER_STAR".asInternalName() -> return "5"
+                SkyhanniItems.FIRST_MASTER_STAR() -> return "1"
+                SkyhanniItems.SECOND_MASTER_STAR() -> return "2"
+                SkyhanniItems.THIRD_MASTER_STAR() -> return "3"
+                SkyhanniItems.FOURTH_MASTER_STAR() -> return "4"
+                SkyhanniItems.FIFTH_MASTER_STAR() -> return "5"
             }
         }
 
@@ -121,7 +123,7 @@ object ItemDisplayOverlayFeatures {
             }
         }
 
-        if (NEW_YEAR_CAKE.isSelected() && internalName == "NEW_YEAR_CAKE".asInternalName()) {
+        if (NEW_YEAR_CAKE.isSelected() && internalName == SkyhanniItems.NEW_YEAR_CAKE()) {
             val year = item.getNewYearCake()?.toString() ?: ""
             return "§b$year"
         }
@@ -150,11 +152,11 @@ object ItemDisplayOverlayFeatures {
 
         if (KUUDRA_KEY.isSelected() && itemName.contains("Kuudra Key")) {
             return when (internalName) {
-                "KUUDRA_TIER_KEY".asInternalName() -> "§a1"
-                "KUUDRA_HOT_TIER_KEY".asInternalName() -> "§22"
-                "KUUDRA_BURNING_TIER_KEY".asInternalName() -> "§e3"
-                "KUUDRA_FIERY_TIER_KEY".asInternalName() -> "§64"
-                "KUUDRA_INFERNAL_TIER_KEY".asInternalName() -> "§c5"
+                SkyhanniItems.KUUDRA_TIER_KEY() -> "§a1"
+                SkyhanniItems.KUUDRA_HOT_TIER_KEY() -> "§22"
+                SkyhanniItems.KUUDRA_BURNING_TIER_KEY() -> "§e3"
+                SkyhanniItems.KUUDRA_FIERY_TIER_KEY() -> "§64"
+                SkyhanniItems.KUUDRA_INFERNAL_TIER_KEY() -> "§c5"
                 else -> "§4?"
             }
         }
@@ -188,13 +190,13 @@ object ItemDisplayOverlayFeatures {
             }
         }
 
-        if (RANCHERS_BOOTS_SPEED.isSelected() && internalName == "RANCHERS_BOOTS".asInternalName()) {
+        if (RANCHERS_BOOTS_SPEED.isSelected() && internalName == SkyhanniItems.RANCHERS_BOOTS()) {
             item.getRanchersSpeed()?.let {
                 val isUsingBlackCat = PetAPI.isCurrentPet("Black Cat")
-                val helmet = InventoryUtils.getHelmet()?.getInternalName()
-                val hand = InventoryUtils.getItemInHand()?.getInternalName()
-                val racingHelmet = "RACING_HELMET".asInternalName()
-                val cactusKnife = "CACTUS_KNIFE".asInternalName()
+                val helmet = McPlayer.helmet?.getInternalName()
+                val hand = McPlayer.heldItem?.getInternalName()
+                val racingHelmet = SkyhanniItems.RACING_HELMET()
+                val cactusKnife = SkyhanniItems.CACTUS_KNIFE()
                 val is500 = isUsingBlackCat || helmet == racingHelmet || (GardenAPI.inGarden() && hand == cactusKnife)
                 val effectiveSpeedCap = if (is500) 500 else 400
                 val text = if (it > 999) "1k" else "$it"
@@ -202,7 +204,7 @@ object ItemDisplayOverlayFeatures {
             }
         }
 
-        if (LARVA_HOOK.isSelected() && internalName == "LARVA_HOOK".asInternalName()) {
+        if (LARVA_HOOK.isSelected() && internalName == SkyhanniItems.LARVA_HOOK()) {
             lore.matchFirst(harvestPattern) {
                 val amount = group("amount").toInt()
                 return when {
@@ -240,12 +242,12 @@ object ItemDisplayOverlayFeatures {
             }
         }
 
-        if (BOTTLE_OF_JYRRE.isSelected() && internalName == "NEW_BOTTLE_OF_JYRRE".asInternalName()) {
+        if (BOTTLE_OF_JYRRE.isSelected() && internalName == SkyhanniItems.NEW_BOTTLE_OF_JYRRE()) {
             val seconds = item.getBottleOfJyrreSeconds() ?: 0
             return "§a${(seconds / 3600)}"
         }
 
-        if (DARK_CACAO_TRUFFLE.isSelected() && internalName == "DARK_CACAO_TRUFFLE".asInternalName()) {
+        if (DARK_CACAO_TRUFFLE.isSelected() && internalName == SkyhanniItems.DARK_CACAO_TRUFFLE()) {
             val seconds = item.getSecondsHeld() ?: 0
             return "§a${(seconds / 3600)}"
         }
@@ -282,16 +284,6 @@ object ItemDisplayOverlayFeatures {
         return text
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(11, "inventory.itemNumberAsStackSize") { element ->
-            ConfigUtils.migrateIntArrayListToEnumArrayList(element, ItemNumberEntry::class.java)
-        }
-        event.transform(29, "inventory.itemNumberAsStackSize") { element ->
-            fixRemovedConfigElement(element)
-        }
-    }
-
     private fun fixRemovedConfigElement(data: JsonElement): JsonElement {
         if (!data.isJsonArray) return data
         val newList = JsonArray()
@@ -303,4 +295,11 @@ object ItemDisplayOverlayFeatures {
     }
 
     fun ItemNumberEntry.isSelected() = config.itemNumberAsStackSize.contains(this)
+
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
+        event.transform(29, "inventory.itemNumberAsStackSize") { element ->
+            fixRemovedConfigElement(element)
+        }
+    }
 }

@@ -1,15 +1,18 @@
 package at.hannibal2.skyhanni.features.commands
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.FriendAPI
 import at.hannibal2.skyhanni.data.PartyAPI
-import at.hannibal2.skyhanni.events.MessageSendToServerEvent
+import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
 import at.hannibal2.skyhanni.features.misc.limbo.LimboTimeTracker
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.mc.McWorld
 
+@SkyHanniModule
 object PartyCommands {
 
     private val config get() = SkyHanniMod.feature.misc.commands
@@ -46,7 +49,7 @@ object PartyCommands {
 
     fun transfer(args: Array<String>) {
         if (args.isEmpty()) {
-            if (LimboTimeTracker.inLimbo) {
+            if (HypixelAPI.server == "limbo") {
                 LimboTimeTracker.printStats(true)
                 return
             }
@@ -65,7 +68,7 @@ object PartyCommands {
         HypixelCommands.partyPromote(args[0])
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onMessageSendToServer(event: MessageSendToServerEvent) {
         if (!config.partyKickReason) {
             return
@@ -96,7 +99,7 @@ object PartyCommands {
             } else {
                 emptyList<String>()
             }
-            val allOnLobby = EntityUtils.getPlayerEntities().map { it.name }
+            val allOnLobby = McWorld.players.map { it.name }
             return friends + getPartyCommands() + allOnLobby
         }
         return null
@@ -108,10 +111,8 @@ object PartyCommands {
         } else emptyList()
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(5, "commands.usePartyTransferAlias", "commands.shortCommands")
-
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(31, "commands", "misc.commands")
     }
 }

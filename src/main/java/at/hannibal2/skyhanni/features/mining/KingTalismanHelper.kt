@@ -1,29 +1,32 @@
 package at.hannibal2.skyhanni.features.mining
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ProfileStorageData
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.sorted
 import at.hannibal2.skyhanni.utils.CollectionUtils.sortedDesc
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStrings
-import at.hannibal2.skyhanni.utils.SkyBlockTime
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.datetime.SkyBlockTime
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.entity.item.EntityArmorStand
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.Collections
+import kotlin.time.Duration.Companion.milliseconds
 
-class KingTalismanHelper {
+@SkyHanniModule
+object KingTalismanHelper {
 
     private val config get() = SkyHanniMod.feature.mining.kingTalisman
     private val storage get() = ProfileStorageData.profileSpecific?.mining
@@ -33,22 +36,21 @@ class KingTalismanHelper {
         "§6§lKing (?<name>.*)"
     )
 
-    companion object {
+    private val KINGS_CHAIR_POS = LorenzVec(129.6, 196.0, 196.7)
 
-        private var currentOffset: Int? = null
-        private var skyblockYear = 0
+    private var currentOffset: Int? = null
+    private var skyblockYear = 0
 
-        private fun getCurrentOffset(): Int? {
-            if (SkyBlockTime.now().year != skyblockYear) {
-                return null
-            }
-            return currentOffset
+    private fun getCurrentOffset(): Int? {
+        if (SkyBlockTime.now().year != skyblockYear) {
+            return null
         }
+        return currentOffset
+    }
 
-        fun kingFix() {
-            currentOffset = null
-            ChatUtils.chat("Reset internal offset of King Talisman Helper.")
-        }
+    fun kingFix() {
+        currentOffset = null
+        ChatUtils.chat("Reset internal offset of King Talisman Helper.")
     }
 
     private val kingLocation = LorenzVec(129.6, 196.5, 194.1)
@@ -66,10 +68,10 @@ class KingTalismanHelper {
     private var farDisplay = ""
     private var display = emptyList<String>()
 
-    private fun isNearby() = IslandType.DWARVEN_MINES.isInIsland() && LorenzUtils.skyBlockArea == "Royal Palace" &&
+    private fun isNearby() = IslandType.DWARVEN_MINES.isInIsland() && IslandArea.ROYAL_PALACE.isInside() &&
         kingLocation.distanceToPlayer() < 10
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isEnabled()) return
         val storage = storage ?: return
@@ -91,8 +93,8 @@ class KingTalismanHelper {
     }
 
     private fun checkOffset() {
-        val king = EntityUtils.getEntitiesNearby<EntityArmorStand>(LorenzVec(129.6, 196.0, 196.7), 2.0)
-            .filter { it.name.startsWith("§6§lKing ") }.firstOrNull() ?: return
+        val king = McWorld.getEntitiesNear<EntityArmorStand>(KINGS_CHAIR_POS, 2.0)
+            .firstOrNull { it.name.startsWith("§6§lKing ") } ?: return
         val foundKing = kingPattern.matchMatcher(king.name) {
             group("name")
         } ?: return
@@ -103,10 +105,10 @@ class KingTalismanHelper {
         skyblockYear = SkyBlockTime.now().year
     }
 
-    fun isEnabled() = config.enabled && LorenzUtils.inSkyBlock
+    fun isEnabled() = config.enabled && SkyBlockAPI.isConnected
         && (IslandType.DWARVEN_MINES.isInIsland() || config.outsideMines)
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (event.inventoryName != "Commissions") return
         if (!isEnabled()) return
@@ -131,7 +133,7 @@ class KingTalismanHelper {
         }
 
         allKingsDisplay = buildList {
-            var farDisplay_: String? = null
+            var newFarDisplay: String? = null
 
             val currentKing = getCurrentKing()
             for ((king, timeUntil) in getKingTimes()) {
@@ -141,23 +143,24 @@ class KingTalismanHelper {
                 val current = king == currentKing
 
                 val missingTimeFormat = if (current) {
-                    val time = TimeUtils.formatDuration(timeUntil - 1000 * 60 * 20 * (kingCircles.size - 1))
+                    val changedTime = timeUntil - 1000 * 60 * 20 * (kingCircles.size - 1)
+                    val time = changedTime.milliseconds.format(maxUnits = 2)
                     "§7(§b$time remaining§7)"
                 } else {
-                    val time = TimeUtils.formatDuration(timeUntil, maxUnits = 2)
+                    val time = timeUntil.milliseconds.format(maxUnits = 2)
                     "§7(§bin $time§7)"
                 }
 
                 val currentString = if (current) "§6King " else ""
                 if (missing && current) {
-                    farDisplay_ = "§cNext missing king: §7$king §eNow $missingTimeFormat"
+                    newFarDisplay = "§cNext missing king: §7$king §eNow $missingTimeFormat"
                 }
 
                 val timeString = if (missing) " §cMissing $missingTimeFormat" else ""
 
                 add("§7$currentString$king$missingString$timeString")
             }
-            farDisplay = farDisplay_ ?: nextMissingText()
+            farDisplay = newFarDisplay ?: nextMissingText()
         }
     }
 
@@ -165,7 +168,7 @@ class KingTalismanHelper {
         val storage = storage ?: error("profileSpecific is null")
         val kingsTalkedTo = storage.kingsTalkedTo
         val (nextKing, until) = getKingTimes().filter { it.key !in kingsTalkedTo }.sorted().firstNotNullOf { it }
-        val time = TimeUtils.formatDuration(until, maxUnits = 2)
+        val time = until.milliseconds.format(maxUnits = 2)
 
         return "§cNext missing king: §7$nextKing §7(§bin $time§7)"
     }
@@ -191,8 +194,8 @@ class KingTalismanHelper {
 
     private fun getCurrentKing() = getKingTimes().sortedDesc().firstNotNullOf { it.key }
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
         if (!isEnabled()) return
 
         config.position.renderStrings(display, posLabel = "King Talisman Helper")

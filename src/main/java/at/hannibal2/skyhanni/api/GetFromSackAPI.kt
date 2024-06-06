@@ -1,41 +1,41 @@
 package at.hannibal2.skyhanni.api
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.compat.neu.NEUCompat
 import at.hannibal2.skyhanni.data.SackAPI
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
-import at.hannibal2.skyhanni.events.MessageSendToServerEvent
+import at.hannibal2.skyhanni.events.chat.MessageSendToServerEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
 import at.hannibal2.skyhanni.features.commands.tabcomplete.GetFromSacksTabComplete
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ChatUtils.isCommand
 import at.hannibal2.skyhanni.utils.ChatUtils.senderIsSkyhanni
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.NEUCalculator
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.isDouble
 import at.hannibal2.skyhanni.utils.PrimitiveItemStack
-import at.hannibal2.skyhanni.utils.PrimitiveItemStack.Companion.makePrimitiveStack
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.inventory.Slot
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.Deque
 import java.util.LinkedList
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object GetFromSackAPI {
     private val config get() = SkyHanniMod.feature.inventory.gfs
 
     val commands = arrayOf("gfs", "getfromsacks")
-    val commandsWithSlash = commands.map { "/$it" }
+    private val commandsWithSlash = commands.map { "/$it" }
 
     private val patternGroup = RepoPattern.group("gfs.chat")
     private val fromSacksChatPattern by patternGroup.pattern(
@@ -47,11 +47,9 @@ object GetFromSackAPI {
         "§cYou have no (?<item>.+) in your Sacks!"
     )
 
-    fun getFromSack(item: NEUInternalName, amount: Int) = getFromSack(item.makePrimitiveStack(amount))
+    private fun getFromSack(item: PrimitiveItemStack) = getFromSack(listOf(item))
 
-    fun getFromSack(item: PrimitiveItemStack) = getFromSack(listOf(item))
-
-    fun getFromSack(items: List<PrimitiveItemStack>) = addToQueue(items)
+    private fun getFromSack(items: List<PrimitiveItemStack>) = addToQueue(items)
 
     fun getFromChatMessageSackItems(
         item: PrimitiveItemStack,
@@ -60,10 +58,6 @@ object GetFromSackAPI {
         ChatUtils.clickableChat(text, onClick = {
             HypixelCommands.getFromSacks(item.internalName.asString(), item.amount)
         })
-
-    fun getFromSlotClickedSackItems(items: List<PrimitiveItemStack>, slotIndex: Int) = addToInventory(items, slotIndex)
-
-    fun Slot.getFromSackWhenClicked(items: List<PrimitiveItemStack>) = getFromSlotClickedSackItems(items, slotIndex)
 
     private val minimumDelay = 1.65.seconds
 
@@ -74,19 +68,10 @@ object GetFromSackAPI {
 
     private var lastItemStack: PrimitiveItemStack? = null
 
-    @Deprecated("", ReplaceWith("SackAPI.sackListInternalNames"))
-    val sackListInternalNames get() = SackAPI.sackListInternalNames
-
-    @Deprecated("", ReplaceWith("SackAPI.sackListNames"))
-    val sackListNames get() = SackAPI.sackListNames
-
     private fun addToQueue(items: List<PrimitiveItemStack>) = queue.addAll(items)
 
-    private fun addToInventory(items: List<PrimitiveItemStack>, slotId: Int) = inventoryMap.put(slotId, items)
-
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTick(event: ClientTickEvent) {
         if (queue.isNotEmpty() && lastTimeOfCommand.passedSince() >= minimumDelay) {
             val item = queue.poll()
             HypixelCommands.getFromSacks(item.internalName.asString().replace('-', ':'), item.amount)
@@ -94,23 +79,21 @@ object GetFromSackAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         inventoryMap.clear()
     }
 
-    @SubscribeEvent
-    fun onSlotClicked(event: GuiContainerEvent.SlotClickEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onSlotClicked(event: SlotClickEvent) {
         if (event.clickedButton != 1) return // filter none right clicks
         addToQueue(inventoryMap[event.slotId] ?: return)
         inventoryMap.remove(event.slotId)
-        event.isCanceled = true
+        event.cancel()
     }
 
-    @SubscribeEvent
-    fun onTooltip(event: LorenzToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         val list = inventoryMap[event.slot.slotIndex] ?: return
         event.toolTip.let { tip ->
             tip.add("")
@@ -119,20 +102,19 @@ object GetFromSackAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnSkyblock = true)
     fun onMessageToServer(event: MessageSendToServerEvent) {
-        if (!LorenzUtils.inSkyBlock) return
         if (!config.queuedGFS && !config.bazaarGFS) return
         if (!event.isCommand(commandsWithSlash)) return
         val replacedEvent = GetFromSacksTabComplete.handleUnderlineReplace(event)
         queuedHandler(replacedEvent)
         bazaarHandler(replacedEvent)
-        if (replacedEvent.isCanceled) {
-            event.isCanceled = true
+        if (replacedEvent.isCancelled) {
+            event.cancel()
             return
         }
         if (replacedEvent !== event) {
-            event.isCanceled = true
+            event.cancel()
             ChatUtils.sendMessageToServer(replacedEvent.message)
         }
     }
@@ -150,12 +132,12 @@ object GetFromSackAPI {
             CommandResult.WRONG_AMOUNT -> ChatUtils.userError("Invalid amount!")
             CommandResult.INTERNAL_ERROR -> {}
         }
-        event.isCanceled = true
+        event.cancel()
     }
 
     private fun bazaarHandler(event: MessageSendToServerEvent) {
-        if (event.isCanceled) return
-        if (!config.bazaarGFS || LorenzUtils.noTradeMode) return
+        if (event.isCancelled) return
+        if (!config.bazaarGFS || SkyBlockAPI.gamemode.noTrade) return
         lastItemStack = commandValidator(event.splitMessage.drop(1)).second
     }
 
@@ -170,7 +152,7 @@ object GetFromSackAPI {
         }
 
         var amountString = args.last()
-        amountString = NEUCalculator.calculateOrNull(amountString)?.toString() ?: amountString
+        amountString = NEUCompat.calculate(amountString)?.toString() ?: amountString
 
         if (!amountString.isDouble()) return CommandResult.WRONG_AMOUNT to null
 
@@ -193,10 +175,9 @@ object GetFromSackAPI {
         return CommandResult.VALID to PrimitiveItemStack(item, amountString.toDouble().toInt())
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-        if (!config.bazaarGFS || LorenzUtils.noTradeMode) return
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
+        if (!config.bazaarGFS || SkyBlockAPI.gamemode.noTrade) return
         val stack = lastItemStack ?: return
         val message = event.message
         fromSacksChatPattern.matchMatcher(message) {

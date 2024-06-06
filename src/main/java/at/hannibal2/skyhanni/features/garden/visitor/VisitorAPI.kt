@@ -5,19 +5,21 @@ import at.hannibal2.skyhanni.events.garden.visitor.VisitorArrivalEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorLeftEvent
 import at.hannibal2.skyhanni.events.garden.visitor.VisitorRefusedEvent
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.ColorUtils.withAlpha
-import at.hannibal2.skyhanni.utils.EntityUtils
+import at.hannibal2.skyhanni.utils.ColourUtils.withAlpha
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.LorenzLogger
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.isInt
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.item.ItemStack
 
+@SkyHanniModule
 object VisitorAPI {
 
     private var visitors = mapOf<String, Visitor>()
@@ -57,11 +59,11 @@ object VisitorAPI {
 
         when (newStatus) {
             VisitorStatus.ACCEPTED -> {
-                VisitorAcceptedEvent(visitor).postAndCatch()
+                VisitorAcceptedEvent(visitor).post()
             }
 
             VisitorStatus.REFUSED -> {
-                VisitorRefusedEvent(visitor).postAndCatch()
+                VisitorRefusedEvent(visitor).post()
             }
 
             else -> {}
@@ -92,7 +94,7 @@ object VisitorAPI {
         if (!visitors.containsKey(name)) return false
         val visitor = visitors[name] ?: return false
         visitors = visitors.editCopy { remove(name) }
-        VisitorLeftEvent(visitor).postAndCatch()
+        VisitorLeftEvent(visitor).post()
         return true
     }
 
@@ -100,7 +102,7 @@ object VisitorAPI {
         if (visitors.containsKey(name)) return false
         val visitor = Visitor(name, status = VisitorStatus.NEW)
         visitors = visitors.editCopy { this[name] = visitor }
-        VisitorArrivalEvent(visitor).postAndCatch()
+        VisitorArrivalEvent(visitor).post()
         return true
     }
 
@@ -139,8 +141,8 @@ object VisitorAPI {
         var blockedLore = listOf<String>()
         var blockReason: VisitorBlockReason? = null
 
-        fun getEntity() = EntityUtils.getEntityByID(entityId)
-        fun getNameTagEntity() = EntityUtils.getEntityByID(nameTagEntityId)
+        fun getEntity() = McWorld.getEntity(entityId)
+        fun getNameTagEntity() = McWorld.getEntity(nameTagEntityId)
 
         fun hasReward(): VisitorReward? {
             for (internalName in allRewards) {
@@ -199,7 +201,7 @@ object VisitorAPI {
         val pricePerCopper = pricePerCopper ?: error("pricePerCopper is null")
         val totalPrice = totalPrice ?: error("totalPrice is null")
         val totalReward = totalReward ?: error("totalReward is null")
-        val loss = totalPrice - totalReward;
+        val loss = totalPrice - totalReward
         return when {
             preventRefusing && hasReward() != null -> VisitorBlockReason.RARE_REWARD
             preventRefusingNew && offersAccepted == 0 -> VisitorBlockReason.NEVER_ACCEPTED

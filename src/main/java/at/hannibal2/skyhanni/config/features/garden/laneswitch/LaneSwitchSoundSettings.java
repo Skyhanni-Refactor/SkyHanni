@@ -1,7 +1,7 @@
 package at.hannibal2.skyhanni.config.features.garden.laneswitch;
 
 import at.hannibal2.skyhanni.features.garden.farming.lane.FarmingLaneFeatures;
-import at.hannibal2.skyhanni.utils.OSUtils;
+import at.hannibal2.skyhanni.utils.system.OS;
 import com.google.gson.annotations.Expose;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorButton;
 import io.github.notenoughupdates.moulconfig.annotations.ConfigEditorSlider;
@@ -33,5 +33,5 @@ public class LaneSwitchSoundSettings {
 
     @ConfigOption(name = "List of Sounds", desc = "A list of available sounds.")
     @ConfigEditorButton(buttonText = "Open")
-    public Runnable listOfSounds = () -> OSUtils.openBrowser("https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/mapping-and-modding-tutorials/2213619-1-8-all-playsound-sound-arguments");
+    public Runnable listOfSounds = () -> OS.openUrl("https://www.minecraftforum.net/forums/mapping-and-modding-java-edition/mapping-and-modding-tutorials/2213619-1-8-all-playsound-sound-arguments");
 }

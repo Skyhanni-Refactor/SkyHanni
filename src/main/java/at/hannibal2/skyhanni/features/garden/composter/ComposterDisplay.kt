@@ -1,56 +1,42 @@
 package at.hannibal2.skyhanni.features.garden.composter
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.TabListUpdateEvent
+import at.hannibal2.skyhanni.data.TitleManager
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.minecraft.TabListUpdateEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiOverlayRenderEvent
 import at.hannibal2.skyhanni.features.fame.ReminderUtils
 import at.hannibal2.skyhanni.features.garden.GardenAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.addAsSingletonList
 import at.hannibal2.skyhanni.utils.HypixelCommands
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
+import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
-import at.hannibal2.skyhanni.utils.TimeUtils
-import at.hannibal2.skyhanni.utils.TimeUtils.format
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import java.util.Collections
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 
-class ComposterDisplay {
+@SkyHanniModule
+object ComposterDisplay {
 
     private val config get() = GardenAPI.config.composters
     private val storage get() = GardenAPI.storage
     private var display = emptyList<List<Any>>()
     private var composterEmptyTime: Duration? = null
 
-    private val bucket by lazy { "BUCKET".asInternalName().getItemStack() }
+    private val bucket by lazy { SkyhanniItems.BUCKET().getItemStack() }
     private var tabListData by ComposterAPI::tabListData
 
-    enum class DataType(rawPattern: String, val icon: String) {
-        ORGANIC_MATTER(" Organic Matter: §r(.*)", "WHEAT"),
-        FUEL(" Fuel: §r(.*)", "OIL_BARREL"),
-        TIME_LEFT(" Time Left: §r(.*)", "WATCH"),
-        STORED_COMPOST(" Stored Compost: §r(.*)", "COMPOST");
-
-        val displayItem by lazy { icon.asInternalName().getItemStack() }
-
-        val pattern by lazy { rawPattern.toPattern() }
-
-        fun addToList(map: Map<DataType, String>): List<Any> {
-            return listOf(displayItem, map[this]!!)
-        }
-    }
-
-    private val BUCKET by lazy { "BUCKET".asInternalName().getItemStack() }
-
-    @SubscribeEvent
+    @HandleEvent
     fun onTabListUpdate(event: TabListUpdateEvent) {
         if (!(config.displayEnabled && GardenAPI.inGarden())) return
 
@@ -84,7 +70,7 @@ class ComposterDisplay {
 
     private fun addComposterEmptyTime(emptyTime: Duration?): List<Any> {
         return if (emptyTime != null) {
-            GardenAPI.storage?.composterEmptyTime = System.currentTimeMillis() + emptyTime.inWholeMilliseconds
+            GardenAPI.storage?.composterEmptyTime = (SimpleTimeMark.now() + emptyTime).toMillis()
             val format = emptyTime.format()
             listOf(bucket, "§b$format")
         } else {
@@ -129,7 +115,7 @@ class ComposterDisplay {
 
         if (ComposterAPI.getOrganicMatter() <= config.notifyLow.organicMatter && System.currentTimeMillis() >= storage.informedAboutLowMatter) {
             if (config.notifyLow.title) {
-                LorenzUtils.sendTitle("§cYour Organic Matter is low", 4.seconds)
+                TitleManager.sendTitle("§cYour Organic Matter is low", 4.seconds)
             }
             ChatUtils.chat("§cYour Organic Matter is low!")
             storage.informedAboutLowMatter = System.currentTimeMillis() + 60_000 * 5
@@ -139,16 +125,16 @@ class ComposterDisplay {
             System.currentTimeMillis() >= storage.informedAboutLowFuel
         ) {
             if (config.notifyLow.title) {
-                LorenzUtils.sendTitle("§cYour Fuel is low", 4.seconds)
+                TitleManager.sendTitle("§cYour Fuel is low", 4.seconds)
             }
             ChatUtils.chat("§cYour Fuel is low!")
             storage.informedAboutLowFuel = System.currentTimeMillis() + 60_000 * 5
         }
     }
 
-    @SubscribeEvent
-    fun onRenderOverlay(event: GuiRenderEvent.GuiOverlayRenderEvent) {
-        if (!LorenzUtils.inSkyBlock && !OutsideSbFeature.COMPOSTER_TIME.isSelected()) return
+    @HandleEvent
+    fun onRenderOverlay(event: GuiOverlayRenderEvent) {
+        if (!SkyBlockAPI.isConnected && !OutsideSbFeature.COMPOSTER_TIME.isSelected()) return
 
         if (GardenAPI.inGarden() && config.displayEnabled) {
             config.displayPos.renderStringsAndItems(display, posLabel = "Composter Display")
@@ -159,13 +145,14 @@ class ComposterDisplay {
 
     private fun checkWarningsAndOutsideGarden() {
         val format = GardenAPI.storage?.let {
-            if (it.composterEmptyTime != 0L) {
-                val duration = it.composterEmptyTime - System.currentTimeMillis()
-                if (duration > 0) {
-                    if (duration < 1000 * 60 * 20) {
+            val composterEmpty = SimpleTimeMark(it.composterEmptyTime)
+            if (!composterEmpty.isFarPast()) {
+                val timeUntilEmpty = composterEmpty.timeUntil()
+                if (timeUntilEmpty.isPositive()) {
+                    if (timeUntilEmpty < 20.minutes) {
                         warn("Your composter in the garden is almost empty!")
                     }
-                    TimeUtils.formatDuration(duration, maxUnits = 3)
+                    timeUntilEmpty.format(maxUnits = 3)
                 } else {
                     warn("Your composter is empty!")
                     "§cComposter is empty!"
@@ -173,8 +160,8 @@ class ComposterDisplay {
             } else "?"
         } ?: "§cJoin SkyBlock to show composter timer."
 
-        val inSb = LorenzUtils.inSkyBlock && config.displayOutsideGarden
-        val outsideSb = !LorenzUtils.inSkyBlock && OutsideSbFeature.COMPOSTER_TIME.isSelected()
+        val inSb = SkyBlockAPI.isConnected && config.displayOutsideGarden
+        val outsideSb = !SkyBlockAPI.isConnected && OutsideSbFeature.COMPOSTER_TIME.isSelected()
         if (!GardenAPI.inGarden() && (inSb || outsideSb)) {
             val list = Collections.singletonList(listOf(bucket, "§b$format"))
             config.outsideGardenPos.renderStringsAndItems(list, posLabel = "Composter Outside Garden Display")
@@ -196,20 +183,21 @@ class ComposterDisplay {
                 HypixelCommands.warp("garden")
             })
         }
-        LorenzUtils.sendTitle("§eComposter Warning!", 3.seconds)
+        TitleManager.sendTitle("§eComposter Warning!", 3.seconds)
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.composterDisplayEnabled", "garden.composters.displayEnabled")
-        event.move(3, "garden.composterDisplayOutsideGarden", "garden.composters.displayOutsideGarden")
-        event.move(3, "garden.composterWarnAlmostClose", "garden.composters.warnAlmostClose")
-        event.move(3, "garden.composterDisplayPos", "garden.composters.displayPos")
-        event.move(3, "garden.composterOutsideGardenPos", "garden.composters.outsideGardenPos")
-        event.move(3, "garden.composterNotifyLowEnabled", "garden.composters.notifyLow.enabled")
-        event.move(3, "garden.composterNotifyLowEnabled", "garden.composters.notifyLow.enabled")
-        event.move(3, "garden.composterNotifyLowTitle", "garden.composters.notifyLow.title")
-        event.move(3, "garden.composterNotifyLowOrganicMatter", "garden.composters.notifyLow.organicMatter")
-        event.move(3, "garden.composterNotifyLowFuel", "garden.composters.notifyLow.fuel")
+    enum class DataType(rawPattern: String, val icon: NEUInternalName) {
+        ORGANIC_MATTER(" Organic Matter: §r(.*)", SkyhanniItems.WHEAT()),
+        FUEL(" Fuel: §r(.*)", SkyhanniItems.OIL_BARREL()),
+        TIME_LEFT(" Time Left: §r(.*)", SkyhanniItems.WATCH()),
+        STORED_COMPOST(" Stored Compost: §r(.*)", SkyhanniItems.COMPOST());
+
+        val displayItem by lazy { icon.getItemStack() }
+
+        val pattern by lazy { rawPattern.toPattern() }
+
+        fun addToList(map: Map<DataType, String>): List<Any> {
+            return listOf(displayItem, map[this]!!)
+        }
     }
 }

@@ -1,17 +1,15 @@
 package at.hannibal2.skyhanni.features.gui.customscoreboard
 
-import at.hannibal2.skyhanni.data.HypixelData
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.IslandTypeTag
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.ScoreboardData
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
-import at.hannibal2.skyhanni.features.gui.customscoreboard.CustomScoreboard.Companion.eventsConfig
 import at.hannibal2.skyhanni.features.gui.customscoreboard.ScoreboardEvents.VOTING
 import at.hannibal2.skyhanni.features.gui.customscoreboard.ScoreboardPattern
 import at.hannibal2.skyhanni.features.misc.ServerRestartTitle
 import at.hannibal2.skyhanni.features.rift.area.stillgorechateau.RiftBloodEffigies
 import at.hannibal2.skyhanni.utils.CollectionUtils.nextAfter
-import at.hannibal2.skyhanni.utils.LorenzUtils.inAdvancedMiningIsland
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RegexUtils.anyMatches
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
@@ -125,7 +123,7 @@ enum class ScoreboardEvents(
     ),
     MINING_EVENTS(
         ::getMiningEventsLines,
-        { inAdvancedMiningIsland() },
+        { IslandTypeTag.ADVANCED_MINING.inAny() },
         "§7(All Mining Event Lines)"
     ),
     DAMAGE(
@@ -180,15 +178,17 @@ enum class ScoreboardEvents(
     fun getLines(): List<String> = displayLine.get()
 
     companion object {
-        fun getEvent() = buildList<ScoreboardEvents?> {
-            if (eventsConfig.showAllActiveEvents) {
-                for (event in eventsConfig.eventEntries) {
+        fun getEvent() = buildList {
+            if (CustomScoreboard.eventsConfig.showAllActiveEvents) {
+                for (event in CustomScoreboard.eventsConfig.eventEntries) {
                     if (event.showWhen()) {
                         add(event)
                     }
                 }
             } else {
-                add(eventsConfig.eventEntries.firstOrNull { it.showWhen() && it.getLines().isNotEmpty() })
+                add(CustomScoreboard.eventsConfig.eventEntries.firstOrNull {
+                    it.showWhen() && it.getLines().isNotEmpty()
+                })
             }
         }
 
@@ -504,7 +504,7 @@ private fun getMagmaBossLines() = getSbLines().filter { line ->
         || SbPattern.bossHealthBarPattern.matches(line)
 }
 
-private fun getMagmaBossShowWhen(): Boolean = SbPattern.magmaChamberPattern.matches(HypixelData.skyBlockArea)
+private fun getMagmaBossShowWhen(): Boolean = SbPattern.magmaChamberPattern.matches(SkyBlockAPI.area)
 
 private fun getRiftLines() = getSbLines().filter { line ->
     RiftBloodEffigies.heartsPattern.matches(line)

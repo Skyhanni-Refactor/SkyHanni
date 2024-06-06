@@ -1,33 +1,35 @@
 package at.hannibal2.skyhanni.features.rift.everywhere
 
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.BackgroundDrawnEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
+import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.highlight
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 
-class HighlightRiftGuide {
+@SkyHanniModule
+object HighlightRiftGuide {
 
     private var inInventory = false
     private var highlightedItems = emptyList<Int>()
 
-    @SubscribeEvent
+    private val riftGuideInventoryPattern by RepoPattern.pattern(
+        "rift.guide.inventory",
+        "Rift Guide ➜.*"
+    )
+
+    @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         inInventory = false
-
         if (!isEnabled()) return
-
-        val inGuide = event.inventoryItems[40]?.getLore()?.let {
-            if (it.size == 1) {
-                it[0].startsWith("§7To Rift Guide")
-            } else false
-        } ?: false
-        if (!inGuide) return
+        if (!riftGuideInventoryPattern.matches(event.inventoryName)) return
+        inInventory = true
 
         val highlightedItems = mutableListOf<Int>()
         for ((slot, stack) in event.inventoryItems) {
@@ -36,23 +38,22 @@ class HighlightRiftGuide {
                 highlightedItems.add(slot)
             }
         }
-        inInventory = true
         this.highlightedItems = highlightedItems
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         inInventory = false
     }
 
-    @SubscribeEvent(priority = EventPriority.LOW)
-    fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
+    @HandleEvent(priority = HandleEvent.LOW)
+    fun onBackgroundDrawn(event: BackgroundDrawnEvent) {
         if (!isEnabled()) return
         if (!inInventory) return
 
         for (slot in InventoryUtils.getItemsInOpenChest()) {
             if (slot.slotIndex in highlightedItems) {
-                slot highlight LorenzColor.YELLOW
+                slot.highlight(LorenzColor.YELLOW)
             }
         }
     }

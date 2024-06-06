@@ -1,18 +1,23 @@
 package at.hannibal2.skyhanni.features.fishing.trophy
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.Gamemode
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDisplayConfig.HideCaught
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDisplayConfig.TextPart
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDisplayConfig.TrophySorting
 import at.hannibal2.skyhanni.config.features.fishing.trophyfishing.TrophyFishDisplayConfig.WhenToShow
-import at.hannibal2.skyhanni.data.IslandType
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.GuiRenderEvent
-import at.hannibal2.skyhanni.events.IslandChangeEvent
-import at.hannibal2.skyhanni.events.ProfileJoinEvent
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
 import at.hannibal2.skyhanni.events.fishing.TrophyFishCaughtEvent
+import at.hannibal2.skyhanni.events.render.gui.GuiRenderEvent
+import at.hannibal2.skyhanni.events.skyblock.IslandChangeEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
+import at.hannibal2.skyhanni.events.utils.ProfileJoinEvent
 import at.hannibal2.skyhanni.features.fishing.FishingAPI
 import at.hannibal2.skyhanni.features.misc.items.EstimatedItemValue
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.CollectionUtils.addSingleString
 import at.hannibal2.skyhanni.utils.CollectionUtils.addString
@@ -22,23 +27,19 @@ import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.ItemUtils.getItemRarityOrNull
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.NEUInternalName
-import at.hannibal2.skyhanni.utils.NEUInternalName.Companion.asInternalName
 import at.hannibal2.skyhanni.utils.NEUItems
 import at.hannibal2.skyhanni.utils.NEUItems.getItemStack
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderRenderables
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiInventory
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+@SkyHanniModule
 object TrophyFishDisplay {
     private val config get() = SkyHanniMod.feature.fishing.trophyFishing.display
 
@@ -47,7 +48,7 @@ object TrophyFishDisplay {
 
     private var display = emptyList<Renderable>()
 
-    @SubscribeEvent
+    @HandleEvent
     fun onIslandChange(event: IslandChangeEvent) {
         if (event.newIsland == IslandType.CRIMSON_ISLE) {
             DelayedRun.runDelayed(200.milliseconds) {
@@ -56,7 +57,7 @@ object TrophyFishDisplay {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onTrophyFishCaught(event: TrophyFishCaughtEvent) {
         recentlyDroppedTrophies[getInternalName(event.trophyFishName)] = event.rarity
         update()
@@ -65,13 +66,13 @@ object TrophyFishDisplay {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onProfileJoin(event: ProfileJoinEvent) {
         display = emptyList()
         update()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigReload(event: ConfigLoadEvent) {
         with(config) {
             ConditionalUtils.onToggle(
@@ -118,11 +119,7 @@ object TrophyFishDisplay {
         return table
     }
 
-    private fun addRow(
-        rawName: String,
-        data: MutableMap<TrophyRarity, Int>,
-        table: MutableList<List<Renderable>>,
-    ) {
+    private fun addRow(rawName: String, data: MutableMap<TrophyRarity, Int>, table: MutableList<List<Renderable>>) {
         get(config.onlyShowMissing.get())?.let { atLeast ->
             val list = TrophyRarity.entries.filter { it == atLeast }
             if (list.all { (data[it] ?: 0) > 0 }) {
@@ -145,7 +142,9 @@ object TrophyFishDisplay {
         for (rarity in TrophyRarity.entries) {
             val amount = data[rarity] ?: 0
             val recentlyDropped = rarity == recentlyDroppedRarity
-            val format = if (config.showCross.get() && amount == 0) "§c✖" else {
+            val format = if (config.showCross.get() && amount == 0) {
+                "§c✖"
+            } else {
                 val color = if (recentlyDropped) "§a" else rarity.formatCode
                 val numberFormat = if (config.showCheckmark.get() && amount >= 1) "§l✔" else amount.addSeparators()
                 "$color$numberFormat"
@@ -209,9 +208,8 @@ object TrophyFishDisplay {
             }
         }
 
-    private fun count(
-        trophyFishes: Map<String, MutableMap<TrophyRarity, Int>>, rarity: TrophyRarity,
-    ) = trophyFishes.entries.sortedBy { it.value[rarity] ?: 0 }
+    private fun count(trophyFishes: Map<String, MutableMap<TrophyRarity, Int>>, rarity: TrophyRarity) =
+        trophyFishes.entries.sortedBy { it.value[rarity] ?: 0 }
 
     private fun getItemName(rawName: String): String {
         val name = getInternalName(rawName).itemName
@@ -241,14 +239,14 @@ object TrophyFishDisplay {
                 return internalName
             }
         }
-        if (rawName.endsWith("1")) return "OBFUSCATED_FISH_1_BRONZE".asInternalName()
-        if (rawName.endsWith("2")) return "OBFUSCATED_FISH_2_BRONZE".asInternalName()
-        if (rawName.endsWith("3")) return "OBFUSCATED_FISH_3_BRONZE".asInternalName()
+        if (rawName.endsWith("1")) return SkyhanniItems.OBFUSCATED_FISH_1_BRONZE()
+        if (rawName.endsWith("2")) return SkyhanniItems.OBFUSCATED_FISH_2_BRONZE()
+        if (rawName.endsWith("3")) return SkyhanniItems.OBFUSCATED_FISH_3_BRONZE()
 
         return null
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onGuiRender(event: GuiRenderEvent) {
         if (!isEnabled()) return
         if (!canRender()) return
@@ -263,12 +261,12 @@ object TrophyFishDisplay {
         )
     }
 
-    fun canRender(): Boolean = when (config.whenToShow.get()!!) {
+    private fun canRender(): Boolean = when (config.whenToShow.get()!!) {
         WhenToShow.ALWAYS -> true
-        WhenToShow.ONLY_IN_INVENTORY -> Minecraft.getMinecraft().currentScreen is GuiInventory
+        WhenToShow.ONLY_IN_INVENTORY -> McScreen.isInventoryOpen
         WhenToShow.ONLY_WITH_ROD_IN_HAND -> FishingAPI.holdingLavaRod
         WhenToShow.ONLY_WITH_KEYBIND -> config.keybind.isKeyHeld()
     }
 
-    fun isEnabled() = (IslandType.CRIMSON_ISLE.isInIsland() || LorenzUtils.isStrandedProfile) && config.enabled.get()
+    fun isEnabled() = (IslandType.CRIMSON_ISLE.isInIsland() || SkyBlockAPI.gamemode == Gamemode.STRANDED) && config.enabled.get()
 }

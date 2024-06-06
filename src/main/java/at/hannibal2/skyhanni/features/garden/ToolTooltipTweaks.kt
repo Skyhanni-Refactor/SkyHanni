@@ -1,40 +1,38 @@
 package at.hannibal2.skyhanni.features.garden
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.features.garden.TooltipTweaksConfig.CropTooltipFortuneEntry
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.features.garden.FarmingFortuneDisplay.getAbilityFortune
 import at.hannibal2.skyhanni.features.garden.GardenAPI.getCropType
 import at.hannibal2.skyhanni.features.garden.fortuneguide.FFGuideGUI
-import at.hannibal2.skyhanni.utils.ConfigUtils
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getFarmingForDummiesCount
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getReforgeName
 import at.hannibal2.skyhanni.utils.StringUtils.firstLetterUppercase
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.text.DecimalFormat
 import kotlin.math.roundToInt
 
-class ToolTooltipTweaks {
+@SkyHanniModule
+object ToolTooltipTweaks {
 
+    // TODO repo patterns
     private val config get() = GardenAPI.config.tooltipTweak
     private val tooltipFortunePattern =
         "^§5§o§7Farming Fortune: §a\\+([\\d.]+)(?: §2\\(\\+\\d\\))?(?: §9\\(\\+(\\d+)\\))?$".toRegex()
     private val counterStartLine = setOf("§5§o§6Logarithmic Counter", "§5§o§6Collection Analysis")
     private val reforgeEndLine = setOf("§5§o", "§5§o§7chance for multiple crops.")
-    private val abilityDescriptionStart = "§5§o§7These boots gain §a+2❈ Defense"
-    private val abilityDescriptionEnd = "§5§o§7Skill level."
+    private const val ABILITY_DESCRIPTION_START = "§5§o§7These boots gain §a+2❈ Defense"
+    private const val ABILITY_DESCRIPTION_END = "§5§o§7Skill level."
 
     private val statFormatter = DecimalFormat("0.##")
 
-    @SubscribeEvent
-    fun onTooltip(event: LorenzToolTipEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         val itemStack = event.itemStack
         val itemLore = itemStack.getLore()
         val internalName = itemStack.getInternalName()
@@ -132,12 +130,12 @@ class ToolTooltipTweaks {
                         iterator.remove()
                     }
 
-                    if (line == abilityDescriptionStart) {
+                    if (line == ABILITY_DESCRIPTION_START) {
                         removingAbilityDescription = true
                     }
                     if (removingAbilityDescription) {
                         iterator.remove()
-                        if (line == abilityDescriptionEnd) {
+                        if (line == ABILITY_DESCRIPTION_END) {
                             removingAbilityDescription = false
                         }
                     }
@@ -151,17 +149,6 @@ class ToolTooltipTweaks {
     private fun MutableListIterator<String>.addStat(description: String, value: Number) {
         if (value.toDouble() != 0.0) {
             add("$description${value.formatStat()}")
-        }
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(3, "garden.compactToolTooltips", "garden.tooltipTweak.compactToolTooltips")
-        event.move(3, "garden.fortuneTooltipKeybind", "garden.tooltipTweak.fortuneTooltipKeybind")
-        event.move(3, "garden.cropTooltipFortune", "garden.tooltipTweak.cropTooltipFortune")
-
-        event.transform(15, "garden.tooltipTweak.cropTooltipFortune") { element ->
-            ConfigUtils.migrateIntToEnum(element, CropTooltipFortuneEntry::class.java)
         }
     }
 }

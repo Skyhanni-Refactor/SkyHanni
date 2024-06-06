@@ -1,28 +1,31 @@
 package at.hannibal2.skyhanni.features.garden.inventory
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.GardenCropMilestones
 import at.hannibal2.skyhanni.data.GardenCropMilestones.getCounter
-import at.hannibal2.skyhanni.events.LorenzToolTipEvent
+import at.hannibal2.skyhanni.events.item.SkyHanniToolTipEvent
 import at.hannibal2.skyhanni.features.garden.CropType
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.cleanName
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.toRoman
 import at.hannibal2.skyhanni.utils.StringUtils
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 // TODO: Merge common code with skill overflow
-class GardenInventoryTooltipOverflow {
+@SkyHanniModule
+object GardenInventoryTooltipOverflow {
 
     private val config get() = SkyHanniMod.feature.garden.cropMilestones.overflow
 
-    @SubscribeEvent
-    fun onTooltip(event: LorenzToolTipEvent) {
+    @HandleEvent
+    fun onTooltip(event: SkyHanniToolTipEvent) {
         if (!isEnabled()) return
 
         val inventoryName = InventoryUtils.openInventoryName()
@@ -45,7 +48,7 @@ class GardenInventoryTooltipOverflow {
         for (line in iterator) {
             val maxTierReached = "§7§8Max tier reached!"
             if (line.contains(maxTierReached)) {
-                iterator.set("§7Progress to tier $nextLevel: §e${LorenzUtils.formatPercentage(percentage)}")
+                iterator.set("§7Progress to tier $nextLevel: §e${percentage.formatPercentage()}")
                 event.itemStack.name = "§a${crop.cropName} $level"
                 next = true
                 continue
@@ -89,5 +92,5 @@ class GardenInventoryTooltipOverflow {
         return CropType.getByName(cropName.removeColor())
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && config.inventoryTooltip
+    fun isEnabled() = SkyBlockAPI.isConnected && config.inventoryTooltip
 }

@@ -1,27 +1,29 @@
 package at.hannibal2.skyhanni.features.inventory.bazaar
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.GuiContainerEvent
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.gui.SlotClickEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.itemName
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NEUInternalName
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
-import at.hannibal2.skyhanni.utils.OSUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
+import at.hannibal2.skyhanni.utils.system.OS
 
-class BazaarCancelledBuyOrderClipboard {
+@SkyHanniModule
+object BazaarCancelledBuyOrderClipboard {
 
     private val patternGroup = RepoPattern.group("bazaar.cancelledorder")
 
@@ -54,7 +56,7 @@ class BazaarCancelledBuyOrderClipboard {
     private var latestAmount: Int? = null
     private var lastClickedItem: NEUInternalName? = null
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
         if (!isEnabled()) return
         if (!inventoryTitlePattern.matches(event.inventoryName)) return
@@ -79,8 +81,8 @@ class BazaarCancelledBuyOrderClipboard {
         )
     }
 
-    @SubscribeEvent
-    fun onSlotClick(event: GuiContainerEvent.SlotClickEvent) {
+    @HandleEvent
+    fun onSlotClick(event: SlotClickEvent) {
         if (!BazaarOrderHelper.isBazaarOrderInventory(InventoryUtils.openInventoryName())) return
         val item = event.slot?.stack ?: return
 
@@ -90,8 +92,8 @@ class BazaarCancelledBuyOrderClipboard {
         lastClickedItem = NEUInternalName.fromItemName(name)
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         val coins = cancelledMessagePattern.matchMatcher(event.message) {
             group("coins").formatInt().addSeparators()
@@ -106,9 +108,9 @@ class BazaarCancelledBuyOrderClipboard {
         ChatUtils.clickableChat(message, onClick = {
             BazaarApi.searchForBazaarItem(lastClicked, latestAmount)
         })
-        OSUtils.copyToClipboard(latestAmount.toString())
+        OS.copyToClipboard(latestAmount.toString())
         this.latestAmount = null
     }
 
-    fun isEnabled() = LorenzUtils.inSkyBlock && SkyHanniMod.feature.inventory.bazaar.cancelledBuyOrderClipboard
+    fun isEnabled() = SkyBlockAPI.isConnected && SkyHanniMod.feature.inventory.bazaar.cancelledBuyOrderClipboard
 }

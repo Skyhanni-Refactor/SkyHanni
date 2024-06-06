@@ -1,29 +1,31 @@
 package at.hannibal2.skyhanni.features.rift.area.dreadfarm
 
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.ReceiveParticleEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.data.item.SkyhanniItems
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.ReceiveParticleEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.rift.RiftAPI
-import at.hannibal2.skyhanni.utils.BlockUtils.getBlockAt
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getInternalName
 import at.hannibal2.skyhanni.utils.LocationUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceToPlayer
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
-import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox_nea
-import at.hannibal2.skyhanni.utils.RenderUtils.expandBlock
+import at.hannibal2.skyhanni.utils.RenderUtils.drawFilledBoundingBox
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockAt
 import net.minecraft.init.Blocks
 import net.minecraft.util.EnumParticleTypes
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 import kotlin.time.Duration.Companion.milliseconds
 
-class RiftWiltedBerberisHelper {
+@SkyHanniModule
+object RiftWiltedBerberisHelper {
 
     private val config get() = RiftAPI.config.area.dreadfarm.wiltedBerberis
     private var isOnFarmland = false
@@ -38,16 +40,16 @@ class RiftWiltedBerberisHelper {
         var lastTime = SimpleTimeMark.now()
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
         if (!event.isMod(5)) return
 
         list = list.editCopy { removeIf { it.lastTime.passedSince() > 500.milliseconds } }
 
-        hasFarmingToolInHand = InventoryUtils.getItemInHand()?.getInternalName() == RiftAPI.farmingTool
+        hasFarmingToolInHand = McPlayer.heldItem?.getInternalName() == SkyhanniItems.FARMING_WAND()
 
-        if (Minecraft.getMinecraft().thePlayer.onGround) {
+        if (McPlayer.onGround) {
             val block = LocationUtils.playerLocation().add(y = -1).getBlockAt()
             val currentY = LocationUtils.playerLocation().y
             isOnFarmland = block == Blocks.farmland && (currentY % 1 == 0.0)
@@ -59,7 +61,7 @@ class RiftWiltedBerberisHelper {
             .minByOrNull { it.currentParticles.distanceSq(location) }
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onReceiveParticle(event: ReceiveParticleEvent) {
         if (!isEnabled()) return
         if (!hasFarmingToolInHand) return
@@ -69,13 +71,13 @@ class RiftWiltedBerberisHelper {
 
         if (event.type != EnumParticleTypes.FIREWORKS_SPARK) {
             if (config.hideparticles && berberis != null) {
-                event.isCanceled = true
+                event.cancel()
             }
             return
         }
 
         if (config.hideparticles) {
-            event.isCanceled = true
+            event.cancel()
         }
 
         if (berberis == null) {
@@ -104,8 +106,8 @@ class RiftWiltedBerberisHelper {
         }
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         if (!hasFarmingToolInHand) return
 
@@ -118,12 +120,12 @@ class RiftWiltedBerberisHelper {
 
                 val location = currentParticles.fixLocation(berberis)
                 if (!moving) {
-                    event.drawFilledBoundingBox_nea(axisAlignedBB(location), Color.YELLOW, 0.7f)
+                    event.drawFilledBoundingBox(axisAlignedBB(location), Color.YELLOW, 0.7f)
                     event.drawDynamicText(location.add(y = 1), "§eWilted Berberis", 1.5, ignoreBlocks = false)
                 } else {
-                    event.drawFilledBoundingBox_nea(axisAlignedBB(location), Color.WHITE, 0.5f)
+                    event.drawFilledBoundingBox(axisAlignedBB(location), Color.WHITE, 0.5f)
                     previous?.fixLocation(berberis)?.let {
-                        event.drawFilledBoundingBox_nea(axisAlignedBB(it), Color.LIGHT_GRAY, 0.2f)
+                        event.drawFilledBoundingBox(axisAlignedBB(it), Color.LIGHT_GRAY, 0.2f)
                         event.draw3DLine(it.add(0.5, 0.0, 0.5), location.add(0.5, 0.0, 0.5), Color.WHITE, 3, false)
                     }
                 }
@@ -131,7 +133,13 @@ class RiftWiltedBerberisHelper {
         }
     }
 
-    private fun axisAlignedBB(loc: LorenzVec) = loc.add(0.1, -0.1, 0.1).boundingToOffset(0.8, 1.0, 0.8).expandBlock()
+    private fun axisAlignedBB(loc: LorenzVec): BoundingBox {
+        val pos = loc.add(0.1, -0.1, 0.1)
+        return BoundingBox(
+            pos.x, loc.y, pos.z,
+            pos.x + 0.8, loc.y + 1.0, pos.z + 0.8
+        ).expandToEdge()
+    }
 
     private fun LorenzVec.fixLocation(wiltedBerberis: WiltedBerberis): LorenzVec {
         val x = x - 0.5

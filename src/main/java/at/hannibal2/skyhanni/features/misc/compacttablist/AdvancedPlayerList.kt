@@ -1,36 +1,36 @@
 package at.hannibal2.skyhanni.features.misc.compacttablist
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.GuildAPI
+import at.hannibal2.skyhanni.api.skyblock.IslandType
 import at.hannibal2.skyhanni.config.features.misc.compacttablist.AdvancedPlayerListConfig.PlayerSortEntry
 import at.hannibal2.skyhanni.data.FriendAPI
-import at.hannibal2.skyhanni.data.GuildAPI
-import at.hannibal2.skyhanni.data.IslandType
 import at.hannibal2.skyhanni.data.PartyAPI
 import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.misc.ContributorManager
 import at.hannibal2.skyhanni.features.misc.MarkedPlayerManager
+import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.SkyHanniDebugsAndTests
 import at.hannibal2.skyhanni.test.command.ErrorManager
-import at.hannibal2.skyhanni.utils.ConfigUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager.isKeyHeld
-import at.hannibal2.skyhanni.utils.LorenzUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils.isInIsland
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.TimeLimitedCache
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.regex.Matcher
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.minutes
 
+@SkyHanniModule
 object AdvancedPlayerList {
 
     val tabPlayerData = mutableMapOf<String, PlayerData>()
 
     private val config get() = SkyHanniMod.feature.gui.compactTabList.advancedPlayerList
+    private val markedPlayerConfig get() = SkyHanniMod.feature.gui.markedPlayers
 
     private val levelPattern by RepoPattern.pattern(
         "misc.compacttablist.advanced.level",
@@ -44,7 +44,7 @@ object AdvancedPlayerList {
     } ?: TabLine(text, type)
 
     fun newSorting(original: List<String>): List<String> {
-        if (LorenzUtils.inKuudraFight) return original
+        if (KuudraAPI.inKuudra) return original
         if (DungeonAPI.inDungeon()) return original
 
         if (ignoreCustomTabList()) return original
@@ -215,7 +215,7 @@ object AdvancedPlayerList {
     }
 
     private fun getSocialIcon(name: String) = when {
-        LorenzUtils.getPlayerName() == name -> SocialIcon.ME
+        McPlayer.name == name -> SocialIcon.ME
         MarkedPlayerManager.isMarkedPlayer(name) -> SocialIcon.MARKED
         PartyAPI.partyMembers.contains(name) -> SocialIcon.PARTY
         FriendAPI.getAllFriends().any { it.name.contains(name) } -> SocialIcon.FRIEND
@@ -242,7 +242,7 @@ object AdvancedPlayerList {
 
     enum class SocialIcon(val icon: () -> String, val score: Int) {
         ME("", 10),
-        MARKED({ "${MarkedPlayerManager.config.chatColor.getChatColor()}§lMARKED" }, 8),
+        MARKED({ "${markedPlayerConfig.chatColor.getChatColor()}§lMARKED" }, 8),
         PARTY("§9§lP", 5),
         FRIEND("§d§lF", 4),
         GUILD("§2§lG", 3),
@@ -250,12 +250,5 @@ object AdvancedPlayerList {
         ;
 
         constructor(icon: String, score: Int) : this({ icon }, score)
-    }
-
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.transform(15, "misc.compactTabList.advancedPlayerList.playerSortOrder") { element ->
-            ConfigUtils.migrateIntToEnum(element, PlayerSortEntry::class.java)
-        }
     }
 }

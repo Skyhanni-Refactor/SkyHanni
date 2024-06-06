@@ -1,36 +1,37 @@
 package at.hannibal2.skyhanni.features.event.lobby.waypoints.christmas
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.data.HypixelData
-import at.hannibal2.skyhanni.data.WinterAPI
+import at.hannibal2.skyhanni.api.HypixelAPI
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.data.jsonobjects.repo.EventWaypointsJson
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
 import at.hannibal2.skyhanni.features.event.lobby.waypoints.EventWaypoint
 import at.hannibal2.skyhanni.features.event.lobby.waypoints.loadEventWaypoints
-import at.hannibal2.skyhanni.test.GriffinUtils.drawWaypointFilled
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.LocationUtils.distanceSqToPlayer
 import at.hannibal2.skyhanni.utils.LorenzColor
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.RenderUtils.drawDynamicText
+import at.hannibal2.skyhanni.utils.RenderUtils.drawWaypointFilled
+import at.hannibal2.skyhanni.utils.datetime.DateUtils
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 // todo: create abstract class for this and BasketWaypoints
-class PresentWaypoints {
+@SkyHanniModule
+object PresentWaypoints {
 
     private val config get() = SkyHanniMod.feature.event.lobbyWaypoints.christmasPresent
     private var presentLocations = mapOf<String, MutableSet<EventWaypoint>>()
     private var presentEntranceLocations = mapOf<String, MutableSet<EventWaypoint>>()
     private var closest: EventWaypoint? = null
 
-    private val presentSet get() = presentLocations[HypixelData.lobbyType]
-    private val presentEntranceSet get() = presentEntranceLocations[HypixelData.lobbyType]
+    private val presentSet get() = presentLocations[HypixelAPI.lobbyType]
+    private val presentEntranceSet get() = presentEntranceLocations[HypixelAPI.lobbyType]
 
     private val patternGroup = RepoPattern.group("event.lobby.waypoint.presents")
     private val presentAlreadyFoundPattern by patternGroup.pattern(
@@ -46,14 +47,14 @@ class PresentWaypoints {
         "§aCongratulations! You found all the presents in every lobby!"
     )
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         if (!isEnabled()) return
         closest = null
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
         if (!isEnabled()) return
         processChatMessage(event.message)
     }
@@ -87,22 +88,22 @@ class PresentWaypoints {
 
     // </editor-fold>
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!isEnabled() && config.onlyClosest && HypixelData.locrawData != null && closest == null) return
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
+        if (!isEnabled() && config.onlyClosest && closest == null) return
         val notFoundPresents = presentSet?.filterNot { it.isFound }
         if (notFoundPresents?.isEmpty() == true) return
         closest = notFoundPresents?.minByOrNull { it.position.distanceSqToPlayer() } ?: return
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
         presentSet?.let { event.drawWaypoints(it, config.allWaypoints, LorenzColor.GOLD, "§6") }
         presentEntranceSet?.let { event.drawWaypoints(it, config.allEntranceWaypoints, LorenzColor.YELLOW, "§e") }
     }
 
-    private fun LorenzRenderWorldEvent.drawWaypoints(
+    private fun SkyHanniRenderWorldEvent.drawWaypoints(
         waypoints: Set<EventWaypoint>, shouldDraw: Boolean, color: LorenzColor, prefix: String,
     ) {
         if (!shouldDraw) return
@@ -115,14 +116,14 @@ class PresentWaypoints {
 
     private fun EventWaypoint.shouldShow(): Boolean = !isFound && (!config.onlyClosest || closest == this)
 
-    @SubscribeEvent
+    @HandleEvent
     fun onRepoReload(event: RepositoryReloadEvent) {
         val data = event.getConstant<EventWaypointsJson>("EventWaypoints")
-        presentLocations = loadEventWaypoints(data.presents ?: error("'presents' is null in EventWaypoints!"))
-        presentEntranceLocations =
-            loadEventWaypoints(data.presents_entrances ?: error("'presents_entrances' is null in EventWaypoints!"))
+        presentLocations = loadEventWaypoints(data.presents)
+        presentEntranceLocations = loadEventWaypoints(data.presentsEntrances)
     }
 
     private fun isEnabled(): Boolean =
-        LorenzUtils.inHypixelLobby && (config.allWaypoints || config.allEntranceWaypoints && WinterAPI.isDecember())
+        HypixelAPI.onHypixel && HypixelAPI.lobbyName != null &&
+            (config.allWaypoints || config.allEntranceWaypoints && DateUtils.isDecember())
 }

@@ -2,10 +2,12 @@ package at.hannibal2.skyhanni.features.bingo.card.nextstephelper
 
 import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.CollectionAPI
-import at.hannibal2.skyhanni.data.IslandType
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.data.SkillExperience
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
 import at.hannibal2.skyhanni.features.bingo.BingoAPI
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.steps.ChatMessageStep
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.steps.CollectionStep
@@ -17,19 +19,20 @@ import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.steps.ObtainCrys
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.steps.PartialProgressItemsStep
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.steps.ProgressionStep
 import at.hannibal2.skyhanni.features.bingo.card.nextstephelper.steps.SkillLevelStep
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
+import at.hannibal2.skyhanni.utils.StringUtils.formatPercentage
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class BingoNextStepHelper {
+@SkyHanniModule
+object BingoNextStepHelper {
 
     private val config get() = SkyHanniMod.feature.event.bingo.bingoCard
     private var dirty = true
@@ -59,83 +62,80 @@ class BingoNextStepHelper {
     private val itemIslandRequired = mutableMapOf<String, IslandVisitStep>()
     private val itemPreconditions = mutableMapOf<String, NextStep>()
     private val islands = mutableMapOf<IslandType, IslandVisitStep>()
-    private val rhysTaskName = "30x Enchanted Minerals (Redstone, Lapis Lazuli, Coal) (for Rhys)"
+    private const val RHYS_TASK_NAME = "30x Enchanted Minerals (Redstone, Lapis Lazuli, Coal) (for Rhys)"
 
-    companion object {
+    private val finalSteps = mutableListOf<NextStep>()
+    private var currentSteps = emptyList<NextStep>()
+    var currentHelp = emptyList<String>()
 
-        private val finalSteps = mutableListOf<NextStep>()
-        private var currentSteps = emptyList<NextStep>()
-        var currentHelp = emptyList<String>()
+    fun command() {
+        updateResult(true)
+    }
 
-        fun command() {
-            updateResult(true)
-        }
-
-        private fun updateResult(print: Boolean = false) {
+    private fun updateResult(print: Boolean = false) {
+        if (print) println()
+        currentSteps = listOf()
+        for (step in finalSteps) {
+            printRequirements(step, print)
             if (print) println()
-            currentSteps = listOf()
-            for (step in finalSteps) {
-                printRequirements(step, print)
-                if (print) println()
-            }
-
-            currentHelp = drawDisplay(print)
         }
 
-        private fun drawDisplay(print: Boolean): MutableList<String> {
-            val newCurrentHelp = mutableListOf<String>()
-            newCurrentHelp.add("§6Bingo Step Helper:")
+        currentHelp = drawDisplay(print)
+    }
 
-            if (currentSteps.isEmpty()) {
-                newCurrentHelp.add("§cOpen the §e/bingo §ccard.")
-            }
-            for (currentStep in currentSteps) {
-                val text = getName(currentStep)
-                newCurrentHelp.add("  §7$text")
-                if (print) println(text)
-            }
-            if (print) println()
-            return newCurrentHelp
+    private fun drawDisplay(print: Boolean): MutableList<String> {
+        val newCurrentHelp = mutableListOf<String>()
+        newCurrentHelp.add("§6Bingo Step Helper:")
+
+        if (currentSteps.isEmpty()) {
+            newCurrentHelp.add("§cOpen the §e/bingo §ccard.")
         }
+        for (currentStep in currentSteps) {
+            val text = getName(currentStep)
+            newCurrentHelp.add("  §7$text")
+            if (print) println(text)
+        }
+        if (print) println()
+        return newCurrentHelp
+    }
 
-        private fun printRequirements(step: NextStep, print: Boolean, parentDone: Boolean = false, depth: Int = 0) {
-            if (print) println(getName(step, parentDone, depth))
-            var requirementsToDo = 0
-            for (requirement in step.requirements) {
-                printRequirements(requirement, print, step.done || parentDone, depth + 1)
-                if (!requirement.done) {
-                    requirementsToDo++
-                }
-            }
-
-            if (!step.done && !parentDone && requirementsToDo == 0 && !currentSteps.contains(step)) {
-                currentSteps = currentSteps.editCopy { add(step) }
+    private fun printRequirements(step: NextStep, print: Boolean, parentDone: Boolean = false, depth: Int = 0) {
+        if (print) println(getName(step, parentDone, depth))
+        var requirementsToDo = 0
+        for (requirement in step.requirements) {
+            printRequirements(requirement, print, step.done || parentDone, depth + 1)
+            if (!requirement.done) {
+                requirementsToDo++
             }
         }
 
-        private fun getName(step: NextStep, parentDone: Boolean = false, depth: Int = 0): String {
-            val prefix = "  ".repeat(depth) + if (step.done) "[DONE] " else if (parentDone) "[done] " else ""
-            val suffix = if (step is ProgressionStep) progressDisplay(step) else ""
-            return prefix + step.displayName + suffix
+        if (!step.done && !parentDone && requirementsToDo == 0 && !currentSteps.contains(step)) {
+            currentSteps = currentSteps.editCopy { add(step) }
         }
+    }
 
-        private fun progressDisplay(step: ProgressionStep): String {
-            val having = step.amountHaving
-            return if (having > 0) {
-                val needed = step.amountNeeded
-                val percentage = LorenzUtils.formatPercentage(having.toDouble() / needed)
-                " $percentage (${having.addSeparators()}/${needed.addSeparators()})"
-            } else ""
-        }
+    private fun getName(step: NextStep, parentDone: Boolean = false, depth: Int = 0): String {
+        val prefix = "  ".repeat(depth) + if (step.done) "[DONE] " else if (parentDone) "[done] " else ""
+        val suffix = if (step is ProgressionStep) progressDisplay(step) else ""
+        return prefix + step.displayName + suffix
+    }
+
+    private fun progressDisplay(step: ProgressionStep): String {
+        val having = step.amountHaving
+        return if (having > 0) {
+            val needed = step.amountNeeded
+            val percentage = (having.toDouble() / needed).formatPercentage()
+            " $percentage (${having.addSeparators()}/${needed.addSeparators()})"
+        } else ""
     }
 
     init {
         reset()
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
+        if (!BingoAPI.isBingo()) return
         if (!config.enabled) return
 
         if (event.repeatSeconds(1)) {
@@ -149,9 +149,9 @@ class BingoNextStepHelper {
 
     private var nextMessageIsCrystal = false
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
-        if (!LorenzUtils.isBingoProfile) return
+    @HandleEvent
+    fun onChat(event: SkyHanniChatEvent) {
+        if (!BingoAPI.isBingo()) return
         if (!config.enabled) return
 
         for (currentStep in currentSteps) {
@@ -168,7 +168,7 @@ class BingoNextStepHelper {
                     }
                 }
             }
-            if (currentStep is PartialProgressItemsStep && currentStep.displayName == rhysTaskName && event.message == "§e[NPC] §dRhys§f: §rThank you for the items!§r") {
+            if (currentStep is PartialProgressItemsStep && currentStep.displayName == RHYS_TASK_NAME && event.message == "§e[NPC] §dRhys§f: §rThank you for the items!§r") {
                 currentStep.amountHavingHidden -= 10
             }
         }
@@ -183,7 +183,7 @@ class BingoNextStepHelper {
             if (step is ItemsStep) {
                 var totalCount = 0L
                 for ((itemName, multiplier) in step.variants) {
-                    val count = InventoryUtils.countItemsInLowerInventory { it.name.removeColor() == itemName }
+                    val count = McPlayer.countItems { it.name.removeColor() == itemName }
                     totalCount += count * multiplier
                 }
                 if (step.amountHaving != totalCount) {
@@ -229,7 +229,7 @@ class BingoNextStepHelper {
     private fun updateIslandsVisited() {
         for (step in islands.values) {
             val island = step.island
-            if (island == LorenzUtils.skyBlockIsland) {
+            if (island == SkyBlockAPI.island) {
                 step.done()
             }
         }
@@ -366,7 +366,7 @@ class BingoNextStepHelper {
 
     private fun rhys() {
         val redstoneForRhys = PartialProgressItemsStep(
-            rhysTaskName,
+            RHYS_TASK_NAME,
             "Redstone",
             160 * 10,
             mapOf("Redstone" to 1, "Enchanted Redstone" to 160)
@@ -374,7 +374,7 @@ class BingoNextStepHelper {
         redstoneForRhys requires IslandType.DEEP_CAVERNS.getStep()
 
         val lapisForRhys = PartialProgressItemsStep(
-            rhysTaskName,
+            RHYS_TASK_NAME,
             "Lapis Lazuli",
             160 * 10,
             mapOf("Lapis Lazuli" to 1, "Enchanted Lapis Lazuli" to 160)
@@ -382,7 +382,7 @@ class BingoNextStepHelper {
         lapisForRhys requires IslandType.DEEP_CAVERNS.getStep()
 
         val coalForRhys = PartialProgressItemsStep(
-            rhysTaskName,
+            RHYS_TASK_NAME,
             "Coal",
             160 * 10,
             mapOf("Coal" to 1, "Enchanted Coal" to 160)

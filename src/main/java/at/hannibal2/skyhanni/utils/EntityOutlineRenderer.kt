@@ -1,11 +1,15 @@
 package at.hannibal2.skyhanni.utils
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.RenderEntityOutlineEvent
-import at.hannibal2.skyhanni.mixins.transformers.CustomRenderGlobal
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
+import at.hannibal2.skyhanni.mixins.transformers.AccessorRenderGlobal
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.test.command.ErrorManager
+import at.hannibal2.skyhanni.utils.mc.McClient
 import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
@@ -16,8 +20,6 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.util.BlockPos
 import net.minecraftforge.client.MinecraftForgeClient
-import net.minecraftforge.fml.common.eventhandler.EventPriority
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL30
@@ -32,6 +34,7 @@ import java.lang.reflect.Method
  * https://github.com/BiscuitDevelopment/SkyblockAddons/blob/main/src/main/java/codes/biscuit/skyblockaddons/features/EntityOutlines/EntityOutlineRenderer.java
  *
  */
+@SkyHanniModule
 object EntityOutlineRenderer {
 
     private val entityRenderCache: CachedInfo = CachedInfo(null, null, null)
@@ -46,8 +49,8 @@ object EntityOutlineRenderer {
     private val mc get() = Minecraft.getMinecraft()
     private val BUF_FLOAT_4: java.nio.FloatBuffer = org.lwjgl.BufferUtils.createFloatBuffer(4)
 
-    private val CustomRenderGlobal.frameBuffer get() = entityOutlineFramebuffer_skyhanni
-    private val CustomRenderGlobal.shader get() = entityOutlineShader_skyhanni
+    private val AccessorRenderGlobal.frameBuffer get() = entityOutlineFramebuffer_skyhanni
+    private val AccessorRenderGlobal.shader get() = entityOutlineShader_skyhanni
 
     /**
      * @return a new framebuffer with the size of the main framebuffer
@@ -66,7 +69,7 @@ object EntityOutlineRenderer {
         if (swapBuffer.framebufferWidth != width || swapBuffer.framebufferHeight != height) {
             swapBuffer.createBindFramebuffer(width, height)
         }
-        val renderGlobal = mc.renderGlobal as CustomRenderGlobal
+        val renderGlobal = mc.renderGlobal as AccessorRenderGlobal
         val outlineBuffer = renderGlobal.frameBuffer
         if (outlineBuffer.framebufferWidth != width || outlineBuffer.framebufferHeight != height) {
             outlineBuffer.createBindFramebuffer(width, height)
@@ -89,7 +92,7 @@ object EntityOutlineRenderer {
             return !shouldRenderOutlines
         }
 
-        val renderGlobal = mc.renderGlobal as CustomRenderGlobal
+        val renderGlobal = mc.renderGlobal as AccessorRenderGlobal
         val renderManager = mc.renderManager
         mc.theWorld.theProfiler.endStartSection("entityOutlines")
         updateFramebufferSize()
@@ -200,7 +203,7 @@ object EntityOutlineRenderer {
         GlStateManager.enableDepth()
         GlStateManager.enableAlpha()
 
-        return !shouldRenderOutlines
+        return false
     }
 
     @JvmStatic
@@ -221,13 +224,13 @@ object EntityOutlineRenderer {
     @JvmStatic
     fun shouldRenderEntityOutlines(): Boolean {
         // SkyBlock Conditions
-        if (!LorenzUtils.inSkyBlock && !OutsideSbFeature.HIGHLIGHT_PARTY_MEMBERS.isSelected()) return false
+        if (!SkyBlockAPI.isConnected && !OutsideSbFeature.HIGHLIGHT_PARTY_MEMBERS.isSelected()) return false
 
         // Main toggle for outlines features
         if (!isEnabled()) return false
 
         // Vanilla Conditions
-        val renderGlobal = mc.renderGlobal as CustomRenderGlobal
+        val renderGlobal = mc.renderGlobal as AccessorRenderGlobal
         if (renderGlobal.frameBuffer == null || renderGlobal.shader == null || mc.thePlayer == null) return false
 
         // Optifine Conditions
@@ -287,7 +290,7 @@ object EntityOutlineRenderer {
         // Only render the view entity when sleeping or in 3rd person mode
         if (entity === mc.renderViewEntity &&
             !(mc.renderViewEntity is EntityLivingBase && (mc.renderViewEntity as EntityLivingBase).isPlayerSleeping ||
-                mc.gameSettings.thirdPersonView != 0)
+                McClient.options.thirdPersonView != 0)
         ) {
             false
         } else mc.theWorld.isBlockLoaded(BlockPos(entity)) && (mc.renderManager.shouldRender(
@@ -353,12 +356,12 @@ object EntityOutlineRenderer {
      *
      * @param event the client tick event
      */
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
-        if (!(event.phase == EventPriority.NORMAL && isEnabled())) return
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
+        if (!isEnabled()) return
 
         val renderGlobal = try {
-            mc.renderGlobal as CustomRenderGlobal
+            mc.renderGlobal as AccessorRenderGlobal
         } catch (e: NoClassDefFoundError) {
             ErrorManager.logErrorWithData(e, "Unable to enable entity outlines, the required mixin is not loaded")
             isMissingMixin = true
@@ -369,13 +372,13 @@ object EntityOutlineRenderer {
             // These events need to be called in this specific order for the xray to have priority over the no xray
             // Get all entities to render xray outlines
             val xrayOutlineEvent = RenderEntityOutlineEvent(RenderEntityOutlineEvent.Type.XRAY, null)
-            xrayOutlineEvent.postAndCatch()
+            xrayOutlineEvent.post()
             // Get all entities to render no xray outlines, using pre-filtered entities (no need to test xray outlined entities)
             val noxrayOutlineEvent = RenderEntityOutlineEvent(
                 RenderEntityOutlineEvent.Type.NO_XRAY,
                 xrayOutlineEvent.entitiesToChooseFrom
             )
-            noxrayOutlineEvent.postAndCatch()
+            noxrayOutlineEvent.post()
             // Cache the entities for future use
             entityRenderCache.xrayCache = xrayOutlineEvent.entitiesToOutline
             entityRenderCache.noXrayCache = noxrayOutlineEvent.entitiesToOutline

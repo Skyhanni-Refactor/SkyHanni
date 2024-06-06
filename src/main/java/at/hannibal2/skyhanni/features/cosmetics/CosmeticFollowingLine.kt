@@ -1,26 +1,30 @@
 package at.hannibal2.skyhanni.features.cosmetics
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
 import at.hannibal2.skyhanni.config.enums.OutsideSbFeature
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
-import at.hannibal2.skyhanni.events.LorenzTickEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.events.minecraft.ClientTickEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.CollectionUtils.editCopy
-import at.hannibal2.skyhanni.utils.ColorUtils.toChromaColor
+import at.hannibal2.skyhanni.utils.ColourUtils.toChromaColour
 import at.hannibal2.skyhanni.utils.LocationUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.RenderUtils.exactLocation
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McClient
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import net.minecraft.client.Minecraft
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-class CosmeticFollowingLine {
+@SkyHanniModule
+object CosmeticFollowingLine {
 
     private val config get() = SkyHanniMod.feature.gui.cosmetic.followingLine
 
@@ -29,26 +33,26 @@ class CosmeticFollowingLine {
 
     class LocationSpot(val time: SimpleTimeMark, val onGround: Boolean)
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         locations = emptyMap()
     }
 
-    @SubscribeEvent
-    fun onRenderWorld(event: LorenzRenderWorldEvent) {
+    @HandleEvent
+    fun onRenderWorld(event: SkyHanniRenderWorldEvent) {
         if (!isEnabled()) return
 
         updateClose(event)
 
-        val firstPerson = Minecraft.getMinecraft().gameSettings.thirdPersonView == 0
-        val color = config.lineColor.toChromaColor()
+        val firstPerson = McClient.options.thirdPersonView == 0
+        val color = config.lineColor.toChromaColour()
 
         renderClose(event, firstPerson, color)
         renderFar(event, firstPerson, color)
     }
 
     private fun renderFar(
-        event: LorenzRenderWorldEvent,
+        event: SkyHanniRenderWorldEvent,
         firstPerson: Boolean,
         color: Color,
     ) {
@@ -69,17 +73,17 @@ class CosmeticFollowingLine {
         }
     }
 
-    private fun updateClose(event: LorenzRenderWorldEvent) {
+    private fun updateClose(event: SkyHanniRenderWorldEvent) {
         val playerLocation = event.exactLocation(Minecraft.getMinecraft().thePlayer).add(y = 0.3)
 
         latestLocations = latestLocations.editCopy {
-            val locationSpot = LocationSpot(SimpleTimeMark.now(), Minecraft.getMinecraft().thePlayer.onGround)
+            val locationSpot = LocationSpot(SimpleTimeMark.now(), McPlayer.onGround)
             this[playerLocation] = locationSpot
             values.removeIf { it.time.passedSince() > 600.milliseconds }
         }
     }
 
-    private fun renderClose(event: LorenzRenderWorldEvent, firstPerson: Boolean, color: Color) {
+    private fun renderClose(event: SkyHanniRenderWorldEvent, firstPerson: Boolean, color: Color) {
         if (firstPerson && latestLocations.any { !it.value.onGround }) return
 
 
@@ -97,8 +101,8 @@ class CosmeticFollowingLine {
         return lineWidth.toInt().coerceAtLeast(1)
     }
 
-    @SubscribeEvent
-    fun onTick(event: LorenzTickEvent) {
+    @HandleEvent
+    fun onTick(event: ClientTickEvent) {
         if (!isEnabled()) return
 
         if (event.isMod(5)) {
@@ -118,18 +122,15 @@ class CosmeticFollowingLine {
             }
 
             locations = locations.editCopy {
-                this[playerLocation] = LocationSpot(SimpleTimeMark.now(), Minecraft.getMinecraft().thePlayer.onGround)
+                this[playerLocation] = LocationSpot(SimpleTimeMark.now(), McPlayer.onGround)
             }
         }
     }
 
-    private fun isEnabled() = (LorenzUtils.inSkyBlock || OutsideSbFeature.FOLLOWING_LINE.isSelected()) && config.enabled
+    private fun isEnabled() = (SkyBlockAPI.isConnected || OutsideSbFeature.FOLLOWING_LINE.isSelected()) && config.enabled
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
-        event.move(9, "misc.cosmeticConfig", "misc.cosmetic")
-        event.move(9, "misc.cosmeticConfig.followingLineConfig", "misc.cosmetic.followingLine")
-        event.move(9, "misc.cosmeticConfig.arrowTrailConfig", "misc.cosmetic.arrowTrail")
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(31, "misc.cosmetic", "gui.cosmetic")
     }
 }

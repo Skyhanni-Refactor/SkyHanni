@@ -1,22 +1,27 @@
 package at.hannibal2.skyhanni.features.chat
 
 import at.hannibal2.skyhanni.SkyHanniMod
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.SecondPassedEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.SkyBlockAPI
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.utils.SecondPassedEvent
 import at.hannibal2.skyhanni.features.dungeon.DungeonAPI
 import at.hannibal2.skyhanni.features.misc.MarkedPlayerManager
+import at.hannibal2.skyhanni.features.nether.kuudra.KuudraAPI
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ChatUtils
-import at.hannibal2.skyhanni.utils.EntityUtils
 import at.hannibal2.skyhanni.utils.LocationUtils
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
 import at.hannibal2.skyhanni.utils.getLorenzVec
+import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import net.minecraft.client.entity.EntityOtherPlayerMP
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
-class PlayerDeathMessages {
+@SkyHanniModule
+object PlayerDeathMessages {
+
+    private val config get() = SkyHanniMod.feature.gui.markedPlayers
 
     private val lastTimePlayerSeen = mutableMapOf<String, Long>()
 
@@ -26,26 +31,24 @@ class PlayerDeathMessages {
         "§c ☠ §r§7§r§.(?<name>.+)§r§7 (?<reason>.+)"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onSecondPassed(event: SecondPassedEvent) {
         if (!isHideFarDeathsEnabled()) return
 
         checkOtherPlayers()
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
-        if (!LorenzUtils.inSkyBlock) return
-
+    @HandleEvent(onlyOnSkyblock = true)
+    fun onChat(event: SkyHanniChatEvent) {
         val message = event.message
         deathMessagePattern.matchMatcher(message) {
             val name = group("name")
-            if (MarkedPlayerManager.config.highlightInChat &&
-                !DungeonAPI.inDungeon() && !LorenzUtils.inKuudraFight && MarkedPlayerManager.isMarkedPlayer(name)
+            if (config.highlightInChat &&
+                !DungeonAPI.inDungeon() && !KuudraAPI.inKuudra && MarkedPlayerManager.isMarkedPlayer(name)
             ) {
                 val reason = group("reason").removeColor()
 
-                val color = MarkedPlayerManager.config.chatColor.getChatColor()
+                val color = config.chatColor.getChatColor()
                 ChatUtils.chat(" §c☠ $color$name §7$reason", false)
                 event.blockedReason = "marked_player_death"
                 return
@@ -60,13 +63,13 @@ class PlayerDeathMessages {
 
     private fun checkOtherPlayers() {
         val location = LocationUtils.playerLocation()
-        for (otherPlayer in EntityUtils.getEntities<EntityOtherPlayerMP>()
+        for (otherPlayer in McWorld.getEntitiesOf<EntityOtherPlayerMP>()
             .filter { it.getLorenzVec().distance(location) < 25 }) {
             lastTimePlayerSeen[otherPlayer.name] = System.currentTimeMillis()
         }
     }
 
     private fun isHideFarDeathsEnabled(): Boolean {
-        return LorenzUtils.inSkyBlock && SkyHanniMod.feature.chat.hideFarDeathMessages && !DungeonAPI.inDungeon() && !LorenzUtils.inKuudraFight
+        return SkyBlockAPI.isConnected && SkyHanniMod.feature.chat.hideFarDeathMessages && !DungeonAPI.inDungeon() && !KuudraAPI.inKuudra
     }
 }

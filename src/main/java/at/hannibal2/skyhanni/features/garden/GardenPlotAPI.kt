@@ -1,28 +1,30 @@
 package at.hannibal2.skyhanni.features.garden
 
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
-import at.hannibal2.skyhanni.events.LorenzChatEvent
-import at.hannibal2.skyhanni.events.LorenzRenderWorldEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.api.skyblock.IslandType
+import at.hannibal2.skyhanni.events.chat.SkyHanniChatEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.events.render.world.SkyHanniRenderWorldEvent
 import at.hannibal2.skyhanni.features.garden.pests.SprayType
 import at.hannibal2.skyhanni.features.misc.LockMouseLook
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.HypixelCommands
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LocationUtils.isInside
-import at.hannibal2.skyhanni.utils.LocationUtils.isPlayerInside
 import at.hannibal2.skyhanni.utils.LorenzVec
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RenderUtils.draw3DLine
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.math.BoundingBox
+import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import com.google.gson.annotations.Expose
-import net.minecraft.util.AxisAlignedBB
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.awt.Color
 import kotlin.math.floor
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 
+@SkyHanniModule
 object GardenPlotAPI {
 
     private val patternGroup = RepoPattern.group("garden.plot")
@@ -81,7 +83,7 @@ object GardenPlotAPI {
         return plots.firstOrNull { it.isPlayerInside() }
     }
 
-    class Plot(val id: Int, var inventorySlot: Int, val box: AxisAlignedBB, val middle: LorenzVec)
+    class Plot(val id: Int, var inventorySlot: Int, val box: BoundingBox, val middle: LorenzVec)
 
     class PlotData(
         @Expose
@@ -205,9 +207,7 @@ object GardenPlotAPI {
 
     fun Plot.isBarn() = id == 0
 
-    fun Plot.isPlayerInside() = box.isPlayerInside()
-
-    fun closestCenterPlot(location: LorenzVec) = plots.find { it.box.isInside(location) }?.middle
+    fun Plot.isPlayerInside() = box.contains(McPlayer.pos)
 
     fun Plot.sendTeleportTo() {
         if (isBarn()) HypixelCommands.teleportToPlot("barn")
@@ -234,7 +234,7 @@ object GardenPlotAPI {
                 val a = LorenzVec(minX, 0.0, minY)
                 val b = LorenzVec(maxX, 256.0, maxY)
                 val middle = a.interpolate(b, 0.5).copy(y = 10.0)
-                val box = a.axisAlignedTo(b).expand(0.0001, 0.0, 0.0001)
+                val box = BoundingBox(a, b).expand(0.0001, 0.0, 0.0001)
                 list.add(Plot(id, slot, box, middle))
                 slot++
             }
@@ -243,10 +243,8 @@ object GardenPlotAPI {
         plots = list
     }
 
-    @SubscribeEvent
-    fun onChat(event: LorenzChatEvent) {
-        if (!GardenAPI.inGarden()) return
-
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
+    fun onChat(event: SkyHanniChatEvent) {
         plotSprayedPattern.matchMatcher(event.message) {
             val sprayName = group("spray")
             val plotName = group("plot")
@@ -276,9 +274,8 @@ object GardenPlotAPI {
         }
     }
 
-    @SubscribeEvent
+    @HandleEvent(onlyOnIsland = IslandType.GARDEN)
     fun onInventoryOpen(event: InventoryFullyOpenedEvent) {
-        if (!GardenAPI.inGarden()) return
         if (event.inventoryName != "Configure Plots") return
 
         for (plot in plots) {
@@ -308,7 +305,7 @@ object GardenPlotAPI {
 
     fun getPlotByID(plotId: Int) = plots.firstOrNull { it.id == plotId }
 
-    fun LorenzRenderWorldEvent.renderPlot(
+    fun SkyHanniRenderWorldEvent.renderPlot(
         plot: Plot,
         lineColor: Color,
         cornerColor: Color,
@@ -379,7 +376,7 @@ object GardenPlotAPI {
         }
     }
 
-    private fun LorenzRenderWorldEvent.tryDraw3DLine(
+    private fun SkyHanniRenderWorldEvent.tryDraw3DLine(
         p1: LorenzVec,
         p2: LorenzVec,
         color: Color,

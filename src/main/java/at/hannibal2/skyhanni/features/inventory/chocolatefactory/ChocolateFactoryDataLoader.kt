@@ -1,31 +1,35 @@
 package at.hannibal2.skyhanni.features.inventory.chocolatefactory
 
-import at.hannibal2.skyhanni.config.ConfigUpdaterMigrator
-import at.hannibal2.skyhanni.events.ConfigLoadEvent
-import at.hannibal2.skyhanni.events.InventoryCloseEvent
-import at.hannibal2.skyhanni.events.InventoryUpdatedEvent
-import at.hannibal2.skyhanni.events.LorenzWorldChangeEvent
+import at.hannibal2.skyhanni.api.event.HandleEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryCloseEvent
+import at.hannibal2.skyhanni.events.inventory.InventoryUpdatedEvent
+import at.hannibal2.skyhanni.events.minecraft.WorldChangeEvent
+import at.hannibal2.skyhanni.events.utils.ConfigFixEvent
+import at.hannibal2.skyhanni.events.utils.ConfigLoadEvent
 import at.hannibal2.skyhanni.features.inventory.chocolatefactory.ChocolateFactoryAPI.specialRabbitTextures
+import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ConditionalUtils
 import at.hannibal2.skyhanni.utils.InventoryUtils
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.ItemUtils.getSkullTexture
 import at.hannibal2.skyhanni.utils.ItemUtils.name
-import at.hannibal2.skyhanni.utils.LorenzUtils.round
 import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.formatInt
 import at.hannibal2.skyhanni.utils.NumberUtil.formatLong
 import at.hannibal2.skyhanni.utils.NumberUtil.romanToDecimal
+import at.hannibal2.skyhanni.utils.NumberUtil.roundTo
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
-import at.hannibal2.skyhanni.utils.SoundUtils
 import at.hannibal2.skyhanni.utils.StringUtils.removeColor
-import at.hannibal2.skyhanni.utils.TimeUtils
+import at.hannibal2.skyhanni.utils.datetime.TimeUtils
+import at.hannibal2.skyhanni.utils.mc.McSound
+import at.hannibal2.skyhanni.utils.mc.McSound.play
+import at.hannibal2.skyhanni.utils.mc.McSound.playOnRepeat
 import net.minecraft.item.ItemStack
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
+@SkyHanniModule
 object ChocolateFactoryDataLoader {
 
     private val config get() = ChocolateFactoryAPI.config
@@ -114,25 +118,25 @@ object ChocolateFactoryDataLoader {
         "Rabbit Shrine|Coach Jackrabbit"
     )
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryUpdated(event: InventoryUpdatedEvent) {
         if (!ChocolateFactoryAPI.inChocolateFactory) return
 
         updateInventoryItems(event.inventoryItems)
     }
 
-    @SubscribeEvent
-    fun onWorldChange(event: LorenzWorldChangeEvent) {
+    @HandleEvent
+    fun onWorldChange(event: WorldChangeEvent) {
         clearData()
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onInventoryClose(event: InventoryCloseEvent) {
         clearData()
     }
 
-    @SubscribeEvent
-    fun onConfigFix(event: ConfigUpdaterMigrator.ConfigFixEvent) {
+    @HandleEvent
+    fun onConfigFix(event: ConfigFixEvent) {
         event.move(
             47,
             "inventory.chocolateFactory.rabbitWarning",
@@ -140,11 +144,11 @@ object ChocolateFactoryDataLoader {
         )
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onConfigLoad(event: ConfigLoadEvent) {
         val soundProperty = config.rabbitWarning.specialRabbitSound
         ConditionalUtils.onToggle(soundProperty) {
-            ChocolateFactoryAPI.warningSound = SoundUtils.createSound(soundProperty.get(), 1f)
+            ChocolateFactoryAPI.warningSound = McSound.create(soundProperty.get(), 1f)
         }
     }
 
@@ -319,7 +323,7 @@ object ChocolateFactoryDataLoader {
         val itemName = item.name.removeColor()
         val lore = item.getLore()
         val upgradeCost = ChocolateFactoryAPI.getChocolateBuyCost(lore)
-        val averageChocolate = ChocolateAmount.averageChocPerSecond().round(2)
+        val averageChocolate = ChocolateAmount.averageChocPerSecond().roundTo(2)
         val isMaxed = upgradeCost == null
 
         if (slotIndex in ChocolateFactoryAPI.rabbitSlots) {
@@ -400,8 +404,8 @@ object ChocolateFactoryDataLoader {
         newAverageChocolate: Double,
         isRabbit: Boolean,
     ) {
-        val extra = (newAverageChocolate - averageChocolate).round(2)
-        val effectiveCost = (upgradeCost!! / extra).round(2)
+        val extra = (newAverageChocolate - averageChocolate).roundTo(2)
+        val effectiveCost = (upgradeCost!! / extra).roundTo(2)
         val upgrade = ChocolateFactoryUpgrade(slotIndex, level, upgradeCost, extra, effectiveCost, isRabbit = isRabbit)
         list.add(upgrade)
     }
@@ -412,13 +416,13 @@ object ChocolateFactoryDataLoader {
 
         if (clickMeRabbitPattern.matches(item.name) || isGoldenRabbit) {
             if (config.rabbitWarning.rabbitWarning) {
-                SoundUtils.playBeepSound()
+                McSound.BEEP.play()
             }
 
             if (warningConfig.specialRabbitWarning
                 && (isGoldenRabbit || item.getSkullTexture() in specialRabbitTextures)
             ) {
-                SoundUtils.repeatSound(100, warningConfig.repeatSound, ChocolateFactoryAPI.warningSound)
+                ChocolateFactoryAPI.warningSound.playOnRepeat(100, warningConfig.repeatSound)
             }
 
             ChocolateFactoryAPI.clickRabbitSlot = slotIndex

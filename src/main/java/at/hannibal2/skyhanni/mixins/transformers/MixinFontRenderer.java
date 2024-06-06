@@ -3,7 +3,6 @@ package at.hannibal2.skyhanni.mixins.transformers;
 import at.hannibal2.skyhanni.features.misc.visualwords.ModifyVisualWords;
 import at.hannibal2.skyhanni.mixins.hooks.FontRendererHook;
 import net.minecraft.client.gui.FontRenderer;
-import org.spongepowered.asm.lib.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,13 +32,11 @@ public abstract class MixinFontRenderer {
         return FontRendererHook.insertZColorCode(constant);
     }
 
-    /**
-     * Inject call to {@link FontRendererHook#restoreChromaState()} after 1st and 3rd fontrenderer.italicStyle = ___ call
-     */
-    @Inject(method = "renderStringAtPos", at = {
-        @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/client/gui/FontRenderer;italicStyle:Z", ordinal = 0, shift = At.Shift.AFTER),
-        @At(value = "FIELD", opcode = Opcodes.PUTFIELD, target = "Lnet/minecraft/client/gui/FontRenderer;italicStyle:Z", ordinal = 2, shift = At.Shift.AFTER)})
-    public void insertRestoreChromaState(CallbackInfo ci) {
+    @Inject(
+        method = "renderStringAtPos",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/FontRenderer;setColor(FFFF)V", shift = At.Shift.BEFORE)
+    )
+    public void restoreChroma(String text, boolean shadow, CallbackInfo ci) {
         FontRendererHook.restoreChromaState();
     }
 
@@ -76,11 +73,11 @@ public abstract class MixinFontRenderer {
 
     @ModifyVariable(method = "renderStringAtPos", at = @At("HEAD"), argsOnly = true)
     private String renderStringAtPos(String text) {
-        return ModifyVisualWords.INSTANCE.modifyText(text);
+        return ModifyVisualWords.modifyText(text);
     }
 
     @ModifyVariable(method = "getStringWidth", at = @At("HEAD"), argsOnly = true)
     private String getStringWidth(String text) {
-        return ModifyVisualWords.INSTANCE.modifyText(text);
+        return ModifyVisualWords.modifyText(text);
     }
 }

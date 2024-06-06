@@ -1,8 +1,9 @@
 package at.hannibal2.skyhanni.features.nether.reputationhelper.dailyquest
 
+import at.hannibal2.skyhanni.api.skyblock.IslandArea
 import at.hannibal2.skyhanni.config.storage.ProfileSpecificStorage
-import at.hannibal2.skyhanni.data.jsonobjects.repo.CrimsonIsleReputationJson.ReputationQuest
-import at.hannibal2.skyhanni.events.InventoryFullyOpenedEvent
+import at.hannibal2.skyhanni.data.jsonobjects.repo.ReputationQuest
+import at.hannibal2.skyhanni.events.inventory.InventoryFullyOpenedEvent
 import at.hannibal2.skyhanni.features.nether.reputationhelper.dailyquest.quest.DojoQuest
 import at.hannibal2.skyhanni.features.nether.reputationhelper.dailyquest.quest.FetchQuest
 import at.hannibal2.skyhanni.features.nether.reputationhelper.dailyquest.quest.KuudraQuest
@@ -17,7 +18,6 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.TabListData
@@ -159,8 +159,8 @@ class QuestLoader(private val dailyQuestHelper: DailyQuestHelper) {
     }
 
     fun checkInventory(event: InventoryFullyOpenedEvent) {
-        val inMageRegion = LorenzUtils.skyBlockArea == "Community Center"
-        val inBarbarianRegion = LorenzUtils.skyBlockArea == "Dragontail"
+        val inMageRegion = IslandArea.COMMUNITY_CENTER.isInside()
+        val inBarbarianRegion = IslandArea.DRAGONTAIL.isInside()
         if (!inMageRegion && !inBarbarianRegion) return
 
         val name = event.inventoryName

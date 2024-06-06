@@ -1,10 +1,15 @@
 package at.hannibal2.skyhanni.utils
 
-import net.minecraftforge.fml.common.Loader
-import net.minecraftforge.fml.common.ModContainer
+import at.hannibal2.skyhanni.utils.system.ModInstance
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
+import java.lang.invoke.LambdaMetafactory
+import java.lang.invoke.MethodHandles
+import java.lang.invoke.MethodType
 import java.lang.reflect.Constructor
 import java.lang.reflect.Field
+import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import java.util.function.Consumer
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty
@@ -66,19 +71,30 @@ object ReflectionUtils {
         return Class.forName(this.className)
     }
 
-    private val packageLookup by lazy {
-        Loader.instance().modList
-            .flatMap { mod -> mod.ownedPackages.map { it to mod } }
-            .toMap()
-    }
-
     val Class<*>.shPackageName
         get() =
             canonicalName?.substringBeforeLast('.')
 
-    fun Class<*>.getModContainer(): ModContainer? {
-        return packageLookup[shPackageName]
+    fun Class<*>.getModContainer(): ModInstance? {
+        return PlatformUtils.getModFromPackage(shPackageName)
     }
 
     fun Class<*>.getDeclaredFieldOrNull(name: String): Field? = declaredFields.firstOrNull { it.name == name }
+
+    fun createConsumer(instance: Any, method: Method): Consumer<Any>? {
+        try {
+            val handle = MethodHandles.lookup().unreflect(method)
+            return LambdaMetafactory.metafactory(
+                MethodHandles.lookup(),
+                "accept",
+                MethodType.methodType(Consumer::class.java, instance::class.java),
+                MethodType.methodType(Nothing::class.javaPrimitiveType, Object::class.java),
+                handle,
+                MethodType.methodType(Nothing::class.javaPrimitiveType, method.parameterTypes[0])
+            ).target.bindTo(instance).invokeExact() as Consumer<Any>
+        }catch (e: Throwable) {
+            e.printStackTrace()
+        }
+        return null
+    }
 }

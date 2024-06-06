@@ -6,16 +6,15 @@ import at.hannibal2.skyhanni.data.jsonobjects.local.FriendsJson
 import at.hannibal2.skyhanni.data.jsonobjects.local.JacobContestsJson
 import at.hannibal2.skyhanni.data.jsonobjects.local.KnownFeaturesJson
 import at.hannibal2.skyhanni.data.jsonobjects.local.VisualWordsJson
-import at.hannibal2.skyhanni.events.LorenzEvent
 import at.hannibal2.skyhanni.features.misc.update.UpdateManager
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.DelayedRun
 import at.hannibal2.skyhanni.utils.IdentityCharacteristics
 import at.hannibal2.skyhanni.utils.LorenzLogger
-import at.hannibal2.skyhanni.utils.LorenzUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.json.BaseGsonBuilder
+import at.hannibal2.skyhanni.utils.system.PlatformUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
@@ -38,7 +37,7 @@ import java.nio.file.StandardCopyOption
 import kotlin.concurrent.fixedRateTimer
 
 private fun GsonBuilder.registerIfBeta(create: TypeAdapterFactory): GsonBuilder {
-    return if (LorenzUtils.isBetaVersion()) {
+    return if (UpdateManager.isCurrentlyBeta()) {
         registerTypeAdapterFactory(create)
     } else this
 }
@@ -91,9 +90,7 @@ class ConfigManager {
 
         try {
             findPositionLinks(features, mutableSetOf())
-        } catch (e: Exception) {
-            if (LorenzEvent.isInGuardedEventHandler)
-                throw e
+        } catch (_: Exception) {
         }
     }
 
@@ -127,7 +124,7 @@ class ConfigManager {
             }
             val configLink = field.getAnnotation(ConfigLink::class.java)
             if (configLink == null) {
-                if (LorenzUtils.isInDevEnvironment()) {
+                if (PlatformUtils.isDevEnvironment) {
                     var name = "${field.declaringClass.name}.${field.name}"
                     name = name.replace("at.hannibal2.skyhanni.config.", "")
                     if (name !in ignoredMissingConfigLinks) {
@@ -149,7 +146,7 @@ class ConfigManager {
             println("2. Either add the Config Link.")
             println("3. Or add the name to ignoredMissingConfigLinks.")
             println("")
-            LorenzUtils.shutdownMinecraft("Missing Config Link")
+            forceShutdown("Missing Config Link")
         }
     }
 
@@ -170,12 +167,12 @@ class ConfigManager {
                     val jsonObject = lenientGson.fromJson(bufferedReader.readText(), JsonObject::class.java)
                     val newJsonObject = ConfigUpdaterMigrator.fixConfig(jsonObject)
                     val run = { lenientGson.fromJson(newJsonObject, defaultValue.javaClass) }
-                    if (LorenzUtils.isInDevEnvironment()) {
+                    if (PlatformUtils.isDevEnvironment) {
                         try {
                             run()
                         } catch (e: Throwable) {
                             e.printStackTrace()
-                            LorenzUtils.shutdownMinecraft("Config is corrupt inside development environment.")
+                            forceShutdown("Config is corrupt inside development environment.")
                         }
                     } else {
                         run()
@@ -204,6 +201,12 @@ class ConfigManager {
         }
 
         return output
+    }
+
+    private fun forceShutdown(reason: String) {
+        System.err.println("SkyHanni-${SkyHanniMod.version} forced the game to shutdown.")
+        System.err.println("Reason: $reason")
+        PlatformUtils.delayedExit(-1)
     }
 
     fun saveConfig(fileType: ConfigFileType, reason: String) {

@@ -1,15 +1,16 @@
 package at.hannibal2.skyhanni.data.repo
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.config.ConfigManager
-import at.hannibal2.skyhanni.events.DebugDataCollectEvent
-import at.hannibal2.skyhanni.events.NeuRepositoryReloadEvent
-import at.hannibal2.skyhanni.events.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.DebugDataCollectEvent
+import at.hannibal2.skyhanni.events.utils.RepositoryReloadEvent
+import at.hannibal2.skyhanni.events.utils.neu.NeuRepositoryReloadEvent
 import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McClient
 import com.google.gson.JsonObject
-import net.minecraft.client.Minecraft
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.apache.commons.io.FileUtils
 import java.io.BufferedReader
@@ -164,13 +165,13 @@ class RepoManager(private val configLocation: File) {
         val comp = CompletableFuture<Void?>()
         if (!atomicShouldManuallyReload.get()) return comp
         ErrorManager.resetCache()
-        Minecraft.getMinecraft().addScheduledTask {
+        McClient.schedule {
             error = false
             successfulConstants.clear()
             unsuccessfulConstants.clear()
             lastConstant = null
 
-            RepositoryReloadEvent(repoLocation, gson).postAndCatchAndBlock(ignoreErrorCache = true) {
+            RepositoryReloadEvent(repoLocation, gson).post {
                 error = true
                 lastConstant?.let {
                     unsuccessfulConstants.add(it)
@@ -197,7 +198,7 @@ class RepoManager(private val configLocation: File) {
         return comp
     }
 
-    @SubscribeEvent
+    @HandleEvent
     fun onDebugDataCollect(event: DebugDataCollectEvent) {
         event.title("Repo Status")
 
@@ -224,7 +225,7 @@ class RepoManager(private val configLocation: File) {
     fun displayRepoStatus(joinEvent: Boolean) {
         if (joinEvent) {
             if (unsuccessfulConstants.isNotEmpty()) {
-                ChatUtils.error(
+                ChatUtils.userError(
                     "§7Repo Issue! Some features may not work. Please report this error on the Discord!\n"
                         + "§7Repo Auto Update Value: §c${config.repoAutoUpdate}\n"
                         + "§7If you have Repo Auto Update turned off, please try turning that on.\n"
@@ -298,7 +299,13 @@ class RepoManager(private val configLocation: File) {
 
     @SubscribeEvent
     fun onNeuRepoReload(event: io.github.moulberry.notenoughupdates.events.RepositoryReloadEvent) {
-        NeuRepositoryReloadEvent().postAndCatch()
+        NeuRepositoryReloadEvent().post()
+    }
+
+    fun resetRepositoryLocation() {
+        config.location.user = "hannibal002"
+        config.location.name = "SkyHanni-Repo"
+        config.location.branch = "main"
     }
 
     fun resetRepositoryLocation(manual: Boolean = false) {
