@@ -10,8 +10,8 @@ import at.hannibal2.skyhanni.utils.NumberUtil.formatDouble
 import at.hannibal2.skyhanni.utils.NumberUtil.million
 import at.hannibal2.skyhanni.utils.RegexUtils.matchFirst
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import kotlin.time.Duration.Companion.seconds
 
 @SkyHanniModule
@@ -58,7 +58,7 @@ object PurseAPI {
                 return PurseChangeCause.GAIN_DICE_ROLL
             }
 
-            if (Minecraft.getMinecraft().currentScreen == null) {
+            if (!McScreen.isOpen) {
                 if (inventoryCloseTime.passedSince() > 2.seconds) {
                     return PurseChangeCause.GAIN_MOB_KILL
                 }

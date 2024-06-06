@@ -19,6 +19,8 @@ import at.hannibal2.skyhanni.utils.NEUItems.renderOnScreen
 import at.hannibal2.skyhanni.utils.RenderUtils
 import at.hannibal2.skyhanni.utils.RenderUtils.HorizontalAlignment
 import at.hannibal2.skyhanni.utils.RenderUtils.VerticalAlignment
+import at.hannibal2.skyhanni.utils.mc.McFont
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.calculateTableXOffsets
 import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.calculateTableYOffsets
 import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.renderXAligned
@@ -26,11 +28,9 @@ import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.renderXYAligned
 import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.renderYAligned
 import at.hannibal2.skyhanni.utils.shader.ShaderManager
 import io.github.notenoughupdates.moulconfig.gui.GuiScreenElementWrapper
-import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.gui.GuiIngameMenu
-import net.minecraft.client.gui.inventory.GuiEditSign
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.item.ItemStack
 import net.minecraft.util.ResourceLocation
@@ -229,30 +229,29 @@ interface Renderable {
         }
 
         private fun shouldAllowLink(bypassChecks: Boolean, debug: Boolean = true): Boolean {
-            val isGuiScreen = Minecraft.getMinecraft().currentScreen != null
             if (bypassChecks) {
-                return isGuiScreen
+                return McScreen.isOpen
             }
-            val inMenu = Minecraft.getMinecraft().currentScreen !is GuiIngameMenu
-            val isGuiPositionEditor = Minecraft.getMinecraft().currentScreen !is GuiPositionEditor
-            val isNotInSignAndOnSlot = if (Minecraft.getMinecraft().currentScreen !is GuiEditSign) {
+            val inMenu = McScreen.screen !is GuiIngameMenu
+            val isGuiPositionEditor = McScreen.screen !is GuiPositionEditor
+            val isNotInSignAndOnSlot = if (!McScreen.isSignOpen) {
                 ToolTipData.lastSlot == null || GuiData.preDrawEventCanceled
             } else true
-            val isConfigScreen = Minecraft.getMinecraft().currentScreen !is GuiScreenElementWrapper
+            val isConfigScreen = McScreen.screen !is GuiScreenElementWrapper
 
-            val openGui = Minecraft.getMinecraft().currentScreen?.javaClass?.name ?: "none"
+            val openGui = McScreen.screen?.javaClass?.name ?: "none"
             val isInNeuPv = openGui == "io.github.moulberry.notenoughupdates.profileviewer.GuiProfileViewer"
             val neuFocus = NEUItems.neuHasFocus()
             val isInSkyTilsPv = openGui == "gg.skytils.skytilsmod.gui.profile.ProfileGui"
 
-            val result = isGuiScreen && isGuiPositionEditor && inMenu && isNotInSignAndOnSlot && isConfigScreen &&
+            val result = McScreen.isOpen && isGuiPositionEditor && inMenu && isNotInSignAndOnSlot && isConfigScreen &&
                 !isInNeuPv && !isInSkyTilsPv && !neuFocus
 
             if (debug) {
                 if (!result) {
                     logger.log("")
                     logger.log("blocked link because:")
-                    if (!isGuiScreen) logger.log("isGuiScreen")
+                    if (!McScreen.isOpen) logger.log("isGuiScreen")
                     if (!isGuiPositionEditor) logger.log("isGuiPositionEditor")
                     if (!inMenu) logger.log("inMenu")
                     if (!isNotInSignAndOnSlot) logger.log("isNotInSignAndOnSlot")
@@ -355,7 +354,7 @@ interface Renderable {
             verticalAlign: VerticalAlignment = VerticalAlignment.CENTER,
         ) = object : Renderable {
 
-            override val width by lazy { (Minecraft.getMinecraft().fontRendererObj.getStringWidth(text) * scale).toInt() + 1 }
+            override val width by lazy { (McFont.width(text) * scale).toInt() + 1 }
             override val height = (9 * scale).toInt() + 1
             override val horizontalAlign = horizontalAlign
             override val verticalAlign = verticalAlign
@@ -363,10 +362,9 @@ interface Renderable {
             val inverseScale = 1 / scale
 
             override fun render(posX: Int, posY: Int) {
-                val fontRenderer = Minecraft.getMinecraft().fontRendererObj
                 GlStateManager.translate(1.0, 1.0, 0.0)
                 GlStateManager.scale(scale, scale, 1.0)
-                fontRenderer.drawStringWithShadow(text, 0f, 0f, color.rgb)
+                McFont.draw(text, 0f, 0f, color.rgb)
                 GlStateManager.scale(inverseScale, inverseScale, 1.0)
                 GlStateManager.translate(-1.0, -1.0, 0.0)
             }
@@ -402,11 +400,10 @@ interface Renderable {
             val inverseScale = 1 / scale
 
             override fun render(posX: Int, posY: Int) {
-                val fontRenderer = Minecraft.getMinecraft().fontRendererObj
                 GlStateManager.translate(1.0, 1.0, 0.0)
                 GlStateManager.scale(scale, scale, 1.0)
                 list.forEachIndexed { index, text ->
-                    fontRenderer.drawStringWithShadow(text, 0f, index * 10.0f, color.rgb)
+                    McFont.draw(text, 0f, index * 10.0f, color.rgb)
                 }
                 GlStateManager.scale(inverseScale, inverseScale, 1.0)
                 GlStateManager.translate(-1.0, -1.0, 0.0)

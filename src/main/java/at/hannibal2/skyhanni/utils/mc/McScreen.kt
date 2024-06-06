@@ -37,6 +37,7 @@ object McScreen {
 
     val asChest get() = screen as? GuiChest
     val asContainer get() = screen as? GuiContainer
+    val asSign get() = screen as? GuiEditSign
 
     val GuiChest.name get() = (inventorySlots as ContainerChest).lowerChestInventory.displayName.unformattedText.trim()
 

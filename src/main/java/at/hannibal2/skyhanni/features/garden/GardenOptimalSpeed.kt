@@ -20,7 +20,6 @@ import at.hannibal2.skyhanni.utils.mc.McScreen.setTextIntoSign
 import at.hannibal2.skyhanni.utils.mc.McScreen.text
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import io.github.notenoughupdates.moulconfig.observer.Property
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiEditSign
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -58,7 +57,7 @@ object GardenOptimalSpeed {
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {
-        currentSpeed = (Minecraft.getMinecraft().thePlayer.capabilities.walkSpeed * 1000).toInt()
+        currentSpeed = (McPlayer.walkSpeed * 1000).toInt()
 
         if (McPlayer.isSneaking) {
             currentSpeed = (currentSpeed * 0.3).toInt()
@@ -153,7 +152,7 @@ object GardenOptimalSpeed {
 
     private fun warn() {
         if (!config.warning) return
-        if (!Minecraft.getMinecraft().thePlayer.onGround) return
+        if (!McPlayer.onGround) return
         if (GardenAPI.onBarnPlot) return
         if (System.currentTimeMillis() < lastWarnTime + 20_000) return
 

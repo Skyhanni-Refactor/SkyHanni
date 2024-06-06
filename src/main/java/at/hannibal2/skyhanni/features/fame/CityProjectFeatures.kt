@@ -31,12 +31,11 @@ import at.hannibal2.skyhanni.utils.RenderUtils.highlight
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.mc.McScreen.setTextIntoSign
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
-import net.minecraft.client.gui.inventory.GuiEditSign
 import net.minecraft.inventory.ContainerChest
 import net.minecraft.item.ItemStack
 import kotlin.time.Duration.Companion.seconds
@@ -156,9 +155,9 @@ object CityProjectFeatures {
             list.add(stack)
 
             list.add(Renderable.optionalLink("$name §ex${amount.addSeparators()}", {
-                val gui = Minecraft.getMinecraft().currentScreen
-                if (gui is GuiEditSign) {
-                    gui.setTextIntoSign("$amount")
+                val sign = McScreen.asSign
+                if (sign != null) {
+                    sign.setTextIntoSign("$amount")
                 } else {
                     BazaarApi.searchForBazaarItem(name, amount)
                 }

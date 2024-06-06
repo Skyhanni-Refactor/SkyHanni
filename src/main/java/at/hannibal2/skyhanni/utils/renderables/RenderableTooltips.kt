@@ -6,6 +6,7 @@ import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
 import at.hannibal2.skyhanni.utils.ItemUtils.getLore
 import at.hannibal2.skyhanni.utils.LorenzColor
 import at.hannibal2.skyhanni.utils.RenderUtils
+import at.hannibal2.skyhanni.utils.mc.McFont
 import at.hannibal2.skyhanni.utils.renderables.RenderableUtils.renderXAligned
 import io.github.moulberry.notenoughupdates.util.Utils
 import net.minecraft.client.Minecraft
@@ -169,7 +170,7 @@ private data class DeferredTooltip(
 ) {
 
     fun getBorderColor(): Int {
-        return Minecraft.getMinecraft().fontRendererObj.getColorCode(
+        return McFont.getColorCode(
             borderColor?.chatColorCode ?: stack?.getLore()?.lastOrNull()?.take(4)?.get(1) ?: 'f'
         )
     }

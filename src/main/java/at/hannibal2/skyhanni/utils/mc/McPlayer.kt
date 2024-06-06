@@ -13,7 +13,7 @@ import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.ItemStack
 import net.minecraft.potion.Potion
 import net.minecraft.potion.PotionEffect
-import java.util.*
+import java.util.UUID
 
 typealias Player = EntityPlayer
 
@@ -28,6 +28,10 @@ object McPlayer {
     val onGround: Boolean get() = player?.onGround ?: false
     val inWater: Boolean get() = player?.isInWater ?: false
     val isOnFire: Boolean get() = player?.isBurning ?: false
+
+    val walkSpeed: Float get() = player?.capabilities?.walkSpeed ?: 0.0f
+    val yaw: Float get() = player?.rotationYaw ?: 0.0f
+    val pitch: Float get() = player?.rotationPitch ?: 0.0f
 
     val pos: LorenzVec get() = LorenzVec(player?.posX ?: 0.0, player?.posY ?: 0.0, player?.posZ ?: 0.0)
     val eyePos: LorenzVec get() = pos.up(player?.eyeHeight?.toDouble() ?: 0.0)

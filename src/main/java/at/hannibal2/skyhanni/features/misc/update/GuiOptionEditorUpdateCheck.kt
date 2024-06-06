@@ -1,11 +1,11 @@
 package at.hannibal2.skyhanni.features.misc.update
 
 import at.hannibal2.skyhanni.SkyHanniMod
+import at.hannibal2.skyhanni.utils.mc.McFont
 import io.github.moulberry.notenoughupdates.itemeditor.GuiElementButton
 import io.github.notenoughupdates.moulconfig.gui.GuiOptionEditor
 import io.github.notenoughupdates.moulconfig.internal.TextRenderUtils
 import io.github.notenoughupdates.moulconfig.processor.ProcessedOption
-import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.util.EnumChatFormatting.GREEN
 import net.minecraft.util.EnumChatFormatting.RED
@@ -16,8 +16,6 @@ class GuiOptionEditorUpdateCheck(option: ProcessedOption) : GuiOptionEditor(opti
     val button = GuiElementButton("", -1) { }
 
     override fun render(x: Int, y: Int, width: Int) {
-        val fr = Minecraft.getMinecraft().fontRendererObj
-
         GlStateManager.pushMatrix()
         GlStateManager.translate(x.toFloat() + 10, y.toFloat(), 1F)
         val width = width - 20
@@ -34,7 +32,7 @@ class GuiOptionEditorUpdateCheck(option: ProcessedOption) : GuiOptionEditor(opti
         if (UpdateManager.updateState == UpdateManager.UpdateState.DOWNLOADED) {
             TextRenderUtils.drawStringCentered(
                 "${GREEN}The update will be installed after your next restart.",
-                fr,
+                McFont.font,
                 width / 2F,
                 40F,
                 true,
@@ -50,7 +48,7 @@ class GuiOptionEditorUpdateCheck(option: ProcessedOption) : GuiOptionEditor(opti
         TextRenderUtils.drawStringCenteredScaledMaxWidth(
             "${if (UpdateManager.updateState == UpdateManager.UpdateState.NONE) GREEN else RED}$currentVersion" +
                 if (nextVersion != null && !sameVersion) "➜ ${GREEN}${nextVersion}" else "",
-            fr,
+            McFont.font,
             widthRemaining / 4F,
             10F,
             true,

@@ -32,7 +32,6 @@ import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
 import at.hannibal2.skyhanni.utils.mc.McScreen
 import io.github.moulberry.notenoughupdates.profileviewer.GuiProfileViewer
-import net.minecraft.client.Minecraft
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 import kotlin.math.roundToLong
@@ -68,7 +67,7 @@ object EstimatedItemValue {
     @HandleEvent(onlyOnSkyblock = true)
     fun onTooltip(event: ItemHoverEvent) {
         if (!config.enabled) return
-        if (Minecraft.getMinecraft().currentScreen !is GuiProfileViewer) return
+        if (McScreen.screen !is GuiProfileViewer) return
 
         if (renderedItems == 0) {
             updateItem(event.itemStack)

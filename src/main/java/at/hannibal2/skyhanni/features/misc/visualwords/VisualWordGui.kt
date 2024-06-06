@@ -10,6 +10,7 @@ import at.hannibal2.skyhanni.utils.ItemUtils
 import at.hannibal2.skyhanni.utils.KeyboardManager
 import at.hannibal2.skyhanni.utils.RegexUtils.matchMatcher
 import at.hannibal2.skyhanni.utils.StringUtils.convertToFormatted
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.mc.McSound
 import at.hannibal2.skyhanni.utils.mc.McSound.play
 import at.hannibal2.skyhanni.utils.system.OS
@@ -62,7 +63,7 @@ open class VisualWordGui : GuiScreen() {
 
     companion object {
 
-        fun isInGui() = Minecraft.getMinecraft().currentScreen is VisualWordGui
+        fun isInGui() = McScreen.screen is VisualWordGui
         var sbeConfigPath = File("." + File.separator + "config" + File.separator + "SkyblockExtras.cfg")
         var drawImport = false
 

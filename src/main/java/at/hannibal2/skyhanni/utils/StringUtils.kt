@@ -7,7 +7,6 @@ import at.hannibal2.skyhanni.utils.GuiRenderUtils.darkenColor
 import at.hannibal2.skyhanni.utils.NumberUtil.addSeparators
 import at.hannibal2.skyhanni.utils.RegexUtils.matches
 import at.hannibal2.skyhanni.utils.mc.McFont
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiUtilRenderComponents
 import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
@@ -158,7 +157,7 @@ object StringUtils {
     fun getColor(string: String, default: Int, darker: Boolean = true): Int {
         val matcher = stringColourPattern.matcher(string)
         if (matcher.matches()) {
-            val colorInt = Minecraft.getMinecraft().fontRendererObj.getColorCode(string[1])
+            val colorInt = McFont.getColorCode(string[1])
             return if (darker) {
                 colorInt.darkenColor()
             } else {

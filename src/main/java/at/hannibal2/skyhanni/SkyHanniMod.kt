@@ -26,6 +26,7 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.test.hotswap.HotswapSupport
 import at.hannibal2.skyhanni.utils.MinecraftConsoleFilter.Companion.initLogging
 import at.hannibal2.skyhanni.utils.NEUVersionCheck.checkIfNeuIsLoaded
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -107,7 +108,7 @@ class SkyHanniMod {
             if (screenTicks == 5) {
                 Minecraft.getMinecraft().thePlayer.closeScreen()
                 OtherInventoryData.close()
-                Minecraft.getMinecraft().displayGuiScreen(screenToOpen)
+                McScreen.screen = screenToOpen
                 screenTicks = 0
                 screenToOpen = null
             }

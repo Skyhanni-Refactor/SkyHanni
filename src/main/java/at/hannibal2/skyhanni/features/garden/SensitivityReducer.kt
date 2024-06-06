@@ -18,7 +18,6 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.mc.McClient
 import at.hannibal2.skyhanni.utils.mc.McPlayer
 import at.hannibal2.skyhanni.utils.mc.McScreen
-import net.minecraft.client.Minecraft
 import kotlin.math.abs
 import kotlin.time.Duration.Companion.seconds
 
@@ -30,8 +29,6 @@ object SensitivityReducer {
     private var isManualToggle = false
     private var lastCheckCooldown = SimpleTimeMark.farPast()
     private const val LOCKED = -1F / 3F
-
-    private val mc get() = Minecraft.getMinecraft()
 
     @HandleEvent
     fun onTick(event: ClientTickEvent) {

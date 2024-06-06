@@ -12,8 +12,9 @@ import at.hannibal2.skyhanni.test.command.ErrorManager
 import at.hannibal2.skyhanni.utils.ChatUtils
 import at.hannibal2.skyhanni.utils.ReflectionUtils.makeAccessible
 import at.hannibal2.skyhanni.utils.RenderUtils.renderStringsAndItems
+import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.renderables.Renderable
-import net.minecraft.client.Minecraft
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.client.event.GuiScreenEvent
@@ -63,7 +64,7 @@ object QuickModMenuSwitch {
     }
 
     private fun update() {
-        var openGui = Minecraft.getMinecraft().currentScreen?.javaClass?.name ?: "none"
+        var openGui = McScreen.screen?.javaClass?.name ?: "none"
         openGui = handleAbstractGuis(openGui)
         if (latestGuiPath != openGui) {
             latestGuiPath = openGui
@@ -98,8 +99,7 @@ object QuickModMenuSwitch {
     private fun handleAbstractGuis(openGui: String): String {
         if (openGui == "gg.essential.vigilance.gui.SettingsGui") {
             val clazz = Class.forName("gg.essential.vigilance.gui.SettingsGui")
-            val titleBarDelegate = clazz.getDeclaredField("titleBar\$delegate").makeAccessible()
-                .get(Minecraft.getMinecraft().currentScreen)
+            val titleBarDelegate = clazz.getDeclaredField("titleBar\$delegate").makeAccessible().get(McScreen.screen)
             val titleBar =
                 titleBarDelegate.javaClass.declaredFields[0].makeAccessible().get(titleBarDelegate)
             val gui = titleBar.javaClass.getDeclaredField("gui").makeAccessible().get(titleBar)
@@ -176,8 +176,7 @@ object QuickModMenuSwitch {
                 }
 
                 else -> {
-                    val thePlayer = Minecraft.getMinecraft().thePlayer
-                    ClientCommandHandler.instance.executeCommand(thePlayer, "/${mod.command}")
+                    ClientCommandHandler.instance.executeCommand(McPlayer.player, "/${mod.command}")
                 }
             }
         } catch (e: Exception) {

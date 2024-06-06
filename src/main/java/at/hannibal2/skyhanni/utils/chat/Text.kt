@@ -1,6 +1,7 @@
 package at.hannibal2.skyhanni.utils.chat
 
 import at.hannibal2.skyhanni.utils.SimpleTimeMark
+import at.hannibal2.skyhanni.utils.mc.McFont
 import net.minecraft.client.Minecraft
 import net.minecraft.event.ClickEvent
 import net.minecraft.event.HoverEvent
@@ -46,7 +47,7 @@ object Text {
     fun IChatComponent.suffix(suffix: String): IChatComponent = join(this, suffix)
     fun IChatComponent.wrap(prefix: String, suffix: String) = this.prefix(prefix).suffix(suffix)
 
-    fun IChatComponent.width(): Int = Minecraft.getMinecraft().fontRendererObj.getStringWidth(this.formattedText)
+    fun IChatComponent.width(): Int = McFont.width(this.formattedText)
 
     fun IChatComponent.fitToChat(): IChatComponent {
         val width = this.width()

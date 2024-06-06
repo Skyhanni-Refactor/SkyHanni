@@ -21,15 +21,13 @@ import at.hannibal2.skyhanni.utils.TimeLimitedCache
 import at.hannibal2.skyhanni.utils.mc.McScreen
 import io.github.moulberry.notenoughupdates.itemeditor.GuiElementTextField
 import io.github.moulberry.notenoughupdates.profileviewer.GuiProfileViewer
-import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.inventory.GuiChest
-import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.gui.inventory.GuiEditSign
 import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11
-import java.util.*
+import java.util.UUID
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -52,7 +50,7 @@ object GuiEditManager {
         }
         if (isInGui()) return
 
-        Minecraft.getMinecraft().currentScreen?.let {
+        McScreen.screen?.let {
             if (it !is GuiInventory && it !is GuiChest && it !is GuiEditSign && !(it is GuiProfileViewer && !it.anyTextBoxFocused())) return
             if (it is GuiEditSign && !GardenOptimalSpeed.isRancherSign(it)) return
         }
@@ -97,7 +95,7 @@ object GuiEditManager {
         SkyHanniMod.screenToOpen = GuiPositionEditor(
             currentPositions.values().toList(),
             2,
-            Minecraft.getMinecraft().currentScreen as? GuiContainer
+            McScreen.asContainer
         )
         if (hotkeyReminder && lastHotkeyReminded.passedSince() > 30.minutes) {
             lastHotkeyReminded = SimpleTimeMark.now()

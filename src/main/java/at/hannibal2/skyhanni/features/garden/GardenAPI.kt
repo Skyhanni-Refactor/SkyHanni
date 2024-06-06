@@ -42,10 +42,10 @@ import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getCultivatingCount
 import at.hannibal2.skyhanni.utils.SkyBlockItemModifierUtils.getHoeCounter
 import at.hannibal2.skyhanni.utils.math.BoundingBox
 import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.mc.McWorld.checkProperty
 import at.hannibal2.skyhanni.utils.renderables.Renderable
 import net.minecraft.block.properties.PropertyInteger
-import net.minecraft.client.Minecraft
 import net.minecraft.item.ItemStack
 import net.minecraft.network.play.client.C09PacketHeldItemChange
 import kotlin.time.Duration.Companion.milliseconds
@@ -113,7 +113,7 @@ object GardenAPI {
             inBarn = barnArea.contains(McPlayer.pos)
 
             // We ignore random hypixel moments
-            Minecraft.getMinecraft().currentScreen ?: return
+            if (!McScreen.isOpen) return
             checkItemInHand()
         }
     }

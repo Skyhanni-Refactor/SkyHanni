@@ -4,7 +4,7 @@ import at.hannibal2.skyhanni.SkyHanniMod
 import at.hannibal2.skyhanni.api.event.HandleEvent
 import at.hannibal2.skyhanni.events.render.entity.RenderEntityOutlineEvent
 import at.hannibal2.skyhanni.skyhannimodule.SkyHanniModule
-import net.minecraft.client.Minecraft
+import at.hannibal2.skyhanni.utils.mc.McFont
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.entity.Entity
@@ -33,8 +33,10 @@ object DungeonTeammateOutlines {
         if (team.nameTagVisibility == Team.EnumVisible.NEVER) return null
 
         val colorFormat = FontRenderer.getFormatFromString(team.colorPrefix)
-        return if (colorFormat.length >= 2)
-            Minecraft.getMinecraft().fontRendererObj.getColorCode(colorFormat[1])
-        else null
+        return if (colorFormat.length >= 2) {
+            McFont.getColorCode(colorFormat[1])
+        } else {
+            null
+        }
     }
 }

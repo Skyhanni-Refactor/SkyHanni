@@ -48,12 +48,11 @@ import at.hannibal2.skyhanni.utils.SimpleTimeMark
 import at.hannibal2.skyhanni.utils.datetime.TimeUtils.format
 import at.hannibal2.skyhanni.utils.getLorenzVec
 import at.hannibal2.skyhanni.utils.mc.McPlayer
+import at.hannibal2.skyhanni.utils.mc.McScreen
 import at.hannibal2.skyhanni.utils.mc.McWorld
 import at.hannibal2.skyhanni.utils.mc.McWorld.getBlockStateAt
 import at.hannibal2.skyhanni.utils.repopatterns.RepoPattern
 import at.hannibal2.skyhanni.utils.toLorenzVec
-import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.inventory.GuiChest
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.init.Blocks
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
@@ -259,7 +258,7 @@ object MinionFeatures {
         if (!isEnabled()) return
         if (coinsPerDay != "") return
 
-        if (Minecraft.getMinecraft().currentScreen is GuiChest && config.hopperProfitDisplay) {
+        if (McScreen.isChestOpen && config.hopperProfitDisplay) {
             coinsPerDay = if (minionInventoryOpen) updateCoinsPerDay() else ""
         }
     }
